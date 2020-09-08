@@ -13,6 +13,8 @@ static const std::vector<std::string> item_combat = { "Pistol", "Submachine gun"
 
 static const std::vector<std::string> item_fuels = {"Wood", "Coal", "Solid fuel", "Rocket fuel", "Nuclear fuel", "Uranium fuel cell"};
 
+static const std::vector<std::string> build_directions = {"North", "South", "East", "West"};
+
 struct furnace_types {
 	std::string stone = "stone-furnace";
 };

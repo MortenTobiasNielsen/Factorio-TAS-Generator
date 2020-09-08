@@ -448,6 +448,16 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	// set walk as default value and disable inputs not used
 	rbtn_walk->SetValue(true);
 	choose_enabled_parameters(true, true, false, false, false, false, false);
+
+	cmb_building_direction->Clear();
+	cmb_direction_to_build->Clear();
+	for (auto it = build_directions.begin(); it < build_directions.end(); it++) {
+		cmb_building_direction->Append(*it);
+		cmb_direction_to_build->Append(*it);
+
+	}
+	cmb_building_direction->SetValue(*build_directions.begin());
+	cmb_direction_to_build->SetValue(*build_directions.begin());
 }
 
 void cMain::OnMineChosen(wxCommandEvent& event) {
@@ -462,19 +472,6 @@ void cMain::OnCraftChosen(wxCommandEvent& event) {
 	choose_enabled_parameters(false, false, true, true, true, false, false);
 
 	populate_comboboxes(item_categories, item_logistics);
-
-
-	//cmb_item_category->Clear();
-	//for (auto it = item_categories.begin(); it < item_categories.end(); it++) {
-	//	cmb_item_category->Append(*it);
-	//}
-	//cmb_item_category->SetValue(*item_categories.begin());
-
-	//cmb_item->Clear();
-	//for (auto it = item_logistics.begin(); it < item_logistics.end(); it++) {
-	//	cmb_item->Append(*it);
-	//}
-	//cmb_item->SetValue(*item_logistics.begin());
 }
 
 void cMain::OnWalkChosen(wxCommandEvent& event) {
@@ -495,16 +492,6 @@ void cMain::OnFuelChosen(wxCommandEvent& event) {
 	choose_enabled_parameters(true, true, true, false, true, false, false);
 
 	populate_comboboxes(item_categories_fuel, item_fuels);
-
-	/*cmb_item_category->Clear();
-	cmb_item_category->Append("Fuel");
-	cmb_item_category->SetValue("Fuel");
-
-	cmb_item->Clear();
-	for (auto it = item_fuels.begin(); it < item_fuels.end(); it++) {
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*item_fuels.begin());*/
 }
 
 void cMain::OnTakeChosen(wxCommandEvent& event) {
