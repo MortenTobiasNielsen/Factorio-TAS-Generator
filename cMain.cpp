@@ -11,7 +11,7 @@ EVT_MENU(10004, cMain::OnMenuExit)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(800, 600)) {
+cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(680, 755)) {
 
 	all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
@@ -20,6 +20,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	all_items.insert(all_items.end(), item_combat.begin(), item_combat.end());
 
 	static const std::vector<std::string> all_items_const(all_items);
+
+	list_task_num = 0;
+	list_buildings_num = 0;
 
 	//Add a menu bar
 	m_MenuBar = new wxMenuBar();
@@ -85,6 +88,15 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	bSizer30->Add(bSizer36, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bSizer49;
+	bSizer49 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer49->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer30->Add(bSizer49, 1, wxEXPAND, 5);
+
 
 	bSizer37->Add(bSizer30, 1, wxEXPAND, 5);
 
@@ -100,19 +112,13 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_item_category = new wxStaticText(this, wxID_ANY, wxT("Item Category:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+	label_item_category = new wxStaticText(this, wxID_ANY, wxT("Item Category:"), wxDefaultPosition, wxSize(-1, 25), wxALIGN_RIGHT);
 	label_item_category->Wrap(-1);
 	label_item_category->SetMinSize(wxSize(80, -1));
 
 	bSizer31->Add(label_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	cmb_item_category = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
-	
-	
-	for (auto it = item_categories.begin(); it < item_categories.end(); it++) {
-		cmb_item_category->Append(*it);
-	}
-	cmb_item_category->SetValue(*item_categories.begin());
 	bSizer31->Add(cmb_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -128,13 +134,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	bSizer35->Add(label_item, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	cmb_item = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
-
-	for (auto it = item_logistics.begin(); it < item_logistics.end(); it++) {
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*item_logistics.begin());
-
-	bSizer35->Add(cmb_item, 0, wxALL, 5);
+	bSizer35->Add(cmb_item, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer24->Add(bSizer35, 1, wxEXPAND, 5);
@@ -154,14 +154,23 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	bSizer24->Add(bSizer34, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bSizer47;
+	bSizer47 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer47->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer24->Add(bSizer47, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer48;
+	bSizer48 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer24->Add(bSizer48, 1, wxEXPAND, 5);
+
 
 	bSizer20->Add(bSizer24, 1, wxEXPAND, 5);
-
-	wxBoxSizer* bSizer29;
-	bSizer29 = new wxBoxSizer(wxVERTICAL);
-
-
-	bSizer20->Add(bSizer29, 1, wxEXPAND, 5);
 
 
 	bSizer19->Add(bSizer20, 1, wxEXPAND, 5);
@@ -281,6 +290,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	m_staticline2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
 	bSizer18->Add(m_staticline2, 0, wxEXPAND | wxALL, 5);
 
+	btn_add_task = new wxButton(this, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer18->Add(btn_add_task, 0, wxALIGN_CENTER | wxALL, 5);
+
 
 	bSizer19->Add(bSizer18, 1, wxEXPAND, 5);
 
@@ -290,11 +302,53 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	bSizer1->Add(bSizer19, 1, wxEXPAND, 5);
 
-	btn_add_task = new wxButton(this, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer1->Add(btn_add_task, 0, wxALL, 5);
+	m_staticline14 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+	bSizer1->Add(m_staticline14, 0, wxEXPAND | wxALL, 5);
+
+	wxBoxSizer* bSizer43;
+	bSizer43 = new wxBoxSizer(wxHORIZONTAL);
+
+	wxBoxSizer* bSizer45;
+	bSizer45 = new wxBoxSizer(wxVERTICAL);
+
+	m_staticText8 = new wxStaticText(this, wxID_ANY, wxT("Buildings"), wxDefaultPosition, wxDefaultSize, 0);
+	m_staticText8->Wrap(-1);
+	bSizer45->Add(m_staticText8, 0, wxALIGN_CENTER | wxALL, 5);
+
+	list_buildings = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	list_buildings->SetMinSize(wxSize(300, 500));
+
+	bSizer45->Add(list_buildings, 0, wxALL, 5);
 
 
-	bSizer1->Add(500, 1000, 1, wxEXPAND, 5);
+	bSizer43->Add(bSizer45, 1, wxEXPAND, 5);
+
+
+	bSizer43->Add(50, 0, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer44;
+	bSizer44 = new wxBoxSizer(wxVERTICAL);
+
+	m_staticText7 = new wxStaticText(this, wxID_ANY, wxT("Task list"), wxDefaultPosition, wxDefaultSize, 0);
+	m_staticText7->Wrap(-1);
+	bSizer44->Add(m_staticText7, 0, wxALIGN_CENTER | wxALL, 5);
+
+	list_tasks = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	list_tasks->SetMinSize(wxSize(300, 500));
+
+	bSizer44->Add(list_tasks, 0, wxALL, 5);
+
+
+	bSizer43->Add(bSizer44, 1, wxEXPAND, 5);
+
+
+	bSizer43->Add(10000, 0, 1, wxEXPAND, 5);
+
+
+	bSizer1->Add(bSizer43, 1, wxEXPAND, 5);
+
+
+	bSizer1->Add(0, 1000, 1, wxEXPAND, 5);
 
 
 	this->SetSizer(bSizer1);
@@ -314,6 +368,8 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnPutChosen), NULL, this);
 	btn_add_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(cMain::OnAddTaskClicked), NULL, this);
 	cmb_item_category->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(cMain::OnItemCategorySelected), NULL, this);
+	list_buildings->Connect(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(cMain::OnBuildingsListDoubleClicked), NULL, this);
+	list_tasks->Connect(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(cMain::OnTasksListDoubleClicked), NULL, this);
 }
 
 void cMain::OnMineChosen(wxCommandEvent& event) {
@@ -381,7 +437,10 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		} else {
 			speed(amount);
 		}
-		
+
+	list_tasks->Insert("Task " + std::to_string(list_task_num + 1) + ": Game speed - " + txt_amount->GetValue(), list_task_num);
+	list_task_num += 1;
+
 	} else if (rbtn_walk->GetValue()) {
 		
 		x_cord = wxAtof(txt_x_cord->GetValue());
@@ -420,6 +479,9 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			wxMessageBox("The item chosen is not a valid fuel - please try again", "Please use the item dropdown menu");
 		}		
 	}
+
+
+
 	event.Skip();
 }
 
@@ -451,6 +513,18 @@ void cMain::OnItemCategorySelected(wxCommandEvent& event) {
 			cmb_item->Append(*it);
 		}
 		cmb_item->SetValue(*item_combat.begin());
+	}
+}
+
+void cMain::OnBuildingsListDoubleClicked(wxCommandEvent& event) {
+}
+
+void cMain::OnTasksListDoubleClicked(wxCommandEvent& event) {
+	std::string text = list_tasks->GetStringSelection().ToStdString();
+
+	if (text != "") {
+		int index = list_tasks->GetSelection();
+		list_buildings->Insert(list_tasks->GetString(index), list_buildings_num);
 	}
 }
 

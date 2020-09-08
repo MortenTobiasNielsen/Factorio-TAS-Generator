@@ -33,6 +33,11 @@ protected:
 	wxRadioButton* rbtn_put;
 	wxStaticLine* m_staticline2;
 	wxButton* btn_add_task;
+	wxStaticLine* m_staticline14;
+	wxStaticText* m_staticText8;
+	wxListBox* list_buildings;
+	wxStaticText* m_staticText7;
+	wxListBox* list_tasks;
 
 	// Virtual event handlers, overide them in your derived class
 	void OnMineChosen(wxCommandEvent& event);
@@ -46,8 +51,12 @@ protected:
 	void OnPutChosen(wxCommandEvent& event);
 	void OnAddTaskClicked(wxCommandEvent& event);
 	void OnItemCategorySelected(wxCommandEvent& event);
+	void OnBuildingsListDoubleClicked(wxCommandEvent& event);
+	void OnTasksListDoubleClicked(wxCommandEvent& event);
 
 private:
+	int list_task_num;
+	int list_buildings_num;
 	std::vector<std::string> all_items;
 	std::string check;
 	std::string item;
