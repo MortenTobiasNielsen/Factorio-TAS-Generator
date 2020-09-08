@@ -4,6 +4,7 @@
 #include <vector>
 
 static const std::vector<std::string> item_categories = {"Logistics", "Production", "Intermediates", "Combat"};
+static const std::vector<std::string> item_categories_fuel = { "Fuel"};
 
 static const std::vector<std::string> item_logistics = {"Wooden chest", "Iron chest", "Steel chest"};
 static const std::vector<std::string> item_production = { "Boiler", "Steam engine", "Burner mining drill", "Electric mining drill"};

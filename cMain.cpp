@@ -11,7 +11,7 @@ EVT_MENU(10004, cMain::OnMenuExit)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(680, 755)) {
+cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(1000, 765)) {
 
 	all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
@@ -178,6 +178,38 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	bSizer19->Add(50, 0, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bSizer57;
+	bSizer57 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer58;
+	bSizer58 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_building_direction = new wxStaticText(this, wxID_ANY, wxT("Building Direction"), wxDefaultPosition, wxDefaultSize, 0);
+	label_building_direction->Wrap(-1);
+	bSizer58->Add(label_building_direction, 0, wxALL, 5);
+
+	cmb_building_direction = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	bSizer58->Add(cmb_building_direction, 0, wxALL, 5);
+
+
+	bSizer57->Add(bSizer58, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer59;
+	bSizer59 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_direction_to_build = new wxStaticText(this, wxID_ANY, wxT("Direction to Build"), wxDefaultPosition, wxDefaultSize, 0);
+	label_direction_to_build->Wrap(-1);
+	bSizer59->Add(label_direction_to_build, 0, wxALL, 5);
+
+	cmb_direction_to_build = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	bSizer59->Add(cmb_direction_to_build, 0, wxALL, 5);
+
+
+	bSizer57->Add(bSizer59, 1, wxEXPAND, 5);
+
+
+	bSizer19->Add(bSizer57, 1, wxEXPAND, 5);
+
 	wxBoxSizer* bSizer18;
 	bSizer18 = new wxBoxSizer(wxVERTICAL);
 
@@ -191,6 +223,15 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer(wxHORIZONTAL);
 
+	wxBoxSizer* bSizer15;
+	bSizer15 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_walk = new wxRadioButton(this, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer15->Add(rbtn_walk, 0, wxALL, 5);
+
+
+	bSizer6->Add(bSizer15, 1, wxEXPAND, 5);
+
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer(wxVERTICAL);
 
@@ -200,14 +241,29 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	bSizer6->Add(bSizer12, 1, wxEXPAND, 5);
 
-	wxBoxSizer* bSizer13;
-	bSizer13 = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* bSizer17;
+	bSizer17 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_rotate = new wxRadioButton(this, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer13->Add(rbtn_rotate, 0, wxALL, 5);
+	rbtn_game_speed = new wxRadioButton(this, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer17->Add(rbtn_game_speed, 0, wxALL, 5);
 
 
-	bSizer6->Add(bSizer13, 1, wxEXPAND, 5);
+	bSizer6->Add(bSizer17, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer65;
+	bSizer65 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer65->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer6->Add(bSizer65, 1, wxEXPAND, 5);
+
+
+	bSizer18->Add(bSizer6, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer7;
+	bSizer7 = new wxBoxSizer(wxHORIZONTAL);
 
 	wxBoxSizer* bSizer14;
 	bSizer14 = new wxBoxSizer(wxVERTICAL);
@@ -216,22 +272,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	bSizer14->Add(rbtn_craft, 0, wxALL, 5);
 
 
-	bSizer6->Add(bSizer14, 1, wxEXPAND, 5);
-
-
-	bSizer18->Add(bSizer6, 1, wxEXPAND, 5);
-
-	wxBoxSizer* bSizer7;
-	bSizer7 = new wxBoxSizer(wxHORIZONTAL);
-
-	wxBoxSizer* bSizer15;
-	bSizer15 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_walk = new wxRadioButton(this, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer15->Add(rbtn_walk, 0, wxALL, 5);
-
-
-	bSizer7->Add(bSizer15, 1, wxEXPAND, 5);
+	bSizer7->Add(bSizer14, 1, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer(wxVERTICAL);
@@ -242,14 +283,23 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	bSizer7->Add(bSizer16, 1, wxEXPAND, 5);
 
-	wxBoxSizer* bSizer17;
-	bSizer17 = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* bSizer64;
+	bSizer64 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_game_speed = new wxRadioButton(this, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer17->Add(rbtn_game_speed, 0, wxALL, 5);
+	rbtn_recipe = new wxRadioButton(this, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer64->Add(rbtn_recipe, 0, wxALL, 5);
 
 
-	bSizer7->Add(bSizer17, 1, wxEXPAND, 5);
+	bSizer7->Add(bSizer64, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer63;
+	bSizer63 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_tech = new wxRadioButton(this, wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer63->Add(rbtn_tech, 0, wxALL, 5);
+
+
+	bSizer7->Add(bSizer63, 1, wxEXPAND, 5);
 
 
 	bSizer18->Add(bSizer7, 1, wxEXPAND, 5);
@@ -284,14 +334,32 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	bSizer5->Add(bSizer11, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_rotate = new wxRadioButton(this, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer13->Add(rbtn_rotate, 0, wxALL, 5);
+
+
+	bSizer5->Add(bSizer13, 1, wxEXPAND, 5);
+
 
 	bSizer18->Add(bSizer5, 1, wxEXPAND, 5);
 
 	m_staticline2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
 	bSizer18->Add(m_staticline2, 0, wxEXPAND | wxALL, 5);
 
+	wxBoxSizer* bSizer56;
+	bSizer56 = new wxBoxSizer(wxHORIZONTAL);
+
 	btn_add_task = new wxButton(this, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer18->Add(btn_add_task, 0, wxALIGN_CENTER | wxALL, 5);
+	bSizer56->Add(btn_add_task, 0, wxALIGN_CENTER | wxALL, 5);
+
+	btn_delete_task = new wxButton(this, wxID_ANY, wxT("Delete Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer56->Add(btn_delete_task, 0, wxALL, 5);
+
+
+	bSizer18->Add(bSizer56, 1, wxALIGN_CENTER, 5);
 
 
 	bSizer19->Add(bSizer18, 1, wxEXPAND, 5);
@@ -357,62 +425,78 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	this->Centre(wxBOTH);
 
 	// Connect Events
-	rbtn_mine->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnMineChosen), NULL, this);
-	rbtn_rotate->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnRotateChosen), NULL, this);
-	rbtn_craft->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnCraftChosen), NULL, this);
+	cmb_item_category->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(cMain::OnItemCategorySelected), NULL, this);
+	cmb_building_direction->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(cMain::OnBuildingDirectionSelected), NULL, this);
+	cmb_direction_to_build->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(cMain::OnDirectionToBuildSelected), NULL, this);
 	rbtn_walk->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnWalkChosen), NULL, this);
-	rbtn_build->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnBuildChosen), NULL, this);
+	rbtn_mine->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnMineChosen), NULL, this);
 	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnGameSpeedChosen), NULL, this);
+	rbtn_craft->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnCraftChosen), NULL, this);
+	rbtn_build->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnBuildChosen), NULL, this);
+	rbtn_recipe->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnRecipeChosen), NULL, this);
+	rbtn_tech->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnTechChosen), NULL, this);
 	rbtn_fuel->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnFuelChosen), NULL, this);
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnTakeChosen), NULL, this);
 	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnPutChosen), NULL, this);
+	rbtn_rotate->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(cMain::OnRotateChosen), NULL, this);
 	btn_add_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(cMain::OnAddTaskClicked), NULL, this);
-	cmb_item_category->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(cMain::OnItemCategorySelected), NULL, this);
+	btn_delete_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(cMain::OnDeleteTaskClicked), NULL, this);
 	list_buildings->Connect(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(cMain::OnBuildingsListDoubleClicked), NULL, this);
 	list_tasks->Connect(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(cMain::OnTasksListDoubleClicked), NULL, this);
+
+
+	// set walk as default value and disable inputs not used
+	rbtn_walk->SetValue(true);
+	choose_enabled_parameters(true, true, false, false, false, false, false);
 }
 
 void cMain::OnMineChosen(wxCommandEvent& event) {
+	choose_enabled_parameters(true, true, true, false, false, false, false);
 }
 
 void cMain::OnRotateChosen(wxCommandEvent& event) {
+	choose_enabled_parameters(true, true, true, false, false, false, false);
 }
 
 void cMain::OnCraftChosen(wxCommandEvent& event) {
-	txt_x_cord->Enable(false);
-	txt_y_cord->Enable(false);
-	cmb_item_category->Enable(true);
-	cmb_item->Enable(true);
-	txt_amount->Enable(true);
+	choose_enabled_parameters(false, false, true, true, true, false, false);
+
+	populate_comboboxes(item_categories, item_logistics);
+
+
+	//cmb_item_category->Clear();
+	//for (auto it = item_categories.begin(); it < item_categories.end(); it++) {
+	//	cmb_item_category->Append(*it);
+	//}
+	//cmb_item_category->SetValue(*item_categories.begin());
+
+	//cmb_item->Clear();
+	//for (auto it = item_logistics.begin(); it < item_logistics.end(); it++) {
+	//	cmb_item->Append(*it);
+	//}
+	//cmb_item->SetValue(*item_logistics.begin());
 }
 
 void cMain::OnWalkChosen(wxCommandEvent& event) {
-	txt_x_cord->Enable(true);
-	txt_y_cord->Enable(true);
-	cmb_item_category->Enable(false);
-	cmb_item->Enable(false);
-	txt_amount->Enable(false);
+	choose_enabled_parameters(true, true, false, false, false, false, false);
 }
 
 void cMain::OnBuildChosen(wxCommandEvent& event) {
+	choose_enabled_parameters(true, true, true, true, true, true, true);
+
+	populate_comboboxes(item_categories, item_logistics);
 }
 
 void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
-	txt_x_cord->Enable(false);
-	txt_y_cord->Enable(false);
-	cmb_item_category->Enable(false);
-	cmb_item->Enable(false);
-	txt_amount->Enable(true);
+	choose_enabled_parameters(false, false, true, false, false, false, false);
 }
 
 void cMain::OnFuelChosen(wxCommandEvent& event) {
-	txt_x_cord->Enable(true);
-	txt_y_cord->Enable(true);
-	cmb_item_category->Enable(false);
-	cmb_item->Enable(true);
-	txt_amount->Enable(true);
+	choose_enabled_parameters(true, true, true, false, true, false, false);
 
-	cmb_item_category->Clear();
+	populate_comboboxes(item_categories_fuel, item_fuels);
+
+	/*cmb_item_category->Clear();
 	cmb_item_category->Append("Fuel");
 	cmb_item_category->SetValue("Fuel");
 
@@ -420,13 +504,29 @@ void cMain::OnFuelChosen(wxCommandEvent& event) {
 	for (auto it = item_fuels.begin(); it < item_fuels.end(); it++) {
 		cmb_item->Append(*it);
 	}
-	cmb_item->SetValue(*item_fuels.begin());
+	cmb_item->SetValue(*item_fuels.begin());*/
 }
 
 void cMain::OnTakeChosen(wxCommandEvent& event) {
+	choose_enabled_parameters(true, true, true, true, true, false, false);
+
+	populate_comboboxes(item_categories, item_logistics);
 }
 
 void cMain::OnPutChosen(wxCommandEvent& event) {
+	choose_enabled_parameters(true, true, true, true, true, false, false);
+
+	populate_comboboxes(item_categories, item_logistics);
+}
+
+void cMain::OnRecipeChosen(wxCommandEvent& event) {
+	choose_enabled_parameters(true, true, false, true, true, false, false);
+
+	populate_comboboxes(item_categories, item_logistics);
+}
+
+void cMain::OnTechChosen(wxCommandEvent& event) {
+	choose_enabled_parameters(false, false, false, true, true, false, false);
 }
 
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
@@ -479,9 +579,6 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			wxMessageBox("The item chosen is not a valid fuel - please try again", "Please use the item dropdown menu");
 		}		
 	}
-
-
-
 	event.Skip();
 }
 
@@ -528,6 +625,15 @@ void cMain::OnTasksListDoubleClicked(wxCommandEvent& event) {
 	}
 }
 
+void cMain::OnBuildingDirectionSelected(wxCommandEvent& event) {
+}
+
+void cMain::OnDirectionToBuildSelected(wxCommandEvent& event) {
+}
+
+void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
+}
+
 void cMain::OnMenuNew(wxCommandEvent& evt) {
 
 }
@@ -548,4 +654,28 @@ void cMain::OnMenuSave(wxCommandEvent& evt) {
 void cMain::OnMenuExit(wxCommandEvent& evt) {
 	Close();
 	evt.Skip();
+}
+
+void cMain::choose_enabled_parameters(bool x_cord, bool y_cord, bool amount, bool item_category, bool item, bool building_direction, bool direction_to_build) {
+	txt_x_cord->Enable(x_cord);
+	txt_y_cord->Enable(y_cord);
+	txt_amount->Enable(amount);
+	cmb_item_category->Enable(item_category);
+	cmb_item->Enable(item);
+	cmb_building_direction->Enable(building_direction);
+	cmb_direction_to_build->Enable(direction_to_build);
+}
+
+void cMain::populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item) {
+	cmb_item_category->Clear();
+	for (auto it = item_category.begin(); it < item_category.end(); it++) {
+		cmb_item_category->Append(*it);
+	}
+	cmb_item_category->SetValue(*item_category.begin());
+
+	cmb_item->Clear();
+	for (auto it = item.begin(); it < item.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*item.begin());
 }

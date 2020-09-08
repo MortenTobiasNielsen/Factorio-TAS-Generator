@@ -20,19 +20,26 @@ protected:
 	wxComboBox* cmb_item;
 	wxStaticText* label_amount;
 	wxTextCtrl* txt_amount;
+	wxStaticText* label_building_direction;
+	wxComboBox* cmb_building_direction;
+	wxStaticText* label_direction_to_build;
+	wxComboBox* cmb_direction_to_build;
 	wxStaticText* m_staticText1;
 	wxStaticLine* m_staticline1;
-	wxRadioButton* rbtn_mine;
-	wxRadioButton* rbtn_rotate;
-	wxRadioButton* rbtn_craft;
 	wxRadioButton* rbtn_walk;
-	wxRadioButton* rbtn_build;
+	wxRadioButton* rbtn_mine;
 	wxRadioButton* rbtn_game_speed;
+	wxRadioButton* rbtn_craft;
+	wxRadioButton* rbtn_build;
+	wxRadioButton* rbtn_recipe;
+	wxRadioButton* rbtn_tech;
 	wxRadioButton* rbtn_fuel;
 	wxRadioButton* rbtn_take;
 	wxRadioButton* rbtn_put;
+	wxRadioButton* rbtn_rotate;
 	wxStaticLine* m_staticline2;
 	wxButton* btn_add_task;
+	wxButton* btn_delete_task;
 	wxStaticLine* m_staticline14;
 	wxStaticText* m_staticText8;
 	wxListBox* list_buildings;
@@ -53,6 +60,12 @@ protected:
 	void OnItemCategorySelected(wxCommandEvent& event);
 	void OnBuildingsListDoubleClicked(wxCommandEvent& event);
 	void OnTasksListDoubleClicked(wxCommandEvent& event);
+	void OnBuildingDirectionSelected(wxCommandEvent& event);
+	void OnDirectionToBuildSelected(wxCommandEvent& event);
+	void OnRecipeChosen(wxCommandEvent& event);
+	void OnTechChosen(wxCommandEvent& event);
+	void OnDeleteTaskClicked(wxCommandEvent& event);
+
 
 private:
 	int list_task_num;
@@ -72,6 +85,10 @@ private:
 
 
 	wxDECLARE_EVENT_TABLE();
+
+	void choose_enabled_parameters(bool x_cord, bool y_cord, bool item_category, bool item, bool amount, bool building_direction, bool direction_to_build);
+
+	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 };
 
 
