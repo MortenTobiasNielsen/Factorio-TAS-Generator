@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <map>
 #include <vector>
 
 static const std::vector<std::string> item_categories = {"Logistics", "Production", "Intermediates", "Combat"};

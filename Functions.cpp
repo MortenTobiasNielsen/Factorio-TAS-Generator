@@ -464,14 +464,7 @@ std::string convert_string(std::string input) {
 	});
 	return input;
 }
-bool isInteger(const std::string& s) {
-	if (s.empty() || !isdigit(s[0])) return false;
 
-	char* p;
-	strtol(s.c_str(), &p, 10);
-
-	return (*p == 0);
-}
 bool check_item(const std::string &item, const std::vector<std::string> &all_items) {
 	for (auto it = all_items.begin(); it < all_items.end(); it++) {
 		if (item == *it) {

@@ -405,10 +405,20 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	} else if (rbtn_fuel->GetValue()) {
 		x_cord = wxAtof(txt_x_cord->GetValue());
 		y_cord = wxAtof(txt_y_cord->GetValue());
+
 		amount = wxAtoi(txt_amount->GetValue());
+		if (amount < 1) {
+			amount = -1;
+		}
+		
 		item = cmb_item->GetValue().ToStdString();
-		item = convert_string(item);
-		fill_fuel(x_cord, y_cord, amount, item);
+
+		if (check_item(item, item_fuels)) {
+			item = convert_string(item);
+			fill_fuel(x_cord, y_cord, amount, item);
+		} else {
+			wxMessageBox("The item chosen is not a valid fuel - please try again", "Please use the item dropdown menu");
+		}		
 	}
 	event.Skip();
 }

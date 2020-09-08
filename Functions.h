@@ -49,6 +49,4 @@ std::string end_tasks();
 
 std::string convert_string(std::string input);
 
-bool isInteger(const std::string& s);
-
-bool check_item(const std::string &item, const std::vector<std::string> &all_items)
+bool check_item(const std::string &item, const std::vector<std::string> &all_items);

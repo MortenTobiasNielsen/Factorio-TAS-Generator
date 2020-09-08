@@ -3,6 +3,7 @@
 #include <wx/wx.h>
 #include <wx/statline.h>
 #include <string>
+#include <vector>
 
 class cMain : public wxFrame {
 public:
@@ -47,7 +48,7 @@ protected:
 	void OnItemCategorySelected(wxCommandEvent& event);
 
 private:
-	static std::vector<std::string> all_items;
+	std::vector<std::string> all_items;
 	std::string check;
 	std::string item;
 	int amount = 1;
