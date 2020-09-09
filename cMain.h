@@ -103,9 +103,11 @@ protected:
 
 
 private:
-	std::string not_relevant = "N/A";
+	const static int Task_list_length = 10;
+
 	int list_task_num;
 	int list_buildings_num;
+	std::string not_relevant = "N/A";
 	std::vector<std::string> all_items;
 	std::string check;
 	std::string item;
@@ -127,7 +129,9 @@ private:
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
-	void update_task_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build, int index);
+	void update_task_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build);
+
+	void set_string_length(std::string &string_to_change, int length);
 };
 
 

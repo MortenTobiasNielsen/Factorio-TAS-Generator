@@ -61,7 +61,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	label_x_cord->Wrap(-1);
 	bSizer23->Add(label_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_x_cord = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(40, -1), 0);
+	txt_x_cord = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
 	bSizer23->Add(txt_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -74,7 +74,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	label_y_cord->Wrap(-1);
 	bSizer28->Add(label_y_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_y_cord = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(40, -1), 0);
+	txt_y_cord = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
 	bSizer28->Add(txt_y_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -781,9 +781,19 @@ void cMain::OnPickUpChosen(wxCommandEvent& event) {
 void cMain::OnDropChosen(wxCommandEvent& event) {
 }
 
-void cMain::update_task_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build, int index) {
-	
-	list_tasks->Insert( (task + " - " + x_cord + "," + y_cord + " - " + item + " - " + amount + " - " + building_direction, " - " + direction_to_build), index + 1);
+
+
+void cMain::update_task_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build) {
+	std::string text = list_tasks->GetStringSelection().ToStdString();
+
+	set_string_length(task, Task_list_length);
+
+	if (text != "") {
+		int index = list_tasks->GetSelection();
+		list_tasks->Insert( (task + " : (" + x_cord + ", " + y_cord + ") : " + item + " - " + amount + " - " + building_direction + " - " + direction_to_build), index + 1);
+	} else {
+		list_tasks->Insert((task + " : " + x_cord + ", " + y_cord + " : " + item + " - " + amount + " - " + building_direction + " - " + direction_to_build), list_task_num);
+	}
 
 	/*if (text != "") {
 		int index = list_tasks->GetSelection();
@@ -796,6 +806,12 @@ void cMain::update_task_list(std::string task, std::string x_cord, std::string y
 	list_task_num += 1;
 }
 
+void cMain::set_string_length(std::string &string_to_change, int length) {
+
+	string_to_change = string_to_change + std::string(length - string_to_change.length(), ' ');
+	//string_to_change = string_to_change.append(std::string(length, ' '));
+}
+
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	if (rbtn_game_speed->GetValue()) {
 		amount = std::to_string(wxAtoi(txt_amount->GetValue()));
@@ -805,15 +821,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			speed(amount);
 		}
 
-		std::string text = list_tasks->GetStringSelection().ToStdString();
+		update_task_list("Game Speed", not_relevant, not_relevant, not_relevant, amount, not_relevant, not_relevant);
 
-		if (text != "") {
-			int index = list_tasks->GetSelection();
-			update_task_list("Game Speed", not_relevant, );
-		} else {
-			list_tasks->Insert("Task " + std::to_string(list_task_num + 1) + ": Game speed - " + txt_amount->GetValue(), list_task_num);
-			list_task_num += 1;
-		}
 
 		/*if (text != "") {
 			int index = list_tasks->GetSelection();
@@ -828,17 +837,20 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 	} else if (rbtn_walk->GetValue()) {
 		
-		x_cord = wxAtof(txt_x_cord->GetValue());
-		y_cord = wxAtof(txt_y_cord->GetValue());
+		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
+		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
+
+		update_task_list("Walk", x_cord, y_cord, not_relevant, not_relevant, not_relevant, not_relevant);
 
 		walk(x_cord, y_cord);
 
 	} else if (rbtn_craft->GetValue()) {
-		amount = wxAtoi(txt_amount->GetValue());
+		amount = std::to_string(wxAtoi(txt_amount->GetValue()));
 		item = cmb_item->GetValue().ToStdString();
 
 		if (check_item(item, all_items)) {
 			item = convert_string(item);
+			update_task_list("Craft", not_relevant, not_relevant, item, amount, not_relevant, not_relevant);
 			craft(amount, item);
 		} else {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
@@ -847,12 +859,12 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		
 
 	} else if (rbtn_fuel->GetValue()) {
-		x_cord = wxAtof(txt_x_cord->GetValue());
-		y_cord = wxAtof(txt_y_cord->GetValue());
+		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
+		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
 
-		amount = wxAtoi(txt_amount->GetValue());
-		if (amount < 1) {
-			amount = -1;
+		amount = std::to_string(wxAtoi(txt_amount->GetValue()));
+		if (std::stoi(amount) < 1) {
+			amount = "-1";
 		}
 		
 		item = cmb_item->GetValue().ToStdString();
