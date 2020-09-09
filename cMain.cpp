@@ -781,11 +781,26 @@ void cMain::OnPickUpChosen(wxCommandEvent& event) {
 void cMain::OnDropChosen(wxCommandEvent& event) {
 }
 
+void cMain::update_task_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build, int index) {
+	
+	list_tasks->Insert( (task + " - " + x_cord + "," + y_cord + " - " + item + " - " + amount + " - " + building_direction, " - " + direction_to_build), index + 1);
+
+	/*if (text != "") {
+		int index = list_tasks->GetSelection();
+		list_tasks->Insert("Task " + std::to_string(list_task_num + 1) + ": Game speed - " + txt_amount->GetValue(), index + 1);
+		list_task_num += 1;
+	} else {
+		list_tasks->Insert("Task " + std::to_string(list_task_num + 1) + ": Game speed - " + txt_amount->GetValue(), list_task_num);
+		list_task_num += 1;
+	}*/
+	list_task_num += 1;
+}
+
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	if (rbtn_game_speed->GetValue()) {
-		amount = wxAtoi(txt_amount->GetValue());
-		if (amount < 1) {
-			speed(1);
+		amount = std::to_string(wxAtoi(txt_amount->GetValue()));
+		if (std::stof(amount) < 0.01) {
+			speed(std::to_string(0.01));
 		} else {
 			speed(amount);
 		}
@@ -794,12 +809,20 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 		if (text != "") {
 			int index = list_tasks->GetSelection();
+			update_task_list("Game Speed", not_relevant, );
+		} else {
+			list_tasks->Insert("Task " + std::to_string(list_task_num + 1) + ": Game speed - " + txt_amount->GetValue(), list_task_num);
+			list_task_num += 1;
+		}
+
+		/*if (text != "") {
+			int index = list_tasks->GetSelection();
 			list_tasks->Insert("Task " + std::to_string(list_task_num + 1) + ": Game speed - " + txt_amount->GetValue(), index + 1);
 			list_task_num += 1;
 		} else {
 			list_tasks->Insert("Task " + std::to_string(list_task_num + 1) + ": Game speed - " + txt_amount->GetValue(), list_task_num);
 			list_task_num += 1;
-		}
+		}*/
 
 	
 

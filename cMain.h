@@ -103,15 +103,16 @@ protected:
 
 
 private:
+	std::string not_relevant = "N/A";
 	int list_task_num;
 	int list_buildings_num;
 	std::vector<std::string> all_items;
 	std::string check;
 	std::string item;
 	std::string file_location;
-	int amount = 1;
-	double x_cord = 0;
-	double y_cord = 0;
+	std::string amount;
+	std::string x_cord;
+	std::string y_cord;
 	wxMenuBar* m_MenuBar = nullptr;
 
 	void OnMenuNew(wxCommandEvent& evt);
@@ -125,6 +126,8 @@ private:
 	void choose_enabled_parameters(bool x_cord, bool y_cord, bool item_category, bool item, bool amount, bool building_direction, bool direction_to_build);
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
+
+	void update_task_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build, int index);
 };
 
 

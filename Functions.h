@@ -11,39 +11,39 @@ static float player_y_cord = 0.0f;
 const static build_distance_struct build_distance;
 const static mining_distance_struct mining_distance;
 
-void walk(float x_cord, float y_cord);
+void walk(std::string x_cord, std::string y_cord);
 
-void check_build_distance(float x_cord, float y_cord);
+void check_build_distance(std::string x_cord, std::string y_cord);
 
-void check_mining_distance(float x_cord, float y_cord);
+void check_mining_distance(std::string x_cord, std::string y_cord);
 
-void craft(int amount, std::string item);
+void craft(std::string amount, std::string item);
 
-void build(float x_cord, float y_cord, std::string item, std::string direction);
+void build(std::string x_cord, std::string y_cord, std::string item, std::string direction);
 
-void fill_fuel(float x_cord, float y_cord, int amount, std::string fuel_type);
+void fill_fuel(std::string x_cord, std::string y_cord, std::string amount, std::string fuel_type);
 
-void mining(float x_cord, float y_cord, int times = 1);
+void mining(std::string x_cord, std::string y_cord, std::string times = "1");
 
-void take(float x_cord, float y_cord, int amount, std::string item, std::string from);
+void take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from);
 
-void put(float x_cord, float y_cord, int amount, std::string item, std::string into);
+void put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string into);
 
-void recipe(float x_cord, float y_cord, std::string item);
+void recipe(std::string x_cord, std::string y_cord, std::string item);
 
 void tech(std::string tech_to_research);
 
-void speed(float speed);
+void speed(std::string speed);
 
-void rotate(float x_cord, float y_cord, int times);
+void rotate(std::string x_cord, std::string y_cord, std::string times);
 
-void build_row_of_buildings(float x_cord, float y_cord, std::string item, std::string direction, std::string direction_to_build, int number_of_buildings, int building_size);
+void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
 
-void row_fill_fuel(float x_cord, float y_cord, int amount, std::string fuel_type, std::string direction_to_fuel, int number_of_buildings, int building_size);
+void row_fill_fuel(std::string x_cord, std::string y_cord, std::string amount, std::string fuel_type, std::string direction_to_fuel, std::string number_of_buildings, std::string building_size);
 
-void row_empty_fill_fuel(float x_cord, float y_cord, int amount, std::string item_to_take, std::string from, std::string fuel_type, std::string direction_to_fuel, int number_of_buildings, int building_size);
+void row_empty_fill_fuel(std::string x_cord, std::string y_cord, std::string amount, std::string item_to_take, std::string from, std::string fuel_type, std::string direction_to_fuel, std::string number_of_buildings, std::string building_size);
 
-void row_take(float x_cord, float y_cord, int amount, std::string item, std::string from, std::string direction_to_take, int number_of_buildings, int building_size);
+void row_take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction_to_take, std::string number_of_buildings, std::string building_size);
 
 std::string end_tasks();
 
