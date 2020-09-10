@@ -3,6 +3,7 @@
 #include <algorithm>
 
 
+
 void walk(std::string x_cord, std::string y_cord) {
 	task_list += "task[" + std::to_string(task) + "] = {\"walk\", {" + x_cord + ", " + y_cord + "}}\n";
 	player_x_cord = std::stof(x_cord);
@@ -385,19 +386,19 @@ void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string 
 	static int building_size_int = std::stoi(building_size);
 	static int number_of_buildings_int = std::stoi(number_of_buildings);
 
-	if (direction_to_build == "north") {
+	if (direction_to_build == "North") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			build(x_cord, std::to_string(start_y_cord - i * building_size_int), item, direction);
 		}
-	} else if (direction_to_build == "south") {
+	} else if (direction_to_build == "South") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			build(x_cord, std::to_string(start_y_cord + i * building_size_int), item, direction);
 		}
-	} else if (direction_to_build == "east") {
+	} else if (direction_to_build == "East") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			build(std::to_string(start_x_cord + i * building_size_int), y_cord, item, direction);
 		}
-	} else if (direction_to_build == "west") {
+	} else if (direction_to_build == "West") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			build(std::to_string(start_x_cord - i * building_size_int), y_cord, item, direction);
 		}

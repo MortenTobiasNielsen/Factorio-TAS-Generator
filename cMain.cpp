@@ -13,7 +13,7 @@ EVT_MENU(10004, cMain::OnMenuExit)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(1200, 1000)) {
+cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(1920, 1080)) {
 
 	all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
@@ -62,7 +62,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	bSizer23 = new wxBoxSizer(wxHORIZONTAL);
 
 	bSizer23->SetMinSize(wxSize(10, 10));
-	label_x_cord = new wxStaticText(this, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+	label_x_cord = new wxStaticText(this, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
 	label_x_cord->Wrap(-1);
 	bSizer23->Add(label_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
@@ -75,7 +75,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	wxBoxSizer* bSizer28;
 	bSizer28 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_y_cord = new wxStaticText(this, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+	label_y_cord = new wxStaticText(this, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
 	label_y_cord->Wrap(-1);
 	bSizer28->Add(label_y_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
@@ -86,10 +86,14 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	bSizer30->Add(bSizer28, 1, 0, 5);
 
 	wxBoxSizer* bSizer36;
-	bSizer36 = new wxBoxSizer(wxVERTICAL);
+	bSizer36 = new wxBoxSizer(wxHORIZONTAL);
 
+	label_units = new wxStaticText(this, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
+	label_units->Wrap(-1);
+	bSizer36->Add(label_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	bSizer36->Add(0, 0, 1, wxEXPAND, 5);
+	txt_units = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	bSizer36->Add(txt_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer30->Add(bSizer36, 1, 0, 5);
@@ -152,16 +156,8 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	wxBoxSizer* bSizer34;
 	bSizer34 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_amount = new wxStaticText(this, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
-	label_amount->Wrap(-1);
-	label_amount->SetMinSize(wxSize(80, -1));
 
-	bSizer34->Add(label_amount, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-
-	txt_amount = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
-	txt_amount->SetMinSize(wxSize(150, -1));
-
-	bSizer34->Add(txt_amount, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	bSizer34->Add(0, 0, 1, wxEXPAND, 5);
 
 
 	bSizer24->Add(bSizer34, 1, 0, 5);
@@ -193,11 +189,11 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	wxBoxSizer* bSizer58;
 	bSizer58 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_building_direction = new wxStaticText(this, wxID_ANY, wxT("Building Direction"), wxDefaultPosition, wxDefaultSize, 0);
-	label_building_direction->Wrap(-1);
-	bSizer58->Add(label_building_direction, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	label_building_orientation = new wxStaticText(this, wxID_ANY, wxT("Building Orientation:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
+	label_building_orientation->Wrap(-1);
+	bSizer58->Add(label_building_orientation, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_building_direction = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	cmb_building_direction = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
 	bSizer58->Add(cmb_building_direction, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -206,15 +202,41 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	wxBoxSizer* bSizer59;
 	bSizer59 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_direction_to_build = new wxStaticText(this, wxID_ANY, wxT("Direction to Build"), wxDefaultPosition, wxDefaultSize, 0);
+	label_direction_to_build = new wxStaticText(this, wxID_ANY, wxT("Direction to Build:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
 	label_direction_to_build->Wrap(-1);
 	bSizer59->Add(label_direction_to_build, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_direction_to_build = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	cmb_direction_to_build = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
 	bSizer59->Add(cmb_direction_to_build, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer57->Add(bSizer59, 1, 0, 5);
+
+	wxBoxSizer* bSizer51;
+	bSizer51 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_building_size = new wxStaticText(this, wxID_ANY, wxT("Building Size:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
+	label_building_size->Wrap(-1);
+	bSizer51->Add(label_building_size, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	txt_building_size = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0);
+	bSizer51->Add(txt_building_size, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+
+	bSizer57->Add(bSizer51, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer52;
+	bSizer52 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_amount_of_buildings = new wxStaticText(this, wxID_ANY, wxT("Amount of Buildings:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
+	label_amount_of_buildings->Wrap(-1);
+	bSizer52->Add(label_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	txt_amount_of_buildings = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0);
+	bSizer52->Add(txt_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+
+	bSizer57->Add(bSizer52, 1, wxEXPAND, 5);
 
 
 	bSizer19->Add(bSizer57, 1, wxEXPAND, 5);
@@ -456,12 +478,6 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	label_buildings->Wrap(-1);
 	bSizer76->Add(label_buildings, 0, wxALIGN_CENTER | wxALL, 5);
 
-
-	bSizer45->Add(bSizer76, 1, wxEXPAND, 5);
-
-	wxBoxSizer* bSizer78;
-	bSizer78 = new wxBoxSizer(wxVERTICAL);
-
 	grid_buildings = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
 
 	// Grid
@@ -472,12 +488,19 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	grid_buildings->SetMargins(0, 0);
 
 	// Columns
+	grid_buildings->SetColSize(0, 50);
+	grid_buildings->SetColSize(1, 50);
+	grid_buildings->SetColSize(2, 120);
+	grid_buildings->SetColSize(3, 70);
+	grid_buildings->SetColSize(4, 120);
+	grid_buildings->SetColSize(5, 120);
+	grid_buildings->SetColSize(6, 120);
 	grid_buildings->EnableDragColMove(false);
 	grid_buildings->EnableDragColSize(true);
 	grid_buildings->SetColLabelValue(0, wxT("X-cord"));
 	grid_buildings->SetColLabelValue(1, wxT("Y-cord"));
 	grid_buildings->SetColLabelValue(2, wxT("Building"));
-	grid_buildings->SetColLabelValue(3, wxT("Building Direction"));
+	grid_buildings->SetColLabelValue(3, wxT("Orientation"));
 	grid_buildings->SetColLabelValue(4, wxT("Recipe"));
 	grid_buildings->SetColLabelValue(5, wxT("Priority"));
 	grid_buildings->SetColLabelValue(6, wxT("Filter"));
@@ -493,10 +516,10 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	grid_buildings->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
 	grid_buildings->SetMinSize(wxSize(-1, 2500));
 
-	bSizer78->Add(grid_buildings, 0, wxALL, 5);
+	bSizer76->Add(grid_buildings, 0, wxALL, 5);
 
 
-	bSizer45->Add(bSizer78, 1, wxEXPAND, 5);
+	bSizer45->Add(bSizer76, 1, wxEXPAND, 5);
 
 
 	bSizer43->Add(bSizer45, 1, wxEXPAND, 5);
@@ -507,51 +530,44 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	wxBoxSizer* bSizer44;
 	bSizer44 = new wxBoxSizer(wxVERTICAL);
 
-	bSizer44->SetMinSize(wxSize(400, -1));
-	wxBoxSizer* bSizer491;
-	bSizer491 = new wxBoxSizer(wxVERTICAL);
-
-
-	bSizer44->Add(bSizer491, 1, wxEXPAND, 5);
-
+	bSizer44->SetMinSize(wxSize(500, -1));
 	wxBoxSizer* bSizer50;
-	bSizer50 = new wxBoxSizer(wxHORIZONTAL);
-
-	wxBoxSizer* bSizer83;
-	bSizer83 = new wxBoxSizer(wxVERTICAL);
+	bSizer50 = new wxBoxSizer(wxVERTICAL);
 
 	m_staticText37 = new wxStaticText(this, wxID_ANY, wxT("Tasks"), wxDefaultPosition, wxSize(-1, -1), 0);
 	m_staticText37->Wrap(-1);
-	bSizer83->Add(m_staticText37, 0, wxALIGN_CENTER, 5);
+	bSizer50->Add(m_staticText37, 0, wxALIGN_CENTER, 5);
 
 	grid_tasks = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
 
 	// Grid
-	grid_tasks->CreateGrid(0, 7);
+	grid_tasks->CreateGrid(0, 9);
 	grid_tasks->EnableEditing(false);
 	grid_tasks->EnableGridLines(true);
 	grid_tasks->EnableDragGridSize(false);
 	grid_tasks->SetMargins(0, 0);
 
 	// Columns
-	grid_tasks->SetColSize(0, 80);
-	grid_tasks->SetColSize(1, 52);
-	grid_tasks->SetColSize(2, 52);
-	grid_tasks->SetColSize(3, 80);
-	grid_tasks->SetColSize(4, 51);
-	grid_tasks->SetColSize(5, 106);
-	grid_tasks->SetColSize(6, 102);
+	grid_tasks->SetColSize(0, 75);
+	grid_tasks->SetColSize(1, 50);
+	grid_tasks->SetColSize(2, 50);
+	grid_tasks->SetColSize(3, 50);
+	grid_tasks->SetColSize(4, 120);
+	grid_tasks->SetColSize(5, 70);
+	grid_tasks->SetColSize(6, 70);
+	grid_tasks->SetColSize(7, 50);
+	grid_tasks->SetColSize(8, 50);
 	grid_tasks->EnableDragColMove(false);
 	grid_tasks->EnableDragColSize(true);
 	grid_tasks->SetColLabelValue(0, wxT("Task"));
 	grid_tasks->SetColLabelValue(1, wxT("X-cord"));
 	grid_tasks->SetColLabelValue(2, wxT("Y-cord"));
-	grid_tasks->SetColLabelValue(3, wxT("Item"));
-	grid_tasks->SetColLabelValue(4, wxT("Amount"));
-	grid_tasks->SetColLabelValue(5, wxT("Building Direction"));
-	grid_tasks->SetColLabelValue(6, wxT("Direction to Build"));
-	grid_tasks->SetColLabelValue(7, wxEmptyString);
-	grid_tasks->SetColLabelValue(8, wxEmptyString);
+	grid_tasks->SetColLabelValue(3, wxT("Units"));
+	grid_tasks->SetColLabelValue(4, wxT("Item"));
+	grid_tasks->SetColLabelValue(5, wxT("Orientation"));
+	grid_tasks->SetColLabelValue(6, wxT("Direction"));
+	grid_tasks->SetColLabelValue(7, wxT("Size"));
+	grid_tasks->SetColLabelValue(8, wxT("Amount"));
 	grid_tasks->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
 
 	// Rows
@@ -564,10 +580,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	grid_tasks->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
 	grid_tasks->SetMinSize(wxSize(-1, 2500));
 
-	bSizer83->Add(grid_tasks, 0, wxALL, 5);
-
-
-	bSizer50->Add(bSizer83, 1, wxALIGN_CENTER, 5);
+	bSizer50->Add(grid_tasks, 0, wxALL, 5);
 
 
 	bSizer44->Add(bSizer50, 1, wxEXPAND, 5);
@@ -621,7 +634,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 
 	// set walk as default value and disable inputs not used
 	rbtn_walk->SetValue(true);
-	choose_enabled_parameters(true, true, false, false, false, false, false);
+	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
 
 	cmb_building_direction->Clear();
 	cmb_direction_to_build->Clear();
@@ -632,79 +645,73 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	}
 	cmb_building_direction->SetValue(*build_directions.begin());
 	cmb_direction_to_build->SetValue(*build_directions.begin());
+
+	// set grid formatting
+	grid_tasks->SetColFormatFloat(1, 4, 1);
+	grid_tasks->SetColFormatFloat(2, 4, 1);
+	grid_tasks->SetColFormatFloat(3, 4, 2);
 }
 
 
 
 void cMain::OnMineChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, true, false, false, false, false);
+	setup_paramters_comboboxes(parameter_choices.mining, item_categories, item_logistics);
 }
 
 void cMain::OnRotateChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, true, false, false, false, false);
+	setup_paramters_comboboxes(parameter_choices.rotate, item_categories, item_logistics);
 }
 
 void cMain::OnCraftChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(false, false, true, true, true, false, false);
-
-	populate_comboboxes(item_categories, item_logistics);
+	setup_paramters_comboboxes(parameter_choices.craft, item_categories, item_logistics);
 }
 
 void cMain::OnWalkChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, false, false, false, false, false);
+	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
 }
 
 void cMain::OnBuildChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, true, true, true, true, true);
-
-	populate_comboboxes(item_categories, item_logistics);
+	setup_paramters_comboboxes(parameter_choices.build, item_categories, item_logistics);
 }
 
 void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(false, false, false, true, false, false, false, false);
+	setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
 }
 
 void cMain::OnFuelChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, true, false, true, false, false);
-
-	populate_comboboxes(item_categories_fuel, item_fuels);
+	setup_paramters_comboboxes(parameter_choices.fuel, item_categories_fuel, item_fuels);
 }
 
 void cMain::OnTakeChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, true, true, true, false, false);
-
-	populate_comboboxes(item_categories, item_logistics);
+	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
 }
 
 void cMain::OnPutChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, true, true, true, false, false);
-
-	populate_comboboxes(item_categories, item_logistics);
+	setup_paramters_comboboxes(parameter_choices.put, item_categories, item_logistics);
 }
 
 void cMain::OnfilterChosen(wxCommandEvent& event) {
+	setup_paramters_comboboxes(parameter_choices.filter, item_categories, item_logistics);
 }
 
 void cMain::OnRecipeChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, false, true, true, false, false);
-
-	populate_comboboxes(item_categories, item_logistics);
+	setup_paramters_comboboxes(parameter_choices.recipe, item_categories, item_logistics);
 }
 
 void cMain::OnTechChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(false, false, false, true, true, false, false);
+	setup_paramters_comboboxes(parameter_choices.tech, item_categories, item_logistics); // remember to change to tech categories and tech
 }
 
 void cMain::OnLaunchChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, false, false, false, false, false);
+	setup_paramters_comboboxes(parameter_choices.launch, item_categories, item_logistics);
 }
 
 void cMain::OnPriorityChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, false, true, true, false, false);
+	setup_paramters_comboboxes(parameter_choices.priority, item_categories, item_logistics);
 }
 
 void cMain::OnLimitChosen(wxCommandEvent& event) {
-	choose_enabled_parameters(true, true, true, false, false, false, false);
+	setup_paramters_comboboxes(parameter_choices.limit, item_categories, item_logistics);
 }
 
 void cMain::OnTransferChosen(wxCommandEvent& event) {
@@ -717,85 +724,131 @@ void cMain::OnPickUpChosen(wxCommandEvent& event) {
 void cMain::OnDropChosen(wxCommandEvent& event) {
 }
 
-void cMain::update_tasks_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build) {
+void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string amount_to_build, std::string building_size) {
 	static int row_num;
 	
 
 	if (grid_tasks->IsSelection()) {
 		row_num = *grid_tasks->GetSelectedRows().begin();
-
-		grid_tasks->InsertRows(row_num + 1, 1);
-
-		grid_tasks->SetCellValue(row_num + 1, 0, task);
-		grid_tasks->SetCellValue(row_num + 1, 1, x_cord);
-		grid_tasks->SetCellValue(row_num + 1, 2, y_cord);
-		grid_tasks->SetCellValue(row_num + 1, 3, item);
-		grid_tasks->SetCellValue(row_num + 1, 4, amount);
-		grid_tasks->SetCellValue(row_num + 1, 5, building_direction);
-		grid_tasks->SetCellValue(row_num + 1, 6, direction_to_build);
 	} else {
 		row_num = grid_tasks->GetNumberRows();
-
-		grid_tasks->InsertRows(row_num, 1);
-
-		grid_tasks->SetCellValue(row_num, 0, task);
-		grid_tasks->SetCellValue(row_num, 1, x_cord);
-		grid_tasks->SetCellValue(row_num, 2, y_cord);
-		grid_tasks->SetCellValue(row_num, 3, item);
-		grid_tasks->SetCellValue(row_num, 4, amount);
-		grid_tasks->SetCellValue(row_num, 5, building_direction);
-		grid_tasks->SetCellValue(row_num, 6, direction_to_build);
 	}
+
+	grid_tasks->InsertRows(row_num, 1);
+
+	grid_tasks->SetCellValue(row_num, 0, task);
+	grid_tasks->SetCellValue(row_num, 1, x_cord);
+	grid_tasks->SetCellValue(row_num, 2, y_cord);
+	grid_tasks->SetCellValue(row_num, 3, units);
+	grid_tasks->SetCellValue(row_num, 4, item);
+	grid_tasks->SetCellValue(row_num, 5, orientation);
+	grid_tasks->SetCellValue(row_num, 6, direction_to_build);
+	grid_tasks->SetCellValue(row_num, 7, amount_to_build);
+	grid_tasks->SetCellValue(row_num, 8, building_size);
 }
 
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	if (rbtn_game_speed->GetValue()) {
-		amount = std::to_string(wxAtoi(txt_amount->GetValue()));
-		if (std::stof(amount) < 0.01) {
-			amount = "0.01";
+		units = std::to_string(wxAtoi(txt_units->GetValue()));
+		if (std::stof(units) < 0.01) {
+			units = "0.01";
 		}
 
-		update_tasks_list("Game Speed", not_relevant, not_relevant, not_relevant, amount, not_relevant, not_relevant);
+		update_tasks_grid("Game Speed", not_relevant, not_relevant, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
 
-		speed(amount);
+		speed(units);
 
 	} else if (rbtn_walk->GetValue()) {
 		
 		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
 		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
 
+		update_tasks_grid("Walk", x_cord, y_cord, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
+
 		walk(x_cord, y_cord);
 
 	} else if (rbtn_craft->GetValue()) {
-		amount = std::to_string(wxAtoi(txt_amount->GetValue()));
+		units = std::to_string(wxAtoi(txt_units->GetValue()));
 		item = cmb_item->GetValue().ToStdString();
 
-		if (check_item(item, all_items)) {
-			item = convert_string(item);
-			craft(amount, item);
-		} else {
+		if (!check_item(item, all_items)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
 		}
 
-		
+		update_tasks_grid("Craft", not_relevant, not_relevant, item, units, not_relevant, not_relevant, not_relevant, not_relevant);
+		craft(units, convert_string(item));
 
 	} else if (rbtn_fuel->GetValue()) {
 		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
 		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
 
-		amount = std::to_string(wxAtoi(txt_amount->GetValue()));
-		if (std::stoi(amount) < 1) {
-			amount = "-1";
+		amount_of_buildings = std::to_string(wxAtoi(txt_amount_of_buildings->GetValue()));
+		if (std::stoi(amount_of_buildings) < 1) {
+			amount_of_buildings = "1";
+		}
+
+		building_size = std::to_string(wxAtoi(txt_building_size->GetValue()));
+		if (std::stoi(building_size) < 1) {
+			building_size = "1";
+		}
+
+		units = std::to_string(wxAtoi(txt_units->GetValue()));
+		if (std::stoi(units) < 1) {
+			units = "1";
 		}
 		
 		item = cmb_item->GetValue().ToStdString();
 
-		if (check_item(item, item_fuels)) {
-			item = convert_string(item);
-			fill_fuel(x_cord, y_cord, amount, item);
-		} else {
-			wxMessageBox("The item chosen is not a valid fuel - please try again", "Please use the item dropdown menu");
-		}		
+		if (!check_item(item, item_fuels)) {
+			wxMessageBox("The item is not a valid fuel - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_item(direction_to_build, build_directions)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Fuel", x_cord, y_cord, convert_string(item), units, not_relevant, direction_to_build, amount_of_buildings, building_size);
+		row_fill_fuel(x_cord, y_cord, units, item, direction_to_build, amount_of_buildings, building_size);
+	
+	} else if (rbtn_build->GetValue()) {
+		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
+		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
+
+		amount_of_buildings = std::to_string(wxAtoi(txt_amount_of_buildings->GetValue()));
+		if (std::stoi(amount_of_buildings) < 1) {
+			amount_of_buildings = "1";
+		}
+
+		building_size = std::to_string(wxAtoi(txt_building_size->GetValue()));
+		if (std::stoi(building_size) < 1) {
+			building_size = "1";
+		}
+
+		item = cmb_item->GetValue().ToStdString();
+		build_direction = cmb_building_direction->GetValue().ToStdString();
+		direction_to_build = cmb_direction_to_build->GetValue().ToStdString();
+
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_item(build_direction, build_directions)) {
+			wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
+			return;
+		}
+
+		if (!check_item(direction_to_build, build_directions)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+		
+		build_row_of_buildings(x_cord, y_cord, convert_string(item), build_direction, direction_to_build, amount_of_buildings, building_size);
+
+		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_direction, direction_to_build, amount_of_buildings, building_size);
 	}
 	event.Skip();
 }
@@ -841,19 +894,21 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	tasks_row_selected = event.GetRow();
 
 	static std::string tasks_task = grid_tasks->GetCellValue(tasks_row_selected, 0).ToStdString();
-
-	if (tasks_task == "Game Speed") {
-		rbtn_game_speed->SetValue(true);
-		
-		setup_paramters_comboboxes(parameter_combobox_choices.game_speed);
-	}
-
 	static std::string tasks_x_cord = grid_tasks->GetCellValue(tasks_row_selected, 1).ToStdString();
 	static std::string tasks_y_cord = grid_tasks->GetCellValue(tasks_row_selected, 2).ToStdString();
 	static std::string tasks_item = grid_tasks->GetCellValue(tasks_row_selected, 3).ToStdString();
 	static std::string tasks_amount = grid_tasks->GetCellValue(tasks_row_selected, 4).ToStdString();
 	static std::string tasks_building_direction = grid_tasks->GetCellValue(tasks_row_selected, 5).ToStdString();
 	static std::string tasks_direction_to_build = grid_tasks->GetCellValue(tasks_row_selected, 6).ToStdString();
+
+	if (tasks_task == "Game Speed") {
+		rbtn_game_speed->SetValue(true);
+		
+		setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
+		txt_units->SetValue(tasks_amount);
+	}
+
+	
 	
 	event.Skip();
 }
@@ -897,14 +952,16 @@ void cMain::OnMenuExit(wxCommandEvent& evt) {
 	evt.Skip();
 }
 
-void cMain::choose_enabled_parameters(bool x_cord, bool y_cord, bool amount, bool item_category, bool item, bool building_direction, bool direction_to_build) {
-	txt_x_cord->Enable(x_cord);
-	txt_y_cord->Enable(y_cord);
-	txt_amount->Enable(amount);
-	cmb_item_category->Enable(item_category);
-	cmb_item->Enable(item);
-	cmb_building_direction->Enable(building_direction);
-	cmb_direction_to_build->Enable(direction_to_build);
+void cMain::setup_paramters(std::vector<bool> parameters) {
+	txt_x_cord->Enable(parameters[1]);
+	txt_y_cord->Enable(parameters[2]);
+	txt_units->Enable(parameters[3]);
+	cmb_item_category->Enable(parameters[4]);
+	cmb_item->Enable(parameters[5]);
+	cmb_building_direction->Enable(parameters[6]);
+	cmb_direction_to_build->Enable(parameters[7]);
+	txt_amount_of_buildings->Enable(parameters[8]);
+	txt_building_size->Enable(parameters[9]);
 }
 
 void cMain::populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item) {
@@ -921,12 +978,12 @@ void cMain::populate_comboboxes(std::vector<std::string> item_category, std::vec
 	cmb_item->SetValue(*item.begin());
 }
 
-void cMain::setup_paramters_comboboxes(bool change_combo_box, bool x_cord, bool y_cord, bool amount, bool item_category, bool item, bool building_direction, bool direction_to_build, std::vector<std::string> *combo_item_category, std::vector<std::string> *combo_item) {
-	
-	if (change_combo_box) {
-		choose_enabled_parameters(x_cord, y_cord, amount, item_category, item, building_direction, direction_to_build);
-		populate_comboboxes(*combo_item_category, *combo_item);
-	} else {
-		choose_enabled_parameters(x_cord, y_cord, amount, item_category, item, building_direction, direction_to_build);
+void cMain::setup_paramters_comboboxes(std::vector<bool> parameters, std::vector<std::string> combo_item_category, std::vector<std::string> combo_item) {
+	setup_paramters(parameters);
+
+	if (parameters[0]) {
+		populate_comboboxes(combo_item_category, combo_item);
 	}
 }
+
+
