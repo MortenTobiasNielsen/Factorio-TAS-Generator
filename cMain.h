@@ -2,6 +2,7 @@
 
 #include <wx/wx.h>
 #include <wx/statline.h>
+#include <wx/grid.h>
 #include <string>
 #include <vector>
 
@@ -47,21 +48,9 @@ protected:
 	wxButton* btn_delete_task;
 	wxStaticLine* m_staticline14;
 	wxStaticText* label_buildings;
-	wxStaticText* m_staticText161;
-	wxStaticText* m_staticText171;
-	wxStaticText* m_staticText191;
-	wxStaticText* m_staticText34;
-	wxStaticText* m_staticText35;
-	wxStaticText* m_staticText36;
-	wxListBox* list_buildings;
-	wxStaticText* label_task_list;
+	wxGrid* grid_buildings;
 	wxStaticText* m_staticText37;
-	wxStaticText* m_staticText16;
-	wxStaticText* m_staticText17;
-	wxStaticText* m_staticText18;
-	wxStaticText* m_staticText19;
-	wxStaticText* m_staticText20;
-	wxListBox* list_tasks;
+	wxGrid* grid_tasks;
 
 
 	// Virtual event handlers, overide them in your derived class
@@ -90,24 +79,31 @@ protected:
 
 	void OnAddTaskClicked(wxCommandEvent& event);
 	void OnDeleteTaskClicked(wxCommandEvent& event);
-
-	void OnBuildingsListDoubleClicked(wxCommandEvent& event);
-	void OnTasksListDoubleClicked(wxCommandEvent& event);
-
-	void OnTasksListKeyDown(wxKeyEvent& event);	
-	void OnBuildingsListKeyDown(wxKeyEvent& event);
 	
+	void OnTasksGridLeftClick(wxGridEvent& event);
+	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
 	
-	
+	void OnBuildingsGridLeftClick(wxGridEvent& event);
+	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
 	
 
 
 private:
-	const static int Task_list_length = 10;
+	const static int task_list_game_speed_white_space = 0;
+	const static int Task_list_walk_white_space = 20;
+
+	struct parameter_combobox_choices_struct {
+		std::vector<bool> game_speed = { false, false, false, true, false, false, false, false };
+	};
+
+	const static parameter_combobox_choices_struct parameter_combobox_choices;
+
+
+	int tasks_row_selected = 0;
 
 	int list_task_num;
 	int list_buildings_num;
-	std::string not_relevant = "N/A";
+	std::string not_relevant = "";
 	std::vector<std::string> all_items;
 	std::string check;
 	std::string item;
@@ -129,9 +125,9 @@ private:
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
-	void update_task_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build);
+	void setup_paramters_comboboxes(bool change_combo_box, bool x_cord, bool y_cord, bool amount, bool item_category, bool item, bool building_direction, bool direction_to_build, std::vector<std::string> *combo_item_category = nullptr, std::vector<std::string> *combo_item = nullptr);
 
-	void set_string_length(std::string &string_to_change, int length);
+	void update_tasks_list(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build);
 };
 
 
