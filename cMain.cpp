@@ -650,6 +650,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxS
 	grid_tasks->SetColFormatFloat(1, 4, 1);
 	grid_tasks->SetColFormatFloat(2, 4, 1);
 	grid_tasks->SetColFormatFloat(3, 4, 2);
+
+	grid_buildings->SetColFormatFloat(0, 4, 1);
+	grid_buildings->SetColFormatFloat(1, 4, 1);
 }
 
 
@@ -725,8 +728,6 @@ void cMain::OnDropChosen(wxCommandEvent& event) {
 }
 
 void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string amount_to_build, std::string building_size) {
-	static int row_num;
-	
 
 	if (grid_tasks->IsSelection()) {
 		row_num = *grid_tasks->GetSelectedRows().begin();
@@ -743,8 +744,21 @@ void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string 
 	grid_tasks->SetCellValue(row_num, 4, item);
 	grid_tasks->SetCellValue(row_num, 5, orientation);
 	grid_tasks->SetCellValue(row_num, 6, direction_to_build);
-	grid_tasks->SetCellValue(row_num, 7, amount_to_build);
-	grid_tasks->SetCellValue(row_num, 8, building_size);
+	grid_tasks->SetCellValue(row_num, 7, building_size);
+	grid_tasks->SetCellValue(row_num, 8, amount_to_build);
+
+	
+}
+
+void cMain::update_buildings_grid_new_building(std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
+	row_num = grid_buildings->GetNumberRows();
+	
+	grid_buildings->InsertRows(row_num, 1);
+
+	grid_buildings->SetCellValue(row_num, 0, x_cord);
+	grid_buildings->SetCellValue(row_num, 1, y_cord);
+	grid_buildings->SetCellValue(row_num, 2, item);
+	grid_buildings->SetCellValue(row_num, 3, orientation);
 }
 
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
@@ -849,6 +863,36 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		build_row_of_buildings(x_cord, y_cord, convert_string(item), build_direction, direction_to_build, amount_of_buildings, building_size);
 
 		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_direction, direction_to_build, amount_of_buildings, building_size);
+
+		static float start_x_cord = std::stof(x_cord);
+		static float start_y_cord = std::stof(y_cord);
+		static int building_size_int = std::stoi(building_size);
+		static int number_of_buildings_int = std::stoi(amount_of_buildings);
+
+		start_x_cord = std::stof(x_cord);
+		start_y_cord = std::stof(y_cord);
+		building_size_int = std::stoi(building_size);
+		number_of_buildings_int = std::stoi(amount_of_buildings);
+
+		if (direction_to_build == "North") {
+			for (int i = 0; i < number_of_buildings_int; i++) {
+				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord - i * building_size_int), item, build_direction);
+			}
+		} else if (direction_to_build == "South") {
+			for (int i = 0; i < number_of_buildings_int; i++) {
+				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord + i * building_size_int), item, build_direction);
+			}
+		} else if (direction_to_build == "East") {
+
+			for (int i = 0; i < number_of_buildings_int; i++) {
+				update_buildings_grid_new_building(std::to_string(start_x_cord + i * building_size_int), y_cord, item, build_direction);
+			}
+		} else if (direction_to_build == "West") {
+
+			for (int i = 0; i < number_of_buildings_int; i++) {
+				update_buildings_grid_new_building(std::to_string(start_x_cord - i * building_size_int), y_cord, item, build_direction);
+			}
+		}
 	}
 	event.Skip();
 }

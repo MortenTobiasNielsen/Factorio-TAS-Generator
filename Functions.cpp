@@ -386,6 +386,11 @@ void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string 
 	static int building_size_int = std::stoi(building_size);
 	static int number_of_buildings_int = std::stoi(number_of_buildings);
 
+	start_x_cord = std::stof(x_cord);
+	start_y_cord = std::stof(y_cord);
+	building_size_int = std::stoi(building_size);
+	number_of_buildings_int = std::stoi(number_of_buildings);
+
 	if (direction_to_build == "North") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			build(x_cord, std::to_string(start_y_cord - i * building_size_int), item, direction);
