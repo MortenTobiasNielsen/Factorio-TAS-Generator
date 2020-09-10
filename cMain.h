@@ -6,7 +6,9 @@
 #include <string>
 #include <vector>
 
-class cMain : public wxFrame {
+#include "GUI_Base.h"
+
+class cMain : public GUI_Base {
 public:
 	cMain();
 

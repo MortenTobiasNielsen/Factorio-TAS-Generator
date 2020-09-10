@@ -1,11 +1,12 @@
 #include "cMain.h"
+#include "GUI_Base.h"
 #include "utils.h"
 #include "Functions.h"
 #include <fstream>
 #include <sstream>
 #include <iomanip>
 
-wxBEGIN_EVENT_TABLE(cMain, wxFrame)
+wxBEGIN_EVENT_TABLE(cMain, GUI_Base)
 EVT_MENU(10001, cMain::OnMenuNew)
 EVT_MENU(10002, cMain::OnMenuOpen)
 EVT_MENU(10003, cMain::OnMenuSave)
@@ -13,7 +14,7 @@ EVT_MENU(10004, cMain::OnMenuExit)
 wxEND_EVENT_TABLE()
 
 
-cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(1920, 1080)) {
+cMain::cMain() : GUI_Base(this, wxID_ANY, "Factorio GUI", wxPoint(30, 30), wxSize(1920, 1080)) {
 
 	all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
