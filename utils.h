@@ -7,15 +7,20 @@ static const std::vector<std::string> item_categories = {"Logistics", "Productio
 static const std::vector<std::string> item_categories_fuel = { "Fuel"};
 
 static const std::vector<std::string> item_logistics = {"Wooden chest", "Iron chest", "Steel chest", "Transport belt", "Burner inserter", "Inserter", "Small electric pole", "Pipe", "Pipe to ground", };
-static const std::vector<std::string> item_production = { "Boiler", "Steam engine", "Burner mining drill", "Electric mining drill", "Offshore pump", "Stone furnace", "Steel furnace", "Assembling machine 1", "Assembling machine 2"};
+static const std::vector<std::string> item_production = { "Boiler", "Steam engine", "Burner mining drill", "Electric mining drill", "Offshore pump", "Pumpjack", "Stone furnace", "Steel furnace", "Assembling machine 1", "Assembling machine 2", "Lab"};
 static const std::vector<std::string> item_intermediates = { "Wood", "Coal", "Stone", "Iron ore", "Copper ore", "Iron plate", "Copper plate", "Iron gear wheel", "Copper cable", "Automation science pack", "Electronic circuit" };
 static const std::vector<std::string> item_combat = { "Pistol", "Submachine gun", "Shotgun"};
 
-static const std::vector<std::string> take_from = {"Input", "Output", "Fuel", "Module", "Chest"};
+static const std::vector<std::string> take_from = {"Input", "Output", "Fuel", "Modules", "Chest"};
 
 static const std::vector<std::string> item_fuels = {"Wood", "Coal", "Solid fuel", "Rocket fuel", "Nuclear fuel", "Uranium fuel cell"};
 
 static const std::vector<std::string> build_directions = {"North", "South", "East", "West"};
+
+static const std::vector<std::string> tech_list = {"Automation", "Optics", "Turrets", "Stone walls", "Military", "Logistics", "Steel processing", "Electronics", "Logistic science pack"};
+
+static const std::vector<std::string> drills_list = { "Electric mining drill", "Pumpjack" };
+//static const std::vector<std::string> chest_list = { "Wooden chest", "Iron chest", "Steel chest", "Wreck" };
 
 struct furnace_types {
 	std::string stone = "stone-furnace";
@@ -35,13 +40,18 @@ struct fuel_types {
 	std::string coal = "coal";
 };
 
-struct take_from_inventory {
+struct take_put_defines_list {
 	std::string chest = "defines.inventory.chest";
-	std::string furnace = "defines.inventory.furnace_result";
-	std::string drill = "defines.inventory.fuel";
-	std::string lab = "defines.inventory.lab_input";
-	std::string assembly = "defines.inventory.assembling_machine_input";
+	std::string lab_input = "defines.inventory.lab_input";
+	std::string lab_modules = "defines.inventory.lab_modules";
+	std::string fuel = "defines.inventory.fuel";
+	std::string drill_modules = "defines.inventory.mining_drill_modules";
+	std::string assembly_input = "defines.inventory.assembling_machine_input";
+	std::string assembly_output = "defines.inventory.assembling_machine_output";
+	std::string assembly_modules = "defines.inventory.assembling_machine_modules";
 };
+
+const static take_put_defines_list take_put_list;
 
 struct plate_types {
 	std::string iron = "iron-plate";

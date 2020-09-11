@@ -15,14 +15,16 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 
 	static const std::vector<std::string> all_items_const(all_items);
 
-	//item_choices.Add("Wooden chest");
-	//item_choices.Add("Inserter");
-	//
-	//item_choices.Add(all_items_const[0]);
-	//item_choices.Add("This is a long sentence");
-
 	for (auto s : all_items_const) {
 		item_choices.Add(s);
+	}
+
+	for (auto s : take_from) {
+		take_from_choices.Add(s);
+	}
+
+	for (auto s : tech_list) {
+		tech_choices.Add(s);
 	}
 
 	list_task_num = 0;
@@ -42,6 +44,27 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	}
 	cmb_building_direction->SetValue(*build_directions.begin());
 	cmb_direction_to_build->SetValue(*build_directions.begin());
+
+	cmb_item->Clear();
+	for (auto it = all_items_const.begin(); it < all_items_const.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*all_items_const.begin());
+	cmb_item->AutoComplete(item_choices);
+
+	cmb_from_into->Clear();
+	for (auto it = take_from.begin(); it < take_from.end(); it++) {
+		cmb_from_into->Append(*it);
+	}
+	cmb_from_into->SetValue(*take_from.begin());
+	cmb_from_into->AutoComplete(take_from_choices);
+
+	cmb_tech->Clear();
+	for (auto it = tech_list.begin(); it < tech_list.end(); it++) {
+		cmb_tech->Append(*it);
+	}
+	cmb_tech->SetValue(*tech_list.begin());
+	cmb_tech->AutoComplete(tech_choices);
 
 	// set grid formatting
 	grid_tasks->SetColFormatFloat(1, 4, 1);
@@ -204,6 +227,9 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	// Craft task logic
 	} else if (rbtn_craft->GetValue()) {
 		units = std::to_string(wxAtoi(txt_units->GetValue()));
+		if (std::stof(units) < 1) {
+			units = "1";
+		}
 		item = cmb_item->GetValue().ToStdString();
 
 		if (!check_item(item, all_items)) {
@@ -317,41 +343,97 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 				update_buildings_grid_new_building(std::to_string(start_x_cord - i * building_size_int), y_cord, item, build_direction);
 			}
 		}
+
+	// Take from logic
 	} else if (rbtn_take->GetValue()) {
+		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
+		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
+
+		units = std::to_string(wxAtoi(txt_units->GetValue()));
+		if (std::stoi(units) < 1) {
+			units = "-1";
+		}
+
+		amount_of_buildings = std::to_string(wxAtoi(txt_amount_of_buildings->GetValue()));
+		if (std::stoi(amount_of_buildings) < 1) {
+			amount_of_buildings = "1";
+		}
+
+		building_size = std::to_string(wxAtoi(txt_building_size->GetValue()));
+		if (std::stoi(building_size) < 1) {
+			building_size = "1";
+		}
+
+		item = cmb_item->GetValue().ToStdString();		
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		direction_to_build = cmb_direction_to_build->GetValue().ToStdString();
+		if (!check_item(direction_to_build, build_directions)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		from_into = cmb_from_into->GetValue().ToStdString();
+		string_capitalized(from_into);
 		
+		if (!check_item(from_into, take_from)) {
+			wxMessageBox("The take from not valid - please try again", "Please use the From/Into dropdown menu");
+			return;
+		}
+		from_into_tasks = from_into;
+
+		if (from_into == "Chest") {
+			from_into = take_put_list.chest;
+		} else if (from_into == "Fuel") {
+			if (check_item(item, item_fuels)) {
+				from_into == take_put_list.fuel;
+			} else {
+				wxMessageBox("The item selected is not a valid fuel - please try again", "Please ensure that the chosen fuel is correct");
+				return;
+			}
+		} else if (item == "Lab") {
+			if (from_into == "Input") {
+				from_into = take_put_list.lab_input;
+			} else if (from_into == "Modules") {
+				from_into = take_put_list.lab_modules;
+			} else {
+				wxMessageBox("The combination of item and take from is not correct - please try again", "Please ensure that the chosen combination is correct");
+				return;
+			}
+		} else if (check_item(item, drills_list)) {
+			if (from_into == "Modules") {
+				from_into = take_put_list.drill_modules;
+			} else {
+				wxMessageBox("The combination of item and take from is not correct - please try again", "Please ensure that the chosen combination is correct");
+				return;
+			}
+		} else {
+			if (from_into == "Input") {
+				from_into = take_put_list.assembly_input;
+			} else if (from_into == "Modules") {
+				from_into = take_put_list.assembly_modules;
+			} else if (from_into == "Ouput") {
+				from_into = take_put_list.assembly_output;
+			} else {
+				wxMessageBox("The combination of item and take from is not correct - please try again", "Please ensure that the chosen combination is correct");
+				return;
+			}
+		}
+
+		row_take(x_cord, y_cord, units, convert_string(item), from_into, direction_to_build, amount_of_buildings, building_size);
+
+		if (units == "-1") {
+			update_tasks_grid("Take", x_cord, y_cord, item, "All", from_into_tasks, direction_to_build, amount_of_buildings, building_size);
+		} else {
+			update_tasks_grid("Take", x_cord, y_cord, item, units, from_into_tasks, direction_to_build, amount_of_buildings, building_size);
+		}
+		
+
 	}
 	event.Skip();
-}
-
-void cMain::OnItemCategorySelected(wxCommandEvent& event) {
-	if (cmb_item_category->GetValue() == "Logistics") {
-		cmb_item->Clear();
-		for (auto it = item_logistics.begin(); it < item_logistics.end(); it++) {
-			cmb_item->Append(*it);
-		}
-		cmb_item->SetValue(*item_logistics.begin());
-
-	} else if (cmb_item_category->GetValue() == "Production") {
-		cmb_item->Clear();
-		for (auto it = item_production.begin(); it < item_production.end(); it++) {
-			cmb_item->Append(*it);
-		}
-		cmb_item->SetValue(*item_production.begin());
-
-	} else if (cmb_item_category->GetValue() == "Intermediates") {
-		cmb_item->Clear();
-		for (auto it = item_intermediates.begin(); it < item_intermediates.end(); it++) {
-			cmb_item->Append(*it);
-		}
-		cmb_item->SetValue(*item_intermediates.begin());
-
-	} else if (cmb_item_category->GetValue() == "Combat") {
-		cmb_item->Clear();
-		for (auto it = item_combat.begin(); it < item_combat.end(); it++) {
-			cmb_item->Append(*it);
-		}
-		cmb_item->SetValue(*item_combat.begin());
-	}
 }
 
 void cMain::OnTasksGridLeftClick(wxGridEvent& event) {
@@ -531,12 +613,17 @@ void cMain::OnRotateMenuSelected(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.rotate, item_categories, item_logistics);
 }
 
+void cMain::OnAddMenuSelected(wxCommandEvent& event) {
+	OnAddTaskClicked(event);
+}
+
 void cMain::setup_paramters(std::vector<bool> parameters) {
 	txt_x_cord->Enable(parameters[1]);
 	txt_y_cord->Enable(parameters[2]);
 	txt_units->Enable(parameters[3]);
-	cmb_item_category->Enable(parameters[4]);
 	cmb_item->Enable(parameters[5]);
+	cmb_from_into->Enable(parameters[4]);
+	cmb_tech->Enable(parameters[10]);
 	cmb_building_direction->Enable(parameters[6]);
 	cmb_direction_to_build->Enable(parameters[7]);
 	txt_amount_of_buildings->Enable(parameters[8]);
@@ -544,11 +631,11 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 }
 
 void cMain::populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item) {
-	cmb_item_category->Clear();
-	for (auto it = item_category.begin(); it < item_category.end(); it++) {
-		cmb_item_category->Append(*it);
-	}
-	cmb_item_category->SetValue(*item_category.begin());
+	//cmb_from_into->Clear();
+	//for (auto it = item_category.begin(); it < item_category.end(); it++) {
+	//	cmb_item_category->Append(*it);
+	//}
+	//cmb_item_category->SetValue(*item_category.begin());
 
 	cmb_item->Clear();
 	for (auto it = item.begin(); it < item.end(); it++) {

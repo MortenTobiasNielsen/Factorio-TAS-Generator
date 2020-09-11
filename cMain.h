@@ -33,6 +33,7 @@ protected:
 	void OnPutMenuSelected(wxCommandEvent& event);
 	void OnCraftMenuSelected(wxCommandEvent& event);
 	void OnRotateMenuSelected(wxCommandEvent& event);
+	void OnAddMenuSelected(wxCommandEvent& event);
 
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
@@ -53,7 +54,6 @@ protected:
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
 
-	void OnItemCategorySelected(wxCommandEvent& event);
 	void OnBuildingDirectionSelected(wxCommandEvent& event);
 	void OnDirectionToBuildSelected(wxCommandEvent& event);
 
@@ -76,27 +76,25 @@ private:
 	const static int Task_list_walk_white_space = 20;
 
 	const struct parameter_choices_struct {
-		// change combobo, x-cord, y-cord, amount, item category, item, building direction, direction to build
-		std::vector<bool> game_speed = { false, false, false, true, false, false, false, false , false, false};
-		std::vector<bool> mining = { false, true, true, true, false, false, false, false, false, false };
-		std::vector<bool> rotate = { false, true, true, true, false, false, false, false, false, false };
-		std::vector<bool> craft = { true, false, false, true, true, true, false, false, false, false };
-		std::vector<bool> walk = { false, true, true, false, false, false, false, false, false, false };
-		std::vector<bool> build = { true, true, true, false, true, true, true, true, true, true };
-		std::vector<bool> fuel = { true, true, true, true, false, true, false, true, true, true };
-		std::vector<bool> take = { true, true, true, true, true, true, false, true, true, true };
-		std::vector<bool> put = { true, true, true, true, true, true, false, false, true, true };
-		std::vector<bool> filter = { true, true, true, false, true, true, false, false, true, true };
-		std::vector<bool> recipe = { true, true, true, false, true, true, false, false, true, true };
-		std::vector<bool> tech = { true, false, false, false, true, true, false, false, false, false };
-		std::vector<bool> launch = { false, true, true, false, false, false, false, false, false, false };
-		std::vector<bool> priority = { true, true, true, false, true, true, false, false, true, true };
-		std::vector<bool> limit = { false, true, true, true, false, false, false, false, true, true };
+		// change combobo, x-cord, y-cord, amount, item category, item, building direction, direction to build, building size, amount of buildings, tech
+		std::vector<bool> game_speed = { false, false, false, true, false, false, false, false , false, false, false};
+		std::vector<bool> mining = { false, true, true, true, false, false, false, false, false, false, false };
+		std::vector<bool> rotate = { false, true, true, true, false, false, false, false, false, false, false };
+		std::vector<bool> craft = { false, false, false, true, false, true, false, false, false, false, false };
+		std::vector<bool> walk = { false, true, true, false, false, false, false, false, false, false, false };
+		std::vector<bool> build = { false, true, true, false, true, true, true, true, true, true, false };
+		std::vector<bool> fuel = { false, true, true, true, false, true, false, true, true, true, false };
+		std::vector<bool> take = { false, true, true, true, true, true, false, true, true, true, false, false };
+		std::vector<bool> put = { false, true, true, true, true, true, false, false, true, true, false };
+		std::vector<bool> filter = { false, true, true, false, true, true, false, false, true, true, false };
+		std::vector<bool> recipe = { false, true, true, false, true, true, false, false, true, true, false };
+		std::vector<bool> tech = { false, false, false, false, false, false, false, false, false, false, true };
+		std::vector<bool> launch = { false, true, true, false, false, false, false, false, false, false, false };
+		std::vector<bool> priority = { false, true, true, false, true, true, false, false, true, true, false };
+		std::vector<bool> limit = { false, true, true, true, false, false, false, false, true, true, false };
 	};
 
-	 parameter_choices_struct parameter_choices;
-
-	 
+	parameter_choices_struct parameter_choices;
 
 	int tasks_row_selected = 0;
 	int buildings_row_selected = 0;
@@ -117,8 +115,12 @@ private:
 	std::string y_cord;
 	std::string build_direction;
 	std::string direction_to_build;
+	std::string from_into;
+	std::string from_into_tasks;
 
 	wxArrayString item_choices;
+	wxArrayString take_from_choices;
+	wxArrayString tech_choices;
 	
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);

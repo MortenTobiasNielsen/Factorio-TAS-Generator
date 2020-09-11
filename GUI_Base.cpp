@@ -88,6 +88,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	shortcut_rotate = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Rotate")) + wxT('\t') + wxT("Ctrl+4"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_rotate);
 
+	wxMenuItem* shortcut_add_task;
+	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Ctrl+t"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_add_task);
+
 	m_menubar1->Append(menu_shortcuts, wxT("Shortcuts"));
 
 	this->SetMenuBar(m_menubar1);
@@ -203,8 +207,15 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer34;
 	bSizer34 = new wxBoxSizer(wxHORIZONTAL);
 
+	label_tech = new wxStaticText(m_panel1, wxID_ANY, wxT("Tech:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
+	label_tech->Wrap(-1);
+	bSizer34->Add(label_tech, 0, wxALL, 5);
 
-	bSizer34->Add(0, 0, 1, wxEXPAND, 5);
+	cmb_tech = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
+	cmb_tech->SetSelection(0);
+	cmb_tech->SetMinSize(wxSize(150, -1));
+
+	bSizer34->Add(cmb_tech, 0, wxALL, 5);
 
 
 	bSizer24->Add(bSizer34, 1, 0, 5);
@@ -666,7 +677,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPutMenuSelected), this, shortcut_put->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftMenuSelected), this, shortcut_craft->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateMenuSelected), this, shortcut_rotate->GetId());
-	cmb_from_into->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnAddMenuSelected), this, shortcut_add_task->GetId());
 	cmb_building_direction->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
 	cmb_direction_to_build->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
@@ -699,7 +710,6 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 GUI_Base::~GUI_Base() {
 	// Disconnect Events
 	this->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnFameKeyDown));
-	cmb_from_into->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
 	cmb_building_direction->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
 	cmb_direction_to_build->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
 	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);

@@ -415,6 +415,12 @@ void row_fill_fuel(std::string x_cord, std::string y_cord, std::string amount, s
 	static float start_y_cord = std::stof(y_cord);
 	static int building_size_int = std::stoi(building_size);
 	static int number_of_buildings_int = std::stoi(number_of_buildings);
+
+	start_x_cord = std::stof(x_cord);
+	start_y_cord = std::stof(y_cord);
+	building_size_int = std::stoi(building_size);
+	number_of_buildings_int = std::stoi(number_of_buildings);
+
 	
 	if (direction_to_fuel == "North") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
@@ -465,6 +471,10 @@ void row_take(std::string x_cord, std::string y_cord, std::string amount, std::s
 	static int building_size_int = std::stoi(building_size);
 	static int number_of_buildings_int = std::stoi(number_of_buildings);
 
+	start_x_cord = std::stof(x_cord);
+	start_y_cord = std::stof(y_cord);
+	building_size_int = std::stoi(building_size);
+	number_of_buildings_int = std::stoi(number_of_buildings);
 
 	if (direction_to_take == "North") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
@@ -506,4 +516,10 @@ bool check_item(const std::string &item, const std::vector<std::string> &all_ite
 		}
 	}
 	return false;
+}
+void string_capitalized(std::string& string) {
+	string[0] = std::toupper(string[0]);
+	for (int i = 1; string[i] != '\0'; ++i) {
+		string[i] = tolower(string[i]);
+	}
 };
