@@ -51,10 +51,10 @@ protected:
 	wxTextCtrl* txt_y_cord;
 	wxStaticText* label_units;
 	wxTextCtrl* txt_units;
-	wxStaticText* label_item_category;
-	wxComboBox* cmb_item_category;
 	wxStaticText* label_item;
 	wxComboBox* cmb_item;
+	wxStaticText* label_from_into;
+	wxComboBox* cmb_from_into;
 	wxStaticText* label_building_orientation;
 	wxComboBox* cmb_building_direction;
 	wxStaticText* label_direction_to_build;

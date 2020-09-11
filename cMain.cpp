@@ -162,7 +162,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 	// Game speed task logic
 	if (rbtn_game_speed->GetValue()) {
-		units = std::to_string(wxAtoi(txt_units->GetValue()));
+		units = std::to_string(wxAtof(txt_units->GetValue()));
 		if (std::stof(units) < 0.01) {
 			units = "0.01";
 		}

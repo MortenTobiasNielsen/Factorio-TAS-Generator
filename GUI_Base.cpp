@@ -169,34 +169,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer24;
 	bSizer24 = new wxBoxSizer(wxVERTICAL);
 
-	wxBoxSizer* bSizer31;
-	bSizer31 = new wxBoxSizer(wxHORIZONTAL);
-
-	label_item_category = new wxStaticText(m_panel1, wxID_ANY, wxT("Item Category:"), wxDefaultPosition, wxSize(-1, 25), wxALIGN_RIGHT);
-	label_item_category->Wrap(-1);
-	label_item_category->SetMinSize(wxSize(80, -1));
-
-	bSizer31->Add(label_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-
-	cmb_item_category = new wxComboBox(m_panel1, wxID_ANY, wxT("Steel"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
-	cmb_item_category->Append(wxT("Wood"));
-	cmb_item_category->Append(wxT("Stone"));
-	cmb_item_category->Append(wxT("Steel"));
-	cmb_item_category->SetSelection(0);
-	cmb_item_category->SetMinSize(wxSize(150, -1));
-
-	bSizer31->Add(cmb_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
-
-
-	bSizer24->Add(bSizer31, 1, 0, 5);
-
 	wxBoxSizer* bSizer35;
 	bSizer35 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_item = new wxStaticText(m_panel1, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+	label_item = new wxStaticText(m_panel1, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
 	label_item->Wrap(-1);
-	label_item->SetMinSize(wxSize(80, -1));
-
 	bSizer35->Add(label_item, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	cmb_item = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
@@ -206,6 +183,22 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 
 	bSizer24->Add(bSizer35, 1, 0, 5);
+
+	wxBoxSizer* bSizer31;
+	bSizer31 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_from_into = new wxStaticText(m_panel1, wxID_ANY, wxT("From/Into:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
+	label_from_into->Wrap(-1);
+	bSizer31->Add(label_from_into, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	cmb_from_into = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
+	cmb_from_into->SetSelection(0);
+	cmb_from_into->SetMinSize(wxSize(150, -1));
+
+	bSizer31->Add(cmb_from_into, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+
+	bSizer24->Add(bSizer31, 1, 0, 5);
 
 	wxBoxSizer* bSizer34;
 	bSizer34 = new wxBoxSizer(wxHORIZONTAL);
@@ -673,7 +666,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPutMenuSelected), this, shortcut_put->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftMenuSelected), this, shortcut_craft->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateMenuSelected), this, shortcut_rotate->GetId());
-	cmb_item_category->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
+	cmb_from_into->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
 	cmb_building_direction->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
 	cmb_direction_to_build->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
@@ -706,7 +699,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 GUI_Base::~GUI_Base() {
 	// Disconnect Events
 	this->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnFameKeyDown));
-	cmb_item_category->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
+	cmb_from_into->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
 	cmb_building_direction->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
 	cmb_direction_to_build->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
 	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
