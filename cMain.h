@@ -12,56 +12,7 @@ class cMain : public GUI_Base {
 public:
 	cMain();
 
-	//wxGrid get_task_grid();
-
 protected:
-	wxStaticText* label_x_cord;
-	wxTextCtrl* txt_x_cord;
-	wxStaticText* label_y_cord;
-	wxTextCtrl* txt_y_cord;
-	wxStaticText* label_units;
-	wxTextCtrl* txt_units;
-	wxStaticText* label_item_category;
-	wxComboBox* cmb_item_category;
-	wxStaticText* label_item;
-	wxComboBox* cmb_item;
-	wxStaticText* label_building_orientation;
-	wxComboBox* cmb_building_direction;
-	wxStaticText* label_direction_to_build;
-	wxComboBox* cmb_direction_to_build;
-	wxStaticText* label_building_size;
-	wxTextCtrl* txt_building_size;
-	wxStaticText* label_amount_of_buildings;
-	wxTextCtrl* txt_amount_of_buildings;
-	wxRadioButton* rbtn_walk;
-	wxRadioButton* rbtn_mine;
-	wxRadioButton* rbtn_game_speed;
-	wxRadioButton* rbtn_filter;
-	wxRadioButton* rbtn_launch;
-	wxRadioButton* rbtn_priority;
-	wxRadioButton* rbtn_craft;
-	wxRadioButton* rbtn_build;
-	wxRadioButton* rbtn_recipe;
-	wxRadioButton* rbtn_tech;
-	wxRadioButton* rbtn_limit;
-	wxRadioButton* rbtn_transfer;
-	wxRadioButton* rbtn_fuel;
-	wxRadioButton* rbtn_take;
-	wxRadioButton* rbtn_put;
-	wxRadioButton* rbtn_rotate;
-	wxRadioButton* rbtn_pick_up;
-	wxRadioButton* rbtn_drop;
-	wxStaticLine* m_staticline2;
-	wxButton* btn_add_task;
-	wxButton* btn_delete_task;
-	wxStaticLine* m_staticline14;
-	wxStaticText* label_buildings;
-	wxGrid* grid_buildings;
-	wxStaticText* m_staticText37;
-	wxGrid* grid_tasks;
-
-
-	// Virtual event handlers, overide them in your derived class
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
 	void OnCraftChosen(wxCommandEvent& event); 

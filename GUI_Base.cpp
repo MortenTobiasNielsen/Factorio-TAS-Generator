@@ -1,4 +1,13 @@
+///////////////////////////////////////////////////////////////////////////
+// C++ code generated with wxFormBuilder (version 3.9.0 Sep  9 2020)
+// http://www.wxformbuilder.org/
+//
+// PLEASE DO *NOT* EDIT THIS FILE!
+///////////////////////////////////////////////////////////////////////////
+
 #include "GUI_Base.h"
+
+///////////////////////////////////////////////////////////////////////////
 
 GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
@@ -6,6 +15,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer(wxVERTICAL);
 
+	m_panel1 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
 	wxBoxSizer* bSizer84;
 	bSizer84 = new wxBoxSizer(wxHORIZONTAL);
 
@@ -22,11 +32,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer23 = new wxBoxSizer(wxHORIZONTAL);
 
 	bSizer23->SetMinSize(wxSize(10, 10));
-	label_x_cord = new wxStaticText(this, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
+	label_x_cord = new wxStaticText(m_panel1, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
 	label_x_cord->Wrap(-1);
 	bSizer23->Add(label_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_x_cord = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	txt_x_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
 	bSizer23->Add(txt_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -35,11 +45,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer28;
 	bSizer28 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_y_cord = new wxStaticText(this, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
+	label_y_cord = new wxStaticText(m_panel1, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
 	label_y_cord->Wrap(-1);
 	bSizer28->Add(label_y_cord, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	txt_y_cord = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	txt_y_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
 	bSizer28->Add(txt_y_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -48,11 +58,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer36;
 	bSizer36 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_units = new wxStaticText(this, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
+	label_units = new wxStaticText(m_panel1, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
 	label_units->Wrap(-1);
 	bSizer36->Add(label_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_units = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	txt_units = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
 	bSizer36->Add(txt_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -82,13 +92,13 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_item_category = new wxStaticText(this, wxID_ANY, wxT("Item Category:"), wxDefaultPosition, wxSize(-1, 25), wxALIGN_RIGHT);
+	label_item_category = new wxStaticText(m_panel1, wxID_ANY, wxT("Item Category:"), wxDefaultPosition, wxSize(-1, 25), wxALIGN_RIGHT);
 	label_item_category->Wrap(-1);
 	label_item_category->SetMinSize(wxSize(80, -1));
 
 	bSizer31->Add(label_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_item_category = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	cmb_item_category = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
 	cmb_item_category->SetMinSize(wxSize(150, -1));
 
 	bSizer31->Add(cmb_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
@@ -99,13 +109,13 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer35;
 	bSizer35 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_item = new wxStaticText(this, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
+	label_item = new wxStaticText(m_panel1, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT);
 	label_item->Wrap(-1);
 	label_item->SetMinSize(wxSize(80, -1));
 
 	bSizer35->Add(label_item, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_item = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	cmb_item = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
 	cmb_item->SetMinSize(wxSize(150, -1));
 
 	bSizer35->Add(cmb_item, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
@@ -149,11 +159,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer58;
 	bSizer58 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_building_orientation = new wxStaticText(this, wxID_ANY, wxT("Building Orientation:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
+	label_building_orientation = new wxStaticText(m_panel1, wxID_ANY, wxT("Building Orientation:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
 	label_building_orientation->Wrap(-1);
 	bSizer58->Add(label_building_orientation, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_building_direction = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
+	cmb_building_direction = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
 	bSizer58->Add(cmb_building_direction, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -162,11 +172,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer59;
 	bSizer59 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_direction_to_build = new wxStaticText(this, wxID_ANY, wxT("Direction:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
+	label_direction_to_build = new wxStaticText(m_panel1, wxID_ANY, wxT("Direction:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
 	label_direction_to_build->Wrap(-1);
 	bSizer59->Add(label_direction_to_build, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_direction_to_build = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
+	cmb_direction_to_build = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
 	bSizer59->Add(cmb_direction_to_build, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -175,11 +185,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer51;
 	bSizer51 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_building_size = new wxStaticText(this, wxID_ANY, wxT("Building Size:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
+	label_building_size = new wxStaticText(m_panel1, wxID_ANY, wxT("Building Size:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
 	label_building_size->Wrap(-1);
 	bSizer51->Add(label_building_size, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_building_size = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0);
+	txt_building_size = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0);
 	bSizer51->Add(txt_building_size, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -188,11 +198,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer52;
 	bSizer52 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_amount_of_buildings = new wxStaticText(this, wxID_ANY, wxT("Amount of Buildings:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
+	label_amount_of_buildings = new wxStaticText(m_panel1, wxID_ANY, wxT("Amount of Buildings:"), wxDefaultPosition, wxSize(115, -1), wxALIGN_RIGHT);
 	label_amount_of_buildings->Wrap(-1);
 	bSizer52->Add(label_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_amount_of_buildings = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0);
+	txt_amount_of_buildings = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0);
 	bSizer52->Add(txt_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -204,9 +214,6 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer19->Add(50, 0, 1, wxEXPAND, 5);
 
-	wxStaticBoxSizer* Tasks;
-	Tasks = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wxT("Tasks")), wxVERTICAL);
-
 	wxBoxSizer* bSizer18;
 	bSizer18 = new wxBoxSizer(wxVERTICAL);
 
@@ -216,7 +223,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer15;
 	bSizer15 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_walk = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_walk = new wxRadioButton(m_panel1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer15->Add(rbtn_walk, 0, wxALL, 5);
 
 
@@ -225,7 +232,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_mine = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Mine"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_mine = new wxRadioButton(m_panel1, wxID_ANY, wxT("Mine"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer12->Add(rbtn_mine, 0, wxALL, 5);
 
 
@@ -234,7 +241,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer17;
 	bSizer17 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_game_speed = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_game_speed = new wxRadioButton(m_panel1, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer17->Add(rbtn_game_speed, 0, wxALL, 5);
 
 
@@ -243,7 +250,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer65;
 	bSizer65 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_filter = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_filter = new wxRadioButton(m_panel1, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer65->Add(rbtn_filter, 0, wxALL, 5);
 
 
@@ -252,7 +259,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer39;
 	bSizer39 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_launch = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_launch = new wxRadioButton(m_panel1, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer39->Add(rbtn_launch, 0, wxALL, 5);
 
 
@@ -261,7 +268,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer42;
 	bSizer42 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_priority = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_priority = new wxRadioButton(m_panel1, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer42->Add(rbtn_priority, 0, wxALL, 5);
 
 
@@ -276,7 +283,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer14;
 	bSizer14 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_craft = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_craft = new wxRadioButton(m_panel1, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer14->Add(rbtn_craft, 0, wxALL, 5);
 
 
@@ -285,7 +292,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_build = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Build"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_build = new wxRadioButton(m_panel1, wxID_ANY, wxT("Build"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer16->Add(rbtn_build, 0, wxALL, 5);
 
 
@@ -294,7 +301,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer64;
 	bSizer64 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_recipe = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_recipe = new wxRadioButton(m_panel1, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer64->Add(rbtn_recipe, 0, wxALL, 5);
 
 
@@ -303,7 +310,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer63;
 	bSizer63 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_tech = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_tech = new wxRadioButton(m_panel1, wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer63->Add(rbtn_tech, 0, wxALL, 5);
 
 
@@ -312,7 +319,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer40;
 	bSizer40 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_limit = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Limit"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_limit = new wxRadioButton(m_panel1, wxID_ANY, wxT("Limit"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer40->Add(rbtn_limit, 0, wxALL, 5);
 
 
@@ -321,7 +328,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer431;
 	bSizer431 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_transfer = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Transfer"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_transfer = new wxRadioButton(m_panel1, wxID_ANY, wxT("Transfer"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer431->Add(rbtn_transfer, 0, wxALL, 5);
 
 
@@ -336,7 +343,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_fuel = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Fuel"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_fuel = new wxRadioButton(m_panel1, wxID_ANY, wxT("Fuel"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer8->Add(rbtn_fuel, 0, wxALL, 5);
 
 
@@ -345,7 +352,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_take = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_take = new wxRadioButton(m_panel1, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer9->Add(rbtn_take, 0, wxALL, 5);
 
 
@@ -354,7 +361,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_put = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_put = new wxRadioButton(m_panel1, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer11->Add(rbtn_put, 0, wxALL, 5);
 
 
@@ -363,7 +370,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_rotate = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_rotate = new wxRadioButton(m_panel1, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer13->Add(rbtn_rotate, 0, wxALL, 5);
 
 
@@ -372,7 +379,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer41;
 	bSizer41 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_pick_up = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Pick Up"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_pick_up = new wxRadioButton(m_panel1, wxID_ANY, wxT("Pick Up"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer41->Add(rbtn_pick_up, 0, wxALL, 5);
 
 
@@ -381,7 +388,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer441;
 	bSizer441 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_drop = new wxRadioButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Drop"), wxDefaultPosition, wxDefaultSize, 0);
+	rbtn_drop = new wxRadioButton(m_panel1, wxID_ANY, wxT("Drop"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer441->Add(rbtn_drop, 0, wxALL, 5);
 
 
@@ -390,26 +397,23 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer18->Add(bSizer5, 1, wxEXPAND, 5);
 
-	m_staticline2 = new wxStaticLine(Tasks->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+	m_staticline2 = new wxStaticLine(m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
 	bSizer18->Add(m_staticline2, 0, wxEXPAND | wxALL, 5);
 
 	wxBoxSizer* bSizer56;
 	bSizer56 = new wxBoxSizer(wxHORIZONTAL);
 
-	btn_add_task = new wxButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
+	btn_add_task = new wxButton(m_panel1, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer56->Add(btn_add_task, 0, wxALIGN_CENTER | wxALL, 5);
 
-	btn_delete_task = new wxButton(Tasks->GetStaticBox(), wxID_ANY, wxT("Delete Task"), wxDefaultPosition, wxDefaultSize, 0);
+	btn_delete_task = new wxButton(m_panel1, wxID_ANY, wxT("Delete Task"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer56->Add(btn_delete_task, 0, wxALL, 5);
 
 
 	bSizer18->Add(bSizer56, 1, wxALIGN_CENTER, 5);
 
 
-	Tasks->Add(bSizer18, 1, wxEXPAND, 5);
-
-
-	bSizer19->Add(Tasks, 1, 0, 5);
+	bSizer19->Add(bSizer18, 1, wxEXPAND, 5);
 
 
 	bSizer19->Add(10000, 0, 1, wxEXPAND, 5);
@@ -418,7 +422,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer84->Add(bSizer19, 1, 0, 5);
 
 
-	bSizer1->Add(bSizer84, 1, 0, 5);
+	m_panel1->SetSizer(bSizer84);
+	m_panel1->Layout();
+	bSizer84->Fit(m_panel1);
+	bSizer1->Add(m_panel1, 1, wxEXPAND | wxALL, 5);
 
 	m_staticline14 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
 	bSizer1->Add(m_staticline14, 0, wxEXPAND | wxALL, 5);
@@ -591,4 +598,36 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
 	grid_tasks->Connect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnTasksGridLeftClick), NULL, this);
 	grid_tasks->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTasksGridDoubleLeftClick), NULL, this);
+}
+
+GUI_Base::~GUI_Base() {
+	// Disconnect Events
+	cmb_item_category->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
+	cmb_building_direction->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
+	cmb_direction_to_build->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
+	rbtn_walk->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkChosen), NULL, this);
+	rbtn_mine->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnMineChosen), NULL, this);
+	rbtn_game_speed->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
+	rbtn_filter->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
+	rbtn_launch->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
+	rbtn_priority->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
+	rbtn_craft->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
+	rbtn_build->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildChosen), NULL, this);
+	rbtn_recipe->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeChosen), NULL, this);
+	rbtn_tech->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTechChosen), NULL, this);
+	rbtn_limit->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
+	rbtn_transfer->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTransferChosen), NULL, this);
+	rbtn_fuel->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnFuelChosen), NULL, this);
+	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
+	rbtn_put->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
+	rbtn_rotate->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
+	rbtn_pick_up->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
+	rbtn_drop->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
+	btn_add_task->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_delete_task->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftClick), NULL, this);
+	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
+	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnTasksGridLeftClick), NULL, this);
+	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTasksGridDoubleLeftClick), NULL, this);
+
 }

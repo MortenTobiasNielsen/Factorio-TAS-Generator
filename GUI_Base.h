@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////
+// C++ code generated with wxFormBuilder (version 3.9.0 Sep  9 2020)
+// http://www.wxformbuilder.org/
+//
+// PLEASE DO *NOT* EDIT THIS FILE!
+///////////////////////////////////////////////////////////////////////////
+
 #pragma once
 
 #include <wx/artprov.h>
@@ -17,14 +24,21 @@
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/statbox.h>
+#include <wx/panel.h>
 #include <wx/grid.h>
 #include <wx/frame.h>
 
+///////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class GUI_Base
+///////////////////////////////////////////////////////////////////////////////
 class GUI_Base : public wxFrame {
 private:
 
 protected:
+	wxPanel* m_panel1;
 	wxStaticText* label_x_cord;
 	wxTextCtrl* txt_x_cord;
 	wxStaticText* label_y_cord;
@@ -102,5 +116,9 @@ protected:
 
 public:
 
-	GUI_Base(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio Scripting Helper"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1920, 1080), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+	GUI_Base(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio Scripting Helper"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(2413, 1114), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+
+	~GUI_Base();
+
 };
+
