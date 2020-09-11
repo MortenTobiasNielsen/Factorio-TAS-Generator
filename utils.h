@@ -11,6 +11,8 @@ static const std::vector<std::string> item_production = { "Boiler", "Steam engin
 static const std::vector<std::string> item_intermediates = { "Wood", "Coal", "Stone", "Iron ore", "Copper ore", "Iron plate", "Copper plate", "Iron gear wheel", "Copper cable", "Automation science pack", "Electronic circuit" };
 static const std::vector<std::string> item_combat = { "Pistol", "Submachine gun", "Shotgun"};
 
+static const std::vector<std::string> take_from = {"Input", "Output", "Fuel", "Module"};
+
 static const std::vector<std::string> item_fuels = {"Wood", "Coal", "Solid fuel", "Rocket fuel", "Nuclear fuel", "Uranium fuel cell"};
 
 static const std::vector<std::string> build_directions = {"North", "South", "East", "West"};

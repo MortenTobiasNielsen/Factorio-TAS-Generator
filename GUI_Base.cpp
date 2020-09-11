@@ -178,7 +178,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer31->Add(label_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_item_category = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	cmb_item_category = new wxComboBox(m_panel1, wxID_ANY, wxT("Steel"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
+	cmb_item_category->Append(wxT("Wood"));
+	cmb_item_category->Append(wxT("Stone"));
+	cmb_item_category->Append(wxT("Steel"));
+	cmb_item_category->SetSelection(0);
 	cmb_item_category->SetMinSize(wxSize(150, -1));
 
 	bSizer31->Add(cmb_item_category, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
@@ -195,7 +199,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer35->Add(label_item, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_item = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	cmb_item = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
 	cmb_item->SetMinSize(wxSize(150, -1));
 
 	bSizer35->Add(cmb_item, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);

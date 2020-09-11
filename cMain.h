@@ -96,6 +96,7 @@ private:
 
 	 parameter_choices_struct parameter_choices;
 
+	 
 
 	int tasks_row_selected = 0;
 	int buildings_row_selected = 0;
@@ -116,6 +117,9 @@ private:
 	std::string y_cord;
 	std::string build_direction;
 	std::string direction_to_build;
+
+	wxArrayString item_choices;
+	
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 

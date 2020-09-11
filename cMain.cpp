@@ -7,13 +7,23 @@
 #include <iomanip>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1500, 1080)) {
-	all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
+	//all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
 	all_items.insert(all_items.end(), item_production.begin(), item_production.end());
 	all_items.insert(all_items.end(), item_intermediates.begin(), item_intermediates.end());
 	all_items.insert(all_items.end(), item_combat.begin(), item_combat.end());
 
 	static const std::vector<std::string> all_items_const(all_items);
+
+	//item_choices.Add("Wooden chest");
+	//item_choices.Add("Inserter");
+	//
+	//item_choices.Add(all_items_const[0]);
+	//item_choices.Add("This is a long sentence");
+
+	for (auto s : all_items_const) {
+		item_choices.Add(s);
+	}
 
 	list_task_num = 0;
 	list_buildings_num = 0;
@@ -53,6 +63,7 @@ void cMain::OnRotateChosen(wxCommandEvent& event) {
 
 void cMain::OnCraftChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.craft, item_categories, item_logistics);
+	cmb_item->AutoComplete(item_choices); // Autocomplete example
 }
 
 void cMain::OnWalkChosen(wxCommandEvent& event) {
