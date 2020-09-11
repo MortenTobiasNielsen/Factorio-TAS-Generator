@@ -10,20 +10,21 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/string.h>
-#include <wx/stattext.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/icon.h>
+#include <wx/menu.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
+#include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
 #include <wx/combobox.h>
 #include <wx/radiobut.h>
 #include <wx/statline.h>
 #include <wx/button.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/icon.h>
 #include <wx/panel.h>
 #include <wx/grid.h>
 #include <wx/frame.h>
@@ -38,6 +39,8 @@ class GUI_Base : public wxFrame {
 private:
 
 protected:
+	wxMenuBar* m_menubar1;
+	wxMenu* menu_file;
 	wxPanel* m_panel1;
 	wxStaticText* label_x_cord;
 	wxTextCtrl* txt_x_cord;
@@ -81,10 +84,15 @@ protected:
 	wxStaticLine* m_staticline14;
 	wxStaticText* label_buildings;
 	wxGrid* grid_buildings;
-	wxStaticText* m_staticText37;
+	wxStaticText* label_tasks;
 	wxGrid* grid_tasks;
 
 	// Virtual event handlers, overide them in your derived class
+	virtual void OnMenuNew(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuOpen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuSave(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuSaveAs(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuExit(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnItemCategorySelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildingDirectionSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDirectionToBuildSelected(wxCommandEvent& event) { event.Skip(); }

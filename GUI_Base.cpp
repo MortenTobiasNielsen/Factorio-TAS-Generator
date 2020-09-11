@@ -12,6 +12,32 @@
 GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
+	m_menubar1 = new wxMenuBar(0);
+	menu_file = new wxMenu();
+	wxMenuItem* menu_file_new;
+	menu_file_new = new wxMenuItem(menu_file, wxID_ANY, wxString(wxT("New")) + wxT('\t') + wxT("CTRL+N"), wxEmptyString, wxITEM_NORMAL);
+	menu_file->Append(menu_file_new);
+
+	wxMenuItem* menu_file_open;
+	menu_file_open = new wxMenuItem(menu_file, wxID_ANY, wxString(wxT("Open")) + wxT('\t') + wxT("CTRL+O"), wxEmptyString, wxITEM_NORMAL);
+	menu_file->Append(menu_file_open);
+
+	wxMenuItem* menu_file_save;
+	menu_file_save = new wxMenuItem(menu_file, wxID_ANY, wxString(wxT("Save")) + wxT('\t') + wxT("CTRL+S"), wxEmptyString, wxITEM_NORMAL);
+	menu_file->Append(menu_file_save);
+
+	wxMenuItem* menu_file_save_as;
+	menu_file_save_as = new wxMenuItem(menu_file, wxID_ANY, wxString(wxT("Save As")) + wxT('\t') + wxT("CTRL+SHIFT+S"), wxEmptyString, wxITEM_NORMAL);
+	menu_file->Append(menu_file_save_as);
+
+	wxMenuItem* menu_file_exit;
+	menu_file_exit = new wxMenuItem(menu_file, wxID_ANY, wxString(wxT("Exit")), wxEmptyString, wxITEM_NORMAL);
+	menu_file->Append(menu_file_exit);
+
+	m_menubar1->Append(menu_file, wxT("FIle"));
+
+	this->SetMenuBar(m_menubar1);
+
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer(wxVERTICAL);
 
@@ -443,7 +469,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer76->SetMinSize(wxSize(400, -1));
 	label_buildings = new wxStaticText(this, wxID_ANY, wxT("Buildings"), wxDefaultPosition, wxDefaultSize, 0);
 	label_buildings->Wrap(-1);
-	bSizer76->Add(label_buildings, 0, wxALIGN_CENTER | wxALL, 5);
+	bSizer76->Add(label_buildings, 0, wxALIGN_CENTER, 5);
 
 	grid_buildings = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
 
@@ -501,9 +527,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer50;
 	bSizer50 = new wxBoxSizer(wxVERTICAL);
 
-	m_staticText37 = new wxStaticText(this, wxID_ANY, wxT("Tasks"), wxDefaultPosition, wxSize(-1, -1), 0);
-	m_staticText37->Wrap(-1);
-	bSizer50->Add(m_staticText37, 0, wxALIGN_CENTER, 5);
+	label_tasks = new wxStaticText(this, wxID_ANY, wxT("Tasks"), wxDefaultPosition, wxSize(-1, -1), 0);
+	label_tasks->Wrap(-1);
+	bSizer50->Add(label_tasks, 0, wxALIGN_CENTER, 5);
 
 	grid_tasks = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
 
@@ -571,6 +597,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	this->Centre(wxBOTH);
 
 	// Connect Events
+	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuNew), this, menu_file_new->GetId());
+	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuOpen), this, menu_file_open->GetId());
+	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSave), this, menu_file_save->GetId());
+	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSaveAs), this, menu_file_save_as->GetId());
+	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuExit), this, menu_file_exit->GetId());
 	cmb_item_category->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
 	cmb_building_direction->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
 	cmb_direction_to_build->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);

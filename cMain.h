@@ -13,6 +13,12 @@ public:
 	cMain();
 
 protected:
+	void OnMenuNew(wxCommandEvent& event);
+	void OnMenuOpen(wxCommandEvent& event);
+	void OnMenuSave(wxCommandEvent& event);
+	void OnMenuSaveAs(wxCommandEvent& event);
+	void OnMenuExit(wxCommandEvent& event);
+
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
 	void OnCraftChosen(wxCommandEvent& event); 
@@ -44,8 +50,6 @@ protected:
 	
 	void OnBuildingsGridLeftClick(wxGridEvent& event);
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
-	
-
 
 private:
 	const static int task_list_game_speed_white_space = 0;
@@ -90,15 +94,6 @@ private:
 	std::string y_cord;
 	std::string build_direction;
 	std::string direction_to_build;
-	wxMenuBar* m_MenuBar = nullptr;
-
-	void OnMenuNew(wxCommandEvent& evt);
-	void OnMenuOpen(wxCommandEvent& evt);
-	void OnMenuSave(wxCommandEvent& evt);
-	void OnMenuExit(wxCommandEvent& evt);
-
-
-	wxDECLARE_EVENT_TABLE();
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
