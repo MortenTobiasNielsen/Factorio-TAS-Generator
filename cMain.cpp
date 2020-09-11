@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iomanip>
 
-cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1920, 1080)) {
+cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1500, 1080)) {
 	all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
 	all_items.insert(all_items.end(), item_production.begin(), item_production.end());
@@ -41,7 +41,6 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	grid_buildings->SetColFormatFloat(0, 4, 1);
 	grid_buildings->SetColFormatFloat(1, 4, 1);
 }
-
 
 
 void cMain::OnMineChosen(wxCommandEvent& event) {
@@ -177,6 +176,11 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
 		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
+
+		units = std::to_string(wxAtoi(txt_units->GetValue()));
+		if (std::stof(units) < 1) {
+			units = "1";
+		}
 
 		update_tasks_grid("Mine", x_cord, y_cord, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
 
@@ -342,27 +346,68 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	static std::string tasks_x_cord = grid_tasks->GetCellValue(tasks_row_selected, 1).ToStdString();
 	static std::string tasks_y_cord = grid_tasks->GetCellValue(tasks_row_selected, 2).ToStdString();
 	static std::string tasks_item = grid_tasks->GetCellValue(tasks_row_selected, 3).ToStdString();
-	static std::string tasks_amount = grid_tasks->GetCellValue(tasks_row_selected, 4).ToStdString();
+	static std::string tasks_units = grid_tasks->GetCellValue(tasks_row_selected, 4).ToStdString();
 	static std::string tasks_building_direction = grid_tasks->GetCellValue(tasks_row_selected, 5).ToStdString();
 	static std::string tasks_direction_to_build = grid_tasks->GetCellValue(tasks_row_selected, 6).ToStdString();
-
-	if (tasks_task == "Game Speed") {
-		rbtn_game_speed->SetValue(true);
-		
-		setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
-		txt_units->SetValue(tasks_amount);
-	}
-
+	static std::string tasks_size = grid_tasks->GetCellValue(tasks_row_selected, 7).ToStdString();
+	static std::string tasks_building_amount = grid_tasks->GetCellValue(tasks_row_selected, 8).ToStdString();
 	
-	
+	tasks_task = grid_tasks->GetCellValue(tasks_row_selected, 0).ToStdString();
+	tasks_x_cord = grid_tasks->GetCellValue(tasks_row_selected, 1).ToStdString();
+	tasks_y_cord = grid_tasks->GetCellValue(tasks_row_selected, 2).ToStdString();
+	tasks_units = grid_tasks->GetCellValue(tasks_row_selected, 3).ToStdString();
+	tasks_item = grid_tasks->GetCellValue(tasks_row_selected, 4).ToStdString();
+	tasks_building_direction = grid_tasks->GetCellValue(tasks_row_selected, 5).ToStdString();
+	tasks_direction_to_build = grid_tasks->GetCellValue(tasks_row_selected, 6).ToStdString();
+	tasks_size = grid_tasks->GetCellValue(tasks_row_selected, 7).ToStdString();
+	tasks_building_amount = grid_tasks->GetCellValue(tasks_row_selected, 8).ToStdString();
+
+	txt_x_cord->SetValue(tasks_x_cord);
+	txt_y_cord->SetValue(tasks_y_cord);
+	txt_units->SetValue(tasks_units);
+	cmb_item->SetValue(tasks_item);
+	cmb_building_direction->SetValue(tasks_building_direction);
+	cmb_direction_to_build->SetValue(tasks_direction_to_build);
+	txt_building_size->SetValue(tasks_size);
+	txt_amount_of_buildings->SetValue(tasks_building_amount);
+
 	event.Skip();
 }
 
 void cMain::OnBuildingsGridLeftClick(wxGridEvent& event) {
+	buildings_row_selected = event.GetRow();
+
+	static std::string buildings_x_cord = grid_buildings->GetCellValue(buildings_row_selected, 0).ToStdString();
+	static std::string buildings_y_cord = grid_buildings->GetCellValue(buildings_row_selected, 1).ToStdString();
+	static std::string buildings_item = grid_buildings->GetCellValue(buildings_row_selected, 2).ToStdString();
+	static std::string buildings_building_direction = grid_buildings->GetCellValue(buildings_row_selected, 3).ToStdString();
+
+	buildings_x_cord = grid_buildings->GetCellValue(buildings_row_selected, 0).ToStdString();
+	buildings_y_cord = grid_buildings->GetCellValue(buildings_row_selected, 1).ToStdString();
+	buildings_item = grid_buildings->GetCellValue(buildings_row_selected, 2).ToStdString();
+	buildings_building_direction = grid_buildings->GetCellValue(buildings_row_selected, 3).ToStdString();
+
+	txt_x_cord->SetValue(buildings_x_cord);
+	txt_y_cord->SetValue(buildings_y_cord);
+	cmb_item->SetValue(buildings_item);
+	cmb_building_direction->SetValue(buildings_building_direction);
+	
 }
 
 void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
+	
 }
+
+void cMain::OnWalkKeyDown(wxKeyEvent& event) {
+	
+}
+void cMain::OnFameKeyDown(wxKeyEvent& event) {
+	int test = event.GetKeyCode();
+
+	if (test == 9) {
+
+	};
+};
 
 void cMain::OnBuildingDirectionSelected(wxCommandEvent& event) {
 	// It seems that this is not needed
@@ -400,6 +445,68 @@ void cMain::OnMenuSaveAs(wxCommandEvent& event) {
 void cMain::OnMenuExit(wxCommandEvent& evt) {
 	Close();
 	evt.Skip();
+}
+
+void cMain::OnChooseLocation(wxCommandEvent& event) {
+}
+
+void cMain::OnGenerateScript(wxCommandEvent& event) {
+}
+
+void cMain::OnChangeShortcuts(wxCommandEvent& event) {
+	shortcuts = new Shortcuts_Menu(this);
+	shortcuts->Show();
+}
+
+void cMain::OnWalkMenuSelected(wxCommandEvent& event) {
+	rbtn_walk->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
+	
+	//// IMPORTANT -- This can be used to change the shortcuts of menuitems
+	//wxAcceleratorEntry* plusAccel = new wxAcceleratorEntry(wxACCEL_CTRL, 50, wxID_ZOOM_IN);
+	//menu_shortcuts->FindChildItem(10001)->SetAccel(plusAccel); // 10001 is the id of the menu item and can be set to what ever you want
+}
+
+void cMain::OnMineMenuSelected(wxCommandEvent& event) {
+	rbtn_mine->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.mining, item_categories, item_logistics);
+}
+
+void cMain::OnGameSpeedMenuSelected(wxCommandEvent& event) {
+	rbtn_game_speed->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
+}
+
+void cMain::OnBuildMenuSelected(wxCommandEvent& event) {
+	rbtn_build->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.build, item_categories, item_logistics);
+}
+
+void cMain::OnFuelMenuSelected(wxCommandEvent& event) {
+	rbtn_fuel->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.fuel, item_categories_fuel, item_fuels);
+
+}
+
+void cMain::OnTakeMenuSelected(wxCommandEvent& event) {
+	rbtn_take->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
+}
+
+void cMain::OnPutMenuSelected(wxCommandEvent& event) {
+	rbtn_put->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.put, item_categories, item_logistics);
+
+}
+
+void cMain::OnCraftMenuSelected(wxCommandEvent& event) {
+	rbtn_craft->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.craft, item_categories, item_logistics);
+}
+
+void cMain::OnRotateMenuSelected(wxCommandEvent& event) {
+	rbtn_rotate->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.rotate, item_categories, item_logistics);
 }
 
 void cMain::setup_paramters(std::vector<bool> parameters) {

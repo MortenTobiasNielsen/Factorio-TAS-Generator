@@ -36,6 +36,60 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	m_menubar1->Append(menu_file, wxT("FIle"));
 
+	menu_script = new wxMenu();
+	wxMenuItem* menu_script_choose_location;
+	menu_script_choose_location = new wxMenuItem(menu_script, wxID_ANY, wxString(wxT("Choose Location")), wxEmptyString, wxITEM_NORMAL);
+	menu_script->Append(menu_script_choose_location);
+
+	wxMenuItem* menu_script_generate_script;
+	menu_script_generate_script = new wxMenuItem(menu_script, wxID_ANY, wxString(wxT("Generate Script")), wxEmptyString, wxITEM_NORMAL);
+	menu_script->Append(menu_script_generate_script);
+
+	m_menubar1->Append(menu_script, wxT("Script"));
+
+	menu_shortcuts = new wxMenu();
+	wxMenuItem* menu_shortcuts_change_shortcuts;
+	menu_shortcuts_change_shortcuts = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Change Shortcuts")), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(menu_shortcuts_change_shortcuts);
+
+	wxMenuItem* shortcut_walk;
+	shortcut_walk = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Walk")) + wxT('\t') + wxT("Ctrl+2"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_walk);
+
+	wxMenuItem* shortcut_mine;
+	shortcut_mine = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Mine")) + wxT('\t') + wxT("Alt+1"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_mine);
+
+	wxMenuItem* shortcut_game_speed;
+	shortcut_game_speed = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Game Speed")) + wxT('\t') + wxT("Ctrl+3"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_game_speed);
+
+	wxMenuItem* shortcut_build;
+	shortcut_build = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Build")) + wxT('\t') + wxT("Alt+2"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_build);
+
+	wxMenuItem* shortcut_fuel;
+	shortcut_fuel = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Fuel")) + wxT('\t') + wxT("Alt+3"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_fuel);
+
+	wxMenuItem* shortcut_take;
+	shortcut_take = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Take")) + wxT('\t') + wxT("Alt+4"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_take);
+
+	wxMenuItem* shortcut_put;
+	shortcut_put = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Put")) + wxT('\t') + wxT("Alt+5"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_put);
+
+	wxMenuItem* shortcut_craft;
+	shortcut_craft = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Craft")) + wxT('\t') + wxT("Ctrl+1"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_craft);
+
+	wxMenuItem* shortcut_rotate;
+	shortcut_rotate = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Rotate")) + wxT('\t') + wxT("Ctrl+4"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_rotate);
+
+	m_menubar1->Append(menu_shortcuts, wxT("Shortcuts"));
+
 	this->SetMenuBar(m_menubar1);
 
 	wxBoxSizer* bSizer1;
@@ -246,6 +300,42 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer(wxHORIZONTAL);
 
+	wxBoxSizer* bSizer42;
+	bSizer42 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_take = new wxRadioButton(m_panel1, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer42->Add(rbtn_take, 0, wxALL, 5);
+
+
+	bSizer6->Add(bSizer42, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer11;
+	bSizer11 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_put = new wxRadioButton(m_panel1, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer11->Add(rbtn_put, 0, wxALL, 5);
+
+
+	bSizer6->Add(bSizer11, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer17;
+	bSizer17 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_game_speed = new wxRadioButton(m_panel1, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer17->Add(rbtn_game_speed, 0, wxALL, 5);
+
+
+	bSizer6->Add(bSizer17, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer39;
+	bSizer39 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_craft = new wxRadioButton(m_panel1, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer39->Add(rbtn_craft, 0, wxALL, 5);
+
+
+	bSizer6->Add(bSizer39, 1, wxEXPAND, 5);
+
 	wxBoxSizer* bSizer15;
 	bSizer15 = new wxBoxSizer(wxVERTICAL);
 
@@ -264,56 +354,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer6->Add(bSizer12, 1, wxEXPAND, 5);
 
-	wxBoxSizer* bSizer17;
-	bSizer17 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_game_speed = new wxRadioButton(m_panel1, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer17->Add(rbtn_game_speed, 0, wxALL, 5);
-
-
-	bSizer6->Add(bSizer17, 1, wxEXPAND, 5);
-
-	wxBoxSizer* bSizer65;
-	bSizer65 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_filter = new wxRadioButton(m_panel1, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer65->Add(rbtn_filter, 0, wxALL, 5);
-
-
-	bSizer6->Add(bSizer65, 1, wxEXPAND, 5);
-
-	wxBoxSizer* bSizer39;
-	bSizer39 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_launch = new wxRadioButton(m_panel1, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer39->Add(rbtn_launch, 0, wxALL, 5);
-
-
-	bSizer6->Add(bSizer39, 1, wxEXPAND, 5);
-
-	wxBoxSizer* bSizer42;
-	bSizer42 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_priority = new wxRadioButton(m_panel1, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer42->Add(rbtn_priority, 0, wxALL, 5);
-
-
-	bSizer6->Add(bSizer42, 1, wxEXPAND, 5);
-
 
 	bSizer18->Add(bSizer6, 1, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer(wxHORIZONTAL);
-
-	wxBoxSizer* bSizer14;
-	bSizer14 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_craft = new wxRadioButton(m_panel1, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer14->Add(rbtn_craft, 0, wxALL, 5);
-
-
-	bSizer7->Add(bSizer14, 1, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer(wxVERTICAL);
@@ -360,6 +405,15 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer7->Add(bSizer431, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bSizer65;
+	bSizer65 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_filter = new wxRadioButton(m_panel1, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer65->Add(rbtn_filter, 0, wxALL, 5);
+
+
+	bSizer7->Add(bSizer65, 1, wxEXPAND, 5);
+
 
 	bSizer18->Add(bSizer7, 1, wxEXPAND, 5);
 
@@ -378,20 +432,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_take = new wxRadioButton(m_panel1, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer9->Add(rbtn_take, 0, wxALL, 5);
+	rbtn_priority = new wxRadioButton(m_panel1, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer9->Add(rbtn_priority, 0, wxALL, 5);
 
 
 	bSizer5->Add(bSizer9, 1, wxEXPAND, 5);
-
-	wxBoxSizer* bSizer11;
-	bSizer11 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_put = new wxRadioButton(m_panel1, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer11->Add(rbtn_put, 0, wxALL, 5);
-
-
-	bSizer5->Add(bSizer11, 1, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer(wxVERTICAL);
@@ -419,6 +464,15 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 
 	bSizer5->Add(bSizer441, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer14;
+	bSizer14 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_launch = new wxRadioButton(m_panel1, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer14->Add(rbtn_launch, 0, wxALL, 5);
+
+
+	bSizer5->Add(bSizer14, 1, wxEXPAND, 5);
 
 
 	bSizer18->Add(bSizer5, 1, wxEXPAND, 5);
@@ -597,32 +651,46 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	this->Centre(wxBOTH);
 
 	// Connect Events
+	this->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnFameKeyDown));
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuNew), this, menu_file_new->GetId());
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuOpen), this, menu_file_open->GetId());
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSave), this, menu_file_save->GetId());
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSaveAs), this, menu_file_save_as->GetId());
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuExit), this, menu_file_exit->GetId());
+	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChooseLocation), this, menu_script_choose_location->GetId());
+	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnGenerateScript), this, menu_script_generate_script->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChangeShortcuts), this, menu_shortcuts_change_shortcuts->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkMenuSelected), this, shortcut_walk->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMineMenuSelected), this, shortcut_mine->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedMenuSelected), this, shortcut_game_speed->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildMenuSelected), this, shortcut_build->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnFuelMenuSelected), this, shortcut_fuel->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeMenuSelected), this, shortcut_take->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPutMenuSelected), this, shortcut_put->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftMenuSelected), this, shortcut_craft->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateMenuSelected), this, shortcut_rotate->GetId());
 	cmb_item_category->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
 	cmb_building_direction->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
 	cmb_direction_to_build->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
+	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
+	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
+	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
+	rbtn_craft->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
+	rbtn_walk->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnWalkKeyDown), NULL, this);
 	rbtn_walk->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkChosen), NULL, this);
 	rbtn_mine->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnMineChosen), NULL, this);
-	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
-	rbtn_filter->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
-	rbtn_launch->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
-	rbtn_priority->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
-	rbtn_craft->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
 	rbtn_build->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildChosen), NULL, this);
 	rbtn_recipe->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeChosen), NULL, this);
 	rbtn_tech->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTechChosen), NULL, this);
 	rbtn_limit->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
 	rbtn_transfer->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTransferChosen), NULL, this);
+	rbtn_filter->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
 	rbtn_fuel->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnFuelChosen), NULL, this);
-	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
-	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
+	rbtn_priority->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
 	rbtn_pick_up->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
 	rbtn_drop->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
+	rbtn_launch->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
 	btn_add_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
 	btn_delete_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
 	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftClick), NULL, this);
@@ -633,27 +701,29 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 GUI_Base::~GUI_Base() {
 	// Disconnect Events
+	this->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnFameKeyDown));
 	cmb_item_category->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnItemCategorySelected), NULL, this);
 	cmb_building_direction->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingDirectionSelected), NULL, this);
 	cmb_direction_to_build->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
+	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
+	rbtn_put->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
+	rbtn_game_speed->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
+	rbtn_craft->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
+	rbtn_walk->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnWalkKeyDown), NULL, this);
 	rbtn_walk->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkChosen), NULL, this);
 	rbtn_mine->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnMineChosen), NULL, this);
-	rbtn_game_speed->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
-	rbtn_filter->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
-	rbtn_launch->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
-	rbtn_priority->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
-	rbtn_craft->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
 	rbtn_build->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildChosen), NULL, this);
 	rbtn_recipe->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeChosen), NULL, this);
 	rbtn_tech->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTechChosen), NULL, this);
 	rbtn_limit->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
 	rbtn_transfer->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTransferChosen), NULL, this);
+	rbtn_filter->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
 	rbtn_fuel->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnFuelChosen), NULL, this);
-	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
-	rbtn_put->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
+	rbtn_priority->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
 	rbtn_pick_up->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
 	rbtn_drop->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
+	rbtn_launch->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
 	btn_add_task->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
 	btn_delete_task->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
 	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftClick), NULL, this);
@@ -661,4 +731,427 @@ GUI_Base::~GUI_Base() {
 	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnTasksGridLeftClick), NULL, this);
 	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTasksGridDoubleLeftClick), NULL, this);
 
+}
+
+Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
+	this->SetSizeHints(wxSize(570, 370), wxDefaultSize);
+
+	wxBoxSizer* bSizer50;
+	bSizer50 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer98;
+	bSizer98 = new wxBoxSizer(wxHORIZONTAL);
+
+	m_scrolledWindow3 = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+	m_scrolledWindow3->SetScrollRate(5, 5);
+	wxBoxSizer* bSizer519;
+	bSizer519 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer5181;
+	bSizer5181 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk->Wrap(-1);
+	bSizer5181->Add(label_shortcut_walk, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181->Add(m_textCtrl681, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer5181, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51811;
+	bSizer51811 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk1 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk1->Wrap(-1);
+	bSizer51811->Add(label_shortcut_walk1, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6811 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51811->Add(m_textCtrl6811, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51811, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51812;
+	bSizer51812 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk2 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk2->Wrap(-1);
+	bSizer51812->Add(label_shortcut_walk2, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6812 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51812->Add(m_textCtrl6812, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51812, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51813;
+	bSizer51813 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk3 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk3->Wrap(-1);
+	bSizer51813->Add(label_shortcut_walk3, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6813 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51813->Add(m_textCtrl6813, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51813, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51814;
+	bSizer51814 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk4 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk4->Wrap(-1);
+	bSizer51814->Add(label_shortcut_walk4, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6814 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51814->Add(m_textCtrl6814, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51814, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51815;
+	bSizer51815 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk5 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk5->Wrap(-1);
+	bSizer51815->Add(label_shortcut_walk5, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6815 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51815->Add(m_textCtrl6815, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51815, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51816;
+	bSizer51816 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk6 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk6->Wrap(-1);
+	bSizer51816->Add(label_shortcut_walk6, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6816 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51816->Add(m_textCtrl6816, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51816, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51817;
+	bSizer51817 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk7 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk7->Wrap(-1);
+	bSizer51817->Add(label_shortcut_walk7, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6817 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51817->Add(m_textCtrl6817, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51817, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer51818;
+	bSizer51818 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk8 = new wxStaticText(m_scrolledWindow3, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk8->Wrap(-1);
+	bSizer51818->Add(label_shortcut_walk8, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6818 = new wxTextCtrl(m_scrolledWindow3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51818->Add(m_textCtrl6818, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer519->Add(bSizer51818, 1, wxEXPAND, 5);
+
+
+	m_scrolledWindow3->SetSizer(bSizer519);
+	m_scrolledWindow3->Layout();
+	bSizer519->Fit(m_scrolledWindow3);
+	bSizer98->Add(m_scrolledWindow3, 1, wxEXPAND | wxALL, 5);
+
+	m_scrolledWindow1 = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+	m_scrolledWindow1->SetScrollRate(5, 5);
+	m_scrolledWindow1->SetMinSize(wxSize(-1, 50));
+
+	wxBoxSizer* bSizer5191;
+	bSizer5191 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer51819;
+	bSizer51819 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk9 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk9->Wrap(-1);
+	bSizer51819->Add(label_shortcut_walk9, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl6819 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer51819->Add(m_textCtrl6819, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer51819, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518111;
+	bSizer518111 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk11 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk11->Wrap(-1);
+	bSizer518111->Add(label_shortcut_walk11, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68111 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518111->Add(m_textCtrl68111, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518111, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518121;
+	bSizer518121 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk21 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk21->Wrap(-1);
+	bSizer518121->Add(label_shortcut_walk21, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68121 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518121->Add(m_textCtrl68121, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518121, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518131;
+	bSizer518131 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk31 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk31->Wrap(-1);
+	bSizer518131->Add(label_shortcut_walk31, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68131 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518131->Add(m_textCtrl68131, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518131, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518141;
+	bSizer518141 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk41 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk41->Wrap(-1);
+	bSizer518141->Add(label_shortcut_walk41, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68141 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518141->Add(m_textCtrl68141, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518141, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518151;
+	bSizer518151 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk51 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk51->Wrap(-1);
+	bSizer518151->Add(label_shortcut_walk51, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68151 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518151->Add(m_textCtrl68151, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518151, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518161;
+	bSizer518161 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk61 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk61->Wrap(-1);
+	bSizer518161->Add(label_shortcut_walk61, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68161 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518161->Add(m_textCtrl68161, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518161, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518171;
+	bSizer518171 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk71 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk71->Wrap(-1);
+	bSizer518171->Add(label_shortcut_walk71, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68171 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518171->Add(m_textCtrl68171, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518171, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer518181;
+	bSizer518181 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk81 = new wxStaticText(m_scrolledWindow1, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk81->Wrap(-1);
+	bSizer518181->Add(label_shortcut_walk81, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68181 = new wxTextCtrl(m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518181->Add(m_textCtrl68181, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer5191->Add(bSizer518181, 1, wxEXPAND, 5);
+
+
+	m_scrolledWindow1->SetSizer(bSizer5191);
+	m_scrolledWindow1->Layout();
+	bSizer5191->Fit(m_scrolledWindow1);
+	bSizer98->Add(m_scrolledWindow1, 1, wxEXPAND | wxALL, 5);
+
+	m_scrolledWindow11 = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+	m_scrolledWindow11->SetScrollRate(5, 5);
+	m_scrolledWindow11->SetMinSize(wxSize(-1, 50));
+
+	wxBoxSizer* bSizer51911;
+	bSizer51911 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer518191;
+	bSizer518191 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk91 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk91->Wrap(-1);
+	bSizer518191->Add(label_shortcut_walk91, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl68191 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer518191->Add(m_textCtrl68191, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer518191, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181111;
+	bSizer5181111 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk111 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk111->Wrap(-1);
+	bSizer5181111->Add(label_shortcut_walk111, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681111 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181111->Add(m_textCtrl681111, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181111, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181211;
+	bSizer5181211 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk211 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk211->Wrap(-1);
+	bSizer5181211->Add(label_shortcut_walk211, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681211 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181211->Add(m_textCtrl681211, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181211, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181311;
+	bSizer5181311 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk311 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk311->Wrap(-1);
+	bSizer5181311->Add(label_shortcut_walk311, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681311 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181311->Add(m_textCtrl681311, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181311, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181411;
+	bSizer5181411 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk411 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk411->Wrap(-1);
+	bSizer5181411->Add(label_shortcut_walk411, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681411 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181411->Add(m_textCtrl681411, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181411, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181511;
+	bSizer5181511 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk511 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk511->Wrap(-1);
+	bSizer5181511->Add(label_shortcut_walk511, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681511 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181511->Add(m_textCtrl681511, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181511, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181611;
+	bSizer5181611 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk611 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk611->Wrap(-1);
+	bSizer5181611->Add(label_shortcut_walk611, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681611 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181611->Add(m_textCtrl681611, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181611, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181711;
+	bSizer5181711 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk711 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk711->Wrap(-1);
+	bSizer5181711->Add(label_shortcut_walk711, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681711 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181711->Add(m_textCtrl681711, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181711, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer5181811;
+	bSizer5181811 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_shortcut_walk811 = new wxStaticText(m_scrolledWindow11, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0);
+	label_shortcut_walk811->Wrap(-1);
+	bSizer5181811->Add(label_shortcut_walk811, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_textCtrl681811 = new wxTextCtrl(m_scrolledWindow11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	bSizer5181811->Add(m_textCtrl681811, 0, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer51911->Add(bSizer5181811, 1, wxEXPAND, 5);
+
+
+	m_scrolledWindow11->SetSizer(bSizer51911);
+	m_scrolledWindow11->Layout();
+	bSizer51911->Fit(m_scrolledWindow11);
+	bSizer98->Add(m_scrolledWindow11, 1, wxEXPAND | wxALL, 5);
+
+
+	bSizer50->Add(bSizer98, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer76;
+	bSizer76 = new wxBoxSizer(wxHORIZONTAL);
+
+	bSizer76->SetMinSize(wxSize(-1, 50));
+	m_button3 = new wxButton(this, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer76->Add(m_button3, 0, wxALL, 5);
+
+	m_button4 = new wxButton(this, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer76->Add(m_button4, 0, wxALL, 5);
+
+
+	bSizer50->Add(bSizer76, 1, wxALIGN_CENTER, 5);
+
+
+	this->SetSizer(bSizer50);
+	this->Layout();
+
+	this->Centre(wxBOTH);
+}
+
+Shortcuts_Menu::~Shortcuts_Menu() {
 }

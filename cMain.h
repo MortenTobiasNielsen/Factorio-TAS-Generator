@@ -19,6 +19,21 @@ protected:
 	void OnMenuSaveAs(wxCommandEvent& event);
 	void OnMenuExit(wxCommandEvent& event);
 
+	void OnChooseLocation(wxCommandEvent& event);
+	void OnGenerateScript(wxCommandEvent& event);
+	
+	void OnChangeShortcuts(wxCommandEvent& event);
+
+	void OnWalkMenuSelected(wxCommandEvent& event);
+	void OnMineMenuSelected(wxCommandEvent& event);
+	void OnGameSpeedMenuSelected(wxCommandEvent& event);
+	void OnBuildMenuSelected(wxCommandEvent& event);
+	void OnFuelMenuSelected(wxCommandEvent& event);
+	void OnTakeMenuSelected(wxCommandEvent& event);
+	void OnPutMenuSelected(wxCommandEvent& event);
+	void OnCraftMenuSelected(wxCommandEvent& event);
+	void OnRotateMenuSelected(wxCommandEvent& event);
+
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
 	void OnCraftChosen(wxCommandEvent& event); 
@@ -51,7 +66,12 @@ protected:
 	void OnBuildingsGridLeftClick(wxGridEvent& event);
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
 
+	void OnWalkKeyDown(wxKeyEvent& event);
+	void OnFameKeyDown(wxKeyEvent& event);
+
 private:
+	Shortcuts_Menu* shortcuts = nullptr;
+
 	const static int task_list_game_speed_white_space = 0;
 	const static int Task_list_walk_white_space = 20;
 
@@ -78,6 +98,8 @@ private:
 
 
 	int tasks_row_selected = 0;
+	int buildings_row_selected = 0;
+
 
 	int row_num;
 	int list_task_num;
