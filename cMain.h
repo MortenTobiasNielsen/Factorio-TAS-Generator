@@ -83,8 +83,8 @@ private:
 		std::vector<bool> craft = { true, false, false, true, true, true, false, false, false, false };
 		std::vector<bool> walk = { false, true, true, false, false, false, false, false, false, false };
 		std::vector<bool> build = { true, true, true, false, true, true, true, true, true, true };
-		std::vector<bool> fuel = { true, true, true, true, false, true, false, false, true, true };
-		std::vector<bool> take = { true, true, true, true, true, true, false, false, true, true };
+		std::vector<bool> fuel = { true, true, true, true, false, true, false, true, true, true };
+		std::vector<bool> take = { true, true, true, true, true, true, false, true, true, true };
 		std::vector<bool> put = { true, true, true, true, true, true, false, false, true, true };
 		std::vector<bool> filter = { true, true, true, false, true, true, false, false, true, true };
 		std::vector<bool> recipe = { true, true, true, false, true, true, false, false, true, true };

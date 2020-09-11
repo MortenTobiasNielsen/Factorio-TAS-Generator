@@ -148,6 +148,8 @@ void cMain::update_buildings_grid_new_building(std::string x_cord, std::string y
 }
 
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
+
+	// Game speed task logic
 	if (rbtn_game_speed->GetValue()) {
 		units = std::to_string(wxAtoi(txt_units->GetValue()));
 		if (std::stof(units) < 0.01) {
@@ -157,7 +159,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		update_tasks_grid("Game Speed", not_relevant, not_relevant, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
 
 		speed(units);
-
+		
+	// Walk task logic
 	} else if (rbtn_walk->GetValue()) {
 		
 		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
@@ -171,7 +174,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		update_tasks_grid("Walk", x_cord, y_cord, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
 
 		walk(x_cord, y_cord);
-
+	
+	// Mine task logic
 	} else if (rbtn_mine->GetValue()) {
 
 		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
@@ -186,6 +190,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 		mining(x_cord, y_cord, units);
 
+	// Craft task logic
 	} else if (rbtn_craft->GetValue()) {
 		units = std::to_string(wxAtoi(txt_units->GetValue()));
 		item = cmb_item->GetValue().ToStdString();
@@ -197,7 +202,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 		update_tasks_grid("Craft", not_relevant, not_relevant, item, units, not_relevant, not_relevant, not_relevant, not_relevant);
 		craft(units, convert_string(item));
-
+	
+	// Fuel task logic
 	} else if (rbtn_fuel->GetValue()) {
 		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
 		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
@@ -218,6 +224,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		}
 		
 		item = cmb_item->GetValue().ToStdString();
+		direction_to_build = cmb_direction_to_build->GetValue().ToStdString();
 
 		if (!check_item(item, item_fuels)) {
 			wxMessageBox("The item is not a valid fuel - please try again", "Please use the item dropdown menu");
@@ -232,6 +239,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		update_tasks_grid("Fuel", x_cord, y_cord, convert_string(item), units, not_relevant, direction_to_build, amount_of_buildings, building_size);
 		row_fill_fuel(x_cord, y_cord, units, item, direction_to_build, amount_of_buildings, building_size);
 	
+	// Build task logic
 	} else if (rbtn_build->GetValue()) {
 		x_cord = std::to_string(wxAtof(txt_x_cord->GetValue()));
 		y_cord = std::to_string(wxAtof(txt_y_cord->GetValue()));
@@ -298,6 +306,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 				update_buildings_grid_new_building(std::to_string(start_x_cord - i * building_size_int), y_cord, item, build_direction);
 			}
 		}
+	} else if (rbtn_take->GetValue()) {
+		
 	}
 	event.Skip();
 }
@@ -430,12 +440,7 @@ void cMain::OnMenuOpen(wxCommandEvent& evt) {
 }
 
 void cMain::OnMenuSave(wxCommandEvent& evt) {
-	std::ofstream myfile;
-	myfile.open(file_location);
-
-	myfile << end_tasks();;
-
-	myfile.close();
+	
 }
 
 void cMain::OnMenuSaveAs(wxCommandEvent& event) {
@@ -451,6 +456,12 @@ void cMain::OnChooseLocation(wxCommandEvent& event) {
 }
 
 void cMain::OnGenerateScript(wxCommandEvent& event) {
+	std::ofstream myfile;
+	myfile.open(file_location);
+
+	myfile << end_tasks();;
+
+	myfile.close();
 }
 
 void cMain::OnChangeShortcuts(wxCommandEvent& event) {

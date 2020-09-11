@@ -416,19 +416,19 @@ void row_fill_fuel(std::string x_cord, std::string y_cord, std::string amount, s
 	static int building_size_int = std::stoi(building_size);
 	static int number_of_buildings_int = std::stoi(number_of_buildings);
 	
-	if (direction_to_fuel == "north") {
+	if (direction_to_fuel == "North") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			fill_fuel(x_cord, std::to_string(start_y_cord - i * building_size_int), amount, fuel_type);
 		}
-	} else if (direction_to_fuel == "south") {
+	} else if (direction_to_fuel == "South") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			fill_fuel(x_cord, std::to_string(start_y_cord + i * building_size_int), amount, fuel_type);
 		}
-	} else if (direction_to_fuel == "east") {
+	} else if (direction_to_fuel == "East") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			fill_fuel(std::to_string(start_x_cord + i * building_size_int), y_cord, amount, fuel_type);
 		}
-	} else if (direction_to_fuel == "west") {
+	} else if (direction_to_fuel == "West") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			fill_fuel(std::to_string(start_x_cord - i * building_size_int), y_cord, amount, fuel_type);
 		}
@@ -466,19 +466,19 @@ void row_take(std::string x_cord, std::string y_cord, std::string amount, std::s
 	static int number_of_buildings_int = std::stoi(number_of_buildings);
 
 
-	if (direction_to_take == "north") {
+	if (direction_to_take == "North") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(x_cord, std::to_string(start_y_cord - i * building_size_int), amount, item, from);
 		}
-	} else if (direction_to_take == "south") {
+	} else if (direction_to_take == "South") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(x_cord, std::to_string(start_y_cord + i * building_size_int), amount, item, from);
 		}
-	} else if (direction_to_take == "east") {
+	} else if (direction_to_take == "East") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(std::to_string(start_x_cord + i * building_size_int), y_cord, amount, item, from);
 		}
-	} else if (direction_to_take == "west") {
+	} else if (direction_to_take == "West") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(std::to_string(start_x_cord - i * building_size_int), y_cord, amount, item, from);
 		}
