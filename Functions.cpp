@@ -497,6 +497,12 @@ void row_take(std::string x_cord, std::string y_cord, std::string amount, std::s
 
 std::string end_tasks() {
 	return task_list + "task[" + std::to_string(task) + "] = {\"break\"}\n\n" + "return task";
+}
+void clear_tasks() {
+	task = 1;
+	task_list = "local task = {}\n\n";
+	player_x_cord = 0.0f;
+	player_y_cord = 0.0f;
 };
 
 std::string convert_string(std::string input) {

@@ -47,6 +47,8 @@ void row_take(std::string x_cord, std::string y_cord, std::string amount, std::s
 
 std::string end_tasks();
 
+void clear_tasks();
+
 std::string convert_string(std::string input);
 
 bool check_item(const std::string &item, const std::vector<std::string> &all_items);

@@ -388,9 +388,9 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		//row_take(x_cord, y_cord, units, convert_string(item), from_into, direction_to_build, amount_of_buildings, building_size);
 
 		if (units == "-1") {
-			update_tasks_grid("Take", x_cord, y_cord, item, "All", from_into_tasks, direction_to_build, amount_of_buildings, building_size);
+			update_tasks_grid("Take", x_cord, y_cord, item, "All", from_into, direction_to_build, amount_of_buildings, building_size);
 		} else {
-			update_tasks_grid("Take", x_cord, y_cord, item, units, from_into_tasks, direction_to_build, amount_of_buildings, building_size);
+			update_tasks_grid("Take", x_cord, y_cord, item, units, from_into, direction_to_build, amount_of_buildings, building_size);
 		}
 		
 
@@ -524,15 +524,15 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	static std::string tasks_building_amount;
 
 	for (int i = 0; i < tasks; i++) {
-		static std::string tasks_task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		static std::string tasks_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		static std::string tasks_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		static std::string tasks_item = convert_string(grid_tasks->GetCellValue(i, 3).ToStdString());
-		static std::string tasks_units = grid_tasks->GetCellValue(i, 4).ToStdString();
-		static std::string tasks_building_direction = grid_tasks->GetCellValue(i, 5).ToStdString();
-		static std::string tasks_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
-		static std::string tasks_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		static std::string tasks_building_amount = grid_tasks->GetCellValue(i, 8).ToStdString();
+		tasks_task = grid_tasks->GetCellValue(i, 0).ToStdString();
+		tasks_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+		tasks_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+		tasks_units = grid_tasks->GetCellValue(i, 3).ToStdString();
+		tasks_item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
+		tasks_building_direction = grid_tasks->GetCellValue(i, 5).ToStdString();
+		tasks_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+		tasks_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+		tasks_building_amount = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 		if (tasks_task == "Game Speed") {
 			speed(tasks_units);
@@ -601,6 +601,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	myfile << end_tasks();;
 
 	myfile.close();
+
+	clear_tasks();
 }
 
 void cMain::OnChangeShortcuts(wxCommandEvent& event) {
