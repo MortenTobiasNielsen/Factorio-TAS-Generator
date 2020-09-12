@@ -107,7 +107,7 @@ private:
 	std::vector<std::string> all_items;
 	std::string check;
 	std::string item;
-	std::string file_location;
+	
 	std::string units;
 	std::string amount_of_buildings;
 	std::string building_size;
@@ -121,6 +121,15 @@ private:
 	wxArrayString item_choices;
 	wxArrayString take_from_choices;
 	wxArrayString tech_choices;
+
+	std::string Generate_code_file_location;
+	std::string save_file_location;
+
+	std::string open_data_string;
+
+	std::vector<std::string> tasks_data_to_save;
+	std::vector<std::string> buildings_data_to_save;
+
 	
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);

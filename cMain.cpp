@@ -29,7 +29,8 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 
 	list_task_num = 0;
 	list_buildings_num = 0;
-	file_location = "C:\\Users\\MTNie\\AppData\\Roaming\\Factorio\\mods\\Speed_run_0.0.1\\tasksV2.lua"; // this needs to be set by the user - most likely in open or save - a save as might also be needed
+	Generate_code_file_location = "C:\\Users\\MTNie\\AppData\\Roaming\\Factorio\\mods\\Speed_run_0.0.1\\tasksV2.lua"; // this needs to be set by the user - most likely in open or save - a save as might also be needed
+	save_file_location = "C:\\Users\\MTNie\\AppData\\Roaming\\Factorio\\mods\\Speed_run_0.0.1\\test.txt"; // this needs to be set by the user - most likely either when they open a file or save as. 
 
 	// set walk as default value and disable inputs not used
 	rbtn_walk->SetValue(true);
@@ -167,7 +168,7 @@ void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string 
 	grid_tasks->SetCellValue(row_num, 7, building_size);
 	grid_tasks->SetCellValue(row_num, 8, amount_to_build);
 
-	
+	tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_to_build);
 }
 
 void cMain::update_buildings_grid_new_building(std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
@@ -491,11 +492,46 @@ void cMain::OnMenuNew(wxCommandEvent& evt) {
 }
 
 void cMain::OnMenuOpen(wxCommandEvent& evt) {
+	std::ifstream inFile;
+	inFile.open(save_file_location);
 
+	if (!inFile) {
+		wxMessageBox("It was not possible to open the file", "A file error occurred");
+		return;
+	}
+
+	std::string segment;
+	std::vector<std::string> seglist;
+	
+
+	while (std::getline(inFile, open_data_string)) {
+		std::stringstream open_data_string_line;
+		open_data_string_line.str(open_data_string);
+
+		segment = {};
+
+		while (std::getline(open_data_string_line, segment, ';')) {
+			seglist.push_back(segment);
+		}
+
+		update_tasks_grid(seglist[0], seglist[1], seglist[2], seglist[3], seglist[4], seglist[5], seglist[6], seglist[7], seglist[8]);
+	}
+
+	inFile.close();
 }
 
 void cMain::OnMenuSave(wxCommandEvent& evt) {
-	
+	std::ofstream myfile;
+	myfile.open(save_file_location);
+
+	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
+		myfile << *it << std::endl;;
+	}
+		
+
+	myfile.close();
+
+	clear_tasks();
 }
 
 void cMain::OnMenuSaveAs(wxCommandEvent& event) {
@@ -596,9 +632,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 
 	std::ofstream myfile;
-	myfile.open(file_location);
+	myfile.open(Generate_code_file_location);
 
-	myfile << end_tasks();;
+	myfile << end_tasks();
 
 	myfile.close();
 
