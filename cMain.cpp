@@ -699,7 +699,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			if (tasks_orientation == "Chest") {
 				from_into = take_put_list.chest;
 			} else if (tasks_orientation == "Fuel") {
-				from_into == take_put_list.fuel;
+				from_into = take_put_list.fuel;
 			} else if (tasks_item == "Lab") {
 				if (tasks_orientation == "Input") {
 					from_into = take_put_list.lab_input;
