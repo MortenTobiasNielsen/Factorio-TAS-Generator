@@ -515,14 +515,6 @@ std::string convert_string(std::string input) {
 	return input;
 }
 
-bool check_item(const std::string &item, const std::vector<std::string> &all_items) {
-	for (auto it = all_items.begin(); it < all_items.end(); it++) {
-		if (item == *it) {
-			return true;
-		}
-	}
-	return false;
-}
 void string_capitalized(std::string& string) {
 	string[0] = std::toupper(string[0]);
 	for (int i = 1; string[i] != '\0'; ++i) {

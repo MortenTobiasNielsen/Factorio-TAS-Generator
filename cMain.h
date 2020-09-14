@@ -99,6 +99,9 @@ private:
 	int tasks_row_selected = 0;
 	int buildings_row_selected = 0;
 
+	std::vector<std::string>::iterator it1;
+	std::vector<std::string>::iterator it2;
+
 
 	int row_num;
 	int list_task_num;
@@ -124,8 +127,8 @@ private:
 	wxArrayString building_orientation_choices;
 	wxArrayString direction_to_build_choices;
 
-	std::string Generate_code_file_location;
-	std::string save_file_location;
+	std::string Generate_code_file_location = "";
+	std::string save_file_location = "";
 
 	std::string open_data_string;
 
@@ -144,6 +147,19 @@ private:
 	void setup_paramters_comboboxes(std::vector<bool> parameters, std::vector<std::string> combo_item_category, std::vector<std::string> combo_item);
 
 	void setup_paramters(std::vector<bool> parameters);
+
+	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
+
+	std::string extract_x_cord();
+	std::string extract_y_cord();
+	std::string extract_units();
+	std::string extract_item();
+	std::string extract_amount_of_buildings();
+	std::string extract_building_size();
+	std::string extract_from_into();
+	std::string extract_direction_to_build();
+	std::string extract_building_orientation();
+
 };
 
 

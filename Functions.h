@@ -51,6 +51,4 @@ void clear_tasks();
 
 std::string convert_string(std::string input);
 
-bool check_item(const std::string &item, const std::vector<std::string> &all_items);
-
 void string_capitalized(std::string &string);
