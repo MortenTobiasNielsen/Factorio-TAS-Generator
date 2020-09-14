@@ -73,7 +73,8 @@ private:
 	Shortcuts_Menu* shortcuts = nullptr;
 
 	std::string buildings_list_save_indicator = "Buildingsgrid";
-
+	std::string save_file_location_indicator = "File_saved_here";
+	std::string generate_file_location_indicator = "Generated_script_saved_here";
 
 	const struct parameter_choices_struct {
 		// change combobo, x-cord, y-cord, amount, item category, item, building direction, direction to build, building size, amount of buildings, tech
@@ -120,6 +121,7 @@ private:
 	std::string direction_to_build;
 	std::string from_into;
 	std::string from_into_tasks;
+	std::string tech_to_start;
 
 	wxArrayString item_choices;
 	wxArrayString take_from_choices;
@@ -127,7 +129,7 @@ private:
 	wxArrayString building_orientation_choices;
 	wxArrayString direction_to_build_choices;
 
-	std::string Generate_code_file_location = "";
+	std::string generate_code_file_location = "";
 	std::string save_file_location = "";
 
 	std::string open_data_string;
@@ -149,6 +151,8 @@ private:
 	void setup_paramters(std::vector<bool> parameters);
 
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
+	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
+	bool check_take_put(const std::string& item, const std::vector<std::string>& all_items);
 
 	std::string extract_x_cord();
 	std::string extract_y_cord();
@@ -159,6 +163,7 @@ private:
 	std::string extract_from_into();
 	std::string extract_direction_to_build();
 	std::string extract_building_orientation();
+	std::string extract_tech();
 
 };
 

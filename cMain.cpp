@@ -225,6 +225,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	direction_to_build = extract_direction_to_build();
 	building_size = extract_building_size();
 	amount_of_buildings = extract_amount_of_buildings();
+	tech_to_start = extract_tech();
 
 	// Checking that the data inserted by the user makes somewhat sense
 	if (!check_item(item, all_items)) {
@@ -232,17 +233,12 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		return;
 	}
 		
-	if (!check_item(from_into, take_from)) {
-		wxMessageBox("The take from not valid - please try again", "Please use the From/Into dropdown menu");
-		return;
-	}
-		
-	if (!check_item(build_orientation, build_orientations)) {
+	if (!check_building(build_orientation, build_orientations)) {
 		wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
 		return;
 	}
 		
-	if (!check_item(direction_to_build, build_orientations)) {
+	if (!check_building(direction_to_build, build_orientations)) {
 		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 		return;
 	}
@@ -303,11 +299,29 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 	// Take from logic
 	} else if (rbtn_take->GetValue()) {
-		if (units == "-1") {
-			update_tasks_grid("Take", x_cord, y_cord, item, "All", from_into, direction_to_build, amount_of_buildings, building_size);
-		} else {
-			update_tasks_grid("Take", x_cord, y_cord, item, units, from_into, direction_to_build, amount_of_buildings, building_size);
+
+		if (!check_take_put(item, take_from)) {
+			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+			return;
 		}
+
+		update_tasks_grid("Take", x_cord, y_cord, item, units, from_into, direction_to_build, amount_of_buildings, building_size);
+
+	} else if (rbtn_put->GetValue()) {
+
+		if (!check_take_put(item, take_from)) {
+			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+			return;
+		}
+
+		update_tasks_grid("Put", x_cord, y_cord, item, units, from_into, direction_to_build, amount_of_buildings, building_size);
+
+	} else if (rbtn_tech->GetValue()) {
+		if (!check_item(tech_to_start, tech_list)) {
+			wxMessageBox("The tech is not valid - please try again", "Please use the tech dropdown menu");
+			return;
+		}
+		update_tasks_grid("Tech", not_relevant, not_relevant, tech_to_start, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
 	}
 	event.Skip();
 }
@@ -397,6 +411,11 @@ void cMain::OnDirectionToBuildSelected(wxCommandEvent& event) {
 }
 
 void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection()) {
+		wxMessageBox("No task is chosen - please select a row in the task list", "Cannot delete task");
+		return;
+	}
+
 	int start_row = *grid_tasks->GetSelectedRows().begin();
 	int row_count = grid_tasks->GetSelectedRows().GetCount();
 
@@ -407,12 +426,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	it1 += start_row;
 	it2 += start_row + row_count;
 
-	tasks_data_to_save.erase(it1, it2);
-
-	//for (i = start_row; i < start_row + row_count; i++) {
-	//	tasks_data_to_save.
-	//}
-	
+	tasks_data_to_save.erase(it1, it2);	
 }
 
 void cMain::OnMenuNew(wxCommandEvent& evt) {
@@ -432,7 +446,7 @@ void cMain::OnMenuNew(wxCommandEvent& evt) {
 	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
 
 	save_file_location = "";
-	Generate_code_file_location = "";
+	generate_code_file_location = "";
 }
 
 void cMain::OnMenuOpen(wxCommandEvent& evt) {
@@ -443,6 +457,8 @@ void cMain::OnMenuOpen(wxCommandEvent& evt) {
 		std::ifstream inFile;
 		inFile.open(dlg.GetPath().ToStdString());
 		bool buildings_list_reached = false;
+		bool saved_file_reached = false;
+		bool generate_code_reached = false;
 
 		if (!inFile) {
 			wxMessageBox("It was not possible to open the file", "A file error occurred");
@@ -474,6 +490,13 @@ void cMain::OnMenuOpen(wxCommandEvent& evt) {
 
 			if (seglist[0] == buildings_list_save_indicator) {
 				buildings_list_reached = true;
+
+			} else if (seglist[0] == save_file_location_indicator) {
+				saved_file_reached = true;
+
+			} else if (seglist[0] == generate_file_location_indicator) {
+				generate_code_reached = true;
+
 			} else if (!buildings_list_reached) {
 				if (seglist.size() == 9) {
 					update_tasks_grid(seglist[0], seglist[1], seglist[2], seglist[4], seglist[3], seglist[5], seglist[6], seglist[7], seglist[8]);
@@ -481,10 +504,26 @@ void cMain::OnMenuOpen(wxCommandEvent& evt) {
 					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
 					return;
 				}
-				
-			} else {
+		
+			} else if (!saved_file_reached) {
 				if (seglist.size() == 7) {
 					update_buildings_grid(seglist[0], seglist[1], seglist[2], seglist[3], seglist[4], seglist[5], seglist[6]);
+				} else {
+					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
+					return;
+				}
+			} else if (!generate_code_reached) {
+				if (seglist.size() == 1) {
+					save_file_location = seglist[0];
+					generate_code_reached = true;
+				} else {
+					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
+					return;
+				}
+			} else {
+				if (seglist.size() == 1) {
+					generate_code_file_location = seglist[0];
+					generate_code_reached = true;
 				} else {
 					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
 					return;
@@ -520,6 +559,14 @@ void cMain::OnMenuSave(wxCommandEvent& evt) {
 	for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
 		myfile << *it << ";" << std::endl;
 	}
+
+	myfile << save_file_location_indicator << std::endl;
+
+	myfile << save_file_location << std::endl;
+
+	myfile << generate_file_location_indicator << std::endl;
+
+	myfile << generate_code_file_location << std::endl;
 
 	myfile.close();
 
@@ -558,14 +605,14 @@ void cMain::OnMenuExit(wxCommandEvent& evt) {
 
 void cMain::OnChooseLocation(wxCommandEvent& event) {
 	wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	Generate_code_file_location = dlg.GetPath().ToStdString();
+	generate_code_file_location = dlg.GetPath().ToStdString();
 }
 
 void cMain::OnGenerateScript(wxCommandEvent& event) {
-	if (Generate_code_file_location == "") {
+	if (generate_code_file_location == "") {
 		wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (dlg.ShowModal() == wxID_OK) {
-			Generate_code_file_location = dlg.GetPath().ToStdString();
+			generate_code_file_location = dlg.GetPath().ToStdString();
 		} else {
 			return;
 		}
@@ -578,7 +625,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	static std::string tasks_y_cord;
 	static std::string tasks_item; 
 	static std::string tasks_units;
-	static std::string tasks_building_direction;
+	static std::string tasks_orientation;
 	static std::string tasks_direction_to_build; 
 	static std::string tasks_size;
 	static std::string tasks_building_amount;
@@ -589,56 +636,56 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		tasks_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
 		tasks_units = grid_tasks->GetCellValue(i, 3).ToStdString();
 		tasks_item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
-		tasks_building_direction = grid_tasks->GetCellValue(i, 5).ToStdString();
+		tasks_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
 		tasks_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
 		tasks_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 		tasks_building_amount = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 		if (tasks_task == "Game Speed") {
 			speed(tasks_units);
+
 		} else if (tasks_task == "Walk") {
 			walk(tasks_x_cord, tasks_y_cord);
+
 		} else if (tasks_task == "Mine") {
 			mining(tasks_x_cord, tasks_y_cord, tasks_units);
+
 		} else if (tasks_task == "Craft") {
-			craft(tasks_units, tasks_item);
+			if (tasks_units == "All") {
+				craft("-1", tasks_item);
+			} else {
+				craft(tasks_units, tasks_item);
+			}
+			
+		} else if (tasks_task == "Tech") {
+			tech(tasks_item);
+
+		} else if (tasks_task == "Build") {
+			build_row_of_buildings(tasks_x_cord, tasks_y_cord, tasks_item, tasks_orientation, tasks_direction_to_build, tasks_building_amount, tasks_size);
+
 		} else if (tasks_task == "Take") {
 
-			if (tasks_building_direction == "Chest") {
+			if (tasks_orientation == "Chest") {
 				from_into = take_put_list.chest;
-			} else if (tasks_building_direction == "Fuel") {
-				if (check_item(item, item_fuels)) {
-					from_into == take_put_list.fuel;
-				} else {
-					wxMessageBox("The item selected is not a valid fuel - please try again", "Please ensure that the chosen fuel is correct");
-					return;
-				}
+			} else if (tasks_orientation == "Fuel") {
+				from_into == take_put_list.fuel;
 			} else if (tasks_item == "Lab") {
-				if (tasks_building_direction == "Input") {
+				if (tasks_orientation == "Input") {
 					from_into = take_put_list.lab_input;
-				} else if (tasks_building_direction == "Modules") {
+				} else if (tasks_orientation == "Modules") {
 					from_into = take_put_list.lab_modules;
-				} else {
-					wxMessageBox("The combination of item and take from is not correct - please try again", "Please ensure that the chosen combination is correct");
-					return;
-				}
+				} 
 			} else if (check_item(item, drills_list)) {
-				if (tasks_building_direction == "Modules") {
+				if (tasks_orientation == "Modules") {
 					from_into = take_put_list.drill_modules;
-				} else {
-					wxMessageBox("The combination of item and take from is not correct - please try again", "Please ensure that the chosen combination is correct");
-					return;
-				}
+				} 
 			} else {
-				if (tasks_building_direction == "Input") {
+				if (tasks_orientation == "Input") {
 					from_into = take_put_list.assembly_input;
-				} else if (tasks_building_direction == "Modules") {
+				} else if (tasks_orientation == "Modules") {
 					from_into = take_put_list.assembly_modules;
-				} else if (tasks_building_direction == "Ouput") {
+				} else if (tasks_orientation == "Ouput") {
 					from_into = take_put_list.assembly_output;
-				} else {
-					wxMessageBox("The combination of item and take from is not correct - please try again", "Please ensure that the chosen combination is correct");
-					return;
 				}
 			}
 
@@ -648,7 +695,36 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				row_take(tasks_x_cord, tasks_y_cord, tasks_units, tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
 
 			}
-			
+		} else if (tasks_task == "Put") {
+			if (tasks_orientation == "Chest") {
+				from_into = take_put_list.chest;
+			} else if (tasks_orientation == "Fuel") {
+				from_into == take_put_list.fuel;
+			} else if (tasks_item == "Lab") {
+				if (tasks_orientation == "Input") {
+					from_into = take_put_list.lab_input;
+				} else if (tasks_orientation == "Modules") {
+					from_into = take_put_list.lab_modules;
+				}
+			} else if (check_item(item, drills_list)) {
+				if (tasks_orientation == "Modules") {
+					from_into = take_put_list.drill_modules;
+				}
+			} else {
+				if (tasks_orientation == "Input") {
+					from_into = take_put_list.assembly_input;
+				} else if (tasks_orientation == "Modules") {
+					from_into = take_put_list.assembly_modules;
+				} else if (tasks_orientation == "Ouput") {
+					from_into = take_put_list.assembly_output;
+				}
+			}
+
+			if (tasks_units == "All") {
+				row_put(tasks_x_cord, tasks_y_cord, "-1", tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
+			} else {
+				row_put(tasks_x_cord, tasks_y_cord, tasks_units, tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
+			}
 		}
 	}
 
@@ -656,7 +732,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 
 	std::ofstream myfile;
-	myfile.open(Generate_code_file_location);
+	myfile.open(generate_code_file_location);
 
 	myfile << end_tasks();
 
@@ -759,7 +835,7 @@ std::string cMain::extract_units() {
 		}
 	} else {
 		if (std::stof(units) < 1) {
-			units = "-1";
+			units = "All";
 		}
 	}
 
@@ -811,6 +887,13 @@ std::string cMain::extract_building_orientation() {
 	return build_orientation;
 }
 
+std::string cMain::extract_tech() {
+	tech_to_start = cmb_tech->GetValue().ToStdString();
+	string_capitalized(tech_to_start);
+
+	return tech_to_start;
+}
+
 void cMain::populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item) {
 	cmb_item->Clear();
 	for (auto it = item.begin(); it < item.end(); it++) {
@@ -827,18 +910,87 @@ void cMain::setup_paramters_comboboxes(std::vector<bool> parameters, std::vector
 	}
 }
 
-bool cMain::check_item(const std::string& item, const std::vector<std::string>& all_items) {
-	if (extract_from_into() == "Fuel") {
+bool cMain::check_building(const std::string& item, const std::vector<std::string>& all_items) {
+	for (auto it = all_items.begin(); it < all_items.end(); it++) {
+		if (item == *it) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool cMain::check_take_put(const std::string& item, const std::vector<std::string>& all_items) {
+	std::string to_check = extract_from_into();
+	string_capitalized(to_check);
+
+	if (to_check == "Chest") {
+		return true;
+
+	} else if (to_check == "Fuel") {
 		for (auto it = item_fuels.begin(); it < item_fuels.end(); it++) {
 			if (item == *it) {
 				return true;
 			}
 		}
-	} else {
-		for (auto it = all_items.begin(); it < all_items.end(); it++) {
-			if (item == *it) {
-				return true;
+		return false;
+
+	} else if (item == "Lab") {
+		if (to_check == "Input") {
+			for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
+				if (item == *it) {
+					return true;
+				}
 			}
+			return false;
+		} else if (to_check == "Modules") {
+			for (auto it = module_list.begin(); it < module_list.end(); it++) {
+				if (item == *it) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+
+	} else if (check_item(item, drills_list)) {
+		if (to_check == "Modules") {
+			for (auto it = module_list.begin(); it < module_list.end(); it++) {
+				if (item == *it) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+	} else {
+		if (to_check == "Input") {
+			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+			return true;
+		} else if (to_check == "Modules") { 
+			for (auto it = module_list.begin(); it < module_list.end(); it++) {
+				if (item == *it) {
+					return true;
+				}
+			}
+
+			return false;
+		} else if (to_check == "Output") {
+			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return false;
+}
+
+bool cMain::check_item(const std::string& item, const std::vector<std::string>& all_items) {
+	
+	for (auto it = all_items.begin(); it < all_items.end(); it++) {
+		if (item == *it) {
+			return true;
 		}
 	}
 

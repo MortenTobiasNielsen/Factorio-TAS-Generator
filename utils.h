@@ -7,13 +7,17 @@ static const std::vector<std::string> item_categories = {"Logistics", "Productio
 static const std::vector<std::string> item_categories_fuel = { "Fuel"};
 
 static const std::vector<std::string> item_logistics = {"Wooden chest", "Iron chest", "Steel chest", "Transport belt", "Burner inserter", "Inserter", "Small electric pole", "Pipe", "Pipe to ground", };
-static const std::vector<std::string> item_production = { "Boiler", "Steam engine", "Burner mining drill", "Electric mining drill", "Offshore pump", "Pumpjack", "Stone furnace", "Steel furnace", "Assembling machine 1", "Assembling machine 2", "Lab"};
+static const std::vector<std::string> item_production = { "Boiler", "Steam engine", "Burner mining drill", "Electric mining drill", "Offshore pump", "Pumpjack", "Stone furnace", "Steel furnace", "Assembling machine 1", "Assembling machine 2", "Lab", "Speed module", "Speed module 2" , "Speed module 3", "Efficiency module", "Efficiency module 2", "Efficiency module 3", "Productivity module", "Productivity module 2", "Productivity module 3" };
 static const std::vector<std::string> item_intermediates = { "Wood", "Coal", "Stone", "Iron ore", "Copper ore", "Iron plate", "Copper plate", "Iron gear wheel", "Copper cable", "Automation science pack", "Electronic circuit" };
 static const std::vector<std::string> item_combat = { "Pistol", "Submachine gun", "Shotgun"};
 
 static const std::vector<std::string> take_from = {"Input", "Output", "Fuel", "Modules", "Chest"};
 
 static const std::vector<std::string> item_fuels = {"Wood", "Coal", "Solid fuel", "Rocket fuel", "Nuclear fuel", "Uranium fuel cell"};
+
+static const std::vector<std::string> science_packs = {"Automation science pack"};
+
+static const std::vector<std::string> module_list = {"Speed module", "Speed module 2" , "Speed module 3", "Efficiency module", "Efficiency module 2", "Efficiency module 3", "Productivity module", "Productivity module 2", "Productivity module 3"};
 
 static const std::vector<std::string> build_orientations = {"North", "South", "East", "West"};
 
