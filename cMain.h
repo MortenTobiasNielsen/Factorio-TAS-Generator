@@ -72,8 +72,8 @@ protected:
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
 
-	const static int task_list_game_speed_white_space = 0;
-	const static int Task_list_walk_white_space = 20;
+	std::string buildings_list_save_indicator = "Buildingsgrid";
+
 
 	const struct parameter_choices_struct {
 		// change combobo, x-cord, y-cord, amount, item category, item, building direction, direction to build, building size, amount of buildings, tech
@@ -82,7 +82,7 @@ private:
 		std::vector<bool> rotate = { false, true, true, true, false, false, false, false, false, false, false };
 		std::vector<bool> craft = { false, false, false, true, false, true, false, false, false, false, false };
 		std::vector<bool> walk = { false, true, true, false, false, false, false, false, false, false, false };
-		std::vector<bool> build = { false, true, true, false, true, true, true, true, true, true, false };
+		std::vector<bool> build = { false, true, true, false, false, true, true, true, true, true, false };
 		std::vector<bool> fuel = { false, true, true, true, false, true, false, true, true, true, false };
 		std::vector<bool> take = { false, true, true, true, true, true, false, true, true, true, false, false };
 		std::vector<bool> put = { false, true, true, true, true, true, false, false, true, true, false };
@@ -113,7 +113,7 @@ private:
 	std::string building_size;
 	std::string x_cord;
 	std::string y_cord;
-	std::string build_direction;
+	std::string build_orientation;
 	std::string direction_to_build;
 	std::string from_into;
 	std::string from_into_tasks;
@@ -121,6 +121,8 @@ private:
 	wxArrayString item_choices;
 	wxArrayString take_from_choices;
 	wxArrayString tech_choices;
+	wxArrayString building_orientation_choices;
+	wxArrayString direction_to_build_choices;
 
 	std::string Generate_code_file_location;
 	std::string save_file_location;
@@ -136,6 +138,7 @@ private:
 
 	void update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build, std::string amount_to_build, std::string building_size);
 
+	void update_buildings_grid(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string recipe, std::string priority, std::string filter);
 	void update_buildings_grid_new_building(std::string x_cord, std::string y_cord, std::string item, std::string orientation);
 
 	void setup_paramters_comboboxes(std::vector<bool> parameters, std::vector<std::string> combo_item_category, std::vector<std::string> combo_item);

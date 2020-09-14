@@ -58,7 +58,7 @@ protected:
 	wxStaticText* label_tech;
 	wxComboBox* cmb_tech;
 	wxStaticText* label_building_orientation;
-	wxComboBox* cmb_building_direction;
+	wxComboBox* cmb_building_orientation;
 	wxStaticText* label_direction_to_build;
 	wxComboBox* cmb_direction_to_build;
 	wxStaticText* label_building_size;
@@ -112,7 +112,7 @@ protected:
 	virtual void OnCraftMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRotateMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnAddMenuSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnBuildingDirectionSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnBuildingOrientationSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDirectionToBuildSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }

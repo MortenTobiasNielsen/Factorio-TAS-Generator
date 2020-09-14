@@ -15,7 +15,7 @@ static const std::vector<std::string> take_from = {"Input", "Output", "Fuel", "M
 
 static const std::vector<std::string> item_fuels = {"Wood", "Coal", "Solid fuel", "Rocket fuel", "Nuclear fuel", "Uranium fuel cell"};
 
-static const std::vector<std::string> build_directions = {"North", "South", "East", "West"};
+static const std::vector<std::string> build_orientations = {"North", "South", "East", "West"};
 
 static const std::vector<std::string> tech_list = {"Automation", "Optics", "Turrets", "Stone walls", "Military", "Logistics", "Steel processing", "Electronics", "Logistic science pack"};
 

@@ -27,6 +27,10 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 		tech_choices.Add(s);
 	}
 
+	for (auto s : build_orientations) {
+		building_orientation_choices.Add(s);
+	}
+
 	list_task_num = 0;
 	list_buildings_num = 0;
 	Generate_code_file_location = "C:\\Users\\MTNie\\AppData\\Roaming\\Factorio\\mods\\Speed_run_0.0.1\\tasksV2.lua"; // this needs to be set by the user - most likely in open or save - a save as might also be needed
@@ -36,15 +40,17 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	rbtn_walk->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
 
-	cmb_building_direction->Clear();
+	cmb_building_orientation->Clear();
 	cmb_direction_to_build->Clear();
-	for (auto it = build_directions.begin(); it < build_directions.end(); it++) {
-		cmb_building_direction->Append(*it);
+	for (auto it = build_orientations.begin(); it < build_orientations.end(); it++) {
+		cmb_building_orientation->Append(*it);
 		cmb_direction_to_build->Append(*it);
 
 	}
-	cmb_building_direction->SetValue(*build_directions.begin());
-	cmb_direction_to_build->SetValue(*build_directions.begin());
+	cmb_building_orientation->SetValue(*build_orientations.begin());
+	cmb_building_orientation->AutoComplete(building_orientation_choices);
+	cmb_direction_to_build->SetValue(*build_orientations.begin());
+	cmb_direction_to_build->AutoComplete(building_orientation_choices);
 
 	cmb_item->Clear();
 	for (auto it = all_items_const.begin(); it < all_items_const.end(); it++) {
@@ -171,6 +177,21 @@ void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string 
 	tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_to_build);
 }
 
+
+
+void cMain::update_buildings_grid(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string recipe, std::string priority, std::string filter) {
+	row_num = grid_buildings->GetNumberRows();
+
+	grid_buildings->InsertRows(row_num, 1);
+
+	grid_buildings->SetCellValue(row_num, 0, x_cord);
+	grid_buildings->SetCellValue(row_num, 1, y_cord);
+	grid_buildings->SetCellValue(row_num, 2, item);
+	grid_buildings->SetCellValue(row_num, 3, orientation);
+
+	buildings_data_to_save.push_back(x_cord + ";" + y_cord + ";" + item + ";" + orientation + ";" + recipe + ";" + priority + ";" + filter);
+}
+
 void cMain::update_buildings_grid_new_building(std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
 	row_num = grid_buildings->GetNumberRows();
 	
@@ -180,6 +201,8 @@ void cMain::update_buildings_grid_new_building(std::string x_cord, std::string y
 	grid_buildings->SetCellValue(row_num, 1, y_cord);
 	grid_buildings->SetCellValue(row_num, 2, item);
 	grid_buildings->SetCellValue(row_num, 3, orientation);
+
+	buildings_data_to_save.push_back(x_cord + ";" + y_cord + ";" + item + ";" + orientation + ";" + "" + ";" + "" + ";" + "");
 }
 
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
@@ -269,7 +292,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			return;
 		}
 
-		if (!check_item(direction_to_build, build_directions)) {
+		if (!check_item(direction_to_build, build_orientations)) {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 			return;
 		}
@@ -293,27 +316,29 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		}
 
 		item = cmb_item->GetValue().ToStdString();
-		build_direction = cmb_building_direction->GetValue().ToStdString();
-		direction_to_build = cmb_direction_to_build->GetValue().ToStdString();
-
+		string_capitalized(item);
 		if (!check_item(item, all_items)) {
 			wxMessageBox("The item is not valid - please try again", "Please use the item dropdown menu");
 			return;
 		}
 
-		if (!check_item(build_direction, build_directions)) {
+		build_orientation = cmb_building_orientation->GetValue().ToStdString();
+		string_capitalized(build_orientation);
+		if (!check_item(build_orientation, build_orientations)) {
 			wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
 			return;
 		}
 
-		if (!check_item(direction_to_build, build_directions)) {
+		direction_to_build = cmb_direction_to_build->GetValue().ToStdString();
+		string_capitalized(direction_to_build);
+		if (!check_item(direction_to_build, build_orientations)) {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 			return;
 		}
 		
 		//build_row_of_buildings(x_cord, y_cord, convert_string(item), build_direction, direction_to_build, amount_of_buildings, building_size);
 
-		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_direction, direction_to_build, amount_of_buildings, building_size);
+		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
 		static float start_x_cord = std::stof(x_cord);
 		static float start_y_cord = std::stof(y_cord);
@@ -327,21 +352,21 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 		if (direction_to_build == "North") {
 			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord - i * building_size_int), item, build_direction);
+				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord - i * building_size_int), item, build_orientation);
 			}
 		} else if (direction_to_build == "South") {
 			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord + i * building_size_int), item, build_direction);
+				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord + i * building_size_int), item, build_orientation);
 			}
 		} else if (direction_to_build == "East") {
 
 			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(std::to_string(start_x_cord + i * building_size_int), y_cord, item, build_direction);
+				update_buildings_grid_new_building(std::to_string(start_x_cord + i * building_size_int), y_cord, item, build_orientation);
 			}
 		} else if (direction_to_build == "West") {
 
 			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(std::to_string(start_x_cord - i * building_size_int), y_cord, item, build_direction);
+				update_buildings_grid_new_building(std::to_string(start_x_cord - i * building_size_int), y_cord, item, build_orientation);
 			}
 		}
 
@@ -372,7 +397,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		}
 
 		direction_to_build = cmb_direction_to_build->GetValue().ToStdString();
-		if (!check_item(direction_to_build, build_directions)) {
+		if (!check_item(direction_to_build, build_orientations)) {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 			return;
 		}
@@ -432,7 +457,7 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	txt_y_cord->SetValue(tasks_y_cord);
 	txt_units->SetValue(tasks_units);
 	cmb_item->SetValue(tasks_item);
-	cmb_building_direction->SetValue(tasks_building_direction);
+	cmb_building_orientation->SetValue(tasks_building_direction);
 	cmb_direction_to_build->SetValue(tasks_direction_to_build);
 	txt_building_size->SetValue(tasks_size);
 	txt_amount_of_buildings->SetValue(tasks_building_amount);
@@ -461,7 +486,7 @@ void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 	txt_x_cord->SetValue(buildings_x_cord);
 	txt_y_cord->SetValue(buildings_y_cord);
 	cmb_item->SetValue(buildings_item);
-	cmb_building_direction->SetValue(buildings_building_direction);
+	cmb_building_orientation->SetValue(buildings_building_direction);
 }
 
 void cMain::OnWalkKeyDown(wxKeyEvent& event) {
@@ -488,12 +513,19 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnMenuNew(wxCommandEvent& evt) {
+	grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
+	grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
 
+	rbtn_walk->SetValue(true);
+	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
+
+	// Remember to reset save location
 }
 
 void cMain::OnMenuOpen(wxCommandEvent& evt) {
 	std::ifstream inFile;
 	inFile.open(save_file_location);
+	bool buildings_list_reached = false;
 
 	if (!inFile) {
 		wxMessageBox("It was not possible to open the file", "A file error occurred");
@@ -508,13 +540,19 @@ void cMain::OnMenuOpen(wxCommandEvent& evt) {
 		std::stringstream open_data_string_line;
 		open_data_string_line.str(open_data_string);
 
-		segment = {};
+		seglist = {};
 
 		while (std::getline(open_data_string_line, segment, ';')) {
 			seglist.push_back(segment);
 		}
 
-		update_tasks_grid(seglist[0], seglist[1], seglist[2], seglist[3], seglist[4], seglist[5], seglist[6], seglist[7], seglist[8]);
+		if (seglist[0] == buildings_list_save_indicator) {
+			buildings_list_reached = true;
+		} else if (!buildings_list_reached) {
+			update_tasks_grid(seglist[0], seglist[1], seglist[2], seglist[4], seglist[3], seglist[5], seglist[6], seglist[7], seglist[8]);
+		} else {
+			update_buildings_grid(seglist[0], seglist[1], seglist[2], seglist[3], seglist[4], seglist[5], seglist[6]);
+		} 	
 	}
 
 	inFile.close();
@@ -525,9 +563,14 @@ void cMain::OnMenuSave(wxCommandEvent& evt) {
 	myfile.open(save_file_location);
 
 	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
-		myfile << *it << std::endl;;
+		myfile << *it << ";" << std::endl;
 	}
+
+	myfile << buildings_list_save_indicator << std::endl;
 		
+	for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
+		myfile << *it << ";" << std::endl;
+	}
 
 	myfile.close();
 
@@ -708,7 +751,7 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 	cmb_item->Enable(parameters[5]);
 	cmb_from_into->Enable(parameters[4]);
 	cmb_tech->Enable(parameters[10]);
-	cmb_building_direction->Enable(parameters[6]);
+	cmb_building_orientation->Enable(parameters[6]);
 	cmb_direction_to_build->Enable(parameters[7]);
 	txt_amount_of_buildings->Enable(parameters[8]);
 	txt_building_size->Enable(parameters[9]);
