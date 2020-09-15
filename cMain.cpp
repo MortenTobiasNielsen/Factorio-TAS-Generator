@@ -154,7 +154,7 @@ void cMain::OnPickUpChosen(wxCommandEvent& event) {
 void cMain::OnDropChosen(wxCommandEvent& event) {
 }
 
-void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string amount_to_build, std::string building_size) {
+void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build) {
 
 	if (grid_tasks->IsSelection()) {
 		row_num = *grid_tasks->GetSelectedRows().begin();
@@ -213,6 +213,72 @@ void cMain::update_buildings_grid_new_building(std::string x_cord, std::string y
 	buildings_data_to_save.push_back(x_cord + ";" + y_cord + ";" + item + ";" + orientation + ";" + "" + ";" + "" + ";" + "");
 }
 
+void cMain::update_buildings_grid_from_scratch() {
+	if (grid_buildings->GetNumberRows() > 0) {
+		grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
+	}
+
+	buildings_data_to_save = {};
+
+	std::string task;
+	std::string x_cord;
+	std::string y_cord;
+	std::string item;
+	std::string orientation;
+	std::string direction;
+	std::string size;
+	std::string amount;
+
+	for (int i = 0; i < grid_tasks->GetNumberRows(); i++) {
+		task = grid_tasks->GetCellValue(i, 0).ToStdString();
+
+		if (task == "Build" ) {
+			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+			y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+			item = grid_tasks->GetCellValue(i, 4).ToStdString();
+			orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+			direction = grid_tasks->GetCellValue(i, 6).ToStdString();
+			size = grid_tasks->GetCellValue(i, 7).ToStdString();
+			amount = grid_tasks->GetCellValue(i, 8).ToStdString();
+
+			building_row(x_cord, y_cord, item, orientation, direction, size, amount);
+		}
+	}
+}
+
+void cMain::building_row(std::string x_cord, std::string y_cord, std::string item, std::string build_orientation, std::string direction_to_build, std::string building_size, std::string amount_of_buildings) {
+	static float start_x_cord = std::stof(x_cord);
+	static float start_y_cord = std::stof(y_cord);
+	static int building_size_int = std::stoi(building_size);
+	static int number_of_buildings_int = std::stoi(amount_of_buildings);
+
+	start_x_cord = std::stof(x_cord);
+	start_y_cord = std::stof(y_cord);
+	building_size_int = std::stoi(building_size);
+	number_of_buildings_int = std::stoi(amount_of_buildings);
+
+	if (direction_to_build == "North") {
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord - i * building_size_int), item, build_orientation);
+		}
+	} else if (direction_to_build == "South") {
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord + i * building_size_int), item, build_orientation);
+		}
+	} else if (direction_to_build == "East") {
+
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			update_buildings_grid_new_building(std::to_string(start_x_cord + i * building_size_int), y_cord, item, build_orientation);
+		}
+	} else if (direction_to_build == "West") {
+
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			update_buildings_grid_new_building(std::to_string(start_x_cord - i * building_size_int), y_cord, item, build_orientation);
+		}
+	}
+
+}
+
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	
 	// Extract data needed to add task
@@ -226,22 +292,6 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	building_size = extract_building_size();
 	amount_of_buildings = extract_amount_of_buildings();
 	tech_to_start = extract_tech();
-
-	// Checking that the data inserted by the user makes somewhat sense
-	if (!check_item(item, all_items)) {
-		wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
-		return;
-	}
-		
-	if (!check_building(build_orientation, build_orientations)) {
-		wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
-		return;
-	}
-		
-	if (!check_building(direction_to_build, build_orientations)) {
-		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
-		return;
-	}
 
 	// Game speed task logic
 	if (rbtn_game_speed->GetValue()) {
@@ -257,15 +307,46 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 	// Craft task logic
 	} else if (rbtn_craft->GetValue()) {
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
 		update_tasks_grid("Craft", not_relevant, not_relevant, item, units, not_relevant, not_relevant, not_relevant, not_relevant);
 	
 	// Fuel task logic
 	} else if (rbtn_fuel->GetValue()) {
-		update_tasks_grid("Fuel", x_cord, y_cord, item, units, not_relevant, direction_to_build, amount_of_buildings, building_size);
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Fuel", x_cord, y_cord, item, units, not_relevant, direction_to_build, building_size, amount_of_buildings);
 	
 	// Build task logic
 	} else if (rbtn_build->GetValue()) {
-		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_orientation, direction_to_build, amount_of_buildings, building_size);
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_building(build_orientation, build_orientations)) {
+			wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_orientation, direction_to_build, building_size, amount_of_buildings);
+		building_row(x_cord, y_cord, item, build_orientation, direction_to_build, building_size, amount_of_buildings);
 
 		static float start_x_cord = std::stof(x_cord);
 		static float start_y_cord = std::stof(y_cord);
@@ -305,12 +386,22 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			return;
 		}
 
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
 		update_tasks_grid("Take", x_cord, y_cord, item, units, from_into, direction_to_build, amount_of_buildings, building_size);
 
 	} else if (rbtn_put->GetValue()) {
 
 		if (!check_take_put(item, take_from)) {
 			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 			return;
 		}
 
@@ -419,35 +510,6 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	int start_row = *grid_tasks->GetSelectedRows().begin();
 	int row_count = grid_tasks->GetSelectedRows().GetCount();
 
-	std::string task;
-	std::string x_cord;
-	std::string y_cord;
-	std::string item;
-
-	for (int i = start_row; i < (start_row + row_count); i++) {
-		task = grid_tasks->GetCellValue(i, 0).ToStdString();
-
-		if (task == "Build") {
-			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-			y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-			item = grid_tasks->GetCellValue(i, 4).ToStdString();
-
-			for (int j = 0 ; j < grid_buildings->GetNumberRows()+1; j++) {
-				if (x_cord != grid_buildings->GetCellValue(j, 0)) {
-					continue;
-				}
-				if (y_cord != grid_buildings->GetCellValue(j, 1)) {
-					continue;
-				}
-				if (item != grid_buildings->GetCellValue(j, 2)) {
-					continue;
-				}
-
-				grid_buildings->DeleteRows(j, 1);
-			}
-		}
-	}
-
 	grid_tasks->DeleteRows(start_row, row_count);
 	it1 = tasks_data_to_save.begin();
 	it2 = tasks_data_to_save.begin();
@@ -456,6 +518,8 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	it2 += start_row + row_count;
 
 	tasks_data_to_save.erase(it1, it2);	
+
+	update_buildings_grid_from_scratch();
 }
 
 void cMain::OnMenuNew(wxCommandEvent& evt) {
@@ -476,6 +540,9 @@ void cMain::OnMenuNew(wxCommandEvent& evt) {
 
 	save_file_location = "";
 	generate_code_file_location = "";
+
+	tasks_data_to_save = {};
+	buildings_data_to_save = {};
 }
 
 void cMain::OnMenuOpen(wxCommandEvent& evt) {
@@ -502,6 +569,9 @@ void cMain::OnMenuOpen(wxCommandEvent& evt) {
 			if (grid_buildings->GetNumberRows() > 0) {
 				grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
 			}
+
+			tasks_data_to_save = {};
+			buildings_data_to_save = {};
 		}
 
 		std::string segment;
@@ -713,7 +783,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 					from_into = take_put_list.assembly_input;
 				} else if (tasks_orientation == "modules") {
 					from_into = take_put_list.assembly_modules;
-				} else if (tasks_orientation == "ouput") {
+				} else if (tasks_orientation == "output") {
 					from_into = take_put_list.assembly_output;
 				}
 			}

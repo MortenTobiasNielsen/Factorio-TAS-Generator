@@ -558,8 +558,10 @@ std::string convert_string(std::string input) {
 }
 
 void string_capitalized(std::string& string) {
-	string[0] = std::toupper(string[0]);
-	for (int i = 1; string[i] != '\0'; ++i) {
-		string[i] = tolower(string[i]);
+	if (string != "") {
+		string[0] = std::toupper(string[0]);
+		for (int i = 1; string[i] != '\0'; ++i) {
+			string[i] = tolower(string[i]);
+		}
 	}
 };

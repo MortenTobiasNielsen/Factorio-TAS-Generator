@@ -145,6 +145,8 @@ private:
 
 	void update_buildings_grid(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string recipe, std::string priority, std::string filter);
 	void update_buildings_grid_new_building(std::string x_cord, std::string y_cord, std::string item, std::string orientation);
+	void update_buildings_grid_from_scratch();
+	void building_row(std::string x_cord, std::string y_cord, std::string item, std::string build_orientation, std::string direction_to_build, std::string building_size, std::string amount_of_buildings);
 
 	void setup_paramters_comboboxes(std::vector<bool> parameters, std::vector<std::string> combo_item_category, std::vector<std::string> combo_item);
 
