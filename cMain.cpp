@@ -157,6 +157,10 @@ void cMain::OnDropChosen(wxCommandEvent& event) {
 void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build) {
 
 	if (grid_tasks->IsSelection()) {
+		if (!grid_tasks->GetSelectedRows().begin()) {
+			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			return;
+		}
 		row_num = *grid_tasks->GetSelectedRows().begin();
 	} else {
 		row_num = grid_tasks->GetNumberRows();
@@ -348,36 +352,6 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_orientation, direction_to_build, building_size, amount_of_buildings);
 		building_row(x_cord, y_cord, item, build_orientation, direction_to_build, building_size, amount_of_buildings);
 
-		static float start_x_cord = std::stof(x_cord);
-		static float start_y_cord = std::stof(y_cord);
-		static int building_size_int = std::stoi(building_size);
-		static int number_of_buildings_int = std::stoi(amount_of_buildings);
-
-		start_x_cord = std::stof(x_cord);
-		start_y_cord = std::stof(y_cord);
-		building_size_int = std::stoi(building_size);
-		number_of_buildings_int = std::stoi(amount_of_buildings);
-
-		if (direction_to_build == "North") {
-			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord - i * building_size_int), item, build_orientation);
-			}
-		} else if (direction_to_build == "South") {
-			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(x_cord, std::to_string(start_y_cord + i * building_size_int), item, build_orientation);
-			}
-		} else if (direction_to_build == "East") {
-
-			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(std::to_string(start_x_cord + i * building_size_int), y_cord, item, build_orientation);
-			}
-		} else if (direction_to_build == "West") {
-
-			for (int i = 0; i < number_of_buildings_int; i++) {
-				update_buildings_grid_new_building(std::to_string(start_x_cord - i * building_size_int), y_cord, item, build_orientation);
-			}
-		}
-
 	// Take from logic
 	} else if (rbtn_take->GetValue()) {
 
@@ -391,7 +365,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			return;
 		}
 
-		update_tasks_grid("Take", x_cord, y_cord, item, units, from_into, direction_to_build, amount_of_buildings, building_size);
+		update_tasks_grid("Take", x_cord, y_cord, item, units, from_into, direction_to_build, building_size, amount_of_buildings);
 
 	} else if (rbtn_put->GetValue()) {
 
@@ -405,7 +379,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			return;
 		}
 
-		update_tasks_grid("Put", x_cord, y_cord, item, units, from_into, direction_to_build, amount_of_buildings, building_size);
+		update_tasks_grid("Put", x_cord, y_cord, item, units, from_into, direction_to_build, building_size, amount_of_buildings);
 
 	} else if (rbtn_tech->GetValue()) {
 		if (!check_item(tech_to_start, tech_list)) {
@@ -429,8 +403,8 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	static std::string tasks_task = grid_tasks->GetCellValue(tasks_row_selected, 0).ToStdString();
 	static std::string tasks_x_cord = grid_tasks->GetCellValue(tasks_row_selected, 1).ToStdString();
 	static std::string tasks_y_cord = grid_tasks->GetCellValue(tasks_row_selected, 2).ToStdString();
-	static std::string tasks_item = grid_tasks->GetCellValue(tasks_row_selected, 3).ToStdString();
-	static std::string tasks_units = grid_tasks->GetCellValue(tasks_row_selected, 4).ToStdString();
+	static std::string tasks_units = grid_tasks->GetCellValue(tasks_row_selected, 3).ToStdString();
+	static std::string tasks_item = grid_tasks->GetCellValue(tasks_row_selected, 4).ToStdString();
 	static std::string tasks_building_direction = grid_tasks->GetCellValue(tasks_row_selected, 5).ToStdString();
 	static std::string tasks_direction_to_build = grid_tasks->GetCellValue(tasks_row_selected, 6).ToStdString();
 	static std::string tasks_size = grid_tasks->GetCellValue(tasks_row_selected, 7).ToStdString();
@@ -446,14 +420,63 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	tasks_size = grid_tasks->GetCellValue(tasks_row_selected, 7).ToStdString();
 	tasks_building_amount = grid_tasks->GetCellValue(tasks_row_selected, 8).ToStdString();
 
-	txt_x_cord->SetValue(tasks_x_cord);
-	txt_y_cord->SetValue(tasks_y_cord);
-	txt_units->SetValue(tasks_units);
-	cmb_item->SetValue(tasks_item);
-	cmb_building_orientation->SetValue(tasks_building_direction);
-	cmb_direction_to_build->SetValue(tasks_direction_to_build);
-	txt_building_size->SetValue(tasks_size);
-	txt_amount_of_buildings->SetValue(tasks_building_amount);
+	if (tasks_task == "Game Speed") {
+		OnGameSpeedMenuSelected(event);
+		txt_units->SetValue(tasks_units);
+
+	} else if (tasks_task == "Walk") {
+		OnWalkMenuSelected(event);
+		txt_x_cord->SetValue(tasks_x_cord);
+		txt_y_cord->SetValue(tasks_y_cord);
+
+	} else if (tasks_task == "Mine") {
+		OnMineMenuSelected(event);
+		txt_x_cord->SetValue(tasks_x_cord);
+		txt_y_cord->SetValue(tasks_y_cord);
+		txt_units->SetValue(tasks_units);
+
+	} else if (tasks_task == "Craft") {
+		OnCraftMenuSelected(event);
+		txt_units->SetValue(tasks_units);
+		cmb_item->SetValue(tasks_item);
+
+	} else if (tasks_task == "Build") {
+		OnBuildMenuSelected(event);
+		txt_x_cord->SetValue(tasks_x_cord);
+		txt_y_cord->SetValue(tasks_y_cord);
+		cmb_item->SetValue(tasks_item);
+		cmb_building_orientation->SetValue(tasks_building_direction);
+		cmb_direction_to_build->SetValue(tasks_direction_to_build);
+		txt_building_size->SetValue(tasks_size);
+		txt_amount_of_buildings->SetValue(tasks_building_amount);
+
+	} else if (tasks_task == "Take") {
+		OnTakeMenuSelected(event);
+		txt_x_cord->SetValue(tasks_x_cord);
+		txt_y_cord->SetValue(tasks_y_cord);
+		txt_units->SetValue(tasks_units);
+		cmb_item->SetValue(tasks_item);
+		cmb_from_into->SetValue(tasks_building_direction);
+		cmb_direction_to_build->SetValue(tasks_direction_to_build);
+		txt_building_size->SetValue(tasks_size);
+		txt_amount_of_buildings->SetValue(tasks_building_amount);
+
+	} else if (tasks_task == "Put") {
+		OnPutMenuSelected(event);
+		txt_x_cord->SetValue(tasks_x_cord);
+		txt_y_cord->SetValue(tasks_y_cord);
+		txt_units->SetValue(tasks_units);
+		cmb_item->SetValue(tasks_item);
+		cmb_from_into->SetValue(tasks_building_direction);
+		cmb_direction_to_build->SetValue(tasks_direction_to_build);
+		txt_building_size->SetValue(tasks_size);
+		txt_amount_of_buildings->SetValue(tasks_building_amount);
+
+	} else if (tasks_task == "") {
+
+	} else if (tasks_task == "") {
+
+	}
 
 	event.Skip();
 }
