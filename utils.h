@@ -123,6 +123,8 @@ struct build_direction_struct {
 	std::string west = "defines.direction.west";
 };
 
+static const build_direction_struct build_directions;
+
 struct row_direction_struct {
 	std::string north = "north";
 	std::string south = "south";

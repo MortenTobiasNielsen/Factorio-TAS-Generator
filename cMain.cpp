@@ -419,6 +419,35 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	int start_row = *grid_tasks->GetSelectedRows().begin();
 	int row_count = grid_tasks->GetSelectedRows().GetCount();
 
+	std::string task;
+	std::string x_cord;
+	std::string y_cord;
+	std::string item;
+
+	for (int i = start_row; i < (start_row + row_count); i++) {
+		task = grid_tasks->GetCellValue(i, 0).ToStdString();
+
+		if (task == "Build") {
+			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+			y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+			item = grid_tasks->GetCellValue(i, 4).ToStdString();
+
+			for (int j = 0 ; j < grid_buildings->GetNumberRows()+1; j++) {
+				if (x_cord != grid_buildings->GetCellValue(j, 0)) {
+					continue;
+				}
+				if (y_cord != grid_buildings->GetCellValue(j, 1)) {
+					continue;
+				}
+				if (item != grid_buildings->GetCellValue(j, 2)) {
+					continue;
+				}
+
+				grid_buildings->DeleteRows(j, 1);
+			}
+		}
+	}
+
 	grid_tasks->DeleteRows(start_row, row_count);
 	it1 = tasks_data_to_save.begin();
 	it2 = tasks_data_to_save.begin();
@@ -636,8 +665,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		tasks_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
 		tasks_units = grid_tasks->GetCellValue(i, 3).ToStdString();
 		tasks_item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
-		tasks_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-		tasks_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+		tasks_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
+		tasks_direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
 		tasks_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 		tasks_building_amount = grid_tasks->GetCellValue(i, 8).ToStdString();
 
@@ -665,26 +694,26 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 		} else if (tasks_task == "Take") {
 
-			if (tasks_orientation == "Chest") {
+			if (tasks_orientation == "chest") {
 				from_into = take_put_list.chest;
-			} else if (tasks_orientation == "Fuel") {
+			} else if (tasks_orientation == "fuel") {
 				from_into == take_put_list.fuel;
 			} else if (tasks_item == "Lab") {
-				if (tasks_orientation == "Input") {
+				if (tasks_orientation == "input") {
 					from_into = take_put_list.lab_input;
-				} else if (tasks_orientation == "Modules") {
+				} else if (tasks_orientation == "modules") {
 					from_into = take_put_list.lab_modules;
 				} 
 			} else if (check_item(item, drills_list)) {
-				if (tasks_orientation == "Modules") {
+				if (tasks_orientation == "modules") {
 					from_into = take_put_list.drill_modules;
 				} 
 			} else {
-				if (tasks_orientation == "Input") {
+				if (tasks_orientation == "input") {
 					from_into = take_put_list.assembly_input;
-				} else if (tasks_orientation == "Modules") {
+				} else if (tasks_orientation == "modules") {
 					from_into = take_put_list.assembly_modules;
-				} else if (tasks_orientation == "Ouput") {
+				} else if (tasks_orientation == "ouput") {
 					from_into = take_put_list.assembly_output;
 				}
 			}
@@ -696,26 +725,26 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 			}
 		} else if (tasks_task == "Put") {
-			if (tasks_orientation == "Chest") {
+			if (tasks_orientation == "chest") {
 				from_into = take_put_list.chest;
-			} else if (tasks_orientation == "Fuel") {
+			} else if (tasks_orientation == "fuel") {
 				from_into = take_put_list.fuel;
 			} else if (tasks_item == "Lab") {
-				if (tasks_orientation == "Input") {
+				if (tasks_orientation == "input") {
 					from_into = take_put_list.lab_input;
-				} else if (tasks_orientation == "Modules") {
+				} else if (tasks_orientation == "modules") {
 					from_into = take_put_list.lab_modules;
 				}
 			} else if (check_item(item, drills_list)) {
-				if (tasks_orientation == "Modules") {
+				if (tasks_orientation == "modules") {
 					from_into = take_put_list.drill_modules;
 				}
 			} else {
-				if (tasks_orientation == "Input") {
+				if (tasks_orientation == "input") {
 					from_into = take_put_list.assembly_input;
-				} else if (tasks_orientation == "Modules") {
+				} else if (tasks_orientation == "modules") {
 					from_into = take_put_list.assembly_modules;
-				} else if (tasks_orientation == "Ouput") {
+				} else if (tasks_orientation == "ouput") {
 					from_into = take_put_list.assembly_output;
 				}
 			}
