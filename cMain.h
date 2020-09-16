@@ -112,6 +112,7 @@ private:
 
 
 	int row_num;
+	int num_of_rows;
 	int list_task_num;
 	int list_buildings_num;
 	std::string not_relevant = "";
@@ -149,6 +150,7 @@ private:
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
 	void update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
+	void update_tasks_grid(std::string type);
 	void change_task(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
 
 	void update_buildings_grid(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string recipe, std::string priority, std::string filter);

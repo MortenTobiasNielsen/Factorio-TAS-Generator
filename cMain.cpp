@@ -195,6 +195,152 @@ void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string 
 	
 }
 
+void cMain::update_tasks_grid(std::string type) {
+	
+	if (type == "Add") {
+		if (grid_tasks->IsSelection()) {
+			if (!grid_tasks->GetSelectedRows().begin()) {
+				wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+				return;
+			}
+			row_num = *grid_tasks->GetSelectedRows().begin();
+		} else {
+			row_num = grid_tasks->GetNumberRows();
+		}
+
+		grid_tasks->InsertRows(row_num, 1);
+		num_of_rows = 1;
+
+	} else if (type == "Change") {
+		if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+			wxMessageBox("Please select row(s) to dublicate", "Selection not valid");
+			return;
+		}
+		row_num = *grid_tasks->GetSelectedRows().begin();
+		num_of_rows = 1;
+
+	} else if (type == "Duplicate") {
+		if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+			wxMessageBox("Please select row(s) to dublicate", "Selection not valid");
+			return;
+		}
+		row_num = *grid_tasks->GetSelectedRows().begin();
+		num_of_rows = *grid_tasks->GetSelectedRows().end() - *grid_tasks->GetSelectedRows().begin() + 1;
+	}
+
+	for (int i = 0; i < num_of_rows; i++) {
+
+	}
+	// Extract data needed
+	x_cord = extract_x_cord();
+	y_cord = extract_y_cord();
+	units = extract_units();
+	item = extract_item();
+	from_into = extract_from_into();
+	build_orientation = extract_building_orientation();
+	direction_to_build = extract_direction_to_build();
+	building_size = extract_building_size();
+	amount_of_buildings = extract_amount_of_buildings();
+	tech_to_start = extract_tech();
+
+	// Game speed task logic
+	if (rbtn_game_speed->GetValue()) {
+		update_tasks_grid("Game Speed", not_relevant, not_relevant, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
+
+		// Walk task logic
+	} else if (rbtn_walk->GetValue()) {
+		update_tasks_grid("Walk", x_cord, y_cord, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
+
+		// Mine task logic
+	} else if (rbtn_mine->GetValue()) {
+		update_tasks_grid("Mine", x_cord, y_cord, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
+
+		// Rotation logic
+	} else if (rbtn_rotate->GetValue()) {
+		update_tasks_grid("Rotate", x_cord, y_cord, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
+		update_building_orientation(x_cord, y_cord, units);
+
+		// Craft task logic
+	} else if (rbtn_craft->GetValue()) {
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Craft", not_relevant, not_relevant, item, units, not_relevant, not_relevant, not_relevant, not_relevant);
+
+		// Fuel task logic
+	} else if (rbtn_fuel->GetValue()) {
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Fuel", x_cord, y_cord, item, units, not_relevant, direction_to_build, building_size, amount_of_buildings);
+
+		// Build task logic
+	} else if (rbtn_build->GetValue()) {
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_building(build_orientation, build_orientations)) {
+			wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Build", x_cord, y_cord, item, not_relevant, build_orientation, direction_to_build, building_size, amount_of_buildings);
+		building_row(x_cord, y_cord, item, build_orientation, direction_to_build, building_size, amount_of_buildings);
+
+		// Take from logic
+	} else if (rbtn_take->GetValue()) {
+
+		if (!check_take_put(item, take_from)) {
+			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Take", x_cord, y_cord, item, units, from_into, direction_to_build, building_size, amount_of_buildings);
+
+	} else if (rbtn_put->GetValue()) {
+
+		if (!check_take_put(item, take_from)) {
+			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		update_tasks_grid("Put", x_cord, y_cord, item, units, from_into, direction_to_build, building_size, amount_of_buildings);
+
+	} else if (rbtn_tech->GetValue()) {
+		if (!check_item(tech_to_start, tech_list)) {
+			wxMessageBox("The tech is not valid - please try again", "Please use the tech dropdown menu");
+			return;
+		}
+		update_tasks_grid("Tech", not_relevant, not_relevant, tech_to_start, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
+	}
+}
+
 void cMain::change_task(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build) {
 	if (grid_tasks->IsSelection()) {
 		if (!grid_tasks->GetSelectedRows().begin()) {
