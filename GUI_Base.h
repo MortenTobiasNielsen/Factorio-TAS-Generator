@@ -85,7 +85,15 @@ protected:
 	wxRadioButton* rbtn_launch;
 	wxStaticLine* m_staticline2;
 	wxButton* btn_add_task;
+	wxButton* btn_change_task;
 	wxButton* btn_delete_task;
+	wxButton* btn_move_up;
+	wxButton* btn_move_down;
+	wxButton* btn_duplicate_tasks;
+	wxStaticText* label_offset_size;
+	wxTextCtrl* txt_offset_size;
+	wxStaticText* label_offset_direction;
+	wxComboBox* cmb_offset_direction;
 	wxStaticLine* m_staticline14;
 	wxStaticText* label_buildings;
 	wxGrid* grid_buildings;
@@ -134,7 +142,11 @@ protected:
 	virtual void OnDropChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLaunchChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildingsGridLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTasksGridLeftClick(wxGridEvent& event) { event.Skip(); }
@@ -143,7 +155,7 @@ protected:
 
 public:
 
-	GUI_Base(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio Scripting Helper"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1500, 1080), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+	GUI_Base(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio Scripting Helper"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1556, 1080), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 	~GUI_Base();
 

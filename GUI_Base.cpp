@@ -212,13 +212,13 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	label_tech = new wxStaticText(m_panel1, wxID_ANY, wxT("Tech:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
 	label_tech->Wrap(-1);
-	bSizer34->Add(label_tech, 0, wxALL, 5);
+	bSizer34->Add(label_tech, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 	cmb_tech = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
 	cmb_tech->SetSelection(0);
 	cmb_tech->SetMinSize(wxSize(150, -1));
 
-	bSizer34->Add(cmb_tech, 0, wxALL, 5);
+	bSizer34->Add(cmb_tech, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer24->Add(bSizer34, 1, 0, 5);
@@ -231,12 +231,6 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 
 	bSizer24->Add(bSizer47, 1, 0, 5);
-
-	wxBoxSizer* bSizer48;
-	bSizer48 = new wxBoxSizer(wxVERTICAL);
-
-
-	bSizer24->Add(bSizer48, 1, 0, 5);
 
 
 	bSizer20->Add(bSizer24, 1, wxEXPAND, 5);
@@ -497,14 +491,120 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	btn_add_task = new wxButton(m_panel1, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer56->Add(btn_add_task, 0, wxALIGN_CENTER | wxALL, 5);
 
+	btn_change_task = new wxButton(m_panel1, wxID_ANY, wxT("Change Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer56->Add(btn_change_task, 0, wxALL, 5);
+
 	btn_delete_task = new wxButton(m_panel1, wxID_ANY, wxT("Delete Task"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer56->Add(btn_delete_task, 0, wxALL, 5);
+
+	btn_move_up = new wxButton(m_panel1, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer56->Add(btn_move_up, 0, wxALL, 5);
+
+	btn_move_down = new wxButton(m_panel1, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer56->Add(btn_move_down, 0, wxALL, 5);
+
+	btn_duplicate_tasks = new wxButton(m_panel1, wxID_ANY, wxT("Duplicate Task(s)"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer56->Add(btn_duplicate_tasks, 0, wxALL, 5);
 
 
 	bSizer18->Add(bSizer56, 1, wxALIGN_CENTER, 5);
 
 
 	bSizer19->Add(bSizer18, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer30111;
+	bSizer30111 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer28111;
+	bSizer28111 = new wxBoxSizer(wxHORIZONTAL);
+
+
+	bSizer28111->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer30111->Add(bSizer28111, 1, 0, 5);
+
+	wxBoxSizer* bSizer36111;
+	bSizer36111 = new wxBoxSizer(wxHORIZONTAL);
+
+
+	bSizer36111->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer30111->Add(bSizer36111, 1, 0, 5);
+
+	wxBoxSizer* bSizer49111;
+	bSizer49111 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer49111->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer30111->Add(bSizer49111, 1, 0, 5);
+
+	wxBoxSizer* bSizer23111;
+	bSizer23111 = new wxBoxSizer(wxHORIZONTAL);
+
+	bSizer23111->SetMinSize(wxSize(10, 10));
+	label_offset_size = new wxStaticText(m_panel1, wxID_ANY, wxT("Offset size:"), wxDefaultPosition, wxDefaultSize, 0);
+	label_offset_size->Wrap(-1);
+	bSizer23111->Add(label_offset_size, 0, wxALIGN_CENTER_VERTICAL, 5);
+
+	txt_offset_size = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	bSizer23111->Add(txt_offset_size, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+
+	bSizer30111->Add(bSizer23111, 1, 0, 5);
+
+
+	bSizer19->Add(bSizer30111, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer3011;
+	bSizer3011 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer2811;
+	bSizer2811 = new wxBoxSizer(wxHORIZONTAL);
+
+
+	bSizer2811->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer3011->Add(bSizer2811, 1, 0, 5);
+
+	wxBoxSizer* bSizer3611;
+	bSizer3611 = new wxBoxSizer(wxHORIZONTAL);
+
+
+	bSizer3611->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer3011->Add(bSizer3611, 1, 0, 5);
+
+	wxBoxSizer* bSizer4911;
+	bSizer4911 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer4911->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer3011->Add(bSizer4911, 1, 0, 5);
+
+	wxBoxSizer* bSizer2311;
+	bSizer2311 = new wxBoxSizer(wxHORIZONTAL);
+
+	bSizer2311->SetMinSize(wxSize(10, 10));
+	label_offset_direction = new wxStaticText(m_panel1, wxID_ANY, wxT("Offset Direction:"), wxDefaultPosition, wxDefaultSize, 0);
+	label_offset_direction->Wrap(-1);
+	bSizer2311->Add(label_offset_direction, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	cmb_offset_direction = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
+	bSizer2311->Add(cmb_offset_direction, 0, wxALL, 5);
+
+
+	bSizer3011->Add(bSizer2311, 1, 0, 5);
+
+
+	bSizer19->Add(bSizer3011, 1, wxEXPAND, 5);
 
 
 	bSizer19->Add(10000, 0, 1, wxEXPAND, 5);
@@ -539,7 +639,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	label_buildings->Wrap(-1);
 	bSizer76->Add(label_buildings, 0, wxALIGN_CENTER, 5);
 
-	grid_buildings = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+	grid_buildings = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxSize(800, -1), 0);
 
 	// Grid
 	grid_buildings->CreateGrid(0, 7);
@@ -575,7 +675,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_buildings->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_buildings->SetMinSize(wxSize(-1, 2500));
+	grid_buildings->SetMinSize(wxSize(750, 2500));
 
 	bSizer76->Add(grid_buildings, 0, wxALL, 5);
 
@@ -591,7 +691,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer44;
 	bSizer44 = new wxBoxSizer(wxVERTICAL);
 
-	bSizer44->SetMinSize(wxSize(500, -1));
+	bSizer44->SetMinSize(wxSize(550, -1));
 	wxBoxSizer* bSizer50;
 	bSizer50 = new wxBoxSizer(wxVERTICAL);
 
@@ -599,7 +699,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	label_tasks->Wrap(-1);
 	bSizer50->Add(label_tasks, 0, wxALIGN_CENTER, 5);
 
-	grid_tasks = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+	grid_tasks = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
 
 	// Grid
 	grid_tasks->CreateGrid(0, 9);
@@ -639,7 +739,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_tasks->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_tasks->SetMinSize(wxSize(-1, 2500));
+	grid_tasks->SetMinSize(wxSize(685, 2500));
 
 	bSizer50->Add(grid_tasks, 0, wxALL, 5);
 
@@ -706,7 +806,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	rbtn_drop->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
 	rbtn_launch->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
 	btn_add_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
 	btn_delete_task->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
 	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftClick), NULL, this);
 	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
 	grid_tasks->Connect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnTasksGridLeftClick), NULL, this);
@@ -738,7 +842,11 @@ GUI_Base::~GUI_Base() {
 	rbtn_drop->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
 	rbtn_launch->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
 	btn_add_task->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
 	btn_delete_task->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
 	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftClick), NULL, this);
 	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
 	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnTasksGridLeftClick), NULL, this);
@@ -747,7 +855,7 @@ GUI_Base::~GUI_Base() {
 }
 
 Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
-	this->SetSizeHints(wxSize(570, 370), wxDefaultSize);
+	this->SetSizeHints(wxSize(570, 400), wxDefaultSize);
 
 	wxBoxSizer* bSizer50;
 	bSizer50 = new wxBoxSizer(wxVERTICAL);
@@ -755,11 +863,13 @@ Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& 
 	wxBoxSizer* bSizer98;
 	bSizer98 = new wxBoxSizer(wxHORIZONTAL);
 
-	m_scrolledWindow3 = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL | wxVSCROLL);
+	bSizer98->SetMinSize(wxSize(-1, 325));
+	m_scrolledWindow3 = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxHSCROLL | wxVSCROLL);
 	m_scrolledWindow3->SetScrollRate(5, 5);
 	wxBoxSizer* bSizer519;
 	bSizer519 = new wxBoxSizer(wxVERTICAL);
 
+	bSizer519->SetMinSize(wxSize(-1, 300));
 	wxBoxSizer* bSizer5181;
 	bSizer5181 = new wxBoxSizer(wxHORIZONTAL);
 

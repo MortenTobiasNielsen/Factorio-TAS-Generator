@@ -5,6 +5,7 @@
 #include <wx/grid.h>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "GUI_Base.h"
 
@@ -58,7 +59,11 @@ protected:
 	void OnDirectionToBuildSelected(wxCommandEvent& event);
 
 	void OnAddTaskClicked(wxCommandEvent& event);
+	void OnChangeTaskClicked(wxCommandEvent& event);
 	void OnDeleteTaskClicked(wxCommandEvent& event);
+	void OnMoveUpClicked(wxCommandEvent& event);
+	void OnMoveDownClicked(wxCommandEvent& event); 
+	void OnDuplicateTasksClicked(wxCommandEvent& event);
 	
 	void OnTasksGridLeftClick(wxGridEvent& event);
 	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
@@ -103,6 +108,8 @@ private:
 	std::vector<std::string>::iterator it1;
 	std::vector<std::string>::iterator it2;
 
+	std::map<std::string, std::vector<std::string>> task_groups;
+
 
 	int row_num;
 	int list_task_num;
@@ -141,7 +148,8 @@ private:
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
-	void update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string building_direction, std::string direction_to_build, std::string amount_to_build, std::string building_size);
+	void update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
+	void change_task(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
 
 	void update_buildings_grid(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string recipe, std::string priority, std::string filter);
 	void update_buildings_grid_new_building(std::string x_cord, std::string y_cord, std::string item, std::string orientation);

@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iomanip>
 
-cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1500, 1080)) {
+cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1560, 1080)) {
 	//all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
 	all_items.insert(all_items.end(), item_production.begin(), item_production.end());
@@ -14,6 +14,12 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	all_items.insert(all_items.end(), item_combat.begin(), item_combat.end());
 
 	static const std::vector<std::string> all_items_const(all_items);
+
+	std::vector<std::string> test = { "Take", "-15.500000", "-2.500000", "All", "Iron plate", "Chest", "North", "1", "1" };
+
+	task_groups["Burner - Iron"] = test;
+
+	std::string test2 = task_groups["Burner - Iron"][1];
 
 	for (auto s : all_items_const) {
 		item_choices.Add(s);
@@ -188,6 +194,41 @@ void cMain::update_tasks_grid(std::string task, std::string x_cord, std::string 
 	}
 	
 }
+
+void cMain::change_task(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build) {
+	if (grid_tasks->IsSelection()) {
+		if (!grid_tasks->GetSelectedRows().begin()) {
+			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			return;
+		}
+		row_num = *grid_tasks->GetSelectedRows().begin();
+	} else {
+		row_num = grid_tasks->GetNumberRows();
+	}
+
+	grid_tasks->InsertRows(row_num, 1);
+
+	grid_tasks->SetCellValue(row_num, 0, task);
+	grid_tasks->SetCellValue(row_num, 1, x_cord);
+	grid_tasks->SetCellValue(row_num, 2, y_cord);
+	grid_tasks->SetCellValue(row_num, 3, units);
+	grid_tasks->SetCellValue(row_num, 4, item);
+	grid_tasks->SetCellValue(row_num, 5, orientation);
+	grid_tasks->SetCellValue(row_num, 6, direction_to_build);
+	grid_tasks->SetCellValue(row_num, 7, building_size);
+	grid_tasks->SetCellValue(row_num, 8, amount_to_build);
+
+	if (grid_tasks->IsSelection()) {
+		it1 = tasks_data_to_save.begin();
+		it1 += row_num;
+
+		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_to_build);
+	} else {
+		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_to_build);
+	}
+
+}
+
 
 
 
@@ -426,6 +467,38 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		update_tasks_grid("Tech", not_relevant, not_relevant, tech_to_start, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
 	}
 	event.Skip();
+}
+
+void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select a row to change", "Selection not valid");
+		return;
+	}
+
+	row_num = *grid_tasks->GetSelectedRows().begin();
+
+	x_cord = extract_x_cord();
+	y_cord = extract_y_cord();
+	units = extract_units();
+	item = extract_item();
+	from_into = extract_from_into();
+	build_orientation = extract_building_orientation();
+	direction_to_build = extract_direction_to_build();
+	building_size = extract_building_size();
+	amount_of_buildings = extract_amount_of_buildings();
+	tech_to_start = extract_tech();
+
+
+
+	grid_tasks->SetCellValue(row_num, 0, task);
+	grid_tasks->SetCellValue(row_num, 1, extract_x_cord());
+	grid_tasks->SetCellValue(row_num, 2, extract_y_cord());
+	grid_tasks->SetCellValue(row_num, 3, extract_units());
+	grid_tasks->SetCellValue(row_num, 4, extract_item());
+	grid_tasks->SetCellValue(row_num, 5, extract_building_orientation());
+	grid_tasks->SetCellValue(row_num, 6, extract_direction_to_build());
+	grid_tasks->SetCellValue(row_num, 7, extract_building_size());
+	grid_tasks->SetCellValue(row_num, 8, extract_amount_of_buildings());
 }
 
 void cMain::OnTasksGridLeftClick(wxGridEvent& event) {
