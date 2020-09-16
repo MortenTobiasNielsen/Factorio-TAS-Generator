@@ -19,7 +19,7 @@ static const std::vector<std::string> science_packs = {"Automation science pack"
 
 static const std::vector<std::string> module_list = {"Speed module", "Speed module 2" , "Speed module 3", "Efficiency module", "Efficiency module 2", "Efficiency module 3", "Productivity module", "Productivity module 2", "Productivity module 3"};
 
-static const std::vector<std::string> build_orientations = {"North", "South", "East", "West"};
+static const std::vector<std::string> build_orientations = {"North", "East", "South", "West"};
 
 static const std::vector<std::string> tech_list = {"Automation", "Optics", "Turrets", "Stone walls", "Military", "Logistics", "Steel processing", "Electronics", "Logistic science pack"};
 
@@ -111,9 +111,9 @@ struct build_distance_struct {
 };
 
 struct mining_distance_struct {
-	float one = 2.7f;
-	float two = 1.7f;
-	float three = 0.7f;
+	float one = 2.65f;
+	float two = 1.65f;
+	float three = 0.65f;
 };
 
 struct build_direction_struct {

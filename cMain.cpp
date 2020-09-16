@@ -250,6 +250,38 @@ void cMain::update_buildings_grid_from_scratch() {
 	}
 }
 
+void cMain::update_building_orientation(std::string x_cord, std::string y_cord, std::string units) {
+	row_num = grid_buildings->GetNumberRows();
+	std::string build_x_cord;
+	std::string build_y_cord;
+	std::string build_orientation;
+
+	for (int i = 0; i < row_num; i++) {
+		build_x_cord = grid_buildings->GetCellValue(i, 0);
+		build_y_cord = grid_buildings->GetCellValue(i, 1);
+		build_orientation = grid_buildings->GetCellValue(i, 3);
+		int orientation_location;
+
+		if (build_x_cord != x_cord) {
+			continue;
+		}
+		if (build_y_cord != y_cord) {
+			continue;
+		}
+
+		for (auto it = build_orientations.begin(); it < build_orientations.end(); it++) {
+			if (build_orientation == *it) {
+				orientation_location = it - build_orientations.begin();
+			}
+		}
+
+		grid_buildings->SetCellValue(i, 3, build_orientations[(orientation_location + std::stoi(units)) % 4]);
+		return;
+	}
+
+	wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
+}
+
 void cMain::building_row(std::string x_cord, std::string y_cord, std::string item, std::string build_orientation, std::string direction_to_build, std::string building_size, std::string amount_of_buildings) {
 	static float start_x_cord = std::stof(x_cord);
 	static float start_y_cord = std::stof(y_cord);
@@ -308,6 +340,11 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	// Mine task logic
 	} else if (rbtn_mine->GetValue()) {
 		update_tasks_grid("Mine", x_cord, y_cord, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
+
+	// Rotation logic
+	} else if (rbtn_rotate->GetValue()) {
+		update_tasks_grid("Rotate", x_cord, y_cord, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
+		update_building_orientation(x_cord, y_cord, units);
 
 	// Craft task logic
 	} else if (rbtn_craft->GetValue()) {
@@ -431,6 +468,12 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 
 	} else if (tasks_task == "Mine") {
 		OnMineMenuSelected(event);
+		txt_x_cord->SetValue(tasks_x_cord);
+		txt_y_cord->SetValue(tasks_y_cord);
+		txt_units->SetValue(tasks_units);
+
+	} else if (tasks_task == "Rotate") {
+		OnRotateMenuSelected(event);
 		txt_x_cord->SetValue(tasks_x_cord);
 		txt_y_cord->SetValue(tasks_y_cord);
 		txt_units->SetValue(tasks_units);
@@ -751,6 +794,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	static std::string tasks_direction_to_build; 
 	static std::string tasks_size;
 	static std::string tasks_building_amount;
+	static std::string building;
 
 	for (int i = 0; i < tasks; i++) {
 		tasks_task = grid_tasks->GetCellValue(i, 0).ToStdString();
@@ -772,6 +816,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		} else if (tasks_task == "Mine") {
 			mining(tasks_x_cord, tasks_y_cord, tasks_units);
 
+		} else if (tasks_task == "Rotate") {
+			rotate(tasks_x_cord, tasks_y_cord, tasks_units);
+
 		} else if (tasks_task == "Craft") {
 			if (tasks_units == "All") {
 				craft("-1", tasks_item);
@@ -791,25 +838,38 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				from_into = take_put_list.chest;
 			} else if (tasks_orientation == "fuel") {
 				from_into = take_put_list.fuel;
-			} else if (tasks_item == "Lab") {
-				if (tasks_orientation == "input") {
-					from_into = take_put_list.lab_input;
-				} else if (tasks_orientation == "modules") {
-					from_into = take_put_list.lab_modules;
-				} 
-			} else if (check_item(item, drills_list)) {
-				if (tasks_orientation == "modules") {
-					from_into = take_put_list.drill_modules;
-				} 
 			} else {
-				if (tasks_orientation == "input") {
-					from_into = take_put_list.assembly_input;
-				} else if (tasks_orientation == "modules") {
-					from_into = take_put_list.assembly_modules;
-				} else if (tasks_orientation == "output") {
-					from_into = take_put_list.assembly_output;
+
+				for (int j = i-1; j > -1; j--) {
+					if (grid_tasks->GetCellValue(j, 0).ToStdString() == "Build") {
+						if (grid_tasks->GetCellValue(j, 1).ToStdString() == tasks_x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == tasks_y_cord) {
+							building = grid_tasks->GetCellValue(j, 4).ToStdString();
+							break;
+						}
+					}
+				}
+
+				if (building == "Lab") {
+					if (tasks_orientation == "input") {
+						from_into = take_put_list.lab_input;
+					} else if (tasks_orientation == "modules") {
+						from_into = take_put_list.lab_modules;
+					}
+				} else if (check_item(building, drills_list)) {
+					if (tasks_orientation == "modules") {
+						from_into = take_put_list.drill_modules;
+					}
+				} else {
+					if (tasks_orientation == "input") {
+						from_into = take_put_list.assembly_input;
+					} else if (tasks_orientation == "modules") {
+						from_into = take_put_list.assembly_modules;
+					} else if (tasks_orientation == "output") {
+						from_into = take_put_list.assembly_output;
+					}
 				}
 			}
+			
 
 			if (tasks_units == "All") {
 				row_take(tasks_x_cord, tasks_y_cord, "-1", tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
@@ -817,28 +877,41 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				row_take(tasks_x_cord, tasks_y_cord, tasks_units, tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
 
 			}
+
 		} else if (tasks_task == "Put") {
 			if (tasks_orientation == "chest") {
 				from_into = take_put_list.chest;
 			} else if (tasks_orientation == "fuel") {
 				from_into = take_put_list.fuel;
-			} else if (tasks_item == "Lab") {
-				if (tasks_orientation == "input") {
-					from_into = take_put_list.lab_input;
-				} else if (tasks_orientation == "modules") {
-					from_into = take_put_list.lab_modules;
-				}
-			} else if (check_item(item, drills_list)) {
-				if (tasks_orientation == "modules") {
-					from_into = take_put_list.drill_modules;
-				}
 			} else {
-				if (tasks_orientation == "input") {
-					from_into = take_put_list.assembly_input;
-				} else if (tasks_orientation == "modules") {
-					from_into = take_put_list.assembly_modules;
-				} else if (tasks_orientation == "ouput") {
-					from_into = take_put_list.assembly_output;
+
+				for (int j = i - 1; j > -1; j--) {
+					if (grid_tasks->GetCellValue(j, 0).ToStdString() == "Build") {
+						if (grid_tasks->GetCellValue(j, 1).ToStdString() == tasks_x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == tasks_y_cord) {
+							building = grid_tasks->GetCellValue(j, 4).ToStdString();
+							break;
+						}
+					}
+				}
+
+				if (building == "Lab") {
+					if (tasks_orientation == "input") {
+						from_into = take_put_list.lab_input;
+					} else if (tasks_orientation == "modules") {
+						from_into = take_put_list.lab_modules;
+					}
+				} else if (check_item(building, drills_list)) {
+					if (tasks_orientation == "modules") {
+						from_into = take_put_list.drill_modules;
+					}
+				} else {
+					if (tasks_orientation == "input") {
+						from_into = take_put_list.assembly_input;
+					} else if (tasks_orientation == "modules") {
+						from_into = take_put_list.assembly_modules;
+					} else if (tasks_orientation == "output") {
+						from_into = take_put_list.assembly_output;
+					}
 				}
 			}
 
