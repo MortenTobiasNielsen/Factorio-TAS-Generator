@@ -546,12 +546,12 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer23111 = new wxBoxSizer(wxHORIZONTAL);
 
 	bSizer23111->SetMinSize(wxSize(10, 10));
-	label_offset_size = new wxStaticText(m_panel1, wxID_ANY, wxT("Offset size:"), wxDefaultPosition, wxDefaultSize, 0);
+	label_offset_size = new wxStaticText(m_panel1, wxID_ANY, wxT("X Offset Size:"), wxDefaultPosition, wxDefaultSize, 0);
 	label_offset_size->Wrap(-1);
 	bSizer23111->Add(label_offset_size, 0, wxALIGN_CENTER_VERTICAL, 5);
 
-	txt_offset_size = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
-	bSizer23111->Add(txt_offset_size, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	txt_x_offset = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	bSizer23111->Add(txt_x_offset, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer30111->Add(bSizer23111, 1, 0, 5);
@@ -593,12 +593,12 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer2311 = new wxBoxSizer(wxHORIZONTAL);
 
 	bSizer2311->SetMinSize(wxSize(10, 10));
-	label_offset_direction = new wxStaticText(m_panel1, wxID_ANY, wxT("Offset Direction:"), wxDefaultPosition, wxDefaultSize, 0);
-	label_offset_direction->Wrap(-1);
-	bSizer2311->Add(label_offset_direction, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	label_y_offset = new wxStaticText(m_panel1, wxID_ANY, wxT("Y Offset Size:"), wxDefaultPosition, wxDefaultSize, 0);
+	label_y_offset->Wrap(-1);
+	bSizer2311->Add(label_y_offset, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	cmb_offset_direction = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(80, -1), 0, NULL, 0);
-	bSizer2311->Add(cmb_offset_direction, 0, wxALL, 5);
+	txt_y_offset = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	bSizer2311->Add(txt_y_offset, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer3011->Add(bSizer2311, 1, 0, 5);

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <ctime>
 
 #include "GUI_Base.h"
 
@@ -111,6 +112,8 @@ private:
 	int row_count;
 	int row_to_move;
 
+	time_t time_in_sec;
+
 	std::string data;
 	std::string not_relevant = "";
 	std::vector<std::string> all_items;
@@ -145,12 +148,15 @@ private:
 	std::vector<std::string> tasks_data_to_save;
 	std::vector<std::string> buildings_data_to_save;
 
-	
+	int duplicate_multiplier;
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
 	void update_tasks_grid();
 	void change_task();
+	void duplicate_task();
+
+
 
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch();
@@ -168,6 +174,8 @@ private:
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item, const std::vector<std::string>& all_items);
+
+	void reset_duplicate_multiplier();
 
 	void save_file();
 

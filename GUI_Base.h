@@ -91,9 +91,9 @@ protected:
 	wxButton* btn_move_down;
 	wxButton* btn_duplicate_tasks;
 	wxStaticText* label_offset_size;
-	wxTextCtrl* txt_offset_size;
-	wxStaticText* label_offset_direction;
-	wxComboBox* cmb_offset_direction;
+	wxTextCtrl* txt_x_offset;
+	wxStaticText* label_y_offset;
+	wxTextCtrl* txt_y_offset;
 	wxStaticLine* m_staticline14;
 	wxStaticText* label_buildings;
 	wxGrid* grid_buildings;
@@ -230,7 +230,7 @@ protected:
 
 public:
 
-	Shortcuts_Menu(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Change Shortcuts"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(570, 370), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+	Shortcuts_Menu(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Change Shortcuts"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(570, 396), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 	~Shortcuts_Menu();
 

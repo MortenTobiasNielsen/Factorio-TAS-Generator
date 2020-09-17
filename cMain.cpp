@@ -15,6 +15,9 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 
 	static const std::vector<std::string> all_items_const(all_items);
 
+	time_in_sec = time(0);
+	duplicate_multiplier = 1;
+
 	for (auto s : all_items_const) {
 		item_choices.Add(s);
 	}
@@ -37,18 +40,14 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 
 	cmb_building_orientation->Clear();
 	cmb_direction_to_build->Clear();
-	cmb_offset_direction->Clear();
 	for (auto it = build_orientations.begin(); it < build_orientations.end(); it++) {
 		cmb_building_orientation->Append(*it);
 		cmb_direction_to_build->Append(*it);
-		cmb_offset_direction->Append(*it);
 	}
 	cmb_building_orientation->SetValue(*build_orientations.begin());
 	cmb_building_orientation->AutoComplete(building_orientation_choices);
 	cmb_direction_to_build->SetValue(*build_orientations.begin());
 	cmb_direction_to_build->AutoComplete(building_orientation_choices);
-	cmb_offset_direction->SetValue(*build_orientations.begin());
-	cmb_offset_direction->AutoComplete(building_orientation_choices);
 
 	cmb_item->Clear();
 	for (auto it = all_items_const.begin(); it < all_items_const.end(); it++) {
@@ -208,6 +207,24 @@ void cMain::change_task() {
 	tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 
 	update_buildings_grid_from_scratch();
+}
+
+void cMain::duplicate_task() {
+	row_num = grid_tasks->GetNumberRows();
+
+	grid_tasks->InsertRows(row_num, 1);
+
+	grid_tasks->SetCellValue(row_num, 0, task);
+	grid_tasks->SetCellValue(row_num, 1, x_cord);
+	grid_tasks->SetCellValue(row_num, 2, y_cord);
+	grid_tasks->SetCellValue(row_num, 3, units);
+	grid_tasks->SetCellValue(row_num, 4, item);
+	grid_tasks->SetCellValue(row_num, 5, build_orientation);
+	grid_tasks->SetCellValue(row_num, 6, direction_to_build);
+	grid_tasks->SetCellValue(row_num, 7, building_size);
+	grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
+
+	tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 }
 
 void cMain::update_buildings_grid() {
@@ -475,6 +492,8 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	tasks_data_to_save.erase(it1, it2);	
 
 	update_buildings_grid_from_scratch();
+
+	event.Skip();
 }
 
 void cMain::OnMoveUpClicked(wxCommandEvent& event) {
@@ -525,6 +544,7 @@ void cMain::OnMoveUpClicked(wxCommandEvent& event) {
 	it2 += row_num + row_count - 1;
 	tasks_data_to_save.insert(it2, data);
 
+	event.Skip();
 }
 
 void cMain::OnMoveDownClicked(wxCommandEvent& event) {
@@ -577,6 +597,8 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 	data = *it1;
 	tasks_data_to_save.erase(it1, it1+1);
 	tasks_data_to_save.insert(it2, data);
+
+	event.Skip();
 }
 
 
@@ -584,44 +606,56 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 
 void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
 	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
-		wxMessageBox("Please select a row to change", "Task list selection not valid");
+		wxMessageBox("Please select row(s) to duplicate", "Task list selection not valid");
 		return;
+	}
+
+	if (time_in_sec > time(0) - 3) {
+		duplicate_multiplier += 1;
+	} else {
+		duplicate_multiplier = 1;
+		time_in_sec = time(0);
 	}
 
 	row_count = grid_tasks->GetSelectedRows().GetCount();
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	static float x_offset;
+	static float new_x_offset;
+
 	static float y_offset;
+	static float new_y_offset;
 
+	int i = row_num;
+	int rows = row_num + row_count;
 
-	for (int i = row_num; i < (row_num + row_count); i++) {
+	for (i ; i < rows; i++) {
 		task = grid_tasks->GetCellValue(i, 0).ToStdString();
 		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
 		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
 		units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
-		build_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
-		direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
+		item = grid_tasks->GetCellValue(i, 4).ToStdString();
+		build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+		direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
 		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
-		x_offset = 0;
-		y_offset = wxAtoi(txt_offset_size->GetValue().ToStdString());
+		x_offset = wxAtoi(txt_x_offset->GetValue().ToStdString()) * duplicate_multiplier;
+		y_offset = wxAtoi(txt_y_offset->GetValue().ToStdString()) * duplicate_multiplier;
 
 		x_cord = std::to_string(std::stof(x_cord) + x_offset);
 		y_cord = std::to_string(std::stof(y_cord) + y_offset);
 
-		update_tasks_grid();
+		duplicate_task();
 		if (task == "Build") {
 			building_row();
 		}
-
 	}
+
 	event.Skip();
 }
 
-void cMain::OnMenuNew(wxCommandEvent& evt) {
+void cMain::OnMenuNew(wxCommandEvent& event) {
 
 	if (grid_tasks->GetNumberRows() > 0) {
 		if (wxMessageBox("Are you sure you want to create a new file?\nAll in the current window will be cleared.", "Ensure that you have saved what you need in the file", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
@@ -642,9 +676,11 @@ void cMain::OnMenuNew(wxCommandEvent& evt) {
 
 	tasks_data_to_save = {};
 	buildings_data_to_save = {};
+
+	event.Skip();
 }
 
-void cMain::OnMenuOpen(wxCommandEvent& evt) {
+void cMain::OnMenuOpen(wxCommandEvent& event) {
 	
 	wxFileDialog dlg(this, "Open saved factorio script helper file", "", "", ".txt files (*.txt) | *.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
@@ -749,10 +785,12 @@ void cMain::OnMenuOpen(wxCommandEvent& evt) {
 		}
 
 		inFile.close();
-	}	
+	}
+	
+	event.Skip();
 }
 
-void cMain::OnMenuSave(wxCommandEvent& evt) {
+void cMain::OnMenuSave(wxCommandEvent& event) {
 
 	if (save_file_location == "") {
 		wxFileDialog dlg(this, "Save factorio script helper", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -767,6 +805,8 @@ void cMain::OnMenuSave(wxCommandEvent& evt) {
 	save_file();
 
 	clear_tasks();
+
+	event.Skip();
 }
 
 void cMain::OnMenuSaveAs(wxCommandEvent& event) {
@@ -782,16 +822,20 @@ void cMain::OnMenuSaveAs(wxCommandEvent& event) {
 	save_file();
 
 	clear_tasks();
+
+	event.Skip();
 }
 
-void cMain::OnMenuExit(wxCommandEvent& evt) {
-	evt.Skip();	
+void cMain::OnMenuExit(wxCommandEvent& event) {
+	event.Skip();
 	Close();
 }
 
 void cMain::OnChooseLocation(wxCommandEvent& event) {
 	wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	generate_code_file_location = dlg.GetPath().ToStdString();
+
+	event.Skip();
 }
 
 void cMain::OnGenerateScript(wxCommandEvent& event) {
@@ -944,9 +988,6 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		}
 	}
 
-
-
-
 	std::ofstream myfile;
 	myfile.open(generate_code_file_location);
 
@@ -955,6 +996,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	myfile.close();
 
 	clear_tasks();
+
+	event.Skip();
 }
 
 void cMain::OnChangeShortcuts(wxCommandEvent& event) {
@@ -1377,6 +1420,11 @@ bool cMain::check_take_put(const std::string& item, const std::vector<std::strin
 	}
 
 	return false;
+}
+
+void cMain::reset_duplicate_multiplier() {
+	duplicate_multiplier = 0;
+
 }
 
 void cMain::save_file() {
