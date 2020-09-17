@@ -102,13 +102,16 @@ private:
 
 	parameter_choices_struct parameter_choices;
 
-	int tasks_row_selected = 0;
 	int buildings_row_selected = 0;
 
 	std::vector<std::string>::iterator it1;
 	std::vector<std::string>::iterator it2;
 
 	int row_num;
+	int row_count;
+	int row_to_move;
+
+	std::string data;
 	std::string not_relevant = "";
 	std::vector<std::string> all_items;
 
@@ -124,10 +127,9 @@ private:
 	std::string building_size;
 	std::string amount_of_buildings;
 
-
-	
-	std::string from_into_tasks;
-	std::string tech_to_start;
+	std::string recipe;
+	std::string priority;
+	std::string filter;
 
 	wxArrayString item_choices;
 	wxArrayString take_from_choices;
@@ -147,23 +149,27 @@ private:
 
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
-	void update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
-	void change_task(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
+	void update_tasks_grid();
+	void change_task();
 
-	void update_buildings_grid(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string recipe, std::string priority, std::string filter);
-	void update_buildings_grid_new_building(std::string x_cord, std::string y_cord, std::string item, std::string orientation);
+	void update_buildings_grid();
 	void update_buildings_grid_from_scratch();
-	void update_building_orientation(std::string x_cord, std::string y_cord, std::string units);
-	void building_row(std::string x_cord, std::string y_cord, std::string item, std::string build_orientation, std::string direction_to_build, std::string building_size, std::string amount_of_buildings);
+	bool update_building_orientation();
+	void building_row();
 
 	void setup_paramters_comboboxes(std::vector<bool> parameters, std::vector<std::string> combo_item_category, std::vector<std::string> combo_item);
 
 	void setup_paramters(std::vector<bool> parameters);
 
+	bool setup_for_task_grid();
+
+	void extract_parameters();
+
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item, const std::vector<std::string>& all_items);
 
+	std::string extract_task();
 	std::string extract_x_cord();
 	std::string extract_y_cord();
 	std::string extract_units();
