@@ -206,6 +206,8 @@ void cMain::change_task() {
 	grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
 
 	tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+
+	update_buildings_grid_from_scratch();
 }
 
 void cMain::update_buildings_grid() {
@@ -288,19 +290,19 @@ void cMain::building_row() {
 
 	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
 		if (direction_to_build == "North") {
-			y_cord = std::to_string(std::stof(y_cord) - i * std::stoi(building_size));
+			y_cord = std::to_string(std::stof(y_cord) - std::stoi(building_size) + std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i+1) * std::stoi(building_size)) ));
 			update_buildings_grid();
 
 		} else if (direction_to_build == "South") {
-			y_cord = std::to_string(std::stof(y_cord) + i * std::stoi(building_size));
+			y_cord = std::to_string(std::stof(y_cord) + std::stoi(building_size) - std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i + 1) * std::stoi(building_size)) ));
 			update_buildings_grid();
 
 		} else if (direction_to_build == "East") {
-			x_cord = std::to_string(std::stof(x_cord) - i * std::stoi(building_size));
+			x_cord = std::to_string(std::stof(x_cord) + std::stoi(building_size) - std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i + 1) * std::stoi(building_size)) ));
 			update_buildings_grid();
 
 		} else if (direction_to_build == "West") {
-			x_cord = std::to_string(std::stof(x_cord) + i * std::stoi(building_size));
+			x_cord = std::to_string(std::stof(x_cord) - std::stoi(building_size) + std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i + 1) * std::stoi(building_size)) ));
 			update_buildings_grid();
 		}
 	}
@@ -312,6 +314,9 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 	if (setup_for_task_grid()) {
 		update_tasks_grid();
+		if (task == "Build") {
+			building_row();
+		}
 	}
 
 	event.Skip();
@@ -512,12 +517,14 @@ void cMain::OnMoveUpClicked(wxCommandEvent& event) {
 
 	it1 = tasks_data_to_save.begin();
 	it1 += row_to_move;
-	it2 = tasks_data_to_save.begin();
-	it2 += row_num + row_count - 1;
 
 	data = *it1;
-	tasks_data_to_save.erase(it1, it1);
+	tasks_data_to_save.erase(it1);
+	
+	it2 = tasks_data_to_save.begin();
+	it2 += row_num + row_count - 1;
 	tasks_data_to_save.insert(it2, data);
+
 }
 
 void cMain::OnMoveDownClicked(wxCommandEvent& event) {
@@ -565,9 +572,10 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 	it1 = tasks_data_to_save.begin();
 	it1 += row_to_move;
 	it2 = tasks_data_to_save.begin();
+	it2 += row_num;
 
 	data = *it1;
-	tasks_data_to_save.erase(it1, it1);
+	tasks_data_to_save.erase(it1, it1+1);
 	tasks_data_to_save.insert(it2, data);
 }
 
@@ -580,45 +588,34 @@ void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	int row_count = grid_tasks->GetSelectedRows().GetCount();
-	int start_row = *grid_tasks->GetSelectedRows().begin();
-
-	static std::string tasks_task;
-	static std::string tasks_x_cord;
-	static std::string tasks_y_cord;
-	static std::string tasks_item;
-	static std::string tasks_units;
-	static std::string tasks_orientation;
-	static std::string tasks_direction_to_build;
-	static std::string tasks_size;
-	static std::string tasks_building_amount;
-	static std::string building;
+	row_count = grid_tasks->GetSelectedRows().GetCount();
+	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	static float x_offset;
 	static float y_offset;
 
 
-	for (int i = start_row; i < (start_row + row_count); i++) {
-		tasks_task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		tasks_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		tasks_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		tasks_units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		tasks_item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
-		tasks_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
-		tasks_direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
-		tasks_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		tasks_building_amount = grid_tasks->GetCellValue(i, 8).ToStdString();
+	for (int i = row_num; i < (row_num + row_count); i++) {
+		task = grid_tasks->GetCellValue(i, 0).ToStdString();
+		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+		units = grid_tasks->GetCellValue(i, 3).ToStdString();
+		item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
+		build_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
+		direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
+		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 		x_offset = 0;
 		y_offset = wxAtoi(txt_offset_size->GetValue().ToStdString());
 
-		//float test = std::stof(tasks_x_cord);
+		x_cord = std::to_string(std::stof(x_cord) + x_offset);
+		y_cord = std::to_string(std::stof(y_cord) + y_offset);
 
-
-		//tasks_y_cord = std::to_string( test + y_offset);
-
-		tasks_x_cord = std::to_string(std::stof(tasks_x_cord) + x_offset);
-		tasks_y_cord = std::to_string(std::stof(tasks_x_cord) + y_offset);
+		update_tasks_grid();
+		if (task == "Build") {
+			building_row();
+		}
 
 	}
 	event.Skip();
@@ -767,28 +764,7 @@ void cMain::OnMenuSave(wxCommandEvent& evt) {
 		}
 	}
 
-	std::ofstream myfile;
-	myfile.open(save_file_location);
-
-	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
-		myfile << *it << ";" << std::endl;
-	}
-
-	myfile << buildings_list_save_indicator << std::endl;
-		
-	for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
-		myfile << *it << ";" << std::endl;
-	}
-
-	myfile << save_file_location_indicator << std::endl;
-
-	myfile << save_file_location << std::endl;
-
-	myfile << generate_file_location_indicator << std::endl;
-
-	myfile << generate_code_file_location << std::endl;
-
-	myfile.close();
+	save_file();
 
 	clear_tasks();
 }
@@ -799,23 +775,13 @@ void cMain::OnMenuSaveAs(wxCommandEvent& event) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		save_file_location = dlg.GetPath().ToStdString();
-		std::ofstream myfile;
-		myfile.open(save_file_location);
-
-		for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
-			myfile << *it << ";" << std::endl;
-		}
-
-		myfile << buildings_list_save_indicator << std::endl;
-
-		for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
-			myfile << *it << ";" << std::endl;
-		}
-
-		myfile.close();
-
-		clear_tasks();
+	} else {
+		return;
 	}
+
+	save_file();
+
+	clear_tasks();
 }
 
 void cMain::OnMenuExit(wxCommandEvent& evt) {
@@ -1411,6 +1377,44 @@ bool cMain::check_take_put(const std::string& item, const std::vector<std::strin
 	}
 
 	return false;
+}
+
+void cMain::save_file() {
+	
+	std::ofstream myfile;
+	myfile.open(save_file_location);
+
+	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
+		myfile << *it << ";" << std::endl;
+	}
+
+	if (buildings_data_to_save.size()) {
+		myfile << buildings_list_save_indicator << std::endl;
+
+		for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
+			myfile << *it << ";" << std::endl;
+		}
+	}
+
+	if (save_file_location != "") {
+		myfile << save_file_location_indicator << std::endl;
+		if (generate_code_file_location == "") {
+			myfile << save_file_location;
+		} else {
+			myfile << save_file_location << std::endl;
+
+			myfile << generate_file_location_indicator << std::endl;
+
+			myfile << generate_code_file_location;
+		}
+	} else if (generate_code_file_location != "") {
+		myfile << generate_file_location_indicator << std::endl;
+
+		myfile << generate_code_file_location;
+
+	}
+
+	myfile.close();
 }
 
 bool cMain::check_item(const std::string& item, const std::vector<std::string>& all_items) {
