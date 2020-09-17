@@ -108,26 +108,24 @@ private:
 	std::vector<std::string>::iterator it1;
 	std::vector<std::string>::iterator it2;
 
-	std::map<std::string, std::vector<std::string>> task_groups;
-
-
 	int row_num;
-	int num_of_rows;
-	int list_task_num;
-	int list_buildings_num;
 	std::string not_relevant = "";
 	std::vector<std::string> all_items;
-	std::string check;
-	std::string item;
-	
-	std::string units;
-	std::string amount_of_buildings;
-	std::string building_size;
+
+	std::string task;
 	std::string x_cord;
 	std::string y_cord;
+	std::string units; 
+	std::string item;
+	std::string from_into;
+	std::string tech_to_start;
 	std::string build_orientation;
 	std::string direction_to_build;
-	std::string from_into;
+	std::string building_size;
+	std::string amount_of_buildings;
+
+
+	
 	std::string from_into_tasks;
 	std::string tech_to_start;
 
@@ -150,7 +148,6 @@ private:
 	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
 
 	void update_tasks_grid(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
-	void update_tasks_grid(std::string type);
 	void change_task(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build);
 
 	void update_buildings_grid(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string recipe, std::string priority, std::string filter);
