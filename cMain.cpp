@@ -877,9 +877,125 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnMoveUpClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select a row to change", "Task list selection not valid");
+		return;
+	}
+
+	if (*grid_tasks->GetSelectedRows().begin() == 0) {
+		return;
+	}
+
+	int row_count = grid_tasks->GetSelectedRows().GetCount();
+	int start_row = *grid_tasks->GetSelectedRows().begin();
+	int row_to_move = start_row -1;
+	std::string data;
+
+	static std::string tasks_task = grid_tasks->GetCellValue(row_to_move, 0).ToStdString();
+	static std::string tasks_x_cord = grid_tasks->GetCellValue(row_to_move, 1).ToStdString();
+	static std::string tasks_y_cord = grid_tasks->GetCellValue(row_to_move, 2).ToStdString();
+	static std::string tasks_units = grid_tasks->GetCellValue(row_to_move, 3).ToStdString();
+	static std::string tasks_item = grid_tasks->GetCellValue(row_to_move, 4).ToStdString();
+	static std::string tasks_building_direction = grid_tasks->GetCellValue(row_to_move, 5).ToStdString();
+	static std::string tasks_direction_to_build = grid_tasks->GetCellValue(row_to_move, 6).ToStdString();
+	static std::string tasks_size = grid_tasks->GetCellValue(row_to_move, 7).ToStdString();
+	static std::string tasks_building_amount = grid_tasks->GetCellValue(row_to_move, 8).ToStdString();
+
+	tasks_task = grid_tasks->GetCellValue(row_to_move, 0).ToStdString();
+	tasks_x_cord = grid_tasks->GetCellValue(row_to_move, 1).ToStdString();
+	tasks_y_cord = grid_tasks->GetCellValue(row_to_move, 2).ToStdString();
+	tasks_units = grid_tasks->GetCellValue(row_to_move, 3).ToStdString();
+	tasks_item = grid_tasks->GetCellValue(row_to_move, 4).ToStdString();
+	tasks_building_direction = grid_tasks->GetCellValue(row_to_move, 5).ToStdString();
+	tasks_direction_to_build = grid_tasks->GetCellValue(row_to_move, 6).ToStdString();
+	tasks_size = grid_tasks->GetCellValue(row_to_move, 7).ToStdString();
+	tasks_building_amount = grid_tasks->GetCellValue(row_to_move, 8).ToStdString();
+
+	grid_tasks->InsertRows(start_row + row_count, 1);
+
+	grid_tasks->SetCellValue(start_row + row_count, 0, tasks_task);
+	grid_tasks->SetCellValue(start_row + row_count, 1, tasks_x_cord);
+	grid_tasks->SetCellValue(start_row + row_count, 2, tasks_y_cord);
+	grid_tasks->SetCellValue(start_row + row_count, 3, tasks_units);
+	grid_tasks->SetCellValue(start_row + row_count, 4, tasks_item);
+	grid_tasks->SetCellValue(start_row + row_count, 5, tasks_building_direction);
+	grid_tasks->SetCellValue(start_row + row_count, 6, tasks_direction_to_build);
+	grid_tasks->SetCellValue(start_row + row_count, 7, tasks_size);
+	grid_tasks->SetCellValue(start_row + row_count, 8, tasks_building_amount);
+
+	grid_tasks->DeleteRows(row_to_move, 1);
+
+	it1 = tasks_data_to_save.begin();
+	it1 += row_to_move;
+	it2 = tasks_data_to_save.begin();
+	it2 += start_row + row_count - 1;
+
+	data = *it1;
+	tasks_data_to_save.erase(it1, it1);
+	tasks_data_to_save.insert(it2, data);
 }
 
 void cMain::OnMoveDownClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select a row to change", "Task list selection not valid");
+		return;
+	}
+
+	if (*grid_tasks->GetSelectedRows().end() == (grid_tasks->GetNumberRows())) {
+		return;
+	}
+
+	int row_count = grid_tasks->GetSelectedRows().GetCount();
+	int start_row = *grid_tasks->GetSelectedRows().begin();
+	int row_to_move = start_row + row_count;
+
+	if (row_to_move > (grid_tasks->GetNumberRows() - 1)) {
+		return;
+	}
+
+	std::string data;
+
+	static std::string tasks_task = grid_tasks->GetCellValue(row_to_move, 0).ToStdString();
+	static std::string tasks_x_cord = grid_tasks->GetCellValue(row_to_move, 1).ToStdString();
+	static std::string tasks_y_cord = grid_tasks->GetCellValue(row_to_move, 2).ToStdString();
+	static std::string tasks_units = grid_tasks->GetCellValue(row_to_move, 3).ToStdString();
+	static std::string tasks_item = grid_tasks->GetCellValue(row_to_move, 4).ToStdString();
+	static std::string tasks_building_direction = grid_tasks->GetCellValue(row_to_move, 5).ToStdString();
+	static std::string tasks_direction_to_build = grid_tasks->GetCellValue(row_to_move, 6).ToStdString();
+	static std::string tasks_size = grid_tasks->GetCellValue(row_to_move, 7).ToStdString();
+	static std::string tasks_building_amount = grid_tasks->GetCellValue(row_to_move, 8).ToStdString();
+
+	tasks_task = grid_tasks->GetCellValue(row_to_move, 0).ToStdString();
+	tasks_x_cord = grid_tasks->GetCellValue(row_to_move, 1).ToStdString();
+	tasks_y_cord = grid_tasks->GetCellValue(row_to_move, 2).ToStdString();
+	tasks_units = grid_tasks->GetCellValue(row_to_move, 3).ToStdString();
+	tasks_item = grid_tasks->GetCellValue(row_to_move, 4).ToStdString();
+	tasks_building_direction = grid_tasks->GetCellValue(row_to_move, 5).ToStdString();
+	tasks_direction_to_build = grid_tasks->GetCellValue(row_to_move, 6).ToStdString();
+	tasks_size = grid_tasks->GetCellValue(row_to_move, 7).ToStdString();
+	tasks_building_amount = grid_tasks->GetCellValue(row_to_move, 8).ToStdString();
+
+	grid_tasks->InsertRows(start_row, 1);
+
+	grid_tasks->SetCellValue(start_row, 0, tasks_task);
+	grid_tasks->SetCellValue(start_row, 1, tasks_x_cord);
+	grid_tasks->SetCellValue(start_row, 2, tasks_y_cord);
+	grid_tasks->SetCellValue(start_row, 3, tasks_units);
+	grid_tasks->SetCellValue(start_row, 4, tasks_item);
+	grid_tasks->SetCellValue(start_row, 5, tasks_building_direction);
+	grid_tasks->SetCellValue(start_row, 6, tasks_direction_to_build);
+	grid_tasks->SetCellValue(start_row, 7, tasks_size);
+	grid_tasks->SetCellValue(start_row, 8, tasks_building_amount);
+
+	grid_tasks->DeleteRows(row_to_move + 1, 1);
+
+	it1 = tasks_data_to_save.begin();
+	it1 += row_to_move;
+	it2 = tasks_data_to_save.begin();
+
+	data = *it1;
+	tasks_data_to_save.erase(it1, it1);
+	tasks_data_to_save.insert(it2, data);
 }
 
 void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
