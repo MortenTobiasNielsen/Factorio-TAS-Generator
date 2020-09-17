@@ -342,17 +342,12 @@ void cMain::update_tasks_grid(std::string type) {
 }
 
 void cMain::change_task(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string orientation, std::string direction_to_build, std::string building_size, std::string amount_to_build) {
-	if (grid_tasks->IsSelection()) {
-		if (!grid_tasks->GetSelectedRows().begin()) {
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+			wxMessageBox("Please select a row to change", "Task list selection not valid");
 			return;
-		}
-		row_num = *grid_tasks->GetSelectedRows().begin();
-	} else {
-		row_num = grid_tasks->GetNumberRows();
 	}
-
-	grid_tasks->InsertRows(row_num, 1);
+	
+	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	grid_tasks->SetCellValue(row_num, 0, task);
 	grid_tasks->SetCellValue(row_num, 1, x_cord);
@@ -364,15 +359,7 @@ void cMain::change_task(std::string task, std::string x_cord, std::string y_cord
 	grid_tasks->SetCellValue(row_num, 7, building_size);
 	grid_tasks->SetCellValue(row_num, 8, amount_to_build);
 
-	if (grid_tasks->IsSelection()) {
-		it1 = tasks_data_to_save.begin();
-		it1 += row_num;
-
-		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_to_build);
-	} else {
-		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_to_build);
-	}
-
+	tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_to_build);
 }
 
 
@@ -616,13 +603,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
-		wxMessageBox("Please select a row to change", "Selection not valid");
-		return;
-	}
-
-	row_num = *grid_tasks->GetSelectedRows().begin();
-
+	// Extract data needed to add task
 	x_cord = extract_x_cord();
 	y_cord = extract_y_cord();
 	units = extract_units();
@@ -634,17 +615,103 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	amount_of_buildings = extract_amount_of_buildings();
 	tech_to_start = extract_tech();
 
+	// Game speed task logic
+	if (rbtn_game_speed->GetValue()) {
+		change_task("Game Speed", not_relevant, not_relevant, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
 
+		// Walk task logic
+	} else if (rbtn_walk->GetValue()) {
+		change_task("Walk", x_cord, y_cord, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
 
-	grid_tasks->SetCellValue(row_num, 0, task);
-	grid_tasks->SetCellValue(row_num, 1, extract_x_cord());
-	grid_tasks->SetCellValue(row_num, 2, extract_y_cord());
-	grid_tasks->SetCellValue(row_num, 3, extract_units());
-	grid_tasks->SetCellValue(row_num, 4, extract_item());
-	grid_tasks->SetCellValue(row_num, 5, extract_building_orientation());
-	grid_tasks->SetCellValue(row_num, 6, extract_direction_to_build());
-	grid_tasks->SetCellValue(row_num, 7, extract_building_size());
-	grid_tasks->SetCellValue(row_num, 8, extract_amount_of_buildings());
+		// Mine task logic
+	} else if (rbtn_mine->GetValue()) {
+		change_task("Mine", x_cord, y_cord, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
+
+		// Rotation logic
+	} else if (rbtn_rotate->GetValue()) {
+		change_task("Rotate", x_cord, y_cord, not_relevant, units, not_relevant, not_relevant, not_relevant, not_relevant);
+		update_building_orientation(x_cord, y_cord, units);
+
+		// Craft task logic
+	} else if (rbtn_craft->GetValue()) {
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		change_task("Craft", not_relevant, not_relevant, item, units, not_relevant, not_relevant, not_relevant, not_relevant);
+
+		// Fuel task logic
+	} else if (rbtn_fuel->GetValue()) {
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		change_task("Fuel", x_cord, y_cord, item, units, not_relevant, direction_to_build, building_size, amount_of_buildings);
+
+		// Build task logic
+	} else if (rbtn_build->GetValue()) {
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return;
+		}
+
+		if (!check_building(build_orientation, build_orientations)) {
+			wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		change_task("Build", x_cord, y_cord, item, not_relevant, build_orientation, direction_to_build, building_size, amount_of_buildings);
+		building_row(x_cord, y_cord, item, build_orientation, direction_to_build, building_size, amount_of_buildings);
+
+		// Take from logic
+	} else if (rbtn_take->GetValue()) {
+
+		if (!check_take_put(item, take_from)) {
+			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		change_task("Take", x_cord, y_cord, item, units, from_into, direction_to_build, building_size, amount_of_buildings);
+
+	} else if (rbtn_put->GetValue()) {
+
+		if (!check_take_put(item, take_from)) {
+			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+			return;
+		}
+
+		if (!check_building(direction_to_build, build_orientations)) {
+			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+			return;
+		}
+
+		change_task("Put", x_cord, y_cord, item, units, from_into, direction_to_build, building_size, amount_of_buildings);
+
+	} else if (rbtn_tech->GetValue()) {
+		if (!check_item(tech_to_start, tech_list)) {
+			wxMessageBox("The tech is not valid - please try again", "Please use the tech dropdown menu");
+			return;
+		}
+		change_task("Tech", not_relevant, not_relevant, tech_to_start, not_relevant, not_relevant, not_relevant, not_relevant, not_relevant);
+	}
+	event.Skip();
 }
 
 void cMain::OnTasksGridLeftClick(wxGridEvent& event) {
@@ -734,7 +801,9 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 		txt_building_size->SetValue(tasks_size);
 		txt_amount_of_buildings->SetValue(tasks_building_amount);
 
-	} else if (tasks_task == "") {
+	} else if (tasks_task == "Tech") {
+		
+		cmb_tech->SetValue(tasks_item);
 
 	} else if (tasks_task == "") {
 
@@ -805,6 +874,15 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	tasks_data_to_save.erase(it1, it2);	
 
 	update_buildings_grid_from_scratch();
+}
+
+void cMain::OnMoveUpClicked(wxCommandEvent& event) {
+}
+
+void cMain::OnMoveDownClicked(wxCommandEvent& event) {
+}
+
+void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnMenuNew(wxCommandEvent& evt) {
