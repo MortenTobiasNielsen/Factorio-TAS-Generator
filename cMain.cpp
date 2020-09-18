@@ -629,8 +629,10 @@ void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
 		x_offset = wxAtoi(txt_x_offset->GetValue().ToStdString()) * duplicate_multiplier;
 		y_offset = wxAtoi(txt_y_offset->GetValue().ToStdString()) * duplicate_multiplier;
 
-		x_cord = std::to_string(std::stof(x_cord) + x_offset);
-		y_cord = std::to_string(std::stof(y_cord) + y_offset);
+		if (x_cord != "" && y_cord != "") {
+			x_cord = std::to_string(std::stof(x_cord) + x_offset);
+			y_cord = std::to_string(std::stof(y_cord) + y_offset);
+		}
 
 		duplicate_task();
 		if (task == "Build") {
