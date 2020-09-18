@@ -169,8 +169,6 @@ private:
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item, const std::vector<std::string>& all_items);
 
-	void reset_duplicate_multiplier();
-
 	void save_file();
 
 	std::string extract_task();

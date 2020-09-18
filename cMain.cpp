@@ -82,70 +82,87 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 
 void cMain::OnMineChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.mining, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnRotateChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.rotate, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnCraftChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.craft, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnWalkChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnBuildChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.build, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnTakeChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnPutChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.put, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnfilterChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.filter, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnRecipeChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.recipe, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnTechChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.tech, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnLaunchChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.launch, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnPriorityChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.priority, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnLimitChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.limit, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnTransferChosen(wxCommandEvent& event) {
 
+	event.Skip();
 }
 
 void cMain::OnPickUpChosen(wxCommandEvent& event) {
 
+	event.Skip();
 }
 
 void cMain::OnDropChosen(wxCommandEvent& event) {
 
+	event.Skip();
 }
 
 void cMain::update_tasks_grid() {
@@ -978,6 +995,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 void cMain::OnChangeShortcuts(wxCommandEvent& event) {
 	shortcuts = new Shortcuts_Menu(this);
 	shortcuts->Show();
+	event.Skip();
 }
 
 void cMain::OnWalkMenuSelected(wxCommandEvent& event) {
@@ -987,46 +1005,54 @@ void cMain::OnWalkMenuSelected(wxCommandEvent& event) {
 	//// IMPORTANT -- This can be used to change the shortcuts of menuitems
 	//wxAcceleratorEntry* plusAccel = new wxAcceleratorEntry(wxACCEL_CTRL, 50, wxID_ZOOM_IN);
 	//menu_shortcuts->FindChildItem(10001)->SetAccel(plusAccel); // 10001 is the id of the menu item and can be set to what ever you want
+	event.Skip();
 }
 
 void cMain::OnMineMenuSelected(wxCommandEvent& event) {
 	rbtn_mine->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.mining, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnGameSpeedMenuSelected(wxCommandEvent& event) {
 	rbtn_game_speed->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnBuildMenuSelected(wxCommandEvent& event) {
 	rbtn_build->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.build, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnTakeMenuSelected(wxCommandEvent& event) {
 	rbtn_take->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnPutMenuSelected(wxCommandEvent& event) {
 	rbtn_put->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.put, item_categories, item_logistics);
-
+	event.Skip();
 }
 
 void cMain::OnCraftMenuSelected(wxCommandEvent& event) {
 	rbtn_craft->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.craft, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnRotateMenuSelected(wxCommandEvent& event) {
 	rbtn_rotate->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.rotate, item_categories, item_logistics);
+	event.Skip();
 }
 
 void cMain::OnAddMenuSelected(wxCommandEvent& event) {
 	OnAddTaskClicked(event);
+	event.Skip();
 }
 
 void cMain::setup_paramters(std::vector<bool> parameters) {
@@ -1387,11 +1413,6 @@ bool cMain::check_take_put(const std::string& item, const std::vector<std::strin
 	}
 
 	return false;
-}
-
-void cMain::reset_duplicate_multiplier() {
-	duplicate_multiplier = 0;
-
 }
 
 void cMain::save_file() {
