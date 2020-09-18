@@ -104,10 +104,6 @@ void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
 }
 
-void cMain::OnFuelChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.fuel, item_categories_fuel, item_fuels);
-}
-
 void cMain::OnTakeChosen(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
 }
@@ -305,21 +301,26 @@ void cMain::building_row() {
 	priority = "";
 	filter = "";
 
+	x_cord_float = std::stof(x_cord);
+	y_cord_float = std::stof(y_cord);
+	building_size_float = std::stof(building_size);
+
+
 	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
 		if (direction_to_build == "North") {
-			y_cord = std::to_string(std::stof(y_cord) - std::stoi(building_size) + std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i+1) * std::stoi(building_size)) ));
+			y_cord = std::to_string(y_cord_float - building_size_float + building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));
 			update_buildings_grid();
 
 		} else if (direction_to_build == "South") {
-			y_cord = std::to_string(std::stof(y_cord) + std::stoi(building_size) - std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i + 1) * std::stoi(building_size)) ));
+			y_cord = std::to_string(y_cord_float + building_size_float - building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));
 			update_buildings_grid();
 
 		} else if (direction_to_build == "East") {
-			x_cord = std::to_string(std::stof(x_cord) + std::stoi(building_size) - std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i + 1) * std::stoi(building_size)) ));
+			x_cord = std::to_string(x_cord_float + building_size_float - building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));
 			update_buildings_grid();
 
 		} else if (direction_to_build == "West") {
-			x_cord = std::to_string(std::stof(x_cord) - std::stoi(building_size) + std::stoi(building_size) * std::floor(std::stoi(building_size) / ((i + 1) * std::stoi(building_size)) ));
+			x_cord = std::to_string(x_cord_float - building_size_float + building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));
 			update_buildings_grid();
 		}
 	}
@@ -347,10 +348,6 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	}
 
 	event.Skip();
-}
-
-void cMain::OnTasksGridLeftClick(wxGridEvent& event) { // Remove?
-
 }
 
 void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
@@ -435,11 +432,6 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	event.Skip();
 }
 
-void cMain::OnBuildingsGridLeftClick(wxGridEvent& event) { // Remove?
-	
-	
-}
-
 void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 	buildings_row_selected = event.GetRow();
 
@@ -452,25 +444,8 @@ void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 	txt_y_cord->SetValue(y_cord);
 	cmb_item->SetValue(item);
 	cmb_building_orientation->SetValue(build_orientation);
-}
 
-void cMain::OnWalkKeyDown(wxKeyEvent& event) { // Remove?
-	
-}
-void cMain::OnFameKeyDown(wxKeyEvent& event) { // Remove?
-	int test = event.GetKeyCode();
-
-	if (test == 9) {
-
-	};
-};
-
-void cMain::OnBuildingDirectionSelected(wxCommandEvent& event) { // Remove?
-	// It seems that this is not needed
-}
-
-void cMain::OnDirectionToBuildSelected(wxCommandEvent& event) { // Remove?
-	// It seems that this is not needed
+	event.Skip();
 }
 
 void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
@@ -1029,12 +1004,6 @@ void cMain::OnBuildMenuSelected(wxCommandEvent& event) {
 	setup_paramters_comboboxes(parameter_choices.build, item_categories, item_logistics);
 }
 
-void cMain::OnFuelMenuSelected(wxCommandEvent& event) {
-	rbtn_fuel->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.fuel, item_categories_fuel, item_fuels);
-
-}
-
 void cMain::OnTakeMenuSelected(wxCommandEvent& event) {
 	rbtn_take->SetValue(true);
 	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
@@ -1243,9 +1212,7 @@ std::string cMain::extract_task() {
 	} else if (rbtn_launch->GetValue()) {
 		return "Launch";
 
-	} else if (rbtn_fuel->GetValue()) { // should most likely just be removed entirely
-		return "Fuel";
-	}
+	} 
 
 	return "not found";
 }

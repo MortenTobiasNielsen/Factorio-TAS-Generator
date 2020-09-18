@@ -68,9 +68,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	shortcut_build = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Build")) + wxT('\t') + wxT("Alt+2"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_build);
 
-	wxMenuItem* shortcut_fuel;
-	shortcut_fuel = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Fuel")) + wxT('\t') + wxT("Alt+3"), wxEmptyString, wxITEM_NORMAL);
-	menu_shortcuts->Append(shortcut_fuel);
+	wxMenuItem* shortcut_tech;
+	shortcut_tech = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Tech")) + wxT('\t') + wxT("Alt+3"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_tech);
 
 	wxMenuItem* shortcut_take;
 	shortcut_take = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Take")) + wxT('\t') + wxT("Alt+4"), wxEmptyString, wxITEM_NORMAL);
@@ -425,15 +425,6 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer(wxHORIZONTAL);
 
-	wxBoxSizer* bSizer8;
-	bSizer8 = new wxBoxSizer(wxVERTICAL);
-
-	rbtn_fuel = new wxRadioButton(m_panel1, wxID_ANY, wxT("Fuel"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer8->Add(rbtn_fuel, 0, wxALL, 5);
-
-
-	bSizer5->Add(bSizer8, 1, wxEXPAND, 5);
-
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer(wxVERTICAL);
 
@@ -478,6 +469,15 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 
 	bSizer5->Add(bSizer14, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer8;
+	bSizer8 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer8->Add(0, 0, 1, wxEXPAND, 5);
+
+
+	bSizer5->Add(bSizer8, 1, wxEXPAND, 5);
 
 
 	bSizer18->Add(bSizer5, 1, wxEXPAND, 5);
@@ -765,7 +765,6 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	this->Centre(wxBOTH);
 
 	// Connect Events
-	this->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnFameKeyDown));
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuNew), this, menu_file_new->GetId());
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuOpen), this, menu_file_open->GetId());
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSave), this, menu_file_save->GetId());
@@ -778,19 +777,16 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMineMenuSelected), this, shortcut_mine->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedMenuSelected), this, shortcut_game_speed->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildMenuSelected), this, shortcut_build->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnFuelMenuSelected), this, shortcut_fuel->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTechMenuSelected), this, shortcut_tech->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeMenuSelected), this, shortcut_take->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPutMenuSelected), this, shortcut_put->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftMenuSelected), this, shortcut_craft->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateMenuSelected), this, shortcut_rotate->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnAddMenuSelected), this, shortcut_add_task->GetId());
-	cmb_building_orientation->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingOrientationSelected), NULL, this);
-	cmb_direction_to_build->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
 	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
 	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
 	rbtn_craft->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
-	rbtn_walk->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnWalkKeyDown), NULL, this);
 	rbtn_walk->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkChosen), NULL, this);
 	rbtn_mine->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnMineChosen), NULL, this);
 	rbtn_build->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildChosen), NULL, this);
@@ -799,7 +795,6 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	rbtn_limit->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
 	rbtn_transfer->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTransferChosen), NULL, this);
 	rbtn_filter->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
-	rbtn_fuel->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnFuelChosen), NULL, this);
 	rbtn_priority->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
 	rbtn_pick_up->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
@@ -811,22 +806,16 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	btn_move_up->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
 	btn_move_down->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
 	btn_duplicate_tasks->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
-	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftClick), NULL, this);
 	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
-	grid_tasks->Connect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnTasksGridLeftClick), NULL, this);
 	grid_tasks->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTasksGridDoubleLeftClick), NULL, this);
 }
 
 GUI_Base::~GUI_Base() {
 	// Disconnect Events
-	this->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnFameKeyDown));
-	cmb_building_orientation->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildingOrientationSelected), NULL, this);
-	cmb_direction_to_build->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnDirectionToBuildSelected), NULL, this);
 	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
 	rbtn_put->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
 	rbtn_game_speed->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
 	rbtn_craft->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
-	rbtn_walk->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(GUI_Base::OnWalkKeyDown), NULL, this);
 	rbtn_walk->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkChosen), NULL, this);
 	rbtn_mine->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnMineChosen), NULL, this);
 	rbtn_build->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildChosen), NULL, this);
@@ -835,7 +824,6 @@ GUI_Base::~GUI_Base() {
 	rbtn_limit->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
 	rbtn_transfer->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTransferChosen), NULL, this);
 	rbtn_filter->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
-	rbtn_fuel->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnFuelChosen), NULL, this);
 	rbtn_priority->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
 	rbtn_pick_up->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
@@ -847,9 +835,7 @@ GUI_Base::~GUI_Base() {
 	btn_move_up->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
 	btn_move_down->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
 	btn_duplicate_tasks->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
-	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftClick), NULL, this);
 	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
-	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_CLICK, wxGridEventHandler(GUI_Base::OnTasksGridLeftClick), NULL, this);
 	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTasksGridDoubleLeftClick), NULL, this);
 
 }

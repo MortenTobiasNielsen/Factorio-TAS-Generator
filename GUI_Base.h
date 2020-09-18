@@ -77,7 +77,6 @@ protected:
 	wxRadioButton* rbtn_limit;
 	wxRadioButton* rbtn_transfer;
 	wxRadioButton* rbtn_filter;
-	wxRadioButton* rbtn_fuel;
 	wxRadioButton* rbtn_priority;
 	wxRadioButton* rbtn_rotate;
 	wxRadioButton* rbtn_pick_up;
@@ -101,7 +100,6 @@ protected:
 	wxGrid* grid_tasks;
 
 	// Virtual event handlers, overide them in your derived class
-	virtual void OnFameKeyDown(wxKeyEvent& event) { event.Skip(); }
 	virtual void OnMenuNew(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuOpen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuSave(wxCommandEvent& event) { event.Skip(); }
@@ -114,19 +112,16 @@ protected:
 	virtual void OnMineMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildMenuSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnFuelMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTechMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnCraftMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRotateMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnAddMenuSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnBuildingOrientationSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnDirectionToBuildSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnCraftChosen(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnWalkKeyDown(wxKeyEvent& event) { event.Skip(); }
 	virtual void OnWalkChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMineChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildChosen(wxCommandEvent& event) { event.Skip(); }
@@ -135,7 +130,6 @@ protected:
 	virtual void OnLimitChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTransferChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnfilterChosen(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnFuelChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPriorityChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRotateChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPickUpChosen(wxCommandEvent& event) { event.Skip(); }
@@ -147,9 +141,7 @@ protected:
 	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnBuildingsGridLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
-	virtual void OnTasksGridLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTasksGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 
 

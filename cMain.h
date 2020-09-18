@@ -30,7 +30,6 @@ protected:
 	void OnMineMenuSelected(wxCommandEvent& event);
 	void OnGameSpeedMenuSelected(wxCommandEvent& event);
 	void OnBuildMenuSelected(wxCommandEvent& event);
-	void OnFuelMenuSelected(wxCommandEvent& event);
 	void OnTakeMenuSelected(wxCommandEvent& event);
 	void OnPutMenuSelected(wxCommandEvent& event);
 	void OnCraftMenuSelected(wxCommandEvent& event);
@@ -56,9 +55,6 @@ protected:
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
 
-	void OnBuildingDirectionSelected(wxCommandEvent& event);
-	void OnDirectionToBuildSelected(wxCommandEvent& event);
-
 	void OnAddTaskClicked(wxCommandEvent& event);
 	void OnChangeTaskClicked(wxCommandEvent& event);
 	void OnDeleteTaskClicked(wxCommandEvent& event);
@@ -66,14 +62,9 @@ protected:
 	void OnMoveDownClicked(wxCommandEvent& event); 
 	void OnDuplicateTasksClicked(wxCommandEvent& event);
 	
-	void OnTasksGridLeftClick(wxGridEvent& event);
 	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
 	
-	void OnBuildingsGridLeftClick(wxGridEvent& event);
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
-
-	void OnWalkKeyDown(wxKeyEvent& event);
-	void OnFameKeyDown(wxKeyEvent& event);
 
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
@@ -90,7 +81,6 @@ private:
 		std::vector<bool> craft = { false, false, false, true, false, true, false, false, false, false, false };
 		std::vector<bool> walk = { false, true, true, false, false, false, false, false, false, false, false };
 		std::vector<bool> build = { false, true, true, false, false, true, true, true, true, true, false };
-		std::vector<bool> fuel = { false, true, true, true, false, true, false, true, true, true, false };
 		std::vector<bool> take = { false, true, true, true, true, true, false, true, true, true, false, false };
 		std::vector<bool> put = { false, true, true, true, true, true, false, true, true, true, false, false };
 		std::vector<bool> filter = { false, true, true, false, true, true, false, false, true, true, false };
@@ -117,6 +107,10 @@ private:
 	std::string data;
 	std::string not_relevant = "";
 	std::vector<std::string> all_items;
+
+	float x_cord_float;
+	float y_cord_float;
+	float building_size_float;
 
 	std::string task;
 	std::string x_cord;
