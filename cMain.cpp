@@ -36,7 +36,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	
 	// set walk as default value and disable inputs not used
 	rbtn_walk->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
+	setup_paramters(parameter_choices.walk);
 
 	cmb_building_orientation->Clear();
 	cmb_direction_to_build->Clear();
@@ -80,73 +80,73 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 }
 
 
-void cMain::OnMineChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.mining, item_categories, item_logistics);
-	event.Skip();
-}
-
-void cMain::OnRotateChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.rotate, item_categories, item_logistics);
-	event.Skip();
-}
-
-void cMain::OnCraftChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.craft, item_categories, item_logistics);
-	event.Skip();
-}
-
 void cMain::OnWalkChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
+	setup_paramters(parameter_choices.walk);
 	event.Skip();
 }
 
-void cMain::OnBuildChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.build, item_categories, item_logistics);
+void cMain::OnMineChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.mining);
 	event.Skip();
 }
 
 void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
+	setup_paramters(parameter_choices.game_speed);
+	event.Skip();
+}
+
+void cMain::OnBuildChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.build);
 	event.Skip();
 }
 
 void cMain::OnTakeChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
+	setup_paramters(parameter_choices.take);
 	event.Skip();
 }
 
 void cMain::OnPutChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.put, item_categories, item_logistics);
+	setup_paramters(parameter_choices.put);
+	event.Skip();
+}
+
+void cMain::OnCraftChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.craft);
+	event.Skip();
+}
+
+void cMain::OnRotateChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.rotate);
 	event.Skip();
 }
 
 void cMain::OnfilterChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.filter, item_categories, item_logistics);
+	setup_paramters(parameter_choices.filter);
 	event.Skip();
 }
 
 void cMain::OnRecipeChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.recipe, item_categories, item_logistics);
+	setup_paramters(parameter_choices.recipe);
 	event.Skip();
 }
 
 void cMain::OnTechChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.tech, item_categories, item_logistics);
+	setup_paramters(parameter_choices.tech);
 	event.Skip();
 }
 
 void cMain::OnLaunchChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.launch, item_categories, item_logistics);
+	setup_paramters(parameter_choices.launch);
 	event.Skip();
 }
 
 void cMain::OnPriorityChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.priority, item_categories, item_logistics);
+	setup_paramters(parameter_choices.priority);
 	event.Skip();
 }
 
 void cMain::OnLimitChosen(wxCommandEvent& event) {
-	setup_paramters_comboboxes(parameter_choices.limit, item_categories, item_logistics);
+	setup_paramters(parameter_choices.limit);
 	event.Skip();
 }
 
@@ -450,12 +450,12 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 }
 
 void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
-	buildings_row_selected = event.GetRow();
+	row_num = event.GetRow();
 
-	x_cord = grid_buildings->GetCellValue(buildings_row_selected, 0).ToStdString();
-	y_cord = grid_buildings->GetCellValue(buildings_row_selected, 1).ToStdString();
-	item = grid_buildings->GetCellValue(buildings_row_selected, 2).ToStdString();
-	build_orientation = grid_buildings->GetCellValue(buildings_row_selected, 3).ToStdString();
+	x_cord = grid_buildings->GetCellValue(row_num, 0).ToStdString();
+	y_cord = grid_buildings->GetCellValue(row_num, 1).ToStdString();
+	item = grid_buildings->GetCellValue(row_num, 2).ToStdString();
+	build_orientation = grid_buildings->GetCellValue(row_num, 3).ToStdString();
 
 	txt_x_cord->SetValue(x_cord);
 	txt_y_cord->SetValue(y_cord);
@@ -593,9 +593,6 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
 	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
 		wxMessageBox("Please select row(s) to duplicate", "Task list selection not valid");
@@ -613,10 +610,7 @@ void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	static float x_offset;
-	static float new_x_offset;
-
 	static float y_offset;
-	static float new_y_offset;
 
 	int i = row_num;
 	int rows = row_num + row_count;
@@ -661,7 +655,7 @@ void cMain::OnMenuNew(wxCommandEvent& event) {
 	}
 
 	rbtn_walk->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
+	setup_paramters(parameter_choices.walk);
 
 	save_file_location = "";
 	generate_code_file_location = "";
@@ -825,7 +819,9 @@ void cMain::OnMenuExit(wxCommandEvent& event) {
 
 void cMain::OnChooseLocation(wxCommandEvent& event) {
 	wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	generate_code_file_location = dlg.GetPath().ToStdString();
+	if (dlg.ShowModal() == wxID_OK) {
+		generate_code_file_location = dlg.GetPath().ToStdString();
+	}
 
 	event.Skip();
 }
@@ -840,142 +836,61 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		}
 	}
 
-	int tasks = grid_tasks->GetNumberRows();
+	row_num = grid_tasks->GetNumberRows();
 
-	static std::string tasks_task;
-	static std::string tasks_x_cord;
-	static std::string tasks_y_cord;
-	static std::string tasks_item; 
-	static std::string tasks_units;
-	static std::string tasks_orientation;
-	static std::string tasks_direction_to_build; 
-	static std::string tasks_size;
-	static std::string tasks_building_amount;
-	static std::string building;
+	for (int i = 0; i < row_num; i++) {
+		task = grid_tasks->GetCellValue(i, 0).ToStdString();
+		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+		units = grid_tasks->GetCellValue(i, 3).ToStdString();
+		item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
+		build_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
+		direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
+		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
-	for (int i = 0; i < tasks; i++) {
-		tasks_task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		tasks_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		tasks_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		tasks_units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		tasks_item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
-		tasks_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
-		tasks_direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
-		tasks_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		tasks_building_amount = grid_tasks->GetCellValue(i, 8).ToStdString();
+		if (task == "Game Speed") {
+			speed(units);
 
-		if (tasks_task == "Game Speed") {
-			speed(tasks_units);
+		} else if (task == "Walk") {
+			walk(x_cord, y_cord);
 
-		} else if (tasks_task == "Walk") {
-			walk(tasks_x_cord, tasks_y_cord);
+		} else if (task == "Mine") {
+			mining(x_cord, y_cord, units);
 
-		} else if (tasks_task == "Mine") {
-			mining(tasks_x_cord, tasks_y_cord, tasks_units);
+		} else if (task == "Rotate") {
+			rotate(x_cord, y_cord, units);
 
-		} else if (tasks_task == "Rotate") {
-			rotate(tasks_x_cord, tasks_y_cord, tasks_units);
-
-		} else if (tasks_task == "Craft") {
-			if (tasks_units == "All") {
-				craft("-1", tasks_item);
+		} else if (task == "Craft") {
+			if (units == "All") {
+				craft("-1", item);
 			} else {
-				craft(tasks_units, tasks_item);
+				craft(units, item);
 			}
 			
-		} else if (tasks_task == "Tech") {
-			tech(tasks_item);
+		} else if (task == "Tech") {
+			tech(item);
 
-		} else if (tasks_task == "Build") {
-			build_row_of_buildings(tasks_x_cord, tasks_y_cord, tasks_item, tasks_orientation, tasks_direction_to_build, tasks_building_amount, tasks_size);
+		} else if (task == "Build") {
+			build_row_of_buildings(x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
-		} else if (tasks_task == "Take") {
-
-			if (tasks_orientation == "chest") {
-				from_into = take_put_list.chest;
-			} else if (tasks_orientation == "fuel") {
-				from_into = take_put_list.fuel;
-			} else {
-
-				for (int j = i-1; j > -1; j--) {
-					if (grid_tasks->GetCellValue(j, 0).ToStdString() == "Build") {
-						if (grid_tasks->GetCellValue(j, 1).ToStdString() == tasks_x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == tasks_y_cord) {
-							building = grid_tasks->GetCellValue(j, 4).ToStdString();
-							break;
-						}
-					}
-				}
-
-				if (building == "Lab") {
-					if (tasks_orientation == "input") {
-						from_into = take_put_list.lab_input;
-					} else if (tasks_orientation == "modules") {
-						from_into = take_put_list.lab_modules;
-					}
-				} else if (check_item(building, drills_list)) {
-					if (tasks_orientation == "modules") {
-						from_into = take_put_list.drill_modules;
-					}
-				} else {
-					if (tasks_orientation == "input") {
-						from_into = take_put_list.assembly_input;
-					} else if (tasks_orientation == "modules") {
-						from_into = take_put_list.assembly_modules;
-					} else if (tasks_orientation == "output") {
-						from_into = take_put_list.assembly_output;
-					}
-				}
-			}
+		} else if (task == "Take") {
+			from_into = extract_define(i);
 			
 
-			if (tasks_units == "All") {
-				row_take(tasks_x_cord, tasks_y_cord, "-1", tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
+			if (units == "All") {
+				row_take(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size);
 			} else {
-				row_take(tasks_x_cord, tasks_y_cord, tasks_units, tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
-
+				row_take(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size);
 			}
 
-		} else if (tasks_task == "Put") {
-			if (tasks_orientation == "chest") {
-				from_into = take_put_list.chest;
-			} else if (tasks_orientation == "fuel") {
-				from_into = take_put_list.fuel;
+		} else if (task == "Put") {
+			from_into = extract_define(i);
+
+			if (units == "All") {
+				row_put(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size);
 			} else {
-
-				for (int j = i - 1; j > -1; j--) {
-					if (grid_tasks->GetCellValue(j, 0).ToStdString() == "Build") {
-						if (grid_tasks->GetCellValue(j, 1).ToStdString() == tasks_x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == tasks_y_cord) {
-							building = grid_tasks->GetCellValue(j, 4).ToStdString();
-							break;
-						}
-					}
-				}
-
-				if (building == "Lab") {
-					if (tasks_orientation == "input") {
-						from_into = take_put_list.lab_input;
-					} else if (tasks_orientation == "modules") {
-						from_into = take_put_list.lab_modules;
-					}
-				} else if (check_item(building, drills_list)) {
-					if (tasks_orientation == "modules") {
-						from_into = take_put_list.drill_modules;
-					}
-				} else {
-					if (tasks_orientation == "input") {
-						from_into = take_put_list.assembly_input;
-					} else if (tasks_orientation == "modules") {
-						from_into = take_put_list.assembly_modules;
-					} else if (tasks_orientation == "output") {
-						from_into = take_put_list.assembly_output;
-					}
-				}
-			}
-
-			if (tasks_units == "All") {
-				row_put(tasks_x_cord, tasks_y_cord, "-1", tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
-			} else {
-				row_put(tasks_x_cord, tasks_y_cord, tasks_units, tasks_item, from_into, tasks_direction_to_build, tasks_building_amount, tasks_size);
+				row_put(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size);
 			}
 		}
 	}
@@ -1000,7 +915,7 @@ void cMain::OnChangeShortcuts(wxCommandEvent& event) {
 
 void cMain::OnWalkMenuSelected(wxCommandEvent& event) {
 	rbtn_walk->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.walk, item_categories, item_logistics);
+	OnWalkChosen(event);
 	
 	//// IMPORTANT -- This can be used to change the shortcuts of menuitems
 	//wxAcceleratorEntry* plusAccel = new wxAcceleratorEntry(wxACCEL_CTRL, 50, wxID_ZOOM_IN);
@@ -1010,43 +925,49 @@ void cMain::OnWalkMenuSelected(wxCommandEvent& event) {
 
 void cMain::OnMineMenuSelected(wxCommandEvent& event) {
 	rbtn_mine->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.mining, item_categories, item_logistics);
+	OnMineChosen(event);
 	event.Skip();
 }
 
 void cMain::OnGameSpeedMenuSelected(wxCommandEvent& event) {
 	rbtn_game_speed->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.game_speed, item_categories, item_logistics);
+	OnGameSpeedChosen(event);
 	event.Skip();
 }
 
 void cMain::OnBuildMenuSelected(wxCommandEvent& event) {
 	rbtn_build->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.build, item_categories, item_logistics);
+	OnBuildChosen(event);
 	event.Skip();
 }
 
 void cMain::OnTakeMenuSelected(wxCommandEvent& event) {
 	rbtn_take->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.take, item_categories, item_logistics);
+	OnTakeChosen(event);
 	event.Skip();
 }
 
 void cMain::OnPutMenuSelected(wxCommandEvent& event) {
 	rbtn_put->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.put, item_categories, item_logistics);
+	OnPutChosen(event);
 	event.Skip();
 }
 
 void cMain::OnCraftMenuSelected(wxCommandEvent& event) {
 	rbtn_craft->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.craft, item_categories, item_logistics);
+	OnCraftChosen(event);
 	event.Skip();
 }
 
 void cMain::OnRotateMenuSelected(wxCommandEvent& event) {
 	rbtn_rotate->SetValue(true);
-	setup_paramters_comboboxes(parameter_choices.rotate, item_categories, item_logistics);
+	OnRotateChosen(event);
+	event.Skip();
+}
+
+void cMain::OnTechMenuSelected(wxCommandEvent& event) {
+	rbtn_tech->SetValue(true);
+	OnTechChosen(event);
 	event.Skip();
 }
 
@@ -1056,12 +977,12 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event) {
 }
 
 void cMain::setup_paramters(std::vector<bool> parameters) {
-	txt_x_cord->Enable(parameters[1]);
-	txt_y_cord->Enable(parameters[2]);
-	txt_units->Enable(parameters[3]);
-	cmb_item->Enable(parameters[5]);
+	txt_x_cord->Enable(parameters[0]);
+	txt_y_cord->Enable(parameters[1]);
+	txt_units->Enable(parameters[2]);
+	cmb_item->Enable(parameters[3]);
 	cmb_from_into->Enable(parameters[4]);
-	cmb_tech->Enable(parameters[10]);
+	cmb_tech->Enable(parameters[5]);
 	cmb_building_orientation->Enable(parameters[6]);
 	cmb_direction_to_build->Enable(parameters[7]);
 	txt_amount_of_buildings->Enable(parameters[8]);
@@ -1166,6 +1087,15 @@ bool cMain::setup_for_task_grid() {
 		amount_of_buildings = not_relevant;
 
 		item = tech_to_start;
+	} else if (task == "Recipe") {
+		// This should be changed so it checks a list of items, which is valid recipes
+		if (!check_item(item, all_items)) {
+			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return false;
+		}
+
+		units = not_relevant;
+		build_orientation = not_relevant;
 	}
 	
 	return true;
@@ -1323,20 +1253,44 @@ std::string cMain::extract_tech() {
 	return tech_to_start;
 }
 
-void cMain::populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item) {
-	cmb_item->Clear();
-	for (auto it = item.begin(); it < item.end(); it++) {
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*item.begin());
-}
+std::string cMain::extract_define(int start_row) {
+	if (build_orientation == "chest") {
+		return take_put_list.chest;
+	} else if (build_orientation == "fuel") {
+		return take_put_list.fuel;
+	} else {
 
-void cMain::setup_paramters_comboboxes(std::vector<bool> parameters, std::vector<std::string> combo_item_category, std::vector<std::string> combo_item) {
-	setup_paramters(parameters);
+		for (int j = start_row - 1; j > -1; j--) {
+			if (grid_tasks->GetCellValue(j, 0).ToStdString() == "Build") {
+				if (grid_tasks->GetCellValue(j, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == y_cord) {
+					building = grid_tasks->GetCellValue(j, 4).ToStdString();
+					break;
+				}
+			}
+		}
 
-	if (parameters[0]) {
-		populate_comboboxes(combo_item_category, combo_item);
+		if (building == "Lab") {
+			if (build_orientation == "input") {
+				return take_put_list.lab_input;
+			} else if (build_orientation == "modules") {
+				return take_put_list.lab_modules;
+			}
+		} else if (check_item(building, drills_list)) {
+			if (build_orientation == "modules") {
+				return take_put_list.drill_modules;
+			}
+		} else {
+			if (build_orientation == "input") {
+				return take_put_list.assembly_input;
+			} else if (build_orientation == "modules") {
+				return take_put_list.assembly_modules;
+			} else if (build_orientation == "output") {
+				return take_put_list.assembly_output;
+			}
+		}
 	}
+
+	return "Not Found";
 }
 
 bool cMain::check_building(const std::string& item, const std::vector<std::string>& all_items) {

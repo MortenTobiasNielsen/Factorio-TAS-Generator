@@ -35,6 +35,7 @@ protected:
 	void OnCraftMenuSelected(wxCommandEvent& event);
 	void OnRotateMenuSelected(wxCommandEvent& event);
 	void OnAddMenuSelected(wxCommandEvent& event);
+	void OnTechMenuSelected(wxCommandEvent& event);
 
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
@@ -42,7 +43,6 @@ protected:
 	void OnWalkChosen(wxCommandEvent& event);
 	void OnBuildChosen(wxCommandEvent& event); 
 	void OnGameSpeedChosen(wxCommandEvent& event);
-	void OnFuelChosen(wxCommandEvent& event);
 	void OnTakeChosen(wxCommandEvent& event);
 	void OnPutChosen(wxCommandEvent& event);
 	void OnfilterChosen(wxCommandEvent& event);
@@ -74,26 +74,24 @@ private:
 	std::string generate_file_location_indicator = "Generated_script_saved_here";
 
 	const struct parameter_choices_struct {
-		// change combobo, x-cord, y-cord, amount, item category, item, building direction, direction to build, building size, amount of buildings, tech
-		std::vector<bool> game_speed = { false, false, false, true, false, false, false, false , false, false, false};
-		std::vector<bool> mining = { false, true, true, true, false, false, false, false, false, false, false };
-		std::vector<bool> rotate = { false, true, true, true, false, false, false, false, false, false, false };
-		std::vector<bool> craft = { false, false, false, true, false, true, false, false, false, false, false };
-		std::vector<bool> walk = { false, true, true, false, false, false, false, false, false, false, false };
-		std::vector<bool> build = { false, true, true, false, false, true, true, true, true, true, false };
-		std::vector<bool> take = { false, true, true, true, true, true, false, true, true, true, false, false };
-		std::vector<bool> put = { false, true, true, true, true, true, false, true, true, true, false, false };
-		std::vector<bool> filter = { false, true, true, false, true, true, false, false, true, true, false };
-		std::vector<bool> recipe = { false, true, true, false, true, true, false, false, true, true, false };
-		std::vector<bool> tech = { false, false, false, false, false, false, false, false, false, false, true };
-		std::vector<bool> launch = { false, true, true, false, false, false, false, false, false, false, false };
-		std::vector<bool> priority = { false, true, true, false, true, true, false, false, true, true, false };
-		std::vector<bool> limit = { false, true, true, true, false, false, false, false, true, true, false };
+		// x-cord, y-cord, units, item, from/to, tech, building orientation, direction to build, building size, amount of buildings
+		std::vector<bool> game_speed = { false, false, true, false, false, false, false , false, false, false};
+		std::vector<bool> mining = { true, true, true, false, false, false, false, false, false, false };
+		std::vector<bool> rotate = { true, true, true, false, false, false, false, false, false, false };
+		std::vector<bool> craft = { false, false, true, true, false, false, false, false, false, false };
+		std::vector<bool> walk = { true, true, false, false, false, false, false, false, false, false };
+		std::vector<bool> build = { true, true, false, true, false, false, true, true, true, true };
+		std::vector<bool> take = { true, true, true, true, true, false, false, true, true, true };
+		std::vector<bool> put = { true, true, true, true, true, false, false, true, true, true };
+		std::vector<bool> filter = { true, true, false, true, false, false, false, true, true, true };
+		std::vector<bool> recipe = { true, true, false, true, false, false, false, true, true, true };
+		std::vector<bool> tech = { false, false, false, false, false, true, false, false, false, false };
+		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false };
+		std::vector<bool> priority = { true, true, false, true, false, false, false, true, true, true };
+		std::vector<bool> limit = { true, true, true, false, false, false, false, true, true, true };
 	};
 
 	parameter_choices_struct parameter_choices;
-
-	int buildings_row_selected = 0;
 
 	std::vector<std::string>::iterator it1;
 	std::vector<std::string>::iterator it2;
@@ -123,6 +121,7 @@ private:
 	std::string direction_to_build;
 	std::string building_size;
 	std::string amount_of_buildings;
+	std::string building;
 
 	std::string recipe;
 	std::string priority;
@@ -144,20 +143,14 @@ private:
 
 	int duplicate_multiplier;
 
-	void populate_comboboxes(std::vector<std::string> item_category, std::vector<std::string> item);
-
 	void update_tasks_grid();
 	void change_task();
 	void duplicate_task();
-
-
 
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch();
 	bool update_building_orientation();
 	void building_row();
-
-	void setup_paramters_comboboxes(std::vector<bool> parameters, std::vector<std::string> combo_item_category, std::vector<std::string> combo_item);
 
 	void setup_paramters(std::vector<bool> parameters);
 
@@ -171,6 +164,8 @@ private:
 
 	void save_file();
 
+
+
 	std::string extract_task();
 	std::string extract_x_cord();
 	std::string extract_y_cord();
@@ -182,7 +177,7 @@ private:
 	std::string extract_direction_to_build();
 	std::string extract_building_orientation();
 	std::string extract_tech();
-
+	std::string extract_define(int start_row);
 };
 
 
