@@ -894,6 +894,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			} else {
 				row_put(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size);
 			}
+		} else if (task == "Recipe") {
+			row_recipe(x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings);
 		}
 	}
 
@@ -961,6 +963,12 @@ void cMain::OnCraftMenuSelected(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnRecipeMenuChosen(wxCommandEvent& event) {
+	rbtn_recipe->SetValue(true);
+	OnRecipeChosen(event);
+	event.Skip();
+}
+
 void cMain::OnRotateMenuSelected(wxCommandEvent& event) {
 	rbtn_rotate->SetValue(true);
 	OnRotateChosen(event);
@@ -970,6 +978,31 @@ void cMain::OnRotateMenuSelected(wxCommandEvent& event) {
 void cMain::OnTechMenuSelected(wxCommandEvent& event) {
 	rbtn_tech->SetValue(true);
 	OnTechChosen(event);
+	event.Skip();
+}
+
+void cMain::OnChangeMenuSelected(wxCommandEvent& event) {
+	OnChangeTaskClicked(event);
+	event.Skip();
+}
+
+void cMain::OnDeleteMenuSelected(wxCommandEvent& event) {
+	OnDeleteTaskClicked(event);
+	event.Skip();
+}
+
+void cMain::OnMoveUpMenuSelected(wxCommandEvent& event) {
+	OnMoveUpClicked(event);
+	event.Skip();
+}
+
+void cMain::OnMoveDownMenuSelected(wxCommandEvent& event) {
+	OnMoveDownClicked(event);
+	event.Skip();
+}
+
+void cMain::OnDuplicateMenuSelected(wxCommandEvent& event) {
+	OnDuplicateTasksClicked(event);
 	event.Skip();
 }
 

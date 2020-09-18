@@ -42,7 +42,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_script->Append(menu_script_choose_location);
 
 	wxMenuItem* menu_script_generate_script;
-	menu_script_generate_script = new wxMenuItem(menu_script, wxID_ANY, wxString(wxT("Generate Script")), wxEmptyString, wxITEM_NORMAL);
+	menu_script_generate_script = new wxMenuItem(menu_script, wxID_ANY, wxString(wxT("Generate Script")) + wxT('\t') + wxT("Alt+G"), wxEmptyString, wxITEM_NORMAL);
 	menu_script->Append(menu_script_generate_script);
 
 	m_menubar1->Append(menu_script, wxT("Script"));
@@ -52,17 +52,29 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts_change_shortcuts = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Change Shortcuts")), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(menu_shortcuts_change_shortcuts);
 
+	wxMenuItem* shortcut_craft;
+	shortcut_craft = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Craft")) + wxT('\t') + wxT("Ctrl+1"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_craft);
+
 	wxMenuItem* shortcut_walk;
 	shortcut_walk = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Walk")) + wxT('\t') + wxT("Ctrl+2"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_walk);
 
-	wxMenuItem* shortcut_mine;
-	shortcut_mine = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Mine")) + wxT('\t') + wxT("Alt+1"), wxEmptyString, wxITEM_NORMAL);
-	menu_shortcuts->Append(shortcut_mine);
-
 	wxMenuItem* shortcut_game_speed;
 	shortcut_game_speed = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Game Speed")) + wxT('\t') + wxT("Ctrl+3"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_game_speed);
+
+	wxMenuItem* shortcut_rotate;
+	shortcut_rotate = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Rotate")) + wxT('\t') + wxT("Ctrl+4"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_rotate);
+
+	wxMenuItem* shortcut_recipe;
+	shortcut_recipe = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Recipe")) + wxT('\t') + wxT("Ctrl+5"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_recipe);
+
+	wxMenuItem* shortcut_mine;
+	shortcut_mine = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Mine")) + wxT('\t') + wxT("Alt+1"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_mine);
 
 	wxMenuItem* shortcut_build;
 	shortcut_build = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Build")) + wxT('\t') + wxT("Alt+2"), wxEmptyString, wxITEM_NORMAL);
@@ -80,17 +92,29 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	shortcut_put = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Put")) + wxT('\t') + wxT("Alt+5"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_put);
 
-	wxMenuItem* shortcut_craft;
-	shortcut_craft = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Craft")) + wxT('\t') + wxT("Ctrl+1"), wxEmptyString, wxITEM_NORMAL);
-	menu_shortcuts->Append(shortcut_craft);
-
-	wxMenuItem* shortcut_rotate;
-	shortcut_rotate = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Rotate")) + wxT('\t') + wxT("Ctrl+4"), wxEmptyString, wxITEM_NORMAL);
-	menu_shortcuts->Append(shortcut_rotate);
-
 	wxMenuItem* shortcut_add_task;
-	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Ctrl+t"), wxEmptyString, wxITEM_NORMAL);
+	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Alt+T"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_add_task);
+
+	wxMenuItem* shortcut_change_task;
+	shortcut_change_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Change Task")) + wxT('\t') + wxT("Alt+C"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_change_task);
+
+	wxMenuItem* shortcut_delete_task;
+	shortcut_delete_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Delete Task")) + wxT('\t') + wxT("Del"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_delete_task);
+
+	wxMenuItem* shortcut_move_up;
+	shortcut_move_up = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Move Up")) + wxT('\t') + wxT("Alt+W"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_move_up);
+
+	wxMenuItem* shortcut_move_down;
+	shortcut_move_down = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Move Down")) + wxT('\t') + wxT("Alt+S"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_move_down);
+
+	wxMenuItem* shortcut_duplicate_task;
+	shortcut_duplicate_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Duplicate Task")) + wxT('\t') + wxT("Alt+D"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_duplicate_task);
 
 	m_menubar1->Append(menu_shortcuts, wxT("Shortcuts"));
 
@@ -773,16 +797,22 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChooseLocation), this, menu_script_choose_location->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnGenerateScript), this, menu_script_generate_script->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChangeShortcuts), this, menu_shortcuts_change_shortcuts->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftMenuSelected), this, shortcut_craft->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkMenuSelected), this, shortcut_walk->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMineMenuSelected), this, shortcut_mine->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedMenuSelected), this, shortcut_game_speed->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateMenuSelected), this, shortcut_rotate->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeMenuChosen), this, shortcut_recipe->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMineMenuSelected), this, shortcut_mine->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildMenuSelected), this, shortcut_build->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTechMenuSelected), this, shortcut_tech->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeMenuSelected), this, shortcut_take->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPutMenuSelected), this, shortcut_put->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftMenuSelected), this, shortcut_craft->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateMenuSelected), this, shortcut_rotate->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnAddMenuSelected), this, shortcut_add_task->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChangeMenuSelected), this, shortcut_change_task->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDeleteMenuSelected), this, shortcut_delete_task->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMoveUpMenuSelected), this, shortcut_move_up->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMoveDownMenuSelected), this, shortcut_move_down->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDuplicateMenuSelected), this, shortcut_duplicate_task->GetId());
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
 	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
 	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);

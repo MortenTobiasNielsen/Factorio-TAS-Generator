@@ -21,8 +21,6 @@ void craft(std::string amount, std::string item);
 
 void build(std::string x_cord, std::string y_cord, std::string item, std::string direction);
 
-void fill_fuel(std::string x_cord, std::string y_cord, std::string amount, std::string fuel_type);
-
 void mining(std::string x_cord, std::string y_cord, std::string times = "1");
 
 void take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from);
@@ -31,6 +29,8 @@ void put(std::string x_cord, std::string y_cord, std::string amount, std::string
 
 void recipe(std::string x_cord, std::string y_cord, std::string item);
 
+void row_recipe(std::string x_cord, std::string y_cord, std::string item, std::string direction_to_build, std::string building_size, std::string amount_of_buildings);
+
 void tech(std::string tech_to_research);
 
 void speed(std::string speed);
@@ -38,10 +38,6 @@ void speed(std::string speed);
 void rotate(std::string x_cord, std::string y_cord, std::string times);
 
 void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
-
-void row_fill_fuel(std::string x_cord, std::string y_cord, std::string amount, std::string fuel_type, std::string direction_to_fuel, std::string number_of_buildings, std::string building_size);
-
-void row_empty_fill_fuel(std::string x_cord, std::string y_cord, std::string amount, std::string item_to_take, std::string from, std::string fuel_type, std::string direction_to_fuel, std::string number_of_buildings, std::string building_size);
 
 void row_take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction_to_take, std::string number_of_buildings, std::string building_size);
 

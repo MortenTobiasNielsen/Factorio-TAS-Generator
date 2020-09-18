@@ -33,9 +33,15 @@ protected:
 	void OnTakeMenuSelected(wxCommandEvent& event);
 	void OnPutMenuSelected(wxCommandEvent& event);
 	void OnCraftMenuSelected(wxCommandEvent& event);
+	void OnRecipeMenuChosen(wxCommandEvent& event);
 	void OnRotateMenuSelected(wxCommandEvent& event);
 	void OnAddMenuSelected(wxCommandEvent& event);
 	void OnTechMenuSelected(wxCommandEvent& event);
+	void OnChangeMenuSelected(wxCommandEvent& event);
+	void OnDeleteMenuSelected(wxCommandEvent& event);
+	void OnMoveUpMenuSelected(wxCommandEvent& event);
+	void OnMoveDownMenuSelected(wxCommandEvent& event);
+	void OnDuplicateMenuSelected(wxCommandEvent& event);
 
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);

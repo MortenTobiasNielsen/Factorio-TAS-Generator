@@ -108,16 +108,22 @@ protected:
 	virtual void OnChooseLocation(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGenerateScript(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeShortcuts(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnCraftMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnWalkMenuSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnMineMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnRotateMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnRecipeMenuChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMineMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTechMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutMenuSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnCraftMenuSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnRotateMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnAddMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnChangeMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnDeleteMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMoveUpMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMoveDownMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnDuplicateMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedChosen(wxCommandEvent& event) { event.Skip(); }
