@@ -155,8 +155,10 @@ private:
 
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch();
-	bool update_building_orientation();
 	void building_row();
+	bool update_building_orientation();
+	bool update_recipe();
+	
 
 	void setup_paramters(std::vector<bool> parameters);
 
