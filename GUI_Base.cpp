@@ -93,7 +93,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Append(shortcut_put);
 
 	wxMenuItem* shortcut_add_task;
-	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Alt+T"), wxEmptyString, wxITEM_NORMAL);
+	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Alt+A"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_add_task);
 
 	wxMenuItem* shortcut_change_task;
@@ -512,6 +512,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer56;
 	bSizer56 = new wxBoxSizer(wxHORIZONTAL);
 
+	m_staticText42 = new wxStaticText(m_panel1, wxID_ANY, wxT("Task List"), wxDefaultPosition, wxDefaultSize, 0);
+	m_staticText42->Wrap(-1);
+	bSizer56->Add(m_staticText42, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
 	btn_add_task = new wxButton(m_panel1, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer56->Add(btn_add_task, 0, wxALIGN_CENTER | wxALL, 5);
 
@@ -651,79 +655,267 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer43;
 	bSizer43 = new wxBoxSizer(wxHORIZONTAL);
 
-	wxBoxSizer* bSizer45;
-	bSizer45 = new wxBoxSizer(wxVERTICAL);
-
-	bSizer45->SetMinSize(wxSize(400, -1));
-	wxBoxSizer* bSizer76;
-	bSizer76 = new wxBoxSizer(wxVERTICAL);
-
-	bSizer76->SetMinSize(wxSize(400, -1));
-	label_buildings = new wxStaticText(this, wxID_ANY, wxT("Buildings"), wxDefaultPosition, wxDefaultSize, 0);
-	label_buildings->Wrap(-1);
-	bSizer76->Add(label_buildings, 0, wxALIGN_CENTER, 5);
-
-	grid_buildings = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxSize(800, -1), 0);
-
-	// Grid
-	grid_buildings->CreateGrid(0, 7);
-	grid_buildings->EnableEditing(true);
-	grid_buildings->EnableGridLines(true);
-	grid_buildings->EnableDragGridSize(false);
-	grid_buildings->SetMargins(0, 0);
-
-	// Columns
-	grid_buildings->SetColSize(0, 50);
-	grid_buildings->SetColSize(1, 50);
-	grid_buildings->SetColSize(2, 120);
-	grid_buildings->SetColSize(3, 70);
-	grid_buildings->SetColSize(4, 120);
-	grid_buildings->SetColSize(5, 120);
-	grid_buildings->SetColSize(6, 120);
-	grid_buildings->EnableDragColMove(false);
-	grid_buildings->EnableDragColSize(true);
-	grid_buildings->SetColLabelValue(0, wxT("X-cord"));
-	grid_buildings->SetColLabelValue(1, wxT("Y-cord"));
-	grid_buildings->SetColLabelValue(2, wxT("Building"));
-	grid_buildings->SetColLabelValue(3, wxT("Orientation"));
-	grid_buildings->SetColLabelValue(4, wxT("Recipe"));
-	grid_buildings->SetColLabelValue(5, wxT("Priority"));
-	grid_buildings->SetColLabelValue(6, wxT("Filter"));
-	grid_buildings->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
-
-	// Rows
-	grid_buildings->EnableDragRowSize(true);
-	grid_buildings->SetRowLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
-
-	// Label Appearance
-
-	// Cell Defaults
-	grid_buildings->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_buildings->SetMinSize(wxSize(750, 2500));
-
-	bSizer76->Add(grid_buildings, 0, wxALL, 5);
-
-
-	bSizer45->Add(bSizer76, 1, wxEXPAND, 5);
-
-
-	bSizer43->Add(bSizer45, 1, wxEXPAND, 5);
-
-
-	bSizer43->Add(50, 0, 1, wxEXPAND, 5);
-
 	wxBoxSizer* bSizer44;
 	bSizer44 = new wxBoxSizer(wxVERTICAL);
 
 	bSizer44->SetMinSize(wxSize(550, -1));
+	m_notebook1 = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+	m_panel3 = new wxPanel(m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	wxBoxSizer* bSizer561;
+	bSizer561 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer1261;
+	bSizer1261 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_choose_group = new wxStaticText(m_panel3, wxID_ANY, wxT("Choose Group"), wxDefaultPosition, wxDefaultSize, 0);
+	label_choose_group->Wrap(-1);
+	bSizer1261->Add(label_choose_group, 0, wxALIGN_CENTER | wxALL, 5);
+
+	cmb_choose_group = new wxComboBox(m_panel3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	bSizer1261->Add(cmb_choose_group, 0, wxALIGN_CENTER | wxALL, 5);
+
+	btn_new_group = new wxButton(m_panel3, wxID_ANY, wxT("New Group"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1261->Add(btn_new_group, 0, wxALL, 5);
+
+	btn_group_add_to_tasks_list = new wxButton(m_panel3, wxID_ANY, wxT("Add to tasks list"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1261->Add(btn_group_add_to_tasks_list, 0, wxALL, 5);
+
+
+	bSizer561->Add(bSizer1261, 1, wxALIGN_CENTER, 5);
+
+	wxBoxSizer* bSizer100;
+	bSizer100 = new wxBoxSizer(wxHORIZONTAL);
+
+	btn_group_add = new wxButton(m_panel3, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer100->Add(btn_group_add, 0, wxALIGN_CENTER | wxALL, 5);
+
+	btn_group_change = new wxButton(m_panel3, wxID_ANY, wxT("Change"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer100->Add(btn_group_change, 0, wxALL, 5);
+
+	btn_group_delete = new wxButton(m_panel3, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer100->Add(btn_group_delete, 0, wxALL, 5);
+
+	btn_group_move_up = new wxButton(m_panel3, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer100->Add(btn_group_move_up, 0, wxALL, 5);
+
+	btn_gorup_move_down = new wxButton(m_panel3, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer100->Add(btn_gorup_move_down, 0, wxALL, 5);
+
+	btn_group_duplicate = new wxButton(m_panel3, wxID_ANY, wxT("Duplicate"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer100->Add(btn_group_duplicate, 0, wxALL, 5);
+
+
+	bSizer561->Add(bSizer100, 1, wxALIGN_CENTER, 5);
+
 	wxBoxSizer* bSizer50;
 	bSizer50 = new wxBoxSizer(wxVERTICAL);
 
-	label_tasks = new wxStaticText(this, wxID_ANY, wxT("Tasks"), wxDefaultPosition, wxSize(-1, -1), 0);
-	label_tasks->Wrap(-1);
-	bSizer50->Add(label_tasks, 0, wxALIGN_CENTER, 5);
+	grid_group = new wxGrid(m_panel3, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
 
-	grid_tasks = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
+	// Grid
+	grid_group->CreateGrid(0, 9);
+	grid_group->EnableEditing(false);
+	grid_group->EnableGridLines(true);
+	grid_group->EnableDragGridSize(false);
+	grid_group->SetMargins(0, 0);
+
+	// Columns
+	grid_group->SetColSize(0, 75);
+	grid_group->SetColSize(1, 50);
+	grid_group->SetColSize(2, 50);
+	grid_group->SetColSize(3, 50);
+	grid_group->SetColSize(4, 120);
+	grid_group->SetColSize(5, 70);
+	grid_group->SetColSize(6, 70);
+	grid_group->SetColSize(7, 50);
+	grid_group->SetColSize(8, 50);
+	grid_group->EnableDragColMove(false);
+	grid_group->EnableDragColSize(true);
+	grid_group->SetColLabelValue(0, wxT("Task"));
+	grid_group->SetColLabelValue(1, wxT("X-cord"));
+	grid_group->SetColLabelValue(2, wxT("Y-cord"));
+	grid_group->SetColLabelValue(3, wxT("Units"));
+	grid_group->SetColLabelValue(4, wxT("Item"));
+	grid_group->SetColLabelValue(5, wxT("Orientation"));
+	grid_group->SetColLabelValue(6, wxT("Direction"));
+	grid_group->SetColLabelValue(7, wxT("Size"));
+	grid_group->SetColLabelValue(8, wxT("Amount"));
+	grid_group->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+
+	// Rows
+	grid_group->EnableDragRowSize(true);
+	grid_group->SetRowLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+
+	// Label Appearance
+
+	// Cell Defaults
+	grid_group->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
+	grid_group->SetMinSize(wxSize(685, 2500));
+
+	bSizer50->Add(grid_group, 0, wxALL, 5);
+
+
+	bSizer561->Add(bSizer50, 1, wxEXPAND, 5);
+
+
+	m_panel3->SetSizer(bSizer561);
+	m_panel3->Layout();
+	bSizer561->Fit(m_panel3);
+	m_notebook1->AddPage(m_panel3, wxT("Group"), true);
+	m_panel6 = new wxPanel(m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	wxBoxSizer* bSizer5612;
+	bSizer5612 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer126;
+	bSizer126 = new wxBoxSizer(wxHORIZONTAL);
+
+	m_staticText47 = new wxStaticText(m_panel6, wxID_ANY, wxT("Choose Template"), wxDefaultPosition, wxDefaultSize, 0);
+	m_staticText47->Wrap(-1);
+	bSizer126->Add(m_staticText47, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_comboBox6 = new wxComboBox(m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	bSizer126->Add(m_comboBox6, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_button64 = new wxButton(m_panel6, wxID_ANY, wxT("New Template"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer126->Add(m_button64, 0, wxALL, 5);
+
+
+	bSizer5612->Add(bSizer126, 1, wxALIGN_CENTER, 5);
+
+	wxBoxSizer* bSizer1002;
+	bSizer1002 = new wxBoxSizer(wxHORIZONTAL);
+
+	btn_add_task12 = new wxButton(m_panel6, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1002->Add(btn_add_task12, 0, wxALIGN_CENTER | wxALL, 5);
+
+	btn_change_task12 = new wxButton(m_panel6, wxID_ANY, wxT("Change Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1002->Add(btn_change_task12, 0, wxALL, 5);
+
+	btn_delete_task12 = new wxButton(m_panel6, wxID_ANY, wxT("Delete Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1002->Add(btn_delete_task12, 0, wxALL, 5);
+
+	btn_move_up12 = new wxButton(m_panel6, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1002->Add(btn_move_up12, 0, wxALL, 5);
+
+	btn_move_down12 = new wxButton(m_panel6, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1002->Add(btn_move_down12, 0, wxALL, 5);
+
+	btn_duplicate_tasks12 = new wxButton(m_panel6, wxID_ANY, wxT("Duplicate Task(s)"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1002->Add(btn_duplicate_tasks12, 0, wxALL, 5);
+
+
+	bSizer5612->Add(bSizer1002, 1, wxALIGN_CENTER, 5);
+
+	wxBoxSizer* bSizer502;
+	bSizer502 = new wxBoxSizer(wxVERTICAL);
+
+	grid_template = new wxGrid(m_panel6, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
+
+	// Grid
+	grid_template->CreateGrid(0, 9);
+	grid_template->EnableEditing(false);
+	grid_template->EnableGridLines(true);
+	grid_template->EnableDragGridSize(false);
+	grid_template->SetMargins(0, 0);
+
+	// Columns
+	grid_template->SetColSize(0, 75);
+	grid_template->SetColSize(1, 50);
+	grid_template->SetColSize(2, 50);
+	grid_template->SetColSize(3, 50);
+	grid_template->SetColSize(4, 120);
+	grid_template->SetColSize(5, 70);
+	grid_template->SetColSize(6, 70);
+	grid_template->SetColSize(7, 50);
+	grid_template->SetColSize(8, 50);
+	grid_template->EnableDragColMove(false);
+	grid_template->EnableDragColSize(true);
+	grid_template->SetColLabelValue(0, wxT("Task"));
+	grid_template->SetColLabelValue(1, wxT("X-cord"));
+	grid_template->SetColLabelValue(2, wxT("Y-cord"));
+	grid_template->SetColLabelValue(3, wxT("Units"));
+	grid_template->SetColLabelValue(4, wxT("Item"));
+	grid_template->SetColLabelValue(5, wxT("Orientation"));
+	grid_template->SetColLabelValue(6, wxT("Direction"));
+	grid_template->SetColLabelValue(7, wxT("Size"));
+	grid_template->SetColLabelValue(8, wxT("Amount"));
+	grid_template->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+
+	// Rows
+	grid_template->EnableDragRowSize(true);
+	grid_template->SetRowLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+
+	// Label Appearance
+
+	// Cell Defaults
+	grid_template->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
+	grid_template->SetMinSize(wxSize(685, 2500));
+
+	bSizer502->Add(grid_template, 0, wxALL, 5);
+
+
+	bSizer5612->Add(bSizer502, 1, wxEXPAND, 5);
+
+
+	m_panel6->SetSizer(bSizer5612);
+	m_panel6->Layout();
+	bSizer5612->Fit(m_panel6);
+	m_notebook1->AddPage(m_panel6, wxT("Template"), false);
+
+	bSizer44->Add(m_notebook1, 1, wxEXPAND | wxALL, 5);
+
+
+	bSizer43->Add(bSizer44, 1, wxEXPAND, 5);
+
+
+	bSizer43->Add(50, 0, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer442;
+	bSizer442 = new wxBoxSizer(wxVERTICAL);
+
+	bSizer442->SetMinSize(wxSize(550, -1));
+	m_notebook11 = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+	m_panel31 = new wxPanel(m_notebook11, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	wxBoxSizer* bSizer5611;
+	bSizer5611 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer10012;
+	bSizer10012 = new wxBoxSizer(wxHORIZONTAL);
+
+
+	bSizer10012->Add(0, 36, 1, wxEXPAND, 5);
+
+
+	bSizer5611->Add(bSizer10012, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer1001;
+	bSizer1001 = new wxBoxSizer(wxHORIZONTAL);
+
+	btn_add_task11 = new wxButton(m_panel31, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1001->Add(btn_add_task11, 0, wxALIGN_CENTER | wxALL, 5);
+
+	btn_change_task11 = new wxButton(m_panel31, wxID_ANY, wxT("Change Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1001->Add(btn_change_task11, 0, wxALL, 5);
+
+	btn_delete_task11 = new wxButton(m_panel31, wxID_ANY, wxT("Delete Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1001->Add(btn_delete_task11, 0, wxALL, 5);
+
+	btn_move_up11 = new wxButton(m_panel31, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1001->Add(btn_move_up11, 0, wxALL, 5);
+
+	btn_move_down11 = new wxButton(m_panel31, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1001->Add(btn_move_down11, 0, wxALL, 5);
+
+	btn_duplicate_tasks11 = new wxButton(m_panel31, wxID_ANY, wxT("Duplicate Task(s)"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1001->Add(btn_duplicate_tasks11, 0, wxALL, 5);
+
+
+	bSizer5611->Add(bSizer1001, 1, wxALIGN_CENTER, 5);
+
+	wxBoxSizer* bSizer501;
+	bSizer501 = new wxBoxSizer(wxVERTICAL);
+
+	grid_tasks = new wxGrid(m_panel31, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
 
 	// Grid
 	grid_tasks->CreateGrid(0, 9);
@@ -765,13 +957,109 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_tasks->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
 	grid_tasks->SetMinSize(wxSize(685, 2500));
 
-	bSizer50->Add(grid_tasks, 0, wxALL, 5);
+	bSizer501->Add(grid_tasks, 0, wxALL, 5);
 
 
-	bSizer44->Add(bSizer50, 1, wxEXPAND, 5);
+	bSizer5611->Add(bSizer501, 1, wxEXPAND, 5);
 
 
-	bSizer43->Add(bSizer44, 1, wxEXPAND, 5);
+	m_panel31->SetSizer(bSizer5611);
+	m_panel31->Layout();
+	bSizer5611->Fit(m_panel31);
+	m_notebook11->AddPage(m_panel31, wxT("Tasks"), true);
+	m_panel61 = new wxPanel(m_notebook11, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	wxBoxSizer* bSizer56111;
+	bSizer56111 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer100121;
+	bSizer100121 = new wxBoxSizer(wxHORIZONTAL);
+
+
+	bSizer100121->Add(0, 36, 1, wxEXPAND, 5);
+
+
+	bSizer56111->Add(bSizer100121, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer10011;
+	bSizer10011 = new wxBoxSizer(wxHORIZONTAL);
+
+	btn_add_task111 = new wxButton(m_panel61, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer10011->Add(btn_add_task111, 0, wxALIGN_CENTER | wxALL, 5);
+
+	btn_change_task111 = new wxButton(m_panel61, wxID_ANY, wxT("Change Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer10011->Add(btn_change_task111, 0, wxALL, 5);
+
+	btn_delete_task111 = new wxButton(m_panel61, wxID_ANY, wxT("Delete Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer10011->Add(btn_delete_task111, 0, wxALL, 5);
+
+	btn_move_up111 = new wxButton(m_panel61, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer10011->Add(btn_move_up111, 0, wxALL, 5);
+
+	btn_move_down111 = new wxButton(m_panel61, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer10011->Add(btn_move_down111, 0, wxALL, 5);
+
+	btn_duplicate_tasks111 = new wxButton(m_panel61, wxID_ANY, wxT("Duplicate Task(s)"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer10011->Add(btn_duplicate_tasks111, 0, wxALL, 5);
+
+
+	bSizer56111->Add(bSizer10011, 1, wxALIGN_CENTER, 5);
+
+	wxBoxSizer* bSizer5011;
+	bSizer5011 = new wxBoxSizer(wxVERTICAL);
+
+	grid_buildings = new wxGrid(m_panel61, wxID_ANY, wxDefaultPosition, wxSize(800, -1), 0);
+
+	// Grid
+	grid_buildings->CreateGrid(0, 7);
+	grid_buildings->EnableEditing(true);
+	grid_buildings->EnableGridLines(true);
+	grid_buildings->EnableDragGridSize(false);
+	grid_buildings->SetMargins(0, 0);
+
+	// Columns
+	grid_buildings->SetColSize(0, 50);
+	grid_buildings->SetColSize(1, 50);
+	grid_buildings->SetColSize(2, 120);
+	grid_buildings->SetColSize(3, 70);
+	grid_buildings->SetColSize(4, 120);
+	grid_buildings->SetColSize(5, 120);
+	grid_buildings->SetColSize(6, 120);
+	grid_buildings->EnableDragColMove(false);
+	grid_buildings->EnableDragColSize(true);
+	grid_buildings->SetColLabelValue(0, wxT("X-cord"));
+	grid_buildings->SetColLabelValue(1, wxT("Y-cord"));
+	grid_buildings->SetColLabelValue(2, wxT("Building"));
+	grid_buildings->SetColLabelValue(3, wxT("Orientation"));
+	grid_buildings->SetColLabelValue(4, wxT("Recipe"));
+	grid_buildings->SetColLabelValue(5, wxT("Priority"));
+	grid_buildings->SetColLabelValue(6, wxT("Filter"));
+	grid_buildings->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+
+	// Rows
+	grid_buildings->EnableDragRowSize(true);
+	grid_buildings->SetRowLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
+
+	// Label Appearance
+
+	// Cell Defaults
+	grid_buildings->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
+	grid_buildings->SetMinSize(wxSize(750, 2500));
+
+	bSizer5011->Add(grid_buildings, 0, wxALL, 5);
+
+
+	bSizer56111->Add(bSizer5011, 1, wxEXPAND, 5);
+
+
+	m_panel61->SetSizer(bSizer56111);
+	m_panel61->Layout();
+	bSizer56111->Fit(m_panel61);
+	m_notebook11->AddPage(m_panel61, wxT("Buildings"), false);
+
+	bSizer442->Add(m_notebook11, 1, wxEXPAND | wxALL, 5);
+
+
+	bSizer43->Add(bSizer442, 1, wxEXPAND, 5);
 
 
 	bSizer43->Add(10000, 0, 1, wxEXPAND, 5);
@@ -836,8 +1124,36 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	btn_move_up->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
 	btn_move_down->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
 	btn_duplicate_tasks->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
-	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
+	btn_new_group->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnNewGroupClicked), NULL, this);
+	btn_group_add_to_tasks_list->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupAddToTasksListClicked), NULL, this);
+	btn_group_add->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupAddTaskClicked), NULL, this);
+	btn_group_change->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupChangeTaskClicked), NULL, this);
+	btn_group_delete->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupDeleteTaskClicked), NULL, this);
+	btn_group_move_up->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupMoveUpClicked), NULL, this);
+	btn_gorup_move_down->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupMoveDownClicked), NULL, this);
+	btn_group_duplicate->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupDuplicateTasksClicked), NULL, this);
+	grid_group->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnGroupGridDoubleLeftClick), NULL, this);
+	btn_add_task12->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task12->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
+	btn_delete_task12->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up12->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down12->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks12->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
+	grid_template->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTemplateGridDoubleLeftClick), NULL, this);
+	btn_add_task11->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task11->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
+	btn_delete_task11->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up11->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down11->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks11->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
 	grid_tasks->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTasksGridDoubleLeftClick), NULL, this);
+	btn_add_task111->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task111->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
+	btn_delete_task111->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up111->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down111->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks111->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
+	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
 }
 
 GUI_Base::~GUI_Base() {
@@ -865,8 +1181,36 @@ GUI_Base::~GUI_Base() {
 	btn_move_up->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
 	btn_move_down->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
 	btn_duplicate_tasks->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
-	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
+	btn_new_group->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnNewGroupClicked), NULL, this);
+	btn_group_add_to_tasks_list->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupAddToTasksListClicked), NULL, this);
+	btn_group_add->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupAddTaskClicked), NULL, this);
+	btn_group_change->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupChangeTaskClicked), NULL, this);
+	btn_group_delete->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupDeleteTaskClicked), NULL, this);
+	btn_group_move_up->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupMoveUpClicked), NULL, this);
+	btn_gorup_move_down->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupMoveDownClicked), NULL, this);
+	btn_group_duplicate->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnGroupDuplicateTasksClicked), NULL, this);
+	grid_group->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnGroupGridDoubleLeftClick), NULL, this);
+	btn_add_task12->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task12->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
+	btn_delete_task12->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up12->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down12->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks12->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
+	grid_template->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTemplateGridDoubleLeftClick), NULL, this);
+	btn_add_task11->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task11->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
+	btn_delete_task11->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up11->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down11->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks11->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
 	grid_tasks->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnTasksGridDoubleLeftClick), NULL, this);
+	btn_add_task111->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnAddTaskClicked), NULL, this);
+	btn_change_task111->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnChangeTaskClicked), NULL, this);
+	btn_delete_task111->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteTaskClicked), NULL, this);
+	btn_move_up111->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveUpClicked), NULL, this);
+	btn_move_down111->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnMoveDownClicked), NULL, this);
+	btn_duplicate_tasks111->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDuplicateTasksClicked), NULL, this);
+	grid_buildings->Disconnect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
 
 }
 
@@ -1293,4 +1637,54 @@ Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& 
 }
 
 Shortcuts_Menu::~Shortcuts_Menu() {
+}
+
+MyFrame3::MyFrame3(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
+	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
+
+	wxBoxSizer* bSizer93;
+	bSizer93 = new wxBoxSizer(wxVERTICAL);
+
+	m_panel2 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	wxBoxSizer* bSizer94;
+	bSizer94 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer95;
+	bSizer95 = new wxBoxSizer(wxHORIZONTAL);
+
+	m_button9 = new wxButton(m_panel2, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer95->Add(m_button9, 0, wxALL, 5);
+
+	m_button10 = new wxButton(m_panel2, wxID_ANY, wxT("Change Task"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer95->Add(m_button10, 0, wxALL, 5);
+
+	m_button11 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer95->Add(m_button11, 0, wxALL, 5);
+
+	m_button12 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer95->Add(m_button12, 0, wxALL, 5);
+
+	m_button13 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer95->Add(m_button13, 0, wxALL, 5);
+
+	m_button14 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer95->Add(m_button14, 0, wxALL, 5);
+
+
+	bSizer94->Add(bSizer95, 1, wxEXPAND, 5);
+
+
+	m_panel2->SetSizer(bSizer94);
+	m_panel2->Layout();
+	bSizer94->Fit(m_panel2);
+	bSizer93->Add(m_panel2, 1, wxEXPAND | wxALL, 5);
+
+
+	this->SetSizer(bSizer93);
+	this->Layout();
+
+	this->Centre(wxBOTH);
+}
+
+MyFrame3::~MyFrame3() {
 }

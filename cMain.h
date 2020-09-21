@@ -61,12 +61,19 @@ protected:
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
 
+
+	// task
 	void OnAddTaskClicked(wxCommandEvent& event);
 	void OnChangeTaskClicked(wxCommandEvent& event);
 	void OnDeleteTaskClicked(wxCommandEvent& event);
 	void OnMoveUpClicked(wxCommandEvent& event);
 	void OnMoveDownClicked(wxCommandEvent& event); 
 	void OnDuplicateTasksClicked(wxCommandEvent& event);
+
+	// Group
+	void OnNewGroupClicked(wxCommandEvent& event);
+	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
+	void OnGroupAddTaskClicked(wxCommandEvent& event);
 	
 	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
 	
@@ -74,6 +81,9 @@ protected:
 
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
+
+	std::map<std::string, std::vector<std::vector<std::string>>> group_list;
+	std::string group_name;
 
 	std::string buildings_list_save_indicator = "Buildingsgrid";
 	std::string save_file_location_indicator = "File_saved_here";

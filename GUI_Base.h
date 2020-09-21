@@ -27,6 +27,7 @@
 #include <wx/button.h>
 #include <wx/panel.h>
 #include <wx/grid.h>
+#include <wx/notebook.h>
 #include <wx/frame.h>
 #include <wx/scrolwin.h>
 
@@ -83,6 +84,7 @@ protected:
 	wxRadioButton* rbtn_drop;
 	wxRadioButton* rbtn_launch;
 	wxStaticLine* m_staticline2;
+	wxStaticText* m_staticText42;
 	wxButton* btn_add_task;
 	wxButton* btn_change_task;
 	wxButton* btn_delete_task;
@@ -94,10 +96,47 @@ protected:
 	wxStaticText* label_y_offset;
 	wxTextCtrl* txt_y_offset;
 	wxStaticLine* m_staticline14;
-	wxStaticText* label_buildings;
-	wxGrid* grid_buildings;
-	wxStaticText* label_tasks;
+	wxNotebook* m_notebook1;
+	wxPanel* m_panel3;
+	wxStaticText* label_choose_group;
+	wxComboBox* cmb_choose_group;
+	wxButton* btn_new_group;
+	wxButton* btn_group_add_to_tasks_list;
+	wxButton* btn_group_add;
+	wxButton* btn_group_change;
+	wxButton* btn_group_delete;
+	wxButton* btn_group_move_up;
+	wxButton* btn_gorup_move_down;
+	wxButton* btn_group_duplicate;
+	wxGrid* grid_group;
+	wxPanel* m_panel6;
+	wxStaticText* m_staticText47;
+	wxComboBox* m_comboBox6;
+	wxButton* m_button64;
+	wxButton* btn_add_task12;
+	wxButton* btn_change_task12;
+	wxButton* btn_delete_task12;
+	wxButton* btn_move_up12;
+	wxButton* btn_move_down12;
+	wxButton* btn_duplicate_tasks12;
+	wxGrid* grid_template;
+	wxNotebook* m_notebook11;
+	wxPanel* m_panel31;
+	wxButton* btn_add_task11;
+	wxButton* btn_change_task11;
+	wxButton* btn_delete_task11;
+	wxButton* btn_move_up11;
+	wxButton* btn_move_down11;
+	wxButton* btn_duplicate_tasks11;
 	wxGrid* grid_tasks;
+	wxPanel* m_panel61;
+	wxButton* btn_add_task111;
+	wxButton* btn_change_task111;
+	wxButton* btn_delete_task111;
+	wxButton* btn_move_up111;
+	wxButton* btn_move_down111;
+	wxButton* btn_duplicate_tasks111;
+	wxGrid* grid_buildings;
 
 	// Virtual event handlers, overide them in your derived class
 	virtual void OnMenuNew(wxCommandEvent& event) { event.Skip(); }
@@ -147,8 +186,18 @@ protected:
 	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
+	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
+	virtual void OnTemplateGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTasksGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
+	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 
 
 public:
@@ -231,6 +280,29 @@ public:
 	Shortcuts_Menu(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Change Shortcuts"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(570, 396), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 	~Shortcuts_Menu();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class MyFrame3
+///////////////////////////////////////////////////////////////////////////////
+class MyFrame3 : public wxFrame {
+private:
+
+protected:
+	wxPanel* m_panel2;
+	wxButton* m_button9;
+	wxButton* m_button10;
+	wxButton* m_button11;
+	wxButton* m_button12;
+	wxButton* m_button13;
+	wxButton* m_button14;
+
+public:
+
+	MyFrame3(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(785, 612), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+
+	~MyFrame3();
 
 };
 

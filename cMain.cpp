@@ -70,13 +70,19 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	cmb_tech->SetValue(*tech_list.begin());
 	cmb_tech->AutoComplete(tech_choices);
 
-	// set grid formatting
+	// set tasks grid formatting
 	grid_tasks->SetColFormatFloat(1, 4, 1);
 	grid_tasks->SetColFormatFloat(2, 4, 1);
 	grid_tasks->SetColFormatFloat(3, 4, 2);
 
+	// set buildings grid formatting
 	grid_buildings->SetColFormatFloat(0, 4, 1);
 	grid_buildings->SetColFormatFloat(1, 4, 1);
+
+	// set group grid formatting
+	grid_group->SetColFormatFloat(1, 4, 1);
+	grid_group->SetColFormatFloat(2, 4, 1);
+	grid_group->SetColFormatFloat(3, 4, 2);
 }
 
 
@@ -432,8 +438,6 @@ bool cMain::update_recipe() {
 	return false;
 }
 
-
-
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	
 	extract_parameters();
@@ -458,6 +462,76 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	}
 
 	event.Skip();
+}
+
+void cMain::OnNewGroupClicked(wxCommandEvent& event) {
+
+	int cmb_rows = cmb_choose_group->GetCount();
+
+	for (int i = 0; i < cmb_rows; i++) {
+		std::string test = cmb_choose_group->GetString(i).ToStdString();
+	}
+
+
+
+	/*cmb_choose_group->getc*/
+
+	group_name = cmb_choose_group->GetValue().ToStdString();
+	
+	cmb_choose_group->Append(group_name);
+
+	std::vector<std::vector<std::string>> tasks;
+
+
+
+	group_list.insert(std::pair<std::string, std::vector<std::vector<std::string>>> (group_name, tasks));
+
+	int hello = 1;
+
+	event.Skip();
+};
+
+void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
+	
+
+	event.Skip();
+}
+
+void cMain::OnGroupAddTaskClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection()) {
+		wxMessageBox("No task is chosen - please select a row in the task list", "Cannot add task to group");
+		return;
+	}
+
+	int row;
+
+	if (grid_group->IsSelection()) {
+		if (!grid_group->GetSelectedRows().begin()) {
+			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			return;
+		}
+		row = *grid_group->GetSelectedRows().begin();
+	} else {
+		row = grid_group->GetNumberRows();
+	}
+
+	row_num = *grid_tasks->GetSelectedRows().begin();
+	row_count = grid_tasks->GetSelectedRows().GetCount();
+
+	grid_group->InsertRows(row, row_count);
+
+	for (int i = row_num; i < (row_num + row_count); i++) {
+
+		grid_group->SetCellValue(row + i - row_num, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 1, grid_tasks->GetCellValue(i, 1).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 2, grid_tasks->GetCellValue(i, 2).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 3, grid_tasks->GetCellValue(i, 3).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 4, grid_tasks->GetCellValue(i, 4).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 5, grid_tasks->GetCellValue(i, 5).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 6, grid_tasks->GetCellValue(i, 6).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
+		grid_group->SetCellValue(row + i - row_num, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
+	}
 }
 
 void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
