@@ -186,6 +186,8 @@ protected:
 	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupChosenKillFocus(wxFocusEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupAddTaskClicked(wxCommandEvent& event) { event.Skip(); }

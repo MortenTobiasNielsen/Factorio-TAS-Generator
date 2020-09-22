@@ -438,6 +438,33 @@ bool cMain::update_recipe() {
 	return false;
 }
 
+void cMain::update_group_grid() {
+	grid_group->DeleteRows(0, grid_group->GetNumberRows());
+
+	group_list = group_map[group_name];
+	grid_group->InsertRows(0, group_list.size());
+
+	for (int i = 0; i < group_list.size(); i++) {
+		std::stringstream data_line;
+		data_line.str(group_list[i]);
+		seglist = {};
+
+		while (std::getline(data_line, segment, ';')) {
+			seglist.push_back(segment);
+		}
+
+		grid_group->SetCellValue(i, 0, seglist[0]);
+		grid_group->SetCellValue(i, 1, seglist[1]);
+		grid_group->SetCellValue(i, 2, seglist[2]);
+		grid_group->SetCellValue(i, 3, seglist[3]);
+		grid_group->SetCellValue(i, 4, seglist[4]);
+		grid_group->SetCellValue(i, 5, seglist[5]);
+		grid_group->SetCellValue(i, 6, seglist[6]);
+		grid_group->SetCellValue(i, 7, seglist[7]);
+		grid_group->SetCellValue(i, 8, seglist[8]);
+	}
+}
+
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	
 	extract_parameters();
@@ -466,27 +493,62 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 
 void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 
-	int cmb_rows = cmb_choose_group->GetCount();
+	row_count = cmb_choose_group->GetCount();
+	group_name = cmb_choose_group->GetValue().ToStdString();
 
-	for (int i = 0; i < cmb_rows; i++) {
-		std::string test = cmb_choose_group->GetString(i).ToStdString();
+	if (group_name == "") {
+		wxMessageBox("Please write a group name", "Group name cannot be blank");
+		return;
 	}
 
-
-
-	/*cmb_choose_group->getc*/
-
-	group_name = cmb_choose_group->GetValue().ToStdString();
+	for (int i = 0; i < row_count; i++) {
+		if (group_name == cmb_choose_group->GetString(i).ToStdString()) {
+			wxMessageBox("Group names has to be unique - please write a new name in the Choose Group field", "Group names should be unique");
+			return;
+		}
+	}	
 	
 	cmb_choose_group->Append(group_name);
+	cmb_choose_group->SetValue(group_name);
+	group_choices.Add(group_name);
+	group_list = {};
 
-	std::vector<std::vector<std::string>> tasks;
+	if (grid_group->IsSelection()) {
+		if (!grid_group->GetSelectedRows().begin()) {
+			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
+			return;
+		}
+		row_num = *grid_group->GetSelectedRows().begin();
+		row_count = grid_group->GetSelectedRows().GetCount();
+	} else {
+		row_count = grid_group->GetNumberRows();
 
+		if (row_count) {
+			row_num = 0;
+		} else {
+			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+			event.Skip();
+			return;
+		}
+	}
 
+	for (int i = row_num; i < row_num + row_count; i++) {
+		task = grid_group->GetCellValue(i, 0).ToStdString();
+		x_cord = grid_group->GetCellValue(i, 1).ToStdString();
+		y_cord = grid_group->GetCellValue(i, 2).ToStdString();
+		units = grid_group->GetCellValue(i, 3).ToStdString();
+		item = grid_group->GetCellValue(i, 4).ToStdString();
+		build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
+		direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
+		building_size = grid_group->GetCellValue(i, 7).ToStdString();
+		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
 
-	group_list.insert(std::pair<std::string, std::vector<std::vector<std::string>>> (group_name, tasks));
+		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+	}
+	
+	group_map.insert(std::pair<std::string, std::vector<std::string>> (group_name, group_list));
 
-	int hello = 1;
+	update_group_grid();
 
 	event.Skip();
 };
@@ -503,11 +565,11 @@ void cMain::OnGroupAddTaskClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	int row;
+	static int row;
 
 	if (grid_group->IsSelection()) {
 		if (!grid_group->GetSelectedRows().begin()) {
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
 			return;
 		}
 		row = *grid_group->GetSelectedRows().begin();
@@ -532,6 +594,23 @@ void cMain::OnGroupAddTaskClicked(wxCommandEvent& event) {
 		grid_group->SetCellValue(row + i - row_num, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
 		grid_group->SetCellValue(row + i - row_num, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
 	}
+}
+
+void cMain::OnGroupChosen(wxCommandEvent& event) {
+	group_name = cmb_choose_group->GetValue();
+	update_group_grid();
+
+	event.Skip();
+}
+
+void cMain::OnGroupChosenKillFocus(wxFocusEvent& event) {
+	group_name = cmb_choose_group->GetValue();
+	
+	if (group_map.find(group_name) != group_map.end()) {
+		update_group_grid();
+	}	
+
+	event.Skip();
 }
 
 void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
@@ -871,16 +950,13 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			buildings_data_to_save = {};
 		}
 
-		std::string segment;
-		std::vector<std::string> seglist;
-
 		while (std::getline(inFile, open_data_string)) {
-			std::stringstream open_data_string_line;
-			open_data_string_line.str(open_data_string);
+			std::stringstream data_line;
+			data_line.str(open_data_string);
 
 			seglist = {};
 
-			while (std::getline(open_data_string_line, segment, ';')) {
+			while (std::getline(data_line, segment, ';')) {
 				seglist.push_back(segment);
 			}
 

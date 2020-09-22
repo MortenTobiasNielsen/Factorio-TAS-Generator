@@ -7,6 +7,8 @@
 #include <vector>
 #include <map>
 #include <ctime>
+#include <fstream>
+#include <sstream>
 
 #include "GUI_Base.h"
 
@@ -62,7 +64,7 @@ protected:
 	void OnDropChosen(wxCommandEvent& event);
 
 
-	// task
+	// Task
 	void OnAddTaskClicked(wxCommandEvent& event);
 	void OnChangeTaskClicked(wxCommandEvent& event);
 	void OnDeleteTaskClicked(wxCommandEvent& event);
@@ -70,20 +72,23 @@ protected:
 	void OnMoveDownClicked(wxCommandEvent& event); 
 	void OnDuplicateTasksClicked(wxCommandEvent& event);
 
+	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
+
 	// Group
 	void OnNewGroupClicked(wxCommandEvent& event);
 	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
 	void OnGroupAddTaskClicked(wxCommandEvent& event);
+
+	void OnGroupChosen(wxCommandEvent& event);
+	void OnGroupChosenKillFocus(wxFocusEvent& event);
+
 	
-	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
 	
+	// Building
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
 
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
-
-	std::map<std::string, std::vector<std::vector<std::string>>> group_list;
-	std::string group_name;
 
 	std::string buildings_list_save_indicator = "Buildingsgrid";
 	std::string save_file_location_indicator = "File_saved_here";
@@ -111,6 +116,10 @@ private:
 
 	std::vector<std::string>::iterator it1;
 	std::vector<std::string>::iterator it2;
+
+	std::string segment;
+	std::vector<std::string> seglist;
+	
 
 	int row_num;
 	int row_count;
@@ -148,12 +157,18 @@ private:
 	wxArrayString tech_choices;
 	wxArrayString building_orientation_choices;
 	wxArrayString direction_to_build_choices;
+	wxArrayString group_choices;
 
 	std::string generate_code_file_location = "";
 	std::string save_file_location = "";
 
 	std::string open_data_string;
 
+	
+	std::string group_name;
+	std::vector<std::string> group_list;
+	std::map<std::string, std::vector<std::string>> group_map;
+	
 	std::vector<std::string> tasks_data_to_save;
 	std::vector<std::string> buildings_data_to_save;
 
@@ -169,6 +184,7 @@ private:
 	bool update_building_orientation();
 	bool update_recipe();
 	
+	void update_group_grid();
 
 	void setup_paramters(std::vector<bool> parameters);
 
