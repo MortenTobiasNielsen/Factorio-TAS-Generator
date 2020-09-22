@@ -15,9 +15,6 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 
 	static const std::vector<std::string> all_items_const(all_items);
 
-	time_in_sec = time(0);
-	duplicate_multiplier = 1;
-
 	for (auto s : all_items_const) {
 		item_choices.Add(s);
 	}
@@ -303,24 +300,6 @@ void cMain::change_task() {
 	tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 
 	update_buildings_grid_from_scratch();
-}
-
-void cMain::duplicate_task() {
-	row_num = grid_tasks->GetNumberRows();
-
-	grid_tasks->InsertRows(row_num, 1);
-
-	grid_tasks->SetCellValue(row_num, 0, task);
-	grid_tasks->SetCellValue(row_num, 1, x_cord);
-	grid_tasks->SetCellValue(row_num, 2, y_cord);
-	grid_tasks->SetCellValue(row_num, 3, units);
-	grid_tasks->SetCellValue(row_num, 4, item);
-	grid_tasks->SetCellValue(row_num, 5, build_orientation);
-	grid_tasks->SetCellValue(row_num, 6, direction_to_build);
-	grid_tasks->SetCellValue(row_num, 7, building_size);
-	grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
-
-	tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 }
 
 void cMain::update_buildings_grid() {
@@ -883,56 +862,6 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
-void cMain::OnDuplicateTasksClicked(wxCommandEvent& event) {
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
-		wxMessageBox("Please select row(s) to duplicate", "Task list selection not valid");
-		return;
-	}
-
-	if (time_in_sec > time(0) - 3) {
-		duplicate_multiplier += 1;
-	} else {
-		duplicate_multiplier = 1;
-		time_in_sec = time(0);
-	}
-
-	row_count = grid_tasks->GetSelectedRows().GetCount();
-	row_num = *grid_tasks->GetSelectedRows().begin();
-
-	static float x_offset;
-	static float y_offset;
-
-	int i = row_num;
-	int rows = row_num + row_count;
-
-	for (i ; i < rows; i++) {
-		task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		item = grid_tasks->GetCellValue(i, 4).ToStdString();
-		build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-		direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
-		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
-
-		x_offset = wxAtoi(txt_x_offset->GetValue().ToStdString()) * duplicate_multiplier;
-		y_offset = wxAtoi(txt_y_offset->GetValue().ToStdString()) * duplicate_multiplier;
-
-		if (x_cord != "" && y_cord != "") {
-			x_cord = std::to_string(std::stof(x_cord) + x_offset);
-			y_cord = std::to_string(std::stof(y_cord) + y_offset);
-		}
-
-		duplicate_task();
-		if (task == "Build") {
-			building_row();
-		}
-	}
-
-	event.Skip();
-}
-
 void cMain::OnMenuNew(wxCommandEvent& event) {
 
 	if (grid_tasks->GetNumberRows() > 0) {
@@ -1285,11 +1214,6 @@ void cMain::OnMoveUpMenuSelected(wxCommandEvent& event) {
 
 void cMain::OnMoveDownMenuSelected(wxCommandEvent& event) {
 	OnMoveDownClicked(event);
-	event.Skip();
-}
-
-void cMain::OnDuplicateMenuSelected(wxCommandEvent& event) {
-	OnDuplicateTasksClicked(event);
 	event.Skip();
 }
 

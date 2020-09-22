@@ -22,10 +22,10 @@
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
 #include <wx/combobox.h>
-#include <wx/radiobut.h>
 #include <wx/statline.h>
-#include <wx/button.h>
+#include <wx/radiobut.h>
 #include <wx/panel.h>
+#include <wx/button.h>
 #include <wx/grid.h>
 #include <wx/notebook.h>
 #include <wx/frame.h>
@@ -66,6 +66,8 @@ protected:
 	wxTextCtrl* txt_building_size;
 	wxStaticText* label_amount_of_buildings;
 	wxTextCtrl* txt_amount_of_buildings;
+	wxStaticText* label_tasks;
+	wxStaticLine* m_staticline3;
 	wxRadioButton* rbtn_take;
 	wxRadioButton* rbtn_put;
 	wxRadioButton* rbtn_game_speed;
@@ -83,18 +85,7 @@ protected:
 	wxRadioButton* rbtn_pick_up;
 	wxRadioButton* rbtn_drop;
 	wxRadioButton* rbtn_launch;
-	wxStaticLine* m_staticline2;
-	wxStaticText* m_staticText42;
-	wxButton* btn_add_task;
-	wxButton* btn_change_task;
-	wxButton* btn_delete_task;
-	wxButton* btn_move_up;
-	wxButton* btn_move_down;
-	wxButton* btn_duplicate_tasks;
-	wxStaticText* label_offset_size;
-	wxTextCtrl* txt_x_offset;
-	wxStaticText* label_y_offset;
-	wxTextCtrl* txt_y_offset;
+	wxStaticLine* m_staticline4;
 	wxStaticLine* m_staticline14;
 	wxNotebook* m_notebook1;
 	wxPanel* m_panel3;
@@ -107,7 +98,6 @@ protected:
 	wxButton* btn_group_delete;
 	wxButton* btn_group_move_up;
 	wxButton* btn_gorup_move_down;
-	wxButton* btn_group_duplicate;
 	wxGrid* grid_group;
 	wxPanel* m_panel6;
 	wxStaticText* m_staticText47;
@@ -118,7 +108,6 @@ protected:
 	wxButton* btn_delete_task12;
 	wxButton* btn_move_up12;
 	wxButton* btn_move_down12;
-	wxButton* btn_duplicate_tasks12;
 	wxGrid* grid_template;
 	wxNotebook* m_notebook11;
 	wxPanel* m_panel31;
@@ -127,7 +116,6 @@ protected:
 	wxButton* btn_delete_task11;
 	wxButton* btn_move_up11;
 	wxButton* btn_move_down11;
-	wxButton* btn_duplicate_tasks11;
 	wxGrid* grid_tasks;
 	wxPanel* m_panel61;
 	wxButton* btn_add_task111;
@@ -180,12 +168,6 @@ protected:
 	virtual void OnPickUpChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDropChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLaunchChosen(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
@@ -194,10 +176,15 @@ protected:
 	virtual void OnGroupDeleteClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupDuplicateClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
+	virtual void OnAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTasksGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
+	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 
 

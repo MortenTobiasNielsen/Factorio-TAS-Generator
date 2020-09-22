@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <ctime>
 #include <fstream>
 #include <sstream>
 
@@ -43,7 +42,6 @@ protected:
 	void OnDeleteMenuSelected(wxCommandEvent& event);
 	void OnMoveUpMenuSelected(wxCommandEvent& event);
 	void OnMoveDownMenuSelected(wxCommandEvent& event);
-	void OnDuplicateMenuSelected(wxCommandEvent& event);
 
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
@@ -70,7 +68,6 @@ protected:
 	void OnDeleteTaskClicked(wxCommandEvent& event);
 	void OnMoveUpClicked(wxCommandEvent& event);
 	void OnMoveDownClicked(wxCommandEvent& event); 
-	void OnDuplicateTasksClicked(wxCommandEvent& event);
 
 	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
 
@@ -124,12 +121,9 @@ private:
 	std::string segment;
 	std::vector<std::string> seglist;
 	
-
 	int row_num;
 	int row_count;
 	int row_to_move;
-
-	time_t time_in_sec;
 
 	std::string data;
 	std::string not_relevant = "";
@@ -176,8 +170,6 @@ private:
 	std::vector<std::string> tasks_data_to_save;
 	std::vector<std::string> buildings_data_to_save;
 
-	int duplicate_multiplier;
-
 	bool move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid);
 	bool change_row(wxGrid* grid);
@@ -185,7 +177,6 @@ private:
 
 	void update_tasks_grid();
 	void change_task();
-	void duplicate_task();
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch();
 	void building_row();
