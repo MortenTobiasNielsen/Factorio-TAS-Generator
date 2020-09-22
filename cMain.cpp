@@ -684,6 +684,17 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 		
 		for (int i = row_num_group; i < (row_num_group + row_count_group); i++) {
 			grid_tasks->InsertRows(row_num + counter);
+
+			task = grid_group->GetCellValue(i, 0).ToStdString();
+			x_cord = grid_group->GetCellValue(i, 1).ToStdString();
+			y_cord = grid_group->GetCellValue(i, 2).ToStdString();
+			units = grid_group->GetCellValue(i, 3).ToStdString();
+			item = grid_group->GetCellValue(i, 4).ToStdString();
+			build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
+			direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
+			building_size = grid_group->GetCellValue(i, 7).ToStdString();
+			amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
+
 			grid_tasks->SetCellValue(row_num + counter, 0, grid_group->GetCellValue(i, 0));
 			grid_tasks->SetCellValue(row_num + counter, 1, grid_group->GetCellValue(i, 1));
 			grid_tasks->SetCellValue(row_num + counter, 2, grid_group->GetCellValue(i, 2));
@@ -693,6 +704,11 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 			grid_tasks->SetCellValue(row_num + counter, 6, grid_group->GetCellValue(i, 6));
 			grid_tasks->SetCellValue(row_num + counter, 7, grid_group->GetCellValue(i, 7));
 			grid_tasks->SetCellValue(row_num + counter, 8, grid_group->GetCellValue(i, 8));
+
+			it1 = tasks_data_to_save.begin();
+			it1 += row_num + counter;
+
+			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 
 			counter += 1;
 		}	
@@ -707,6 +723,17 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 
 	for (int i = row_num_group; i < (row_num_group + row_count_group); i++) {
 		grid_tasks->InsertRows(row_num + i);
+
+		task = grid_tasks->GetCellValue(i, 0).ToStdString();
+		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+		units = grid_tasks->GetCellValue(i, 3).ToStdString();
+		item = grid_tasks->GetCellValue(i, 4).ToStdString();
+		build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+		direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+
 		grid_tasks->SetCellValue(row_num + i, 0, grid_group->GetCellValue(i, 0));
 		grid_tasks->SetCellValue(row_num + i, 1, grid_group->GetCellValue(i, 1));
 		grid_tasks->SetCellValue(row_num + i, 2, grid_group->GetCellValue(i, 2));
@@ -716,6 +743,8 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 		grid_tasks->SetCellValue(row_num + i, 6, grid_group->GetCellValue(i, 6));
 		grid_tasks->SetCellValue(row_num + i, 7, grid_group->GetCellValue(i, 7));
 		grid_tasks->SetCellValue(row_num + i, 8, grid_group->GetCellValue(i, 8));
+
+		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 	}
 
 	event.Skip();

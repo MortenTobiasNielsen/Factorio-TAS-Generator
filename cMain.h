@@ -91,7 +91,7 @@ protected:
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
 
-	std::string buildings_list_save_indicator = "Buildingsgrid";
+	std::string buildings_list_save_indicator = "Buildingsgrid"; // remember to remove buildings grid data and instead generate it from the tasks list on open file
 	std::string save_file_location_indicator = "File_saved_here";
 	std::string generate_file_location_indicator = "Generated_script_saved_here";
 
@@ -161,7 +161,6 @@ private:
 	std::string save_file_location = "";
 
 	std::string open_data_string;
-
 	
 	std::string group_name;
 	std::vector<std::string> group_list;
@@ -173,7 +172,6 @@ private:
 	bool move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid);
 	bool change_row(wxGrid* grid);
-
 
 	void update_tasks_grid();
 	void change_task();
@@ -198,8 +196,6 @@ private:
 	bool check_take_put(const std::string& item, const std::vector<std::string>& all_items);
 
 	void save_file();
-
-
 
 	std::string extract_task();
 	std::string extract_x_cord();
