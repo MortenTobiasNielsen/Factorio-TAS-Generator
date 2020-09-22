@@ -772,6 +772,14 @@ void cMain::OnGroupMoveDownClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnGroupGridDoubleLeftClick(wxGridEvent& event) {
+	row_num = event.GetRow();
+
+	update_parameteres(grid_group, event);
+
+	event.Skip();
+}
+
 void cMain::OnGroupChosen(wxCommandEvent& event) {
 	group_name = cmb_choose_group->GetValue();
 	update_group_grid();
@@ -781,89 +789,8 @@ void cMain::OnGroupChosen(wxCommandEvent& event) {
 
 void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	row_num = event.GetRow();
-	
-	task = grid_tasks->GetCellValue(row_num, 0).ToStdString();
-	x_cord = grid_tasks->GetCellValue(row_num, 1).ToStdString();
-	y_cord = grid_tasks->GetCellValue(row_num, 2).ToStdString();
-	units = grid_tasks->GetCellValue(row_num, 3).ToStdString();
-	item = grid_tasks->GetCellValue(row_num, 4).ToStdString();
-	build_orientation = grid_tasks->GetCellValue(row_num, 5).ToStdString();
-	direction_to_build = grid_tasks->GetCellValue(row_num, 6).ToStdString();
-	building_size = grid_tasks->GetCellValue(row_num, 7).ToStdString();
-	amount_of_buildings = grid_tasks->GetCellValue(row_num, 8).ToStdString();
 
-	if (task == "Game Speed") {
-		OnGameSpeedMenuSelected(event);
-		txt_units->SetValue(units);
-
-	} else if (task == "Walk") {
-		OnWalkMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-
-	} else if (task == "Mine") {
-		OnMineMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
-
-	} else if (task == "Rotate") {
-		OnRotateMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
-
-	} else if (task == "Craft") {
-		OnCraftMenuSelected(event);
-		txt_units->SetValue(units);
-		cmb_item->SetValue(item);
-
-	} else if (task == "Build") {
-		OnBuildMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		cmb_item->SetValue(item);
-		cmb_building_orientation->SetValue(build_orientation);
-		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Take") {
-		OnTakeMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
-		cmb_item->SetValue(item);
-		cmb_from_into->SetValue(build_orientation);
-		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Put") {
-		OnPutMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
-		cmb_item->SetValue(item);
-		cmb_from_into->SetValue(build_orientation);
-		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Tech") {
-		OnTechMenuSelected(event);
-		cmb_tech->SetValue(item);
-
-	} else if (task == "Recipe") {
-		OnRecipeMenuChosen(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
-		cmb_item->SetValue(item);
-
-	}
+	update_parameteres(grid_tasks, event);
 
 	event.Skip();
 }
@@ -1498,6 +1425,90 @@ void cMain::extract_parameters() {
 	building_size = extract_building_size();
 	amount_of_buildings = extract_amount_of_buildings();
 	tech_to_start = extract_tech();
+}
+
+void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
+	task = grid->GetCellValue(row_num, 0).ToStdString();
+	x_cord = grid->GetCellValue(row_num, 1).ToStdString();
+	y_cord = grid->GetCellValue(row_num, 2).ToStdString();
+	units = grid->GetCellValue(row_num, 3).ToStdString();
+	item = grid->GetCellValue(row_num, 4).ToStdString();
+	build_orientation = grid->GetCellValue(row_num, 5).ToStdString();
+	direction_to_build = grid->GetCellValue(row_num, 6).ToStdString();
+	building_size = grid->GetCellValue(row_num, 7).ToStdString();
+	amount_of_buildings = grid->GetCellValue(row_num, 8).ToStdString();
+
+	if (task == "Game Speed") {
+		OnGameSpeedMenuSelected(event);
+		txt_units->SetValue(units);
+
+	} else if (task == "Walk") {
+		OnWalkMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+
+	} else if (task == "Mine") {
+		OnMineMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		txt_units->SetValue(units);
+
+	} else if (task == "Rotate") {
+		OnRotateMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		txt_units->SetValue(units);
+
+	} else if (task == "Craft") {
+		OnCraftMenuSelected(event);
+		txt_units->SetValue(units);
+		cmb_item->SetValue(item);
+
+	} else if (task == "Build") {
+		OnBuildMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		cmb_item->SetValue(item);
+		cmb_building_orientation->SetValue(build_orientation);
+		cmb_direction_to_build->SetValue(direction_to_build);
+		txt_building_size->SetValue(building_size);
+		txt_amount_of_buildings->SetValue(amount_of_buildings);
+
+	} else if (task == "Take") {
+		OnTakeMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		txt_units->SetValue(units);
+		cmb_item->SetValue(item);
+		cmb_from_into->SetValue(build_orientation);
+		cmb_direction_to_build->SetValue(direction_to_build);
+		txt_building_size->SetValue(building_size);
+		txt_amount_of_buildings->SetValue(amount_of_buildings);
+
+	} else if (task == "Put") {
+		OnPutMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		txt_units->SetValue(units);
+		cmb_item->SetValue(item);
+		cmb_from_into->SetValue(build_orientation);
+		cmb_direction_to_build->SetValue(direction_to_build);
+		txt_building_size->SetValue(building_size);
+		txt_amount_of_buildings->SetValue(amount_of_buildings);
+
+	} else if (task == "Tech") {
+		OnTechMenuSelected(event);
+		cmb_tech->SetValue(item);
+
+	} else if (task == "Recipe") {
+		OnRecipeMenuChosen(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		cmb_direction_to_build->SetValue(direction_to_build);
+		txt_building_size->SetValue(building_size);
+		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		cmb_item->SetValue(item);
+	}
 }
 
 std::string cMain::extract_task() {
