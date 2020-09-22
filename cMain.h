@@ -80,7 +80,7 @@ protected:
 	void OnGroupAddTaskClicked(wxCommandEvent& event);
 
 	void OnGroupChosen(wxCommandEvent& event);
-	void OnGroupChosenKillFocus(wxFocusEvent& event);
+	//void OnGroupChosenKillFocus(wxFocusEvent& event);
 
 	
 	
@@ -174,10 +174,12 @@ private:
 
 	int duplicate_multiplier;
 
+	bool move_up(wxGrid* grid);
+	bool move_row(wxGrid* grid, bool up = false);
+
 	void update_tasks_grid();
 	void change_task();
 	void duplicate_task();
-
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch();
 	void building_row();
