@@ -76,12 +76,14 @@ protected:
 
 	// Group
 	void OnNewGroupClicked(wxCommandEvent& event);
+	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
 	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
-	void OnGroupAddTaskClicked(wxCommandEvent& event);
+	void OnGroupChangeClicked(wxCommandEvent& event);
+	void OnGroupDeleteClicked(wxCommandEvent& event);
+	void OnGroupMoveUpClicked(wxCommandEvent& event);
+	void OnGroupMoveDownClicked(wxCommandEvent& event);
 
 	void OnGroupChosen(wxCommandEvent& event);
-	//void OnGroupChosenKillFocus(wxFocusEvent& event);
-
 	
 	
 	// Building
@@ -174,8 +176,10 @@ private:
 
 	int duplicate_multiplier;
 
-	bool move_up(wxGrid* grid);
 	bool move_row(wxGrid* grid, bool up = false);
+	bool delete_row(wxGrid* grid);
+	bool change_row(wxGrid* grid);
+
 
 	void update_tasks_grid();
 	void change_task();

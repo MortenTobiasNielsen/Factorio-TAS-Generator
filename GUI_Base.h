@@ -101,8 +101,8 @@ protected:
 	wxStaticText* label_choose_group;
 	wxComboBox* cmb_choose_group;
 	wxButton* btn_new_group;
+	wxButton* btn_group_add_from_tasks_list;
 	wxButton* btn_group_add_to_tasks_list;
-	wxButton* btn_group_add;
 	wxButton* btn_group_change;
 	wxButton* btn_group_delete;
 	wxButton* btn_group_move_up;
@@ -187,15 +187,14 @@ protected:
 	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupChosenKillFocus(wxFocusEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupChangeClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupDeleteClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupDuplicateClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTemplateGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTasksGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
