@@ -516,7 +516,9 @@ bool cMain::update_recipe() {
 }
 
 void cMain::update_group_grid() {
-	grid_group->DeleteRows(0, grid_group->GetNumberRows());
+	if (grid_group->GetNumberRows() > 0) {
+		grid_group->DeleteRows(0, grid_group->GetNumberRows());
+	}
 
 	group_list = group_map[group_name];
 	grid_group->InsertRows(0, group_list.size());
@@ -656,15 +658,15 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 	grid_group->InsertRows(row, row_count);
 
 	for (int i = row_num; i < (row_num + row_count); i++) {
-		task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		item = grid_tasks->GetCellValue(i, 4).ToStdString();
-		build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-		direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
-		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+		//task = grid_tasks->GetCellValue(i, 0).ToStdString();
+		//x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+		//y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+		//units = grid_tasks->GetCellValue(i, 3).ToStdString();
+		//item = grid_tasks->GetCellValue(i, 4).ToStdString();
+		//build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+		//direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+		//building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+		//amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 		grid_group->SetCellValue(row + i - row_num, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
 		grid_group->SetCellValue(row + i - row_num, 1, grid_tasks->GetCellValue(i, 1).ToStdString());
@@ -675,30 +677,10 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 		grid_group->SetCellValue(row + i - row_num, 6, grid_tasks->GetCellValue(i, 6).ToStdString());
 		grid_group->SetCellValue(row + i - row_num, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
 		grid_group->SetCellValue(row + i - row_num, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
-
-		
 	}
 
 	if (!(group_map.find(cmb_choose_group->GetValue().ToStdString()) == group_map.end())) {
-		
-		group_list = {};
-		row_num = grid_group->GetNumberRows();
-
-		for (int i = 0; i < row_num; i++) {
-			task = grid_group->GetCellValue(i, 0).ToStdString();
-			x_cord = grid_group->GetCellValue(i, 1).ToStdString();
-			y_cord = grid_group->GetCellValue(i, 2).ToStdString();
-			units = grid_group->GetCellValue(i, 3).ToStdString();
-			item = grid_group->GetCellValue(i, 4).ToStdString();
-			build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
-			direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
-			building_size = grid_group->GetCellValue(i, 7).ToStdString();
-			amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
-
-			group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
-		}
-
-		group_map[group_name] = group_list;
+		update_group_map();
 	}
 }
 
@@ -1542,6 +1524,28 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
 	}
+}
+
+void cMain::update_group_map() {
+	group_list = {};
+	row_num = grid_group->GetNumberRows();
+
+	for (int i = 0; i < row_num; i++) {
+		task = grid_group->GetCellValue(i, 0).ToStdString();
+		x_cord = grid_group->GetCellValue(i, 1).ToStdString();
+		y_cord = grid_group->GetCellValue(i, 2).ToStdString();
+		units = grid_group->GetCellValue(i, 3).ToStdString();
+		item = grid_group->GetCellValue(i, 4).ToStdString();
+		build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
+		direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
+		building_size = grid_group->GetCellValue(i, 7).ToStdString();
+		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
+
+		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+	}
+
+	group_map[group_name] = group_list;
+
 }
 
 std::string cMain::extract_task() {

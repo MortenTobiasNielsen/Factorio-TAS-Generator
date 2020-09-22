@@ -200,6 +200,7 @@ private:
 
 	void extract_parameters();
 	void update_parameteres(wxGrid* grid, wxCommandEvent& event);
+	void update_group_map();
 
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
