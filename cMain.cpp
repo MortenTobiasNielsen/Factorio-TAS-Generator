@@ -787,6 +787,12 @@ void cMain::OnGroupChangeClicked(wxCommandEvent& event) {
 
 	if (setup_for_task_grid()) {
 		change_row(grid_group);
+
+		group_name = cmb_choose_group->GetValue().ToStdString();
+
+		if (!(group_map.find(group_name) == group_map.end())) {
+			group_map[group_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		}
 	}
 
 	event.Skip();
@@ -795,16 +801,42 @@ void cMain::OnGroupChangeClicked(wxCommandEvent& event) {
 
 void cMain::OnGroupDeleteClicked(wxCommandEvent& event) {
 	if (!delete_row(grid_group)) {
+
+		event.Skip();
 		return;
 	}
+
+	group_name = cmb_choose_group->GetValue().ToStdString();
+
+	it1 = group_map[group_name].begin();
+	it2 = group_map[group_name].begin();
+
+	it1 += row_num;
+	it2 += row_num + row_count;
+
+	group_map[group_name].erase(it1, it2);
 
 	event.Skip();
 }
 
 void cMain::OnGroupMoveUpClicked(wxCommandEvent& event) {
 	if (!move_row(grid_group, true)) {
+	
+		event.Skip();
 		return;
 	}
+
+	group_name = cmb_choose_group->GetValue().ToStdString();
+
+	it1 = group_map[group_name].begin();
+	it1 += row_to_move;
+
+	data = *it1;
+	group_map[group_name].erase(it1);
+
+	it2 = group_map[group_name].begin();
+	it2 += row_num + row_count - 1;
+	group_map[group_name].insert(it2, data);
 
 	event.Skip();
 }
@@ -813,6 +845,17 @@ void cMain::OnGroupMoveDownClicked(wxCommandEvent& event) {
 	if (!move_row(grid_group, false)) {
 		return;
 	}
+
+	group_name = cmb_choose_group->GetValue().ToStdString();
+
+	it1 = group_map[group_name].begin();
+	it1 += row_to_move - 1;
+	it2 = group_map[group_name].begin();
+	it2 += row_num;
+
+	data = *it1;
+	group_map[group_name].erase(it1, it1 + 1);
+	group_map[group_name].insert(it2, data);
 
 	event.Skip();
 }
@@ -1065,6 +1108,12 @@ void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event) {
 
 	if (setup_for_task_grid()) {
 		change_row(grid_template);
+
+		template_name = cmb_choose_template->GetValue().ToStdString();
+
+		if (!(template_map.find(template_name) == template_map.end())) {
+			template_map[template_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		}		
 	}
 
 	event.Skip();
@@ -1072,24 +1121,63 @@ void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event) {
 
 void cMain::OnTemplateDeleteTaskClicked(wxCommandEvent& event) {
 	if (!delete_row(grid_template)) {
+
+		event.Skip();
 		return;
 	}
+
+	template_name = cmb_choose_template->GetValue().ToStdString();
+
+	it1 = template_map[template_name].begin();
+	it2 = template_map[template_name].begin();
+
+	it1 += row_num;
+	it2 += row_num + row_count;
+
+	template_map[template_name].erase(it1, it2);
 
 	event.Skip();
 }
 
 void cMain::OnTemplateMoveUpClicked(wxCommandEvent& event) {
 	if (!move_row(grid_template, true)) {
+		
+		event.Skip();
 		return;
 	}
+
+	template_name = cmb_choose_template->GetValue().ToStdString();
+
+	it1 = template_map[template_name].begin();
+	it1 += row_to_move;
+
+	data = *it1;
+	template_map[template_name].erase(it1);
+
+	it2 = template_map[template_name].begin();
+	it2 += row_num + row_count - 1;
+	template_map[template_name].insert(it2, data);
 
 	event.Skip();
 }
 
 void cMain::OnTemplateMoveDownClicked(wxCommandEvent& event) {
 	if (!move_row(grid_template, false)) {
+		
+		event.Skip();
 		return;
 	}
+
+	template_name = cmb_choose_template->GetValue().ToStdString();
+
+	it1 = template_map[template_name].begin();
+	it1 += row_to_move - 1;
+	it2 = template_map[template_name].begin();
+	it2 += row_num;
+
+	data = *it1;
+	template_map[template_name].erase(it1, it1 + 1);
+	template_map[template_name].insert(it2, data);
 
 	event.Skip();
 }
@@ -1120,6 +1208,8 @@ void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 
 void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	if (!delete_row(grid_tasks)) {
+
+		event.Skip();
 		return;
 	}
 
