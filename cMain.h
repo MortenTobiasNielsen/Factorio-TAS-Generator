@@ -91,7 +91,6 @@ protected:
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
 
-	std::string buildings_list_save_indicator = "Buildingsgrid"; // remember to remove buildings grid data and instead generate it from the tasks list on open file
 	std::string save_file_location_indicator = "File_saved_here";
 	std::string generate_file_location_indicator = "Generated_script_saved_here";
 

@@ -923,7 +923,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 	if (dlg.ShowModal() == wxID_OK) {
 		std::ifstream inFile;
 		inFile.open(dlg.GetPath().ToStdString());
-		bool buildings_list_reached = false;
 		bool saved_file_reached = false;
 		bool generate_code_reached = false;
 
@@ -942,7 +941,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 
 			tasks_data_to_save = {};
-			buildings_data_to_save = {};
+			buildings_data_to_save = {}; // remove
 		}
 
 		while (std::getline(inFile, open_data_string)) {
@@ -955,16 +954,13 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				seglist.push_back(segment);
 			}
 
-			if (seglist[0] == buildings_list_save_indicator) {
-				buildings_list_reached = true;
-
-			} else if (seglist[0] == save_file_location_indicator) {
+			if (seglist[0] == save_file_location_indicator) {
 				saved_file_reached = true;
 
 			} else if (seglist[0] == generate_file_location_indicator) {
 				generate_code_reached = true;
 
-			} else if (!buildings_list_reached) {
+			} else if (!saved_file_reached) {
 				if (seglist.size() == 9) {
 					task = seglist[0];
 					x_cord = seglist[1];
@@ -982,22 +978,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					return;
 				}
 		
-			} else if (!saved_file_reached) {
-				if (seglist.size() == 7) {
-					x_cord = seglist[0];
-					y_cord = seglist[1];
-					item = seglist[2];
-					build_orientation = seglist[3];
-					recipe = seglist[4];
-					priority = seglist[5];
-					filter = seglist[6];
-
-
-					update_buildings_grid();
-				} else {
-					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
-					return;
-				}
 			} else if (!generate_code_reached) {
 				if (seglist.size() == 1) {
 					save_file_location = seglist[0];
@@ -1019,6 +999,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 		inFile.close();
 	}
+
+	update_buildings_grid_from_scratch();
 	
 	event.Skip();
 }
@@ -1764,13 +1746,13 @@ void cMain::save_file() {
 		myfile << *it << ";" << std::endl;
 	}
 
-	if (buildings_data_to_save.size()) {
-		myfile << buildings_list_save_indicator << std::endl;
+	//if (buildings_data_to_save.size()) {
+	//	myfile << buildings_list_save_indicator << std::endl;
 
-		for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
-			myfile << *it << ";" << std::endl;
-		}
-	}
+	//	for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
+	//		myfile << *it << ";" << std::endl;
+	//	}
+	//}
 
 	if (save_file_location != "") {
 		myfile << save_file_location_indicator << std::endl;
