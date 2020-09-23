@@ -1328,6 +1328,10 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		cmb_choose_group->Clear();
 		group_name = "";
 
+		template_map.clear();
+		cmb_choose_template->Clear();
+		template_name = "";
+
 		while (std::getline(inFile, open_data_string)) {
 			std::stringstream data_line;
 			data_line.str(open_data_string);
