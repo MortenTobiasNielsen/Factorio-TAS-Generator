@@ -314,17 +314,12 @@ void cMain::update_buildings_grid() {
 	grid_buildings->SetCellValue(row_num, 4, recipe);
 	grid_buildings->SetCellValue(row_num, 5, priority);
 	grid_buildings->SetCellValue(row_num, 6, filter);
-
-
-	buildings_data_to_save.push_back(x_cord + ";" + y_cord + ";" + item + ";" + build_orientation + ";" + recipe + ";" + priority + ";" + filter);
 }
 
 void cMain::update_buildings_grid_from_scratch() {
 	if (grid_buildings->GetNumberRows() > 0) {
 		grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
 	}
-
-	buildings_data_to_save = {};
 
 	for (int i = 0; i < grid_tasks->GetNumberRows(); i++) {
 		task = grid_tasks->GetCellValue(i, 0).ToStdString();
@@ -911,7 +906,6 @@ void cMain::OnMenuNew(wxCommandEvent& event) {
 	generate_code_file_location = "";
 
 	tasks_data_to_save = {};
-	buildings_data_to_save = {};
 
 	event.Skip();
 }
@@ -941,7 +935,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 
 			tasks_data_to_save = {};
-			buildings_data_to_save = {}; // remove
 		}
 
 		while (std::getline(inFile, open_data_string)) {

@@ -166,7 +166,6 @@ private:
 	std::map<std::string, std::vector<std::string>> group_map;
 	
 	std::vector<std::string> tasks_data_to_save;
-	std::vector<std::string> buildings_data_to_save;
 
 	bool move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid);
