@@ -100,14 +100,19 @@ protected:
 	wxButton* btn_gorup_move_down;
 	wxGrid* grid_group;
 	wxPanel* m_panel6;
-	wxStaticText* m_staticText47;
-	wxComboBox* m_comboBox6;
-	wxButton* m_button64;
-	wxButton* btn_add_task12;
-	wxButton* btn_change_task12;
-	wxButton* btn_delete_task12;
-	wxButton* btn_move_up12;
-	wxButton* btn_move_down12;
+	wxStaticText* label_choose_template;
+	wxComboBox* cmb_choose_template;
+	wxButton* btn_template_new;
+	wxButton* btn_template_add_from_tasks_list1;
+	wxButton* btn_template_add_to_tasks_list1;
+	wxButton* btn_template_change;
+	wxButton* btn_template_delete;
+	wxButton* btn_template_move_up;
+	wxButton* btn_template_move_down;
+	wxStaticText* label_template_x_offset;
+	wxTextCtrl* txt_template_x_offset;
+	wxStaticText* label_template_y_offset;
+	wxTextCtrl* txt_template_y_offset;
 	wxGrid* grid_template;
 	wxNotebook* m_notebook11;
 	wxPanel* m_panel31;
@@ -118,12 +123,6 @@ protected:
 	wxButton* btn_move_down11;
 	wxGrid* grid_tasks;
 	wxPanel* m_panel61;
-	wxButton* btn_add_task111;
-	wxButton* btn_change_task111;
-	wxButton* btn_delete_task111;
-	wxButton* btn_move_up111;
-	wxButton* btn_move_down111;
-	wxButton* btn_duplicate_tasks111;
 	wxGrid* grid_buildings;
 
 	// Virtual event handlers, overide them in your derived class
@@ -150,7 +149,6 @@ protected:
 	virtual void OnDeleteMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveUpMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveDownMenuSelected(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnDuplicateMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedChosen(wxCommandEvent& event) { event.Skip(); }
@@ -177,14 +175,21 @@ protected:
 	virtual void OnGroupMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
+	virtual void OnTemplateChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnNewTemplateClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnTemplateGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTasksGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
-	virtual void OnDuplicateTasksClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 
 

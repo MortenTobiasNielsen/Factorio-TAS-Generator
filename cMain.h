@@ -83,7 +83,19 @@ protected:
 	void OnGroupGridDoubleLeftClick(wxGridEvent& event);
 
 	void OnGroupChosen(wxCommandEvent& event);
-	
+
+	// Template
+	void OnNewTemplateClicked(wxCommandEvent& event);
+	void OnTemplateAddFromTasksListClicked(wxCommandEvent& event);
+	void OnTemplateAddToTasksListClicked(wxCommandEvent& event);
+	void OnTemplateChangeTaskClicked(wxCommandEvent& event);
+	void OnTemplateDeleteTaskClicked(wxCommandEvent& event);
+	void OnTemplateMoveUpClicked(wxCommandEvent& event);
+	void OnTemplateMoveDownClicked(wxCommandEvent& event);
+
+	void OnTemplateGridDoubleLeftClick(wxGridEvent& event);
+
+	void OnTemplateChosen(wxCommandEvent& event);
 	
 	// Building
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
@@ -93,8 +105,6 @@ private:
 
 	std::string save_groups_indicator = "Groups:";
 	std::string save_templates_indicator = "Templates:";
-	std::string save_file_location_indicator = "File_saved_here:";
-	std::string generate_file_location_indicator = "Generated_script_saved_here:";
 
 	const struct parameter_choices_struct {
 		// x-cord, y-cord, units, item, from/to, tech, building orientation, direction to build, building size, amount of buildings
@@ -166,7 +176,11 @@ private:
 	std::string group_name;
 	std::vector<std::string> group_list;
 	std::map<std::string, std::vector<std::string>> group_map;
-	
+
+	std::string template_name;
+	std::vector<std::string> template_list;
+	std::map<std::string, std::vector<std::string>> template_map;
+
 	std::vector<std::string> tasks_data_to_save;
 	std::vector<std::string> groups_data_to_save;
 	std::vector<std::string> template_data_to_save;
@@ -184,6 +198,7 @@ private:
 	bool update_recipe();
 	
 	void update_group_grid();
+	void update_template_grid();
 
 	void setup_paramters(std::vector<bool> parameters);
 
@@ -192,6 +207,7 @@ private:
 	void extract_parameters();
 	void update_parameteres(wxGrid* grid, wxCommandEvent& event);
 	void update_group_map();
+	void update_template_map();
 
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
