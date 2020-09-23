@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <locale>
+#include <codecvt>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1560, 1080)) {
 	//all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
@@ -566,7 +568,6 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 	
 	cmb_choose_group->Append(group_name);
 	cmb_choose_group->SetValue(group_name);
-	group_choices.Add(group_name);
 	group_list = {};
 
 	if (grid_group->IsSelection()) {
@@ -600,6 +601,7 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
 
 		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+		//groups_data_to_save.push_back(group_name + ";" + task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 	}
 	
 	group_map.insert(std::pair<std::string, std::vector<std::string>> (group_name, group_list));
@@ -632,15 +634,6 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 	grid_group->InsertRows(row, row_count);
 
 	for (int i = row_num; i < (row_num + row_count); i++) {
-		//task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		//x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		//y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		//units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		//item = grid_tasks->GetCellValue(i, 4).ToStdString();
-		//build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-		//direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
-		//building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		//amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 		grid_group->SetCellValue(row + i - row_num, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
 		grid_group->SetCellValue(row + i - row_num, 1, grid_tasks->GetCellValue(i, 1).ToStdString());
@@ -916,9 +909,10 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		std::ifstream inFile;
+		std::locale utf8_locale(std::locale(), new std::codecvt_utf8<wchar_t>);
+		inFile.imbue(utf8_locale);
 		inFile.open(dlg.GetPath().ToStdString());
-		bool saved_file_reached = false;
-		bool generate_code_reached = false;
+		bool groups_reached = false;
 
 		if (!inFile) {
 			wxMessageBox("It was not possible to open the file", "A file error occurred");
@@ -935,7 +929,15 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 
 			tasks_data_to_save = {};
+			
 		}
+
+		save_file_location = "";
+		generate_code_file_location = "";
+
+		group_map.clear();
+		cmb_choose_group->Clear();
+		group_name = "";
 
 		while (std::getline(inFile, open_data_string)) {
 			std::stringstream data_line;
@@ -947,13 +949,10 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				seglist.push_back(segment);
 			}
 
-			if (seglist[0] == save_file_location_indicator) {
-				saved_file_reached = true;
+			if (seglist[0] == save_groups_indicator) {
+				groups_reached = true;
 
-			} else if (seglist[0] == generate_file_location_indicator) {
-				generate_code_reached = true;
-
-			} else if (!saved_file_reached) {
+			} else if (!groups_reached) {
 				if (seglist.size() == 9) {
 					task = seglist[0];
 					x_cord = seglist[1];
@@ -965,30 +964,50 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					building_size = seglist[7];
 					amount_of_buildings = seglist[8];
 
-					update_tasks_grid(); 
-				} else {
-					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
-					return;
-				}
-		
-			} else if (!generate_code_reached) {
-				if (seglist.size() == 1) {
-					save_file_location = seglist[0];
-					generate_code_reached = true;
+					update_tasks_grid();
 				} else {
 					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
 					return;
 				}
 			} else {
-				if (seglist.size() == 1) {
-					generate_code_file_location = seglist[0];
-					generate_code_reached = true;
+				if (seglist.size() == 10) {
+					
+					if (group_name == "") {
+						group_name = seglist[0];
+						cmb_choose_group->SetValue(seglist[0]);
+						cmb_choose_group->Append(group_name);
+						group_list = {};
+
+					} else if (group_name != seglist[0]) {
+						group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+
+						group_name = seglist[0];
+						cmb_choose_group->Append(group_name);
+						group_list = {};
+					}
+
+					task = seglist[1];
+					x_cord = seglist[2];
+					y_cord = seglist[3];
+					units = seglist[4];
+					item = seglist[5];
+					build_orientation = seglist[6];
+					direction_to_build = seglist[7];
+					building_size = seglist[8];
+					amount_of_buildings = seglist[9];
+
+					group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+				} else if (seglist[0] == "") {
+
 				} else {
 					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
 					return;
 				}
-			}
+			} 
 		}
+
+		group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+		OnGroupChosen(event);
 
 		inFile.close();
 	}
@@ -1739,31 +1758,20 @@ void cMain::save_file() {
 		myfile << *it << ";" << std::endl;
 	}
 
-	//if (buildings_data_to_save.size()) {
-	//	myfile << buildings_list_save_indicator << std::endl;
+	std::string name;
+	std::vector<std::string> values;
 
-	//	for (auto it = buildings_data_to_save.begin(); it < buildings_data_to_save.end(); it++) {
-	//		myfile << *it << ";" << std::endl;
-	//	}
-	//}
+	if (group_map.size()) {
+		myfile << save_groups_indicator << std::endl;
+		for (auto element : group_map) {
 
-	if (save_file_location != "") {
-		myfile << save_file_location_indicator << std::endl;
-		if (generate_code_file_location == "") {
-			myfile << save_file_location;
-		} else {
-			myfile << save_file_location << std::endl;
-
-			myfile << generate_file_location_indicator << std::endl;
-
-			myfile << generate_code_file_location;
+			for (auto value : element.second) {
+				myfile << element.first + ";" + value << std::endl;
+			}
 		}
-	} else if (generate_code_file_location != "") {
-		myfile << generate_file_location_indicator << std::endl;
-
-		myfile << generate_code_file_location;
-
 	}
+
+
 
 	myfile.close();
 }

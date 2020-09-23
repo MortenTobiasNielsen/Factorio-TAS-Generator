@@ -91,8 +91,10 @@ protected:
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
 
-	std::string save_file_location_indicator = "File_saved_here";
-	std::string generate_file_location_indicator = "Generated_script_saved_here";
+	std::string save_groups_indicator = "Groups:";
+	std::string save_templates_indicator = "Templates:";
+	std::string save_file_location_indicator = "File_saved_here:";
+	std::string generate_file_location_indicator = "Generated_script_saved_here:";
 
 	const struct parameter_choices_struct {
 		// x-cord, y-cord, units, item, from/to, tech, building orientation, direction to build, building size, amount of buildings
@@ -166,6 +168,8 @@ private:
 	std::map<std::string, std::vector<std::string>> group_map;
 	
 	std::vector<std::string> tasks_data_to_save;
+	std::vector<std::string> groups_data_to_save;
+	std::vector<std::string> template_data_to_save;
 
 	bool move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid);
