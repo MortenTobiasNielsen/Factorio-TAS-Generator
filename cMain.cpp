@@ -607,9 +607,11 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 			wxMessageBox("Group names has to be unique - please write a new name in the Choose Group field", "Group names should be unique");
 			return;
 		}
-	}	
-	
-	cmb_choose_group->Append(group_name);
+	}
+
+	cmb_choose_group->Clear();
+	group_choices.Add(group_name);
+	cmb_choose_group->Append(group_choices);
 	cmb_choose_group->SetValue(group_name);
 	group_list = {};
 
@@ -650,6 +652,26 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 	group_map.insert(std::pair<std::string, std::vector<std::string>> (group_name, group_list));
 
 	update_group_grid();
+
+	event.Skip();
+}
+
+void cMain::OnDeleteGroupClicked(wxCommandEvent& event) {
+	group_name = cmb_choose_group->GetValue();
+
+	if (group_map.find(group_name) != group_map.end()) {
+		group_map.erase(group_name);
+		group_choices.Remove(group_name);
+		cmb_choose_group->Clear();
+		cmb_choose_group->Append(group_choices);
+
+		if (group_choices.size()) {
+			cmb_choose_group->SetValue(*group_choices.begin());
+			OnGroupChosen(event);
+		} else if (grid_group->GetNumberRows()) {
+			grid_group->DeleteRows(0, grid_group->GetNumberRows());
+		}
+	}
 
 	event.Skip();
 }
@@ -898,7 +920,9 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event) {
 		}
 	}
 
-	cmb_choose_template->Append(template_name);
+	cmb_choose_template->Clear();
+	template_choices.Add(template_name);
+	cmb_choose_template->Append(template_choices);
 	cmb_choose_template->SetValue(template_name);
 	template_list = {};
 
@@ -940,6 +964,26 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event) {
 	template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
 
 	update_template_grid();
+
+	event.Skip();
+}
+
+void cMain::OnDeleteTemplateClicked(wxCommandEvent& event) {
+	template_name = cmb_choose_template->GetValue();
+	
+	if (template_map.find(template_name) != template_map.end()) {
+		template_map.erase(template_name);
+		template_choices.Remove(template_name);
+		cmb_choose_template->Clear();
+		cmb_choose_template->Append(template_choices);
+
+		if (template_choices.size()) {
+			cmb_choose_template->SetValue(*template_choices.begin());
+			OnTemplateChosen(event);
+		} else if (grid_template->GetNumberRows()){
+			grid_template->DeleteRows(0, grid_template->GetNumberRows());
+		}
+	}
 
 	event.Skip();
 }
@@ -1373,14 +1417,15 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					if (group_name == "") {
 						group_name = seglist[0];
 						cmb_choose_group->SetValue(seglist[0]);
-						cmb_choose_group->Append(group_name);
+						group_choices.Add(group_name);
+
 						group_list = {};
 
 					} else if (group_name != seglist[0]) {
 						group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
 
 						group_name = seglist[0];
-						cmb_choose_group->Append(group_name);
+						group_choices.Add(group_name);
 						group_list = {};
 					}
 
@@ -1408,14 +1453,14 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					if (template_name == "") {
 						template_name = seglist[0];
 						cmb_choose_template->SetValue(seglist[0]);
-						cmb_choose_template->Append(template_name);
+						template_choices.Add(template_name);
 						template_list = {};
 
 					} else if (template_name != seglist[0]) {
 						template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
 
 						template_name = seglist[0];
-						cmb_choose_template->Append(template_name);
+						template_choices.Add(template_name);
 						template_list = {};
 					}
 
@@ -1441,12 +1486,24 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 		if (groups_in_file) {
 			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
-			OnGroupChosen(event);
+			cmb_choose_group->Clear();
+			cmb_choose_group->Append(group_choices);
+
+			if (group_choices.size()) {
+				cmb_choose_group->SetValue(*group_choices.begin());
+				OnGroupChosen(event);
+			}
 		}
 		
 		if (templates_in_file) {
 			template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
-			OnTemplateChosen(event);
+			cmb_choose_template->Clear();
+			cmb_choose_template->Append(template_choices);
+			
+			if (template_choices.size()) {
+				cmb_choose_template->SetValue(*template_choices.begin());
+				OnTemplateChosen(event);
+			}
 		}
 
 

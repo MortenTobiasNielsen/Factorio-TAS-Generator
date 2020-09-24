@@ -92,23 +92,25 @@ protected:
 	wxStaticText* label_choose_group;
 	wxComboBox* cmb_choose_group;
 	wxButton* btn_new_group;
-	wxButton* btn_group_add_from_tasks_list;
-	wxButton* btn_group_add_to_tasks_list;
-	wxButton* btn_group_change;
 	wxButton* btn_group_delete;
+	wxButton* btn_group_change_task;
+	wxButton* btn_group_delete_task;
 	wxButton* btn_group_move_up;
 	wxButton* btn_gorup_move_down;
+	wxButton* btn_group_add_to_tasks_list;
+	wxButton* btn_group_add_from_tasks_list;
 	wxGrid* grid_group;
 	wxPanel* m_panel6;
 	wxStaticText* label_choose_template;
 	wxComboBox* cmb_choose_template;
 	wxButton* btn_template_new;
-	wxButton* btn_template_add_from_tasks_list1;
-	wxButton* btn_template_add_to_tasks_list1;
-	wxButton* btn_template_change;
 	wxButton* btn_template_delete;
-	wxButton* btn_template_move_up;
-	wxButton* btn_template_move_down;
+	wxButton* btn_template_change_task;
+	wxButton* btn_template_delete_task;
+	wxButton* btn_template_move_up_task;
+	wxButton* btn_template_move_down_task;
+	wxButton* btn_template_add_to_tasks_list1;
+	wxButton* btn_template_add_from_tasks_list1;
 	wxStaticText* label_template_x_offset;
 	wxTextCtrl* txt_template_x_offset;
 	wxStaticText* label_template_y_offset;
@@ -168,21 +170,23 @@ protected:
 	virtual void OnLaunchChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnGroupAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnDeleteGroupClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupChangeClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupDeleteClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnGroupAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnTemplateChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnNewTemplateClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnTemplateAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnTemplateAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnDeleteTemplateClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnTemplateAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }

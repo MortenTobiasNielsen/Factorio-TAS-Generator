@@ -73,6 +73,7 @@ protected:
 
 	// Group
 	void OnNewGroupClicked(wxCommandEvent& event);
+	void OnDeleteGroupClicked(wxCommandEvent& event);
 	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
 	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
 	void OnGroupChangeClicked(wxCommandEvent& event);
@@ -86,6 +87,7 @@ protected:
 
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
+	void OnDeleteTemplateClicked(wxCommandEvent& event);
 	void OnTemplateAddFromTasksListClicked(wxCommandEvent& event);
 	void OnTemplateAddToTasksListClicked(wxCommandEvent& event);
 	void OnTemplateChangeTaskClicked(wxCommandEvent& event);
@@ -167,6 +169,7 @@ private:
 	wxArrayString building_orientation_choices;
 	wxArrayString direction_to_build_choices;
 	wxArrayString group_choices;
+	wxArrayString template_choices;
 
 	std::string generate_code_file_location = "";
 	std::string save_file_location = "";
