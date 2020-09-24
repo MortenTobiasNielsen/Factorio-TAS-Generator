@@ -60,6 +60,7 @@ protected:
 	void OnTransferChosen(wxCommandEvent& event);
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
+	void OnStopChosen(wxCommandEvent& event);
 
 
 	// Task
@@ -124,6 +125,7 @@ private:
 		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false };
 		std::vector<bool> priority = { true, true, false, true, false, false, false, true, true, true };
 		std::vector<bool> limit = { true, true, true, false, false, false, false, true, true, true };
+		std::vector<bool> stop = { false, false, true, false, false, false, false , false, false, false };
 	};
 
 	parameter_choices_struct parameter_choices;

@@ -21,7 +21,7 @@ static const std::vector<std::string> module_list = {"Speed module", "Speed modu
 
 static const std::vector<std::string> build_orientations = {"North", "East", "South", "West"};
 
-static const std::vector<std::string> tech_list = {"Automation", "Optics", "Turrets", "Stone walls", "Military", "Logistics", "Steel processing", "Electronics", "Logistic science pack"};
+static const std::vector<std::string> tech_list = {"Automation", "Optics", "Turrets", "Stone walls", "Military", "Logistics", "Steel processing", "Electronics", "Logistic science pack", "Fast inserter", "Steel axe"};
 
 static const std::vector<std::string> drills_list = { "Electric mining drill", "Pumpjack" };
 

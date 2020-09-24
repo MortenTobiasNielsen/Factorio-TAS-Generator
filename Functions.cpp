@@ -393,7 +393,11 @@ void tech(std::string tech_to_research) {
 void speed(std::string speed) {
 	task_list += "task[" + std::to_string(task) + "] = {\"speed\", " + speed + "}\n";
 	task += 1;
-};
+}
+void stop(std::string speed) {
+	task_list += "task[" + std::to_string(task) + "] = {\"stop\", " + speed + "}\n";
+	task += 1;
+}
 
 void rotate(std::string x_cord, std::string y_cord, std::string times) {
 	check_build_distance(x_cord, y_cord);

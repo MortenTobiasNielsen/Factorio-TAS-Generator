@@ -178,6 +178,11 @@ void cMain::OnDropChosen(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnStopChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.stop);
+	event.Skip();
+}
+
 bool cMain::move_row(wxGrid* grid, bool up) {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin()) {
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
@@ -765,7 +770,7 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 
 			counter += 1;
-		}	
+		}		
 	}
 
 	if (counter > 0) {
@@ -958,7 +963,6 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event) {
 		amount_of_buildings = grid_template->GetCellValue(i, 8).ToStdString();
 
 		template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
-		//groups_data_to_save.push_back(group_name + ";" + task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 	}
 
 	template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
@@ -1360,20 +1364,20 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			if (grid_buildings->GetNumberRows() > 0) {
 				grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
 			}
-
-			tasks_data_to_save = {};
-			
 		}
 
+		tasks_data_to_save = {};
 		save_file_location = "";
 		generate_code_file_location = "";
 
 		group_map.clear();
 		cmb_choose_group->Clear();
+		group_choices = {};
 		group_name = "";
 
 		template_map.clear();
 		cmb_choose_template->Clear();
+		template_choices = {};
 		template_name = "";
 
 		while (std::getline(inFile, open_data_string)) {
@@ -1633,6 +1637,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 		} else if (task == "Recipe") {
 			row_recipe(x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings);
+		} else if (task == "Stop") {
+			stop(units);
 		}
 	}
 
@@ -1868,6 +1874,16 @@ bool cMain::setup_for_task_grid() {
 
 		units = not_relevant;
 		build_orientation = not_relevant;
+	} else if (task == "Stop") {
+		
+		x_cord = not_relevant;
+		y_cord = not_relevant;
+		item = not_relevant;
+		build_orientation = not_relevant;
+		direction_to_build = not_relevant;
+		building_size = not_relevant;
+		amount_of_buildings = not_relevant;
+
 	}
 	
 	return true;
@@ -1968,6 +1984,9 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
+	} else if (task == "Stop") {
+		OnStopChosen(event);
+		txt_units->SetValue(units);
 	}
 }
 
@@ -2068,7 +2087,9 @@ std::string cMain::extract_task() {
 	} else if (rbtn_launch->GetValue()) {
 		return "Launch";
 
-	} 
+	} else if (rbtn_stop->GetValue()) {
+		return "Stop";
+	}
 
 	return "not found";
 }
@@ -2088,7 +2109,7 @@ std::string cMain::extract_units() {
 		if (std::stof(units) < 0.01) {
 			units = "0.01";
 		}
-	} else if (rbtn_mine->GetValue() || rbtn_limit->GetValue() || rbtn_rotate->GetValue()) {
+	} else if (rbtn_mine->GetValue() || rbtn_limit->GetValue() || rbtn_rotate->GetValue() || rbtn_stop->GetValue()) {
 		if (std::stof(units) < 1) {
 			units = "1";
 		}

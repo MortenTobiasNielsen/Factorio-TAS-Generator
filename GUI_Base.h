@@ -85,6 +85,7 @@ protected:
 	wxRadioButton* rbtn_pick_up;
 	wxRadioButton* rbtn_drop;
 	wxRadioButton* rbtn_launch;
+	wxRadioButton* rbtn_stop;
 	wxStaticLine* m_staticline4;
 	wxStaticLine* m_staticline14;
 	wxNotebook* m_notebook1;
@@ -168,6 +169,7 @@ protected:
 	virtual void OnPickUpChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDropChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLaunchChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnStopChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteGroupClicked(wxCommandEvent& event) { event.Skip(); }

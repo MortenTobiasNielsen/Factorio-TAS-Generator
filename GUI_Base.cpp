@@ -500,8 +500,8 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer(wxVERTICAL);
 
-
-	bSizer8->Add(0, 0, 1, wxEXPAND, 5);
+	rbtn_stop = new wxRadioButton(m_panel1, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer8->Add(rbtn_stop, 0, wxALL, 5);
 
 
 	bSizer5->Add(bSizer8, 1, wxEXPAND, 5);
@@ -669,7 +669,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel3->SetSizer(bSizer561);
 	m_panel3->Layout();
 	bSizer561->Fit(m_panel3);
-	m_notebook1->AddPage(m_panel3, wxT("Group"), true);
+	m_notebook1->AddPage(m_panel3, wxT("Group"), false);
 	m_panel6 = new wxPanel(m_notebook1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxTAB_TRAVERSAL);
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer(wxVERTICAL);
@@ -833,7 +833,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel6->SetSizer(bSizer5612);
 	m_panel6->Layout();
 	bSizer5612->Fit(m_panel6);
-	m_notebook1->AddPage(m_panel6, wxT("Template"), false);
+	m_notebook1->AddPage(m_panel6, wxT("Template"), true);
 
 	bSizer44->Add(m_notebook1, 1, wxEXPAND | wxALL, 5);
 
@@ -1072,6 +1072,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	rbtn_pick_up->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
 	rbtn_drop->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
 	rbtn_launch->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
+	rbtn_stop->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnStopChosen), NULL, this);
 	cmb_choose_group->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnGroupChosen), NULL, this);
 	btn_new_group->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnNewGroupClicked), NULL, this);
 	btn_group_delete->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteGroupClicked), NULL, this);
@@ -1120,6 +1121,7 @@ GUI_Base::~GUI_Base() {
 	rbtn_pick_up->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
 	rbtn_drop->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
 	rbtn_launch->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
+	rbtn_stop->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnStopChosen), NULL, this);
 	cmb_choose_group->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnGroupChosen), NULL, this);
 	btn_new_group->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnNewGroupClicked), NULL, this);
 	btn_group_delete->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnDeleteGroupClicked), NULL, this);
