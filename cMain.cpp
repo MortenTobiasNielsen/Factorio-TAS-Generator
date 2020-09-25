@@ -1366,6 +1366,14 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 		}
 
+		if (grid_group->GetNumberRows() > 0) {
+			grid_group->DeleteRows(0, grid_group->GetNumberRows());
+		}
+
+		if (grid_template->GetNumberRows() > 0) {
+			grid_template->DeleteRows(0, grid_template->GetNumberRows());
+		}
+
 		tasks_data_to_save = {};
 		save_file_location = "";
 		generate_code_file_location = "";
