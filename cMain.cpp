@@ -181,8 +181,8 @@ void cMain::OnLimitChosen(wxCommandEvent& event) {
 	event.Skip();
 }
 
-void cMain::OnTransferChosen(wxCommandEvent& event) {
-
+void cMain::OnIdleChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.idle);
 	event.Skip();
 }
 
@@ -2190,6 +2190,24 @@ void cMain::OnFilterMenuSelected(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnStopMenuSelected(wxCommandEvent& event) {
+	rbtn_stop->SetValue(true);
+	OnStopChosen(event);
+	event.Skip();
+}
+
+void cMain::OnIdleMenuSelected(wxCommandEvent& event) {
+	rbtn_idle->SetValue(true);
+	OnIdleChosen(event);
+	event.Skip();
+}
+
+void cMain::OnLaunchMenuSelected(wxCommandEvent& event) {
+	rbtn_launch->SetValue(true);
+	OnLaunchChosen(event);
+	event.Skip();
+}
+
 void cMain::OnAddMenuSelected(wxCommandEvent& event) {
 	OnAddTaskClicked(event);
 	event.Skip();
@@ -2494,6 +2512,32 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
+
+	} else if (task == "Pick up") {
+		OnPickUpMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		cmb_direction_to_build->SetValue(direction_to_build);
+		txt_building_size->SetValue(building_size);
+		txt_amount_of_buildings->SetValue(amount_of_buildings);
+
+	} else if (task == "Drop") {
+		OnDropMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		cmb_item->SetValue(item);
+		cmb_direction_to_build->SetValue(direction_to_build);
+		txt_building_size->SetValue(building_size);
+		txt_amount_of_buildings->SetValue(amount_of_buildings);
+
+	} else if (task == "Idle") {
+		OnIdleMenuSelected(event);
+		txt_units->SetValue(units);
+
+	} else if (task == "Launch") {
+		OnLaunchMenuSelected(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
 	}
 }
 
@@ -2576,8 +2620,8 @@ std::string cMain::extract_task() {
 	} else if (rbtn_limit->GetValue()) {
 		return "Limit";
 
-	} else if (rbtn_transfer->GetValue()) {
-		return "Transfer";
+	} else if (rbtn_idle->GetValue()) {
+		return "Idle";
 
 	} else if (rbtn_filter->GetValue()) {
 		return "Filter";

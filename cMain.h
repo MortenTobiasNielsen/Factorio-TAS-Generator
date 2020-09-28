@@ -45,6 +45,9 @@ protected:
 	void OnPriorityMenuSelected(wxCommandEvent& event);
 	void OnLimitMenuSelected(wxCommandEvent& event);
 	void OnFilterMenuSelected(wxCommandEvent& event);
+	void OnStopMenuSelected(wxCommandEvent& event);
+	void OnIdleMenuSelected(wxCommandEvent& event);
+	void OnLaunchMenuSelected(wxCommandEvent& event);
 
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
@@ -60,7 +63,7 @@ protected:
 	void OnLaunchChosen(wxCommandEvent& event);
 	void OnPriorityChosen(wxCommandEvent& event);
 	void OnLimitChosen(wxCommandEvent& event);
-	void OnTransferChosen(wxCommandEvent& event);
+	void OnIdleChosen(wxCommandEvent& event);
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
@@ -131,6 +134,7 @@ private:
 		std::vector<bool> stop = { false, false, true, false, false, false, false, false, false , false, false, false };
 		std::vector<bool> drop = { true, true, false, true, false, false, false, false, false , true, true, true };
 		std::vector<bool> pick = { true, true, false, false, false, false, false, false, false , true, true, true };
+		std::vector<bool> idle = { false, false, true, false, false, false, false, false, false , false, false, false };
 	};
 
 	parameter_choices_struct parameter_choices;

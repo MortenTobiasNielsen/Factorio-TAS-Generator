@@ -72,6 +72,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	shortcut_recipe = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Recipe")) + wxT('\t') + wxT("Ctrl+5"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_recipe);
 
+	wxMenuItem* shortcut_stop;
+	shortcut_stop = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Stop")) + wxT('\t') + wxT("Ctrl+6"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_stop);
+
 	wxMenuItem* shortcut_mine;
 	shortcut_mine = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Mine")) + wxT('\t') + wxT("Alt+1"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_mine);
@@ -92,6 +96,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	shortcut_put = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Put")) + wxT('\t') + wxT("Alt+5"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_put);
 
+	wxMenuItem* shortcut_idle;
+	shortcut_idle = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Idle")) + wxT('\t') + wxT("Alt+6"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_idle);
+
 	wxMenuItem* shortcut_priority;
 	shortcut_priority = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Priority")) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_priority);
@@ -103,6 +111,18 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxMenuItem* shortcut_filter;
 	shortcut_filter = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Filter")) + wxT('\t') + wxT("Shift+3"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_filter);
+
+	wxMenuItem* shortcut_pick_up;
+	shortcut_pick_up = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Pick Up")) + wxT('\t') + wxT("Shift+4"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_pick_up);
+
+	wxMenuItem* shortcut_drop;
+	shortcut_drop = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Drop")) + wxT('\t') + wxT("Shift+5"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_drop);
+
+	wxMenuItem* shortcut_launch;
+	shortcut_launch = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Launch")) + wxT('\t') + wxT("Shift+6"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_launch);
 
 	wxMenuItem* shortcut_add_task;
 	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Alt+A"), wxEmptyString, wxITEM_NORMAL);
@@ -457,8 +477,8 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer431;
 	bSizer431 = new wxBoxSizer(wxVERTICAL);
 
-	rbtn_transfer = new wxRadioButton(m_panel1, wxID_ANY, wxT("Transfer"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer431->Add(rbtn_transfer, 0, wxALL, 5);
+	rbtn_idle = new wxRadioButton(m_panel1, wxID_ANY, wxT("Idle"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer431->Add(rbtn_idle, 0, wxALL, 5);
 
 
 	bSizer7->Add(bSizer431, 1, wxEXPAND, 5);
@@ -695,7 +715,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel3->SetSizer(bSizer561);
 	m_panel3->Layout();
 	bSizer561->Fit(m_panel3);
-	m_notebook1->AddPage(m_panel3, wxT("Group"), false);
+	m_notebook1->AddPage(m_panel3, wxT("Group"), true);
 	m_panel6 = new wxPanel(m_notebook1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxTAB_TRAVERSAL);
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer(wxVERTICAL);
@@ -859,7 +879,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel6->SetSizer(bSizer5612);
 	m_panel6->Layout();
 	bSizer5612->Fit(m_panel6);
-	m_notebook1->AddPage(m_panel6, wxT("Template"), true);
+	m_notebook1->AddPage(m_panel6, wxT("Template"), false);
 
 	bSizer44->Add(m_notebook1, 1, wxEXPAND | wxALL, 5);
 
@@ -962,7 +982,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel31->SetSizer(bSizer5611);
 	m_panel31->Layout();
 	bSizer5611->Fit(m_panel31);
-	m_notebook11->AddPage(m_panel31, wxT("Tasks"), false);
+	m_notebook11->AddPage(m_panel31, wxT("Tasks"), true);
 	m_panel61 = new wxPanel(m_notebook11, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
 	wxBoxSizer* bSizer56111;
 	bSizer56111 = new wxBoxSizer(wxVERTICAL);
@@ -1039,7 +1059,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel61->SetSizer(bSizer56111);
 	m_panel61->Layout();
 	bSizer56111->Fit(m_panel61);
-	m_notebook11->AddPage(m_panel61, wxT("Buildings"), true);
+	m_notebook11->AddPage(m_panel61, wxT("Buildings"), false);
 
 	bSizer442->Add(m_notebook11, 1, wxEXPAND | wxALL, 5);
 
@@ -1075,14 +1095,19 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedMenuSelected), this, shortcut_game_speed->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateMenuSelected), this, shortcut_rotate->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeMenuChosen), this, shortcut_recipe->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnStopMenuSelected), this, shortcut_stop->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMineMenuSelected), this, shortcut_mine->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildMenuSelected), this, shortcut_build->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTechMenuSelected), this, shortcut_tech->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeMenuSelected), this, shortcut_take->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPutMenuSelected), this, shortcut_put->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnIdleMenuSelected), this, shortcut_idle->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityMenuSelected), this, shortcut_priority->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitMenuSelected), this, shortcut_limit->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnFilterMenuSelected), this, shortcut_filter->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpMenuSelected), this, shortcut_pick_up->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDropMenuSelected), this, shortcut_drop->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchMenuSelected), this, shortcut_launch->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnAddMenuSelected), this, shortcut_add_task->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChangeMenuSelected), this, shortcut_change_task->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDeleteMenuSelected), this, shortcut_delete_task->GetId());
@@ -1098,7 +1123,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	rbtn_recipe->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeChosen), NULL, this);
 	rbtn_tech->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTechChosen), NULL, this);
 	rbtn_limit->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
-	rbtn_transfer->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTransferChosen), NULL, this);
+	rbtn_idle->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnIdleChosen), NULL, this);
 	rbtn_filter->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
 	rbtn_priority->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
@@ -1147,7 +1172,7 @@ GUI_Base::~GUI_Base() {
 	rbtn_recipe->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeChosen), NULL, this);
 	rbtn_tech->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTechChosen), NULL, this);
 	rbtn_limit->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
-	rbtn_transfer->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTransferChosen), NULL, this);
+	rbtn_idle->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnIdleChosen), NULL, this);
 	rbtn_filter->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
 	rbtn_priority->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);

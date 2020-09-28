@@ -82,7 +82,7 @@ protected:
 	wxRadioButton* rbtn_recipe;
 	wxRadioButton* rbtn_tech;
 	wxRadioButton* rbtn_limit;
-	wxRadioButton* rbtn_transfer;
+	wxRadioButton* rbtn_idle;
 	wxRadioButton* rbtn_filter;
 	wxRadioButton* rbtn_priority;
 	wxRadioButton* rbtn_rotate;
@@ -146,14 +146,19 @@ protected:
 	virtual void OnGameSpeedMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRotateMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRecipeMenuChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnStopMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMineMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTechMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnIdleMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPriorityMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLimitMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnFilterMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnPickUpMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnDropMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnLaunchMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnAddMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteMenuSelected(wxCommandEvent& event) { event.Skip(); }
@@ -169,7 +174,7 @@ protected:
 	virtual void OnRecipeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTechChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLimitChosen(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnTransferChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnIdleChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnfilterChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPriorityChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRotateChosen(wxCommandEvent& event) { event.Skip(); }
