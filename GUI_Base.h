@@ -58,6 +58,10 @@ protected:
 	wxComboBox* cmb_from_into;
 	wxStaticText* label_tech;
 	wxComboBox* cmb_tech;
+	wxStaticText* label_input;
+	wxComboBox* cmb_input;
+	wxStaticText* label_output;
+	wxComboBox* cmb_output;
 	wxStaticText* label_building_orientation;
 	wxComboBox* cmb_building_orientation;
 	wxStaticText* label_direction_to_build;

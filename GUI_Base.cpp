@@ -175,20 +175,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer30->Add(bSizer36, 1, 0, 5);
 
-	wxBoxSizer* bSizer49;
-	bSizer49 = new wxBoxSizer(wxVERTICAL);
+
+	bSizer37->Add(bSizer30, 0, 0, 5);
 
 
-	bSizer49->Add(0, 0, 1, wxEXPAND, 5);
-
-
-	bSizer30->Add(bSizer49, 1, 0, 5);
-
-
-	bSizer37->Add(bSizer30, 1, 0, 5);
-
-
-	bSizer19->Add(bSizer37, 1, wxEXPAND, 5);
+	bSizer19->Add(bSizer37, 0, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer20;
 	bSizer20 = new wxBoxSizer(wxHORIZONTAL);
@@ -244,19 +235,42 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer24->Add(bSizer34, 1, 0, 5);
 
 	wxBoxSizer* bSizer47;
-	bSizer47 = new wxBoxSizer(wxVERTICAL);
+	bSizer47 = new wxBoxSizer(wxHORIZONTAL);
 
+	label_input = new wxStaticText(m_panel1, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
+	label_input->Wrap(-1);
+	bSizer47->Add(label_input, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	bSizer47->Add(0, 0, 1, wxEXPAND, 5);
+	cmb_input = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
+	cmb_input->SetSelection(0);
+	cmb_input->SetMinSize(wxSize(150, -1));
+
+	bSizer47->Add(cmb_input, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer24->Add(bSizer47, 1, 0, 5);
+
+	wxBoxSizer* bSizer471;
+	bSizer471 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_output = new wxStaticText(m_panel1, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
+	label_output->Wrap(-1);
+	bSizer471->Add(label_output, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	cmb_output = new wxComboBox(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
+	cmb_output->SetSelection(0);
+	cmb_output->SetMinSize(wxSize(150, -1));
+
+	bSizer471->Add(cmb_output, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+
+	bSizer24->Add(bSizer471, 1, wxEXPAND, 5);
 
 
 	bSizer20->Add(bSizer24, 1, wxEXPAND, 5);
 
 
-	bSizer19->Add(bSizer20, 1, wxEXPAND, 5);
+	bSizer19->Add(bSizer20, 0, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer57;
 	bSizer57 = new wxBoxSizer(wxVERTICAL);
@@ -314,7 +328,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer57->Add(bSizer52, 1, wxEXPAND, 5);
 
 
-	bSizer19->Add(bSizer57, 1, wxEXPAND, 5);
+	bSizer19->Add(bSizer57, 0, 0, 5);
 
 
 	bSizer19->Add(50, 0, 1, wxEXPAND, 5);
@@ -498,7 +512,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer5->Add(bSizer14, 1, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer8;
-	bSizer8 = new wxBoxSizer(wxVERTICAL);
+	bSizer8 = new wxBoxSizer(wxHORIZONTAL);
 
 	rbtn_stop = new wxRadioButton(m_panel1, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer8->Add(rbtn_stop, 0, wxALL, 5);

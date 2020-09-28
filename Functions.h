@@ -39,7 +39,11 @@ void stop(std::string speed);
 
 void limit(std::string x_cord, std::string y_cord, std::string amount, std::string from);
 
-void limit_row(std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string direction_to_build, std::string building_size, std::string amount_of_buildings);
+void limit_row(std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
+
+void priority(std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out);
+
+void priority_row(std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
 
 void rotate(std::string x_cord, std::string y_cord, std::string times);
 

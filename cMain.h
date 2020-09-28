@@ -110,22 +110,22 @@ private:
 	std::string save_templates_indicator = "Templates:";
 
 	const struct parameter_choices_struct {
-		// x-cord, y-cord, units, item, from/to, tech, building orientation, direction to build, building size, amount of buildings
-		std::vector<bool> game_speed = { false, false, true, false, false, false, false , false, false, false};
-		std::vector<bool> mining = { true, true, true, false, false, false, false, false, false, false };
-		std::vector<bool> rotate = { true, true, true, false, false, false, false, false, false, false };
-		std::vector<bool> craft = { false, false, true, true, false, false, false, false, false, false };
-		std::vector<bool> walk = { true, true, false, false, false, false, false, false, false, false };
-		std::vector<bool> build = { true, true, false, true, false, false, true, true, true, true };
-		std::vector<bool> take = { true, true, true, true, true, false, false, true, true, true };
-		std::vector<bool> put = { true, true, true, true, true, false, false, true, true, true };
-		std::vector<bool> filter = { true, true, false, true, false, false, false, true, true, true };
-		std::vector<bool> recipe = { true, true, false, true, false, false, false, true, true, true };
-		std::vector<bool> tech = { false, false, false, false, false, true, false, false, false, false };
-		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false };
-		std::vector<bool> priority = { true, true, false, true, false, false, false, true, true, true };
-		std::vector<bool> limit = { true, true, true, false, false, false, false, true, true, true };
-		std::vector<bool> stop = { false, false, true, false, false, false, false , false, false, false };
+		// x-cord, y-cord, units, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
+		std::vector<bool> game_speed = { false, false, true, false, false, false, false, false, false , false, false, false};
+		std::vector<bool> mining = { true, true, true, false, false, false, false, false, false, false, false, false };
+		std::vector<bool> rotate = { true, true, true, false, false, false, false, false, false, false, false, false };
+		std::vector<bool> craft = { false, false, true, true, false, false, false, false, false, false, false, false };
+		std::vector<bool> walk = { true, true, false, false, false, false, false, false, false, false, false, false };
+		std::vector<bool> build = { true, true, false, true, false, false, false, false, true, true, true, true };
+		std::vector<bool> take = { true, true, true, true, true, false, false, false, false, true, true, true };
+		std::vector<bool> put = { true, true, true, true, true, false, false, false, false, true, true, true };
+		std::vector<bool> filter = { true, true, false, true, false, false, false, false, false, true, true, true };
+		std::vector<bool> recipe = { true, true, false, true, false, false, false, false, false, true, true, true };
+		std::vector<bool> tech = { false, false, false, false, false, true, false, false, false, false, false, false };
+		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false, false, false };
+		std::vector<bool> priority = { true, true, false, false, false, false, true, true, false, true, true, true };
+		std::vector<bool> limit = { true, true, true, false, false, false, false, false, false, true, true, true };
+		std::vector<bool> stop = { false, false, true, false, false, false, false, false, false , false, false, false };
 	};
 
 	parameter_choices_struct parameter_choices;
@@ -174,6 +174,7 @@ private:
 	wxArrayString direction_to_build_choices;
 	wxArrayString group_choices;
 	wxArrayString template_choices;
+	wxArrayString input_output_choices;
 
 	std::string generate_code_file_location = "";
 	std::string save_file_location = "";
@@ -204,6 +205,7 @@ private:
 	bool update_building_orientation();
 	bool update_recipe();
 	bool update_limit();
+	bool update_priority();
 	
 	void update_group_grid();
 	void update_template_grid();
@@ -234,6 +236,8 @@ private:
 	std::string extract_direction_to_build();
 	std::string extract_building_orientation();
 	std::string extract_tech();
+	std::string extract_priority_in();
+	std::string extract_priority_out();
 	std::string extract_define(int start_row);
 };
 

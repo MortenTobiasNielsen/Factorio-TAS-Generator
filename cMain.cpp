@@ -33,6 +33,10 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 		building_orientation_choices.Add(s);
 	}
 	
+	for (auto s : input_output) {
+		input_output_choices.Add(s);
+	}
+
 	// set walk as default value and disable inputs not used
 	rbtn_walk->SetValue(true);
 	setup_paramters(parameter_choices.walk);
@@ -68,6 +72,20 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	}
 	cmb_tech->SetValue(*tech_list.begin());
 	cmb_tech->AutoComplete(tech_choices);
+
+	cmb_input->Clear();
+	for (auto it = input_output.begin(); it < input_output.end(); it++) {
+		cmb_input->Append(*it);
+	}
+	cmb_input->SetValue(*input_output.begin());
+	cmb_input->AutoComplete(input_output_choices);
+
+	cmb_output->Clear();
+	for (auto it = input_output.begin(); it < input_output.end(); it++) {
+		cmb_output->Append(*it);
+	}
+	cmb_output->SetValue(*input_output.begin());
+	cmb_output->AutoComplete(input_output_choices);
 
 	// set tasks grid formatting
 	grid_tasks->SetColFormatFloat(1, 4, 1);
@@ -370,6 +388,19 @@ void cMain::update_buildings_grid_from_scratch() {
 
 			update_limit();
 
+		} else if (task == "Priority") {
+			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+			y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+			direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+			building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+			amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+		
+			int pos = grid_tasks->GetCellValue(i, 5).ToStdString().find(",");
+
+			priority_in = grid_tasks->GetCellValue(i, 5).ToStdString().substr(0, pos);
+			priority_out = grid_tasks->GetCellValue(i, 5).ToStdString().substr(pos + 2);
+
+			update_priority();
 		}
 	}
 }
@@ -598,6 +629,110 @@ bool cMain::update_limit() {
 	return false;
 }
 
+bool cMain::update_priority() {
+	row_num = grid_buildings->GetNumberRows();
+
+	x_cord_float = std::stof(x_cord);
+	y_cord_float = std::stof(y_cord);
+	building_size_float = std::stof(building_size);
+
+	int amount_true = 0;
+
+	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
+		if (direction_to_build == "North") {
+			y_cord = std::to_string(y_cord_float - building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+					continue;
+				}
+
+				grid_buildings->SetCellValue(i, 6, priority_in);
+				grid_buildings->SetCellValue(i, 7, priority_out);
+				amount_true += 1;
+				break;
+			}
+
+		} else if (direction_to_build == "South") {
+			y_cord = std::to_string(y_cord_float + building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+					continue;
+				}
+
+				grid_buildings->SetCellValue(i, 6, priority_in);
+				grid_buildings->SetCellValue(i, 7, priority_out);
+				amount_true += 1;
+				break;
+			}
+
+		} else if (direction_to_build == "East") {
+			x_cord = std::to_string(x_cord_float + building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+					continue;
+				}
+
+				grid_buildings->SetCellValue(i, 6, priority_in);
+				grid_buildings->SetCellValue(i, 7, priority_out);
+				amount_true += 1;
+				break;
+			}
+		} else if (direction_to_build == "West") {
+			x_cord = std::to_string(x_cord_float - building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+					continue;
+				}
+
+				grid_buildings->SetCellValue(i, 6, priority_in);
+				grid_buildings->SetCellValue(i, 7, priority_out);
+				amount_true += 1;
+				break;
+			}
+		}
+	}
+
+	if (amount_true == std::stoi(amount_of_buildings)) {
+		return true;
+	}
+
+	return false;
+}
+
 void cMain::update_group_grid() {
 	if (grid_group->GetNumberRows() > 0) {
 		grid_group->DeleteRows(0, grid_group->GetNumberRows());
@@ -673,6 +808,11 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		} else if (task == "Limit") {
 			if (!update_limit()) {
 				wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
+			}
+
+		} else if (task == "Priority") {
+			if (!update_priority()) {
+				wxMessageBox("Building is not a splitter or location does not seem to exit.\nPlease use exactly the same coordinates as you used to build and ensure that it is a splitter", "Please use the same coordinates");
 			}
 		}
 	}
@@ -1785,6 +1925,13 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			from_into = extract_define(i);
 
 			limit_row(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size);
+		} else if (task == "Priority") {
+			int pos = build_orientation.find(",");
+
+			priority_in = build_orientation.substr(0, pos);
+			priority_out = build_orientation.substr(pos + 2);
+
+			priority_row(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size);
 		}
 	}
 
@@ -1902,10 +2049,12 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 	cmb_item->Enable(parameters[3]);
 	cmb_from_into->Enable(parameters[4]);
 	cmb_tech->Enable(parameters[5]);
-	cmb_building_orientation->Enable(parameters[6]);
-	cmb_direction_to_build->Enable(parameters[7]);
-	txt_amount_of_buildings->Enable(parameters[8]);
-	txt_building_size->Enable(parameters[9]);
+	cmb_input->Enable(parameters[6]);
+	cmb_output->Enable(parameters[7]);
+	cmb_building_orientation->Enable(parameters[8]);
+	cmb_direction_to_build->Enable(parameters[9]);
+	txt_amount_of_buildings->Enable(parameters[10]);
+	txt_building_size->Enable(parameters[11]);
 }
 
 bool cMain::setup_for_task_grid() {
@@ -2028,6 +2177,22 @@ bool cMain::setup_for_task_grid() {
 	} else if (task == "Limit") {
 		item = not_relevant;
 		build_orientation = "Chest";
+
+	} else if (task == "Priority") {
+		item = not_relevant;
+		units = not_relevant;
+
+		if (!check_item(priority_in, input_output)) {
+			wxMessageBox("The input priority chosen is not valid - please try again", "Please use the input dropdown menu");
+			return false;
+		}
+
+		if (!check_item(priority_out, input_output)) {
+			wxMessageBox("The output priority chosen is not valid - please try again", "Please use the output dropdown menu");
+			return false;
+		}
+
+		build_orientation = priority_in + ", " + priority_out;
 	}
 	
 	return true;
@@ -2040,11 +2205,14 @@ void cMain::extract_parameters() {
 	units = extract_units();
 	item = extract_item();
 	from_into = extract_from_into();
+	tech_to_start = extract_tech();
+	priority_in = extract_priority_in();
+	priority_out = extract_priority_out();
 	build_orientation = extract_building_orientation();
 	direction_to_build = extract_direction_to_build();
 	building_size = extract_building_size();
 	amount_of_buildings = extract_amount_of_buildings();
-	tech_to_start = extract_tech();
+	
 }
 
 void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
@@ -2328,6 +2496,20 @@ std::string cMain::extract_tech() {
 	string_capitalized(tech_to_start);
 
 	return tech_to_start;
+}
+
+std::string cMain::extract_priority_in() {
+	priority_in = cmb_input->GetValue().ToStdString();
+	string_capitalized(priority_in);
+
+	return priority_in;
+}
+
+std::string cMain::extract_priority_out() {
+	priority_out = cmb_output->GetValue().ToStdString();
+	string_capitalized(priority_out);
+
+	return priority_out;
 }
 
 std::string cMain::extract_define(int start_row) {
