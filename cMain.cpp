@@ -187,12 +187,12 @@ void cMain::OnTransferChosen(wxCommandEvent& event) {
 }
 
 void cMain::OnPickUpChosen(wxCommandEvent& event) {
-
+	setup_paramters(parameter_choices.pick);
 	event.Skip();
 }
 
 void cMain::OnDropChosen(wxCommandEvent& event) {
-
+	setup_paramters(parameter_choices.drop);
 	event.Skip();
 }
 
@@ -945,10 +945,11 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	extract_parameters();
 
 	if (setup_for_task_grid()) {
-		change_row(grid_tasks);
-		tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		if (change_row(grid_tasks)) {
+			tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 
-		update_buildings_grid_from_scratch();
+			update_buildings_grid_from_scratch();
+		}
 	}
 
 	event.Skip();
@@ -2062,6 +2063,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			} else {
 				filter_row(x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size);
 			}			
+		} else if (task == "Drop") {
+			drop_row(x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
+		} else if (task == "Pick up") {
+			pick_row(x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
 		}
 	}
 
@@ -2341,7 +2346,17 @@ bool cMain::setup_for_task_grid() {
 		}
 
 		build_orientation = priority_in + ", " + priority_out;
+
 	} else if (task == "Filter") {
+		build_orientation = not_relevant;
+
+	} else if (task == "Drop") {
+		units = not_relevant;
+		build_orientation = not_relevant;
+
+	} else if (task == "Pick up") {
+		units = not_relevant;
+		item = not_relevant;
 		build_orientation = not_relevant;
 	}
 	

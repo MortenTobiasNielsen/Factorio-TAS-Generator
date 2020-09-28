@@ -49,6 +49,14 @@ void filter(std::string x_cord, std::string y_cord, std::string item, std::strin
 
 void filter_row(std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
 
+void drop(std::string x_cord, std::string y_cord, std::string item);
+
+void drop_row(std::string x_cord, std::string y_cord, std::string item, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
+
+void pick(std::string x_cord, std::string y_cord);
+
+void pick_row(std::string x_cord, std::string y_cord, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
+
 void rotate(std::string x_cord, std::string y_cord, std::string times);
 
 void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
