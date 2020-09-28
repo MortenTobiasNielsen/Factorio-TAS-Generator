@@ -469,6 +469,41 @@ void priority_row(std::string x_cord, std::string y_cord, std::string priority_i
 	}
 }
 
+void filter(std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type) {
+	task_list += "task[" + std::to_string(task) + "] = {\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + units + ",  \"" + type + "\"}\n";
+	task += 1;
+}
+
+void filter_row(std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string direction_to_build, std::string number_of_buildings, std::string building_size) {
+	static float start_x_cord = std::stof(x_cord);
+	static float start_y_cord = std::stof(y_cord);
+	static int building_size_int = std::stoi(building_size);
+	static int number_of_buildings_int = std::stoi(number_of_buildings);
+
+	start_x_cord = std::stof(x_cord);
+	start_y_cord = std::stof(y_cord);
+	building_size_int = std::stoi(building_size);
+	number_of_buildings_int = std::stoi(number_of_buildings);
+
+	if (direction_to_build == "north") {
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			filter(x_cord, std::to_string(start_y_cord - i * building_size_int), item, units, type);
+		}
+	} else if (direction_to_build == "south") {
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			filter(x_cord, std::to_string(start_y_cord + i * building_size_int), item, units, type);
+		}
+	} else if (direction_to_build == "east") {
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			filter(std::to_string(start_x_cord + i * building_size_int), y_cord, item, units, type);
+		}
+	} else if (direction_to_build == "west") {
+		for (int i = 0; i < number_of_buildings_int; i++) {
+			filter(std::to_string(start_x_cord - i * building_size_int), y_cord, item, units, type);
+		}
+	}
+}
+
 void rotate(std::string x_cord, std::string y_cord, std::string times) {
 	check_build_distance(x_cord, y_cord);
 	for (int i = 0; i < std::stoi(times); i++) {
@@ -583,6 +618,7 @@ void row_put(std::string x_cord, std::string y_cord, std::string amount, std::st
 std::string end_tasks() {
 	return task_list + "task[" + std::to_string(task) + "] = {\"break\"}\n\n" + "return task";
 }
+
 void clear_tasks() {
 	task = 1;
 	task_list = "local task = {}\n\n";

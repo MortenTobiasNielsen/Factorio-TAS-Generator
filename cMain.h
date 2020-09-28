@@ -119,7 +119,7 @@ private:
 		std::vector<bool> build = { true, true, false, true, false, false, false, false, true, true, true, true };
 		std::vector<bool> take = { true, true, true, true, true, false, false, false, false, true, true, true };
 		std::vector<bool> put = { true, true, true, true, true, false, false, false, false, true, true, true };
-		std::vector<bool> filter = { true, true, false, true, false, false, false, false, false, true, true, true };
+		std::vector<bool> filter = { true, true, true, true, false, false, false, false, false, true, true, true };
 		std::vector<bool> recipe = { true, true, false, true, false, false, false, false, false, true, true, true };
 		std::vector<bool> tech = { false, false, false, false, false, true, false, false, false, false, false, false };
 		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false, false, false };
@@ -206,6 +206,7 @@ private:
 	bool update_recipe();
 	bool update_limit();
 	bool update_priority();
+	bool update_filter();
 	
 	void update_group_grid();
 	void update_template_grid();
@@ -239,6 +240,7 @@ private:
 	std::string extract_priority_in();
 	std::string extract_priority_out();
 	std::string extract_define(int start_row);
+	void extract_building(int start_row);
 };
 
 
