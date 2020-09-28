@@ -42,6 +42,9 @@ protected:
 	void OnDeleteMenuSelected(wxCommandEvent& event);
 	void OnMoveUpMenuSelected(wxCommandEvent& event);
 	void OnMoveDownMenuSelected(wxCommandEvent& event);
+	void OnPriorityMenuSelected(wxCommandEvent& event);
+	void OnLimitMenuSelected(wxCommandEvent& event);
+	void OnFilterMenuSelected(wxCommandEvent& event);
 
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);

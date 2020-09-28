@@ -2167,6 +2167,24 @@ void cMain::OnMoveDownMenuSelected(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnPriorityMenuSelected(wxCommandEvent& event) {
+	rbtn_priority->SetValue(true);
+	OnPriorityChosen(event);
+	event.Skip();
+}
+
+void cMain::OnLimitMenuSelected(wxCommandEvent& event) {
+	rbtn_limit->SetValue(true);
+	OnLimitChosen(event);
+	event.Skip();
+}
+
+void cMain::OnFilterMenuSelected(wxCommandEvent& event) {
+	rbtn_filter->SetValue(true);
+	OnfilterChosen(event);
+	event.Skip();
+}
+
 void cMain::OnAddMenuSelected(wxCommandEvent& event) {
 	OnAddTaskClicked(event);
 	event.Skip();
@@ -2432,7 +2450,7 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		OnStopChosen(event);
 		txt_units->SetValue(units);
 	} else if (task == "Limit") {
-		OnLimitChosen(event);
+		OnLimitMenuSelected(event);
 		txt_x_cord->SetValue(x_cord);
 		txt_y_cord->SetValue(y_cord);
 		txt_units->SetValue(units);
@@ -2440,7 +2458,7 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 	} else if (task == "Priority") {
-		OnPriorityChosen(event);
+		OnPriorityMenuSelected(event);
 		txt_x_cord->SetValue(x_cord);
 		txt_y_cord->SetValue(y_cord);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2453,9 +2471,10 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		cmb_output->SetValue(build_orientation.substr(pos + 2));
 
 	} else if (task == "Filter") {
-		OnfilterChosen(event);
+		OnFilterMenuSelected(event);
 		txt_x_cord->SetValue(x_cord);
 		txt_y_cord->SetValue(y_cord);
+		txt_units->SetValue(units);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
@@ -2593,6 +2612,8 @@ std::string cMain::extract_units() {
 	} else if (rbtn_filter->GetValue()) {
 		if (std::stof(units) < 1) {
 			units = "1";
+		} else if (std::stof(units) > 5) {
+			units = "5";
 		}
 	} else{
 		if (std::stof(units) < 1) {

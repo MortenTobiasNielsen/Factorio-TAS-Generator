@@ -151,6 +151,9 @@ protected:
 	virtual void OnTechMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnPriorityMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnLimitMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnFilterMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnAddMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteMenuSelected(wxCommandEvent& event) { event.Skip(); }

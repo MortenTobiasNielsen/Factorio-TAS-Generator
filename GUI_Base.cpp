@@ -92,6 +92,18 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	shortcut_put = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Put")) + wxT('\t') + wxT("Alt+5"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_put);
 
+	wxMenuItem* shortcut_priority;
+	shortcut_priority = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Priority")) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_priority);
+
+	wxMenuItem* shortcut_limit;
+	shortcut_limit = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Limit")) + wxT('\t') + wxT("Shift+2"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_limit);
+
+	wxMenuItem* shortcut_filter;
+	shortcut_filter = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Filter")) + wxT('\t') + wxT("Shift+3"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_filter);
+
 	wxMenuItem* shortcut_add_task;
 	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Alt+A"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_add_task);
@@ -683,7 +695,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel3->SetSizer(bSizer561);
 	m_panel3->Layout();
 	bSizer561->Fit(m_panel3);
-	m_notebook1->AddPage(m_panel3, wxT("Group"), true);
+	m_notebook1->AddPage(m_panel3, wxT("Group"), false);
 	m_panel6 = new wxPanel(m_notebook1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxTAB_TRAVERSAL);
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer(wxVERTICAL);
@@ -847,7 +859,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel6->SetSizer(bSizer5612);
 	m_panel6->Layout();
 	bSizer5612->Fit(m_panel6);
-	m_notebook1->AddPage(m_panel6, wxT("Template"), false);
+	m_notebook1->AddPage(m_panel6, wxT("Template"), true);
 
 	bSizer44->Add(m_notebook1, 1, wxEXPAND | wxALL, 5);
 
@@ -950,7 +962,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel31->SetSizer(bSizer5611);
 	m_panel31->Layout();
 	bSizer5611->Fit(m_panel31);
-	m_notebook11->AddPage(m_panel31, wxT("Tasks"), true);
+	m_notebook11->AddPage(m_panel31, wxT("Tasks"), false);
 	m_panel61 = new wxPanel(m_notebook11, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
 	wxBoxSizer* bSizer56111;
 	bSizer56111 = new wxBoxSizer(wxVERTICAL);
@@ -1027,7 +1039,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel61->SetSizer(bSizer56111);
 	m_panel61->Layout();
 	bSizer56111->Fit(m_panel61);
-	m_notebook11->AddPage(m_panel61, wxT("Buildings"), false);
+	m_notebook11->AddPage(m_panel61, wxT("Buildings"), true);
 
 	bSizer442->Add(m_notebook11, 1, wxEXPAND | wxALL, 5);
 
@@ -1068,6 +1080,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTechMenuSelected), this, shortcut_tech->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeMenuSelected), this, shortcut_take->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPutMenuSelected), this, shortcut_put->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityMenuSelected), this, shortcut_priority->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitMenuSelected), this, shortcut_limit->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnFilterMenuSelected), this, shortcut_filter->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnAddMenuSelected), this, shortcut_add_task->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChangeMenuSelected), this, shortcut_change_task->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDeleteMenuSelected), this, shortcut_delete_task->GetId());
