@@ -8,7 +8,7 @@
 #include <locale>
 #include <codecvt>
 
-cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1560, 1080)) {
+cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1620, 1080)) {
 	//all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
 	all_items.insert(all_items.end(), item_production.begin(), item_production.end());
@@ -324,9 +324,11 @@ void cMain::update_buildings_grid() {
 	grid_buildings->SetCellValue(row_num, 1, y_cord);
 	grid_buildings->SetCellValue(row_num, 2, item);
 	grid_buildings->SetCellValue(row_num, 3, build_orientation);
-	grid_buildings->SetCellValue(row_num, 4, recipe);
-	grid_buildings->SetCellValue(row_num, 5, priority);
-	grid_buildings->SetCellValue(row_num, 6, filter);
+	grid_buildings->SetCellValue(row_num, 4, limit);
+	grid_buildings->SetCellValue(row_num, 5, recipe);
+	grid_buildings->SetCellValue(row_num, 6, priority_in);
+	grid_buildings->SetCellValue(row_num, 7, priority_out);
+	grid_buildings->SetCellValue(row_num, 8, filter);
 }
 
 void cMain::update_buildings_grid_from_scratch() {
@@ -347,6 +349,7 @@ void cMain::update_buildings_grid_from_scratch() {
 			amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 			building_row();
+
 		} else if (task == "Recipe") {
 			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
 			y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
@@ -354,7 +357,19 @@ void cMain::update_buildings_grid_from_scratch() {
 			direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
 			building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 			amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+
 			update_recipe();
+
+		} else if (task == "Limit") {
+			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+			y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+			units = grid_tasks->GetCellValue(i, 3).ToStdString();
+			direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+			building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+			amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+
+			update_limit();
+
 		}
 	}
 }
@@ -391,8 +406,10 @@ bool cMain::update_building_orientation() {
 }
 
 void cMain::building_row() {
+	limit = "";
 	recipe = "";
-	priority = "";
+	priority_in = "";
+	priority_out = "";
 	filter = "";
 
 	x_cord_float = std::stof(x_cord);
@@ -402,19 +419,19 @@ void cMain::building_row() {
 
 	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
 		if (direction_to_build == "North") {
-			y_cord = std::to_string(y_cord_float - building_size_float * i); /*+ building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));*/
+			y_cord = std::to_string(y_cord_float - building_size_float * i);
 			update_buildings_grid();
 
 		} else if (direction_to_build == "South") {
-			y_cord = std::to_string(y_cord_float + building_size_float * i); // - building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));
+			y_cord = std::to_string(y_cord_float + building_size_float * i);
 			update_buildings_grid();
 
 		} else if (direction_to_build == "East") {
-			x_cord = std::to_string(x_cord_float + building_size_float * i); // - building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));
+			x_cord = std::to_string(x_cord_float + building_size_float * i);
 			update_buildings_grid();
 
 		} else if (direction_to_build == "West") {
-			x_cord = std::to_string(x_cord_float - building_size_float * i); // + building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float) ));
+			x_cord = std::to_string(x_cord_float - building_size_float * i);
 			update_buildings_grid();
 		}
 	}
@@ -431,7 +448,7 @@ bool cMain::update_recipe() {
 
 	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
 		if (direction_to_build == "North") {
-			y_cord = std::to_string(y_cord_float - building_size_float * i); // + building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float)));
+			y_cord = std::to_string(y_cord_float - building_size_float * i);
 			for (int i = 0; i < row_num; i++) {
 
 				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
@@ -441,13 +458,13 @@ bool cMain::update_recipe() {
 					continue;
 				}
 
-				grid_buildings->SetCellValue(i, 4, item);
+				grid_buildings->SetCellValue(i, 5, item);
 				amount_true += 1;
 				break;
 			}
 
 		} else if (direction_to_build == "South") {
-			y_cord = std::to_string(y_cord_float + building_size_float * i); //- building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float)));
+			y_cord = std::to_string(y_cord_float + building_size_float * i);
 			for (int i = 0; i < row_num; i++) {
 
 				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
@@ -457,13 +474,13 @@ bool cMain::update_recipe() {
 					continue;
 				}
 
-				grid_buildings->SetCellValue(i, 4, item);
+				grid_buildings->SetCellValue(i, 5, item);
 				amount_true += 1;
 				break;
 			}
 
 		} else if (direction_to_build == "East") {
-			x_cord = std::to_string(x_cord_float + building_size_float * i); // - building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float)));
+			x_cord = std::to_string(x_cord_float + building_size_float * i);
 			for (int i = 0; i < row_num; i++) {
 
 				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
@@ -473,12 +490,12 @@ bool cMain::update_recipe() {
 					continue;
 				}
 
-				grid_buildings->SetCellValue(i, 4, item);
+				grid_buildings->SetCellValue(i, 5, item);
 				amount_true += 1;
 				break;
 			}
 		} else if (direction_to_build == "West") {
-			x_cord = std::to_string(x_cord_float - building_size_float * i); // + building_size_float * std::floor(building_size_float / ((i + 1) * building_size_float)));
+			x_cord = std::to_string(x_cord_float - building_size_float * i);
 			for (int i = 0; i < row_num; i++) {
 
 				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
@@ -488,7 +505,7 @@ bool cMain::update_recipe() {
 					continue;
 				}
 
-				grid_buildings->SetCellValue(i, 4, item);
+				grid_buildings->SetCellValue(i, 5, item);
 				amount_true += 1;
 				break;
 			}
@@ -498,6 +515,85 @@ bool cMain::update_recipe() {
 	if (amount_true == std::stoi(amount_of_buildings)) {
 		return true;
 	} 
+
+	return false;
+}
+
+bool cMain::update_limit() {
+	row_num = grid_buildings->GetNumberRows();
+
+	x_cord_float = std::stof(x_cord);
+	y_cord_float = std::stof(y_cord);
+	building_size_float = std::stof(building_size);
+
+	int amount_true = 0;
+
+	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
+		if (direction_to_build == "North") {
+			y_cord = std::to_string(y_cord_float - building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+
+				grid_buildings->SetCellValue(i, 4, units);
+				amount_true += 1;
+				break;
+			}
+
+		} else if (direction_to_build == "South") {
+			y_cord = std::to_string(y_cord_float + building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+				grid_buildings->SetCellValue(i, 4, units);
+				amount_true += 1;
+				break;
+			}
+
+		} else if (direction_to_build == "East") {
+			x_cord = std::to_string(x_cord_float + building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+				grid_buildings->SetCellValue(i, 4, units);
+				amount_true += 1;
+				break;
+			}
+		} else if (direction_to_build == "West") {
+			x_cord = std::to_string(x_cord_float - building_size_float * i);
+			for (int i = 0; i < row_num; i++) {
+
+				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+					continue;
+				}
+				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+					continue;
+				}
+				grid_buildings->SetCellValue(i, 4, units);
+				amount_true += 1;
+				break;
+			}
+		}
+	}
+
+	if (amount_true == std::stoi(amount_of_buildings)) {
+		return true;
+	}
 
 	return false;
 }
@@ -568,8 +664,16 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		update_tasks_grid();
 		if (task == "Build") {
 			building_row();
+
 		} else if (task == "Recipe") {
-			update_recipe();
+			if (!update_recipe()) {
+				wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
+			}
+
+		} else if (task == "Limit") {
+			if (!update_limit()) {
+				wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
+			}
 		}
 	}
 
@@ -651,7 +755,6 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
 
 		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
-		//groups_data_to_save.push_back(group_name + ";" + task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 	}
 	
 	group_map.insert(std::pair<std::string, std::vector<std::string>> (group_name, group_list));
@@ -774,6 +877,7 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 	}
 
 	if (counter > 0) {
+		update_buildings_grid_from_scratch();
 		return;
 	}
 
@@ -803,8 +907,13 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 		grid_tasks->SetCellValue(row_num + i, 7, grid_group->GetCellValue(i, 7));
 		grid_tasks->SetCellValue(row_num + i, 8, grid_group->GetCellValue(i, 8));
 
-		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		it1 = tasks_data_to_save.begin();
+		it1 += row_num + i;
+
+		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 	}
+	
+	update_buildings_grid_from_scratch();
 
 	event.Skip();
 }
@@ -835,13 +944,15 @@ void cMain::OnGroupDeleteClicked(wxCommandEvent& event) {
 
 	group_name = cmb_choose_group->GetValue().ToStdString();
 
-	it1 = group_map[group_name].begin();
-	it2 = group_map[group_name].begin();
+	if (!(group_map.find(group_name) == group_map.end())) {
+		it1 = group_map[group_name].begin();
+		it2 = group_map[group_name].begin();
 
-	it1 += row_num;
-	it2 += row_num + row_count;
+		it1 += row_num;
+		it2 += row_num + row_count;
 
-	group_map[group_name].erase(it1, it2);
+		group_map[group_name].erase(it1, it2);
+	}
 
 	event.Skip();
 }
@@ -855,16 +966,17 @@ void cMain::OnGroupMoveUpClicked(wxCommandEvent& event) {
 
 	group_name = cmb_choose_group->GetValue().ToStdString();
 
-	it1 = group_map[group_name].begin();
-	it1 += row_to_move;
+	if (!(group_map.find(group_name) == group_map.end())) {
+		it1 = group_map[group_name].begin();
+		it1 += row_to_move;
 
-	data = *it1;
-	group_map[group_name].erase(it1);
+		data = *it1;
+		group_map[group_name].erase(it1);
 
-	it2 = group_map[group_name].begin();
-	it2 += row_num + row_count - 1;
-	group_map[group_name].insert(it2, data);
-
+		it2 = group_map[group_name].begin();
+		it2 += row_num + row_count - 1;
+		group_map[group_name].insert(it2, data);
+	}
 	event.Skip();
 }
 
@@ -875,14 +987,16 @@ void cMain::OnGroupMoveDownClicked(wxCommandEvent& event) {
 
 	group_name = cmb_choose_group->GetValue().ToStdString();
 
-	it1 = group_map[group_name].begin();
-	it1 += row_to_move - 1;
-	it2 = group_map[group_name].begin();
-	it2 += row_num;
+	if (!(group_map.find(group_name) == group_map.end())) {
+		it1 = group_map[group_name].begin();
+		it1 += row_to_move - 1;
+		it2 = group_map[group_name].begin();
+		it2 += row_num;
 
-	data = *it1;
-	group_map[group_name].erase(it1, it1 + 1);
-	group_map[group_name].insert(it2, data);
+		data = *it1;
+		group_map[group_name].erase(it1, it1 + 1);
+		group_map[group_name].insert(it2, data);
+	}
 
 	event.Skip();
 }
@@ -1019,14 +1133,20 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 
 	for (int i = row_num; i < (row_num + row_count); i++) {
 
-		x_cord_float = std::stof(grid_tasks->GetCellValue(i, 1).ToStdString());
-		y_cord_float = std::stof(grid_tasks->GetCellValue(i, 2).ToStdString());
+		if (grid_tasks->GetCellValue(i, 1).ToStdString() != "") {
+			x_cord_float = wxAtof(grid_tasks->GetCellValue(i, 1));
+			y_cord_float = wxAtof(grid_tasks->GetCellValue(i, 2));
 
-		x_offset = wxAtof(txt_template_x_offset->GetValue());
-		y_offset = wxAtof(txt_template_y_offset->GetValue());
+			x_offset = wxAtof(txt_template_x_offset->GetValue());
+			y_offset = wxAtof(txt_template_y_offset->GetValue());
 
-		x_cord = std::to_string(x_cord_float + x_offset);
-		y_cord = std::to_string(y_cord_float + y_offset);
+			x_cord = std::to_string(x_cord_float + x_offset);
+			y_cord = std::to_string(y_cord_float + y_offset);
+		} else {
+			x_cord = grid_tasks->GetCellValue(i, 1);
+			y_cord = grid_tasks->GetCellValue(i, 2);
+
+		}
 
 		grid_template->SetCellValue(row + i - row_num, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
 		grid_template->SetCellValue(row + i - row_num, 1, x_cord);
@@ -1109,6 +1229,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 	}
 
 	if (counter > 0) {
+		update_buildings_grid_from_scratch();
 		return;
 	}
 
@@ -1147,8 +1268,15 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 		grid_tasks->SetCellValue(row_num + i, 7, building_size);
 		grid_tasks->SetCellValue(row_num + i, 8, amount_of_buildings);
 
-		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		it1 = tasks_data_to_save.begin();
+		it1 += row_num + i;
+
+		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
 	}
+
+	update_buildings_grid_from_scratch();
+
+	event.Skip();
 }
 
 void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event) {
@@ -1176,13 +1304,15 @@ void cMain::OnTemplateDeleteTaskClicked(wxCommandEvent& event) {
 
 	template_name = cmb_choose_template->GetValue().ToStdString();
 
-	it1 = template_map[template_name].begin();
-	it2 = template_map[template_name].begin();
+	if (!(template_map.find(template_name) == template_map.end())) {
+		it1 = template_map[template_name].begin();
+		it2 = template_map[template_name].begin();
 
-	it1 += row_num;
-	it2 += row_num + row_count;
+		it1 += row_num;
+		it2 += row_num + row_count;
 
-	template_map[template_name].erase(it1, it2);
+		template_map[template_name].erase(it1, it2);
+	}
 
 	event.Skip();
 }
@@ -1196,15 +1326,17 @@ void cMain::OnTemplateMoveUpClicked(wxCommandEvent& event) {
 
 	template_name = cmb_choose_template->GetValue().ToStdString();
 
-	it1 = template_map[template_name].begin();
-	it1 += row_to_move;
+	if (!(template_map.find(template_name) == template_map.end())) {
+		it1 = template_map[template_name].begin();
+		it1 += row_to_move;
 
-	data = *it1;
-	template_map[template_name].erase(it1);
+		data = *it1;
+		template_map[template_name].erase(it1);
 
-	it2 = template_map[template_name].begin();
-	it2 += row_num + row_count - 1;
-	template_map[template_name].insert(it2, data);
+		it2 = template_map[template_name].begin();
+		it2 += row_num + row_count - 1;
+		template_map[template_name].insert(it2, data);
+	}
 
 	event.Skip();
 }
@@ -1218,14 +1350,16 @@ void cMain::OnTemplateMoveDownClicked(wxCommandEvent& event) {
 
 	template_name = cmb_choose_template->GetValue().ToStdString();
 
-	it1 = template_map[template_name].begin();
-	it1 += row_to_move - 1;
-	it2 = template_map[template_name].begin();
-	it2 += row_num;
+	if (!(template_map.find(template_name) == template_map.end())) {
+		it1 = template_map[template_name].begin();
+		it1 += row_to_move - 1;
+		it2 = template_map[template_name].begin();
+		it2 += row_num;
 
-	data = *it1;
-	template_map[template_name].erase(it1, it1 + 1);
-	template_map[template_name].insert(it2, data);
+		data = *it1;
+		template_map[template_name].erase(it1, it1 + 1);
+		template_map[template_name].insert(it2, data);
+	}
 
 	event.Skip();
 }
@@ -1647,6 +1781,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			row_recipe(x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings);
 		} else if (task == "Stop") {
 			stop(units);
+		} else if (task == "Limit") {
+			from_into = extract_define(i);
+
+			limit_row(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size);
 		}
 	}
 
@@ -1875,11 +2013,6 @@ bool cMain::setup_for_task_grid() {
 			return false;
 		}
 
-		//if (!update_recipe()) {
-		//	wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
-		//	return false;
-		//}
-
 		units = not_relevant;
 		build_orientation = not_relevant;
 	} else if (task == "Stop") {
@@ -1892,6 +2025,9 @@ bool cMain::setup_for_task_grid() {
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
 
+	} else if (task == "Limit") {
+		item = not_relevant;
+		build_orientation = "Chest";
 	}
 	
 	return true;
@@ -1995,6 +2131,14 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 	} else if (task == "Stop") {
 		OnStopChosen(event);
 		txt_units->SetValue(units);
+	} else if (task == "Limit") {
+		OnLimitChosen(event);
+		txt_x_cord->SetValue(x_cord);
+		txt_y_cord->SetValue(y_cord);
+		txt_units->SetValue(units);
+		cmb_direction_to_build->SetValue(direction_to_build);
+		txt_building_size->SetValue(building_size);
+		txt_amount_of_buildings->SetValue(amount_of_buildings);
 	}
 }
 
@@ -2117,9 +2261,13 @@ std::string cMain::extract_units() {
 		if (std::stof(units) < 0.01) {
 			units = "0.01";
 		}
-	} else if (rbtn_mine->GetValue() || rbtn_limit->GetValue() || rbtn_rotate->GetValue() || rbtn_stop->GetValue()) {
+	} else if (rbtn_mine->GetValue() || rbtn_rotate->GetValue() || rbtn_stop->GetValue()) {
 		if (std::stof(units) < 1) {
 			units = "1";
+		}
+	} if (rbtn_limit->GetValue()) {
+		if (std::stof(units) < 0) {
+			units = "0";
 		}
 	} else {
 		if (std::stof(units) < 1) {

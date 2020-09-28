@@ -161,8 +161,10 @@ private:
 	std::string amount_of_buildings;
 	std::string building;
 
+	std::string limit;
 	std::string recipe;
-	std::string priority;
+	std::string priority_in;
+	std::string priority_out;
 	std::string filter;
 
 	wxArrayString item_choices;
@@ -201,6 +203,7 @@ private:
 	void building_row();
 	bool update_building_orientation();
 	bool update_recipe();
+	bool update_limit();
 	
 	void update_group_grid();
 	void update_template_grid();

@@ -669,7 +669,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel3->SetSizer(bSizer561);
 	m_panel3->Layout();
 	bSizer561->Fit(m_panel3);
-	m_notebook1->AddPage(m_panel3, wxT("Group"), false);
+	m_notebook1->AddPage(m_panel3, wxT("Group"), true);
 	m_panel6 = new wxPanel(m_notebook1, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), wxTAB_TRAVERSAL);
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer(wxVERTICAL);
@@ -833,7 +833,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	m_panel6->SetSizer(bSizer5612);
 	m_panel6->Layout();
 	bSizer5612->Fit(m_panel6);
-	m_notebook1->AddPage(m_panel6, wxT("Template"), true);
+	m_notebook1->AddPage(m_panel6, wxT("Template"), false);
 
 	bSizer44->Add(m_notebook1, 1, wxEXPAND | wxALL, 5);
 
@@ -962,10 +962,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer5011;
 	bSizer5011 = new wxBoxSizer(wxVERTICAL);
 
-	grid_buildings = new wxGrid(m_panel61, wxID_ANY, wxDefaultPosition, wxSize(800, -1), 0);
+	grid_buildings = new wxGrid(m_panel61, wxID_ANY, wxDefaultPosition, wxSize(825, -1), 0);
 
 	// Grid
-	grid_buildings->CreateGrid(0, 7);
+	grid_buildings->CreateGrid(0, 9);
 	grid_buildings->EnableEditing(true);
 	grid_buildings->EnableGridLines(true);
 	grid_buildings->EnableDragGridSize(false);
@@ -974,20 +974,24 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	// Columns
 	grid_buildings->SetColSize(0, 50);
 	grid_buildings->SetColSize(1, 50);
-	grid_buildings->SetColSize(2, 120);
+	grid_buildings->SetColSize(2, 135);
 	grid_buildings->SetColSize(3, 70);
-	grid_buildings->SetColSize(4, 120);
-	grid_buildings->SetColSize(5, 120);
-	grid_buildings->SetColSize(6, 120);
+	grid_buildings->SetColSize(4, 50);
+	grid_buildings->SetColSize(5, 135);
+	grid_buildings->SetColSize(6, 50);
+	grid_buildings->SetColSize(7, 50);
+	grid_buildings->SetColSize(8, 135);
 	grid_buildings->EnableDragColMove(false);
 	grid_buildings->EnableDragColSize(false);
 	grid_buildings->SetColLabelValue(0, wxT("X-cord"));
 	grid_buildings->SetColLabelValue(1, wxT("Y-cord"));
 	grid_buildings->SetColLabelValue(2, wxT("Building"));
 	grid_buildings->SetColLabelValue(3, wxT("Orientation"));
-	grid_buildings->SetColLabelValue(4, wxT("Recipe"));
-	grid_buildings->SetColLabelValue(5, wxT("Priority"));
-	grid_buildings->SetColLabelValue(6, wxT("Filter"));
+	grid_buildings->SetColLabelValue(4, wxT("Limit"));
+	grid_buildings->SetColLabelValue(5, wxT("Recipe"));
+	grid_buildings->SetColLabelValue(6, wxT("Prio In"));
+	grid_buildings->SetColLabelValue(7, wxT("Prio Out"));
+	grid_buildings->SetColLabelValue(8, wxT("Filter"));
 	grid_buildings->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
 
 	// Rows
@@ -998,12 +1002,12 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_buildings->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_buildings->SetMinSize(wxSize(750, 2500));
+	grid_buildings->SetMinSize(wxSize(825, 2500));
 
 	bSizer5011->Add(grid_buildings, 0, wxALL, 5);
 
 
-	bSizer56111->Add(bSizer5011, 1, wxEXPAND, 5);
+	bSizer56111->Add(bSizer5011, 1, 0, 5);
 
 
 	m_panel61->SetSizer(bSizer56111);

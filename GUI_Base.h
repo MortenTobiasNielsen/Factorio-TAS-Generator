@@ -201,7 +201,7 @@ protected:
 
 public:
 
-	GUI_Base(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio Scripting Helper"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1556, 1080), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
+	GUI_Base(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio Scripting Helper"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(1622, 1080), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 	~GUI_Base();
 
