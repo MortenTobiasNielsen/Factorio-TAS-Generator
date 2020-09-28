@@ -2590,7 +2590,11 @@ std::string cMain::extract_units() {
 		if (std::stof(units) < 0) {
 			units = "0";
 		}
-	} else {
+	} else if (rbtn_filter->GetValue()) {
+		if (std::stof(units) < 1) {
+			units = "1";
+		}
+	} else{
 		if (std::stof(units) < 1) {
 			units = "All";
 		}
