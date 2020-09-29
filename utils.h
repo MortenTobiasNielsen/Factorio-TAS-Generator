@@ -3,6 +3,57 @@
 #include <string>
 #include <vector>
 
+static const std::vector<std::string> fuel_list = { "Wood", 
+													"Coal", 
+													"Solid fuel", 
+													"Rocket fuel", 
+													"Nuclear fuel", 
+													"Uranium fuel cell" };
+
+static const std::vector<std::string> chest_list = { "Wooden chest", 
+													 "Iron chest", 
+													 "Steel chest" };
+
+static const std::vector<std::string> splitter_list = { "Splitter", 
+														"Fast splitter", 
+														"Express splitter" };
+
+static const std::vector<std::string> filter_inserter_list = { "Filter inserter", 
+															   "Stack filter inserter" };
+
+static const std::vector<std::string> weapon_list = { "Pistol", 
+													  "Submachine gun", 
+													  "Shotgun", 
+													  "Combat shotgun", 
+													  "Flamethrower", 
+													  "Rocket launcher" };
+
+static const std::vector<std::string> magazine_list = { "Firearm magazine",
+														"Piercing rounds magazine",
+														"Uranium rounds magazine" };
+
+static const std::vector<std::string> shotgun_shell_list = { "Shotgun shells",
+															 "Piercing shotgun shells" };
+
+static const std::vector<std::string> rocket_list = { "Rocket", 
+													  "Explosive rocket", 
+													  "Atomic bomb" };
+
+static const std::vector<std::string> flamethrower_fuel_list = { "Flamethrower ammo" };
+
+static const std::vector<std::string> tank_shell_list = { "Cannon shell", 
+														  "Explosive cannon shell", 
+														  "Uranium cannon shell", 
+														  "Explosive uranium cannon shell" };
+
+static const std::vector<std::string> grenade_list = {};
+
+
+
+static const std::vector<std::string> tank_shells = {};
+
+static const std::vector<std::string> tank_shells = {};
+
 static const std::vector<std::string> item_categories = {"Logistics", 
 														 "Production", 
 														 "Intermediates", 
@@ -72,9 +123,9 @@ static const std::vector<std::string> take_from = {"Input",
 
 static const std::vector<std::string> input_output = {"Left", "Right", "None"};
 
-static const std::vector<std::string> item_fuels = {"Wood", "Coal", "Solid fuel", "Rocket fuel", "Nuclear fuel", "Uranium fuel cell"};
 
-static const std::vector<std::string> science_packs = {"Automation science pack"};
+
+static const std::vector<std::string> science_packs = {"Automation science pack", "Logistic science pack", "Military science pack", "Chemical science pack", "Production science pack", "Utility science pack", "Space science pack" };
 
 static const std::vector<std::string> module_list = {"Speed module", "Speed module 2" , "Speed module 3", "Efficiency module", "Efficiency module 2", "Efficiency module 3", "Productivity module", "Productivity module 2", "Productivity module 3"};
 
@@ -86,9 +137,9 @@ static const std::vector<std::string> drills_list = { "Electric mining drill", "
 
 static const std::vector<std::string> recipies = { "Wooden chest", "Iron chest", "Steel chest", "Transport belt", "Burner inserter", "Inserter", "Small electric pole", "Pipe", "Pipe to ground" };
 
-static const std::vector<std::string> splitters = { "Splitter", "Fast splitter", "Express splitter" };
 
-static const std::vector<std::string> filter_inserters = {"Filter inserter", "Stack filter inserter"};
+
+
 //static const std::vector<std::string> chest_list = { "Wooden chest", "Iron chest", "Steel chest", "Wreck" };
 
 struct furnace_types {

@@ -580,6 +580,10 @@ bool cMain::update_limit() {
 					continue;
 				}
 
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), chest_list)) {
+					continue;
+				}
+
 				grid_buildings->SetCellValue(i, 4, units);
 				amount_true += 1;
 				break;
@@ -592,9 +596,16 @@ bool cMain::update_limit() {
 				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
 					continue;
 				}
+				
 				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
 					continue;
 				}
+
+
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), chest_list)) {
+					continue;
+				}
+
 				grid_buildings->SetCellValue(i, 4, units);
 				amount_true += 1;
 				break;
@@ -607,9 +618,15 @@ bool cMain::update_limit() {
 				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
 					continue;
 				}
+				
 				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
 					continue;
 				}
+				
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), chest_list)) {
+					continue;
+				}
+				
 				grid_buildings->SetCellValue(i, 4, units);
 				amount_true += 1;
 				break;
@@ -621,9 +638,15 @@ bool cMain::update_limit() {
 				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
 					continue;
 				}
+				
 				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
 					continue;
 				}
+
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), chest_list)) {
+					continue;
+				}
+				
 				grid_buildings->SetCellValue(i, 4, units);
 				amount_true += 1;
 				break;
@@ -659,7 +682,7 @@ bool cMain::update_priority() {
 					continue;
 				}
 
-				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
 					continue;
 				}
 
@@ -680,7 +703,7 @@ bool cMain::update_priority() {
 					continue;
 				}
 
-				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
 					continue;
 				}
 
@@ -702,7 +725,7 @@ bool cMain::update_priority() {
 					continue;
 				}
 
-				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
 					continue;
 				}
 
@@ -723,7 +746,7 @@ bool cMain::update_priority() {
 					continue;
 				}
 
-				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
 					continue;
 				}
 
@@ -763,11 +786,13 @@ bool cMain::update_filter() {
 					continue;
 				}
 
-				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
 					grid_buildings->SetCellValue(i, 8, item);
 					amount_true += 1;
 					break; 
-				} if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), filter_inserters)) {
+				} 
+				
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), filter_inserter_list)) {
 					grid_buildings->SetCellValue(i, 8, item);
 					amount_true += 1;
 					break;
@@ -787,8 +812,16 @@ bool cMain::update_filter() {
 					continue;
 				}
 
-				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
-					continue;
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
+					grid_buildings->SetCellValue(i, 8, item);
+					amount_true += 1;
+					break;
+				}
+
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), filter_inserter_list)) {
+					grid_buildings->SetCellValue(i, 8, item);
+					amount_true += 1;
+					break;
 				}
 
 				grid_buildings->SetCellValue(i, 6, priority_in);
@@ -809,8 +842,16 @@ bool cMain::update_filter() {
 					continue;
 				}
 
-				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
-					continue;
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
+					grid_buildings->SetCellValue(i, 8, item);
+					amount_true += 1;
+					break;
+				}
+
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), filter_inserter_list)) {
+					grid_buildings->SetCellValue(i, 8, item);
+					amount_true += 1;
+					break;
 				}
 
 				grid_buildings->SetCellValue(i, 6, priority_in);
@@ -830,8 +871,16 @@ bool cMain::update_filter() {
 					continue;
 				}
 
-				if (!check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitters)) {
-					continue;
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), splitter_list)) {
+					grid_buildings->SetCellValue(i, 8, item);
+					amount_true += 1;
+					break;
+				}
+
+				if (check_building(grid_buildings->GetCellValue(i, 2).ToStdString(), filter_inserter_list)) {
+					grid_buildings->SetCellValue(i, 8, item);
+					amount_true += 1;
+					break;
 				}
 
 				grid_buildings->SetCellValue(i, 6, priority_in);
@@ -923,7 +972,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 		} else if (task == "Limit") {
 			if (!update_limit()) {
-				wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
+				wxMessageBox("Building is not a chest or location does not seem to exit.\nPlease use exactly the same coordinates as you used to build and ensure that it is a chest", "Please use the same coordinates");
 			}
 
 		} else if (task == "Priority") {
@@ -1898,12 +1947,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			} else {
 				generate_code_file_location = seglist[0];
 			}
-				/*else if (seglist[0] == "") {
-
-				} else {
-					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
-					return;
-				}*/
 		}
 
 		if (groups_in_file) {
@@ -1927,7 +1970,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				OnTemplateChosen(event);
 			}
 		}
-
 
 		inFile.close();
 	}
@@ -2072,7 +2114,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			
 			extract_building(i);
 
-			if (check_item(building, splitters)) {
+			if (check_item(building, splitter_list)) {
 				filter_row(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size);
 			} else {
 				filter_row(x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size);
@@ -2851,7 +2893,7 @@ bool cMain::check_take_put(const std::string& item, const std::vector<std::strin
 		return true;
 
 	} else if (to_check == "Fuel") {
-		for (auto it = item_fuels.begin(); it < item_fuels.end(); it++) {
+		for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
 			if (item == *it) {
 				return true;
 			}
