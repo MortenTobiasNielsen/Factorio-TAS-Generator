@@ -9,7 +9,6 @@
 #include <codecvt>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1620, 1080)) {
-	//all_items.resize(item_logistics.size() + item_production.size() + item_intermediates.size() + item_combat.size());
 	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
 	all_items.insert(all_items.end(), item_production.begin(), item_production.end());
 	all_items.insert(all_items.end(), item_intermediates.begin(), item_intermediates.end());
@@ -2065,8 +2064,16 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}			
 		} else if (task == "Drop") {
 			drop_row(x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
+
 		} else if (task == "Pick up") {
 			pick_row(x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
+
+		} else if (task == "Launch") {
+			launch(x_cord, y_cord);
+
+		} else if (task== "Ilde") {
+			idle(units);
+
 		}
 	}
 
@@ -2152,26 +2159,6 @@ void cMain::OnTechMenuSelected(wxCommandEvent& event) {
 	event.Skip();
 }
 
-void cMain::OnChangeMenuSelected(wxCommandEvent& event) {
-	OnChangeTaskClicked(event);
-	event.Skip();
-}
-
-void cMain::OnDeleteMenuSelected(wxCommandEvent& event) {
-	OnDeleteTaskClicked(event);
-	event.Skip();
-}
-
-void cMain::OnMoveUpMenuSelected(wxCommandEvent& event) {
-	OnMoveUpClicked(event);
-	event.Skip();
-}
-
-void cMain::OnMoveDownMenuSelected(wxCommandEvent& event) {
-	OnMoveDownClicked(event);
-	event.Skip();
-}
-
 void cMain::OnPriorityMenuSelected(wxCommandEvent& event) {
 	rbtn_priority->SetValue(true);
 	OnPriorityChosen(event);
@@ -2205,6 +2192,26 @@ void cMain::OnIdleMenuSelected(wxCommandEvent& event) {
 void cMain::OnLaunchMenuSelected(wxCommandEvent& event) {
 	rbtn_launch->SetValue(true);
 	OnLaunchChosen(event);
+	event.Skip();
+}
+
+void cMain::OnChangeMenuSelected(wxCommandEvent& event) {
+	OnChangeTaskClicked(event);
+	event.Skip();
+}
+
+void cMain::OnDeleteMenuSelected(wxCommandEvent& event) {
+	OnDeleteTaskClicked(event);
+	event.Skip();
+}
+
+void cMain::OnMoveUpMenuSelected(wxCommandEvent& event) {
+	OnMoveUpClicked(event);
+	event.Skip();
+}
+
+void cMain::OnMoveDownMenuSelected(wxCommandEvent& event) {
+	OnMoveDownClicked(event);
 	event.Skip();
 }
 
@@ -2376,6 +2383,23 @@ bool cMain::setup_for_task_grid() {
 		units = not_relevant;
 		item = not_relevant;
 		build_orientation = not_relevant;
+
+	} else if (task == "Launch") {
+		units = not_relevant;
+		item = not_relevant;
+		build_orientation = not_relevant;
+		direction_to_build = not_relevant;
+		building_size = not_relevant;
+		amount_of_buildings = not_relevant;
+
+	} else if (task == "Idle") {
+		x_cord = not_relevant;
+		y_cord = not_relevant;
+		item = not_relevant;
+		build_orientation = not_relevant;
+		direction_to_build = not_relevant;
+		building_size = not_relevant;
+		amount_of_buildings = not_relevant;
 	}
 	
 	return true;
@@ -2915,5 +2939,3 @@ bool cMain::check_item(const std::string& item, const std::vector<std::string>& 
 
 	return false;
 }
-
-

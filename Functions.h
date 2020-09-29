@@ -37,6 +37,10 @@ void speed(std::string speed);
 
 void stop(std::string speed);
 
+void launch(std::string x_cord, std::string y_cord);
+
+void idle(std::string amount);
+
 void limit(std::string x_cord, std::string y_cord, std::string amount, std::string from);
 
 void limit_row(std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string direction_to_build, std::string number_of_buildings, std::string building_size);

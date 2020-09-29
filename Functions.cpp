@@ -399,6 +399,16 @@ void stop(std::string speed) {
 	task += 1;
 }
 
+void launch(std::string x_cord, std::string y_cord) {
+	task_list += "task[" + std::to_string(task) + "] = {\"launch\", {" + x_cord + ", " + y_cord + "}}\n";
+	task += 1;
+}
+
+void idle(std::string amount) {
+	task_list += "task[" + std::to_string(task) + "] = {\"idle\", " + amount + "}\n";
+	task += 1;
+}
+
 void limit(std::string x_cord, std::string y_cord, std::string amount, std::string from) {
 	check_build_distance(x_cord, y_cord);
 	task_list += "task[" + std::to_string(task) + "] = {\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + "}\n";
