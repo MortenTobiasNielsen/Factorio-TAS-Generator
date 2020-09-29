@@ -170,16 +170,23 @@ static const std::vector<std::string> hand_crafted_list = { "Wooden chest",
 															"Copper cable", 
 															"Iron stick", 
 															"Iron gear wheel", 
+															"Empty barrel",
 															"Electronic circuit", 
 															"Advanced circuit", 
 															"Flying robot frame", 
 															"Satellite", "Rocket part", 
 															"Rocket control unit", 
 															"Low density structure", 
-															"Uranium fuel cell", "Automation science pack", "Logistic science pack", "Military science pack", "Chemical science pack", "Production science pack", "Utility science pack", "Space science pack",
-};
+															"Uranium fuel cell", 
+															"Automation science pack", 
+															"Logistic science pack", 
+															"Military science pack", 
+															"Chemical science pack", 
+															"Production science pack", 
+															"Utility science pack", 
+															"Space science pack" };
 
-static const std::vector<std::string> assemply_level1_list = { "Engine unit", };
+static const std::vector<std::string> assemply_level1_list = { "Engine unit" };
 
 static const std::vector<std::string> assemply_level2_list = { "Express transport belt",
 															   "Express underground belt",
@@ -188,24 +195,51 @@ static const std::vector<std::string> assemply_level2_list = { "Express transpor
 															   "Refined concrete",
 															   "Processing unit",
 															   "Electric engine unit",
-															   "Rocket fuel", };
+															   "Rocket fuel",
+															   "Empty crude oil barrel",
+															   "Empty heavy oil barrel",
+															   "Empty light oil barrel",
+															   "Empty lubricant barrel",
+															   "Empty petroleum gas barrel",
+															   "Empty sulfuric acid barrel",
+															   "Empty water barrel",
+															   "Fill crude oil barrel",
+															   "Fill heavy oil barrel",
+															   "Fill light oil barrel",
+															   "Fill lubricant barrel",
+															   "Fill petroleum gas barrel",
+															   "Fill sulfuric acid barrel",
+															   "Fill water barrel"};
 
 static const std::vector<std::string> chemical_plant_list = { "Flamethrower ammo",
 															  "Solid fuel", 
 															  "Plastic bar", 
 															  "Sulfur",
 															  "Sulfuric acid"
+															  "Lubricant",
+															  "Heavy oil cracking",
+															  "Light oil cracking",
 															  "Battery",
-															  "Explosives", };
+															  "Explosives" };
 
 static const std::vector<std::string> centrifuge_list = { "Uranium processing",
 														  "Nuclear fuel", 
 														  "Nuclear fuel reprocessing", 
-														  "Kovarex enrichment process", };
+														  "Kovarex enrichment process" };
 
-static const std::vector<std::string> oil_refinery_list = {  };
+static const std::vector<std::string> oil_refinery_list = { "Basic oil processing",
+															"Advanced oil processing",															
+															"Coal liquefaction" };
 
+static const std::vector<std::string> drop_list = { "Wood", 
+													"Coal", 
+													"Stone", 
+													"Iron ore", 
+													"Copper ore", 
+													"Uranium ore", 
+													"Raw fish" };
 
+															
 static const std::vector<std::string> weapon_list = { "Pistol", 
 													  "Submachine gun", 
 													  "Shotgun", 
