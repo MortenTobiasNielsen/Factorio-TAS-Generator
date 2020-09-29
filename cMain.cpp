@@ -1745,6 +1745,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		bool templates_reached = false;
 		bool groups_in_file = false;
 		bool templates_in_file = false;
+		bool save_file_reached = false;
+		bool task_file_reached = false;
 
 		if (!inFile) {
 			wxMessageBox("It was not possible to open the file", "A file error occurred");
@@ -1799,6 +1801,12 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			} else if (seglist[0] == save_templates_indicator) {
 				templates_reached = true;
 
+			} else if (seglist[0] == save_file_indicator) {
+				save_file_reached = true;
+			
+			} else if (seglist[0] == code_file_indicator) {
+				task_file_reached = true;
+			
 			} else if (!groups_reached) {
 				if (seglist.size() == 9) {
 					task = seglist[0];
@@ -1853,7 +1861,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
 					return;
 				}
-			} else {
+			} else if (!save_file_reached) {
 				if (seglist.size() == 10) {
 					templates_in_file = true;
 					
@@ -1882,13 +1890,20 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					amount_of_buildings = seglist[9];
 
 					template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
-				} else if (seglist[0] == "") {
+				} 
+				
+			} else if (!task_file_reached) {
+				save_file_location = seglist[0];
+
+			} else {
+				generate_code_file_location = seglist[0];
+			}
+				/*else if (seglist[0] == "") {
 
 				} else {
 					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
 					return;
-				}
-			} 
+				}*/
 		}
 
 		if (groups_in_file) {
@@ -2071,7 +2086,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		} else if (task == "Launch") {
 			launch(x_cord, y_cord);
 
-		} else if (task== "Ilde") {
+		} else if (task== "Idle") {
 			idle(units);
 
 		}
@@ -2924,6 +2939,17 @@ void cMain::save_file() {
 				myfile << element.first + ";" + value << std::endl;
 			}
 		}
+	}
+
+	if (generate_code_file_location != "") {
+		myfile << save_file_indicator << std::endl;
+		myfile << save_file_location << std::endl;
+
+		myfile << code_file_indicator << std::endl;
+		myfile << generate_code_file_location;
+	} else {
+		myfile << save_file_indicator << std::endl;
+		myfile << save_file_location;
 	}
 
 	myfile.close();

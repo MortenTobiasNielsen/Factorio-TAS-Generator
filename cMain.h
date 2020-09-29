@@ -114,6 +114,8 @@ private:
 
 	std::string save_groups_indicator = "Groups:";
 	std::string save_templates_indicator = "Templates:";
+	std::string save_file_indicator = "Save file location:";
+	std::string code_file_indicator = "Task file location:";
 
 	const struct parameter_choices_struct {
 		// x-cord, y-cord, units, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
