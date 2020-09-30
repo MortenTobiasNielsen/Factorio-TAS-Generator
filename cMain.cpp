@@ -983,7 +983,7 @@ void cMain::update_group_grid() {
 	group_list = group_map[group_name];
 	grid_group->InsertRows(0, group_list.size());
 
-	for (int i = 0; i < group_list.size(); i++) {
+	for (unsigned int i = 0; i < group_list.size(); i++) {
 		std::stringstream data_line;
 		data_line.str(group_list[i]);
 		seglist = {};
@@ -1012,7 +1012,7 @@ void cMain::update_template_grid() {
 	template_list = template_map[template_name];
 	grid_template->InsertRows(0, template_list.size());
 
-	for (int i = 0; i < template_list.size(); i++) {
+	for (unsigned int i = 0; i < template_list.size(); i++) {
 		std::stringstream data_line;
 		data_line.str(template_list[i]);
 		seglist = {};
@@ -2155,7 +2155,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			build_row_of_buildings(x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Take") {
-			from_into = extract_define(i);
+			from_into = extract_define();
 			
 
 			if (units == "All") {
@@ -2165,7 +2165,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 		} else if (task == "Put") {
-			from_into = extract_define(i);
+			from_into = extract_define();
 
 			if (units == "All") {
 				row_put(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size);
@@ -2177,7 +2177,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		} else if (task == "Stop") {
 			stop(units);
 		} else if (task == "Limit") {
-			from_into = extract_define(i);
+			from_into = extract_define();
 
 			limit_row(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size);
 		} else if (task == "Priority") {
@@ -2189,7 +2189,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			priority_row(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size);
 		} else if (task == "Filter") {
 			
-			extract_building(i);
+			extract_building();
 
 			if (check_item(building, splitter_list)) {
 				filter_row(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size);
@@ -2395,7 +2395,7 @@ bool cMain::setup_for_task_grid() {
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
 
-	} else if (task == "Rotate") {
+	} else if (task == "Rotate") { // it might be needed to have a "can it rotate" check.
 		item = not_relevant;
 		build_orientation = not_relevant;
 		direction_to_build = not_relevant;
@@ -2408,7 +2408,7 @@ bool cMain::setup_for_task_grid() {
 		}
 	
 	} else if (task == "Craft") {
-		if (!check_item(item, all_items)) {
+		if (!check_item(item, handcrafted_list)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
 		}
@@ -2421,7 +2421,7 @@ bool cMain::setup_for_task_grid() {
 		amount_of_buildings = not_relevant;
 		
 	} else if (task == "Build") {
-		if (!check_item(item, all_items)) {
+		if (!check_item(item, building_list)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
 		}
@@ -2440,8 +2440,8 @@ bool cMain::setup_for_task_grid() {
 
 	} else if (task == "Take" || task == "Put") {
 
-		if (!check_take_put(item, take_from)) {
-			wxMessageBox("The combination of From/Into and item is not valid - please try again", "Please ensure that the combination is valid");
+		if (!check_take_put(item)) {
+			wxMessageBox("The combination of From/Into and item is not valid for the building - please try again", "Please ensure that the combination is valid");
 			return false;
 		}
 
@@ -2468,8 +2468,7 @@ bool cMain::setup_for_task_grid() {
 
 		item = tech_to_start;
 	} else if (task == "Recipe") {
-		// This should be changed so it checks a list of items, which is valid recipes
-		if (!check_item(item, all_items)) {
+		if (!check_item(item, all_recipes)) { // A check of the building should be made and then the recipes for that building should be checked
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
 		}
@@ -2907,14 +2906,14 @@ std::string cMain::extract_priority_out() {
 	return priority_out;
 }
 
-std::string cMain::extract_define(int start_row) {
+std::string cMain::extract_define() {
 	if (build_orientation == "chest") {
 		return take_put_list.chest;
 	} else if (build_orientation == "fuel") {
 		return take_put_list.fuel;
 	} else {
 
-		extract_building(start_row);
+		extract_building();
 
 		if (building == "Lab") {
 			if (build_orientation == "input") {
@@ -2940,16 +2939,20 @@ std::string cMain::extract_define(int start_row) {
 	return "Not Found";
 }
 
-void cMain::extract_building(int start_row) {
+bool cMain::extract_building() {
+
+	int rows = grid_buildings->GetNumberRows();
 	
-	for (int j = start_row - 1; j > -1; j--) {
-		if (grid_tasks->GetCellValue(j, 0).ToStdString() == "Build") {
-			if (grid_tasks->GetCellValue(j, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == y_cord) {
-				building = grid_tasks->GetCellValue(j, 4).ToStdString();
-				break;
+	for (int i = 0 ; i < rows; i++) {
+		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Build") {
+			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+				building = grid_tasks->GetCellValue(i, 4).ToStdString();
+				return true;
 			}
 		}
 	}
+
+	 return false;
 }
 
 bool cMain::check_building(const std::string& item, const std::vector<std::string>& all_items) {
@@ -2962,9 +2965,12 @@ bool cMain::check_building(const std::string& item, const std::vector<std::strin
 	return false;
 }
 
-bool cMain::check_take_put(const std::string& item, const std::vector<std::string>& all_items) {
+bool cMain::check_take_put(const std::string& item) {
 	std::string to_check = extract_from_into();
 	string_capitalized(to_check);
+	if (!extract_building()) {
+		return false;
+	}
 
 	if (to_check == "Chest") {
 		return true;
@@ -2977,7 +2983,7 @@ bool cMain::check_take_put(const std::string& item, const std::vector<std::strin
 		}
 		return false;
 
-	} else if (item == "Lab") {
+	} else if ( building == "Lab") {
 		if (to_check == "Input") {
 			for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
 				if (item == *it) {

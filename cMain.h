@@ -240,7 +240,7 @@ private:
 
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
-	bool check_take_put(const std::string& item, const std::vector<std::string>& all_items);
+	bool check_take_put(const std::string& item);
 
 	void save_file();
 
@@ -257,8 +257,8 @@ private:
 	std::string extract_tech();
 	std::string extract_priority_in();
 	std::string extract_priority_out();
-	std::string extract_define(int start_row);
-	void extract_building(int start_row);
+	std::string extract_define();
+	bool extract_building();
 };
 
 
