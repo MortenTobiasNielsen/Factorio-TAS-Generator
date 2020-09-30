@@ -153,6 +153,16 @@ private:
 	
 	int row_num;
 	int row_count;
+
+	int building_row_num;
+	int building_row_count;
+
+	int group_row_num;
+	int group_row_count;
+
+	int template_row_num;
+	int template_row_count;
+
 	int row_to_move;
 
 	std::string data;
@@ -242,7 +252,7 @@ private:
 
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
-	bool check_take_put(const std::string& item);
+	bool check_take_put(const std::string& item, int start_row);
 
 	void save_file();
 
@@ -259,8 +269,8 @@ private:
 	std::string extract_tech();
 	std::string extract_priority_in();
 	std::string extract_priority_out();
-	std::string extract_define();
-	bool extract_building();
+	std::string extract_define(int start_row);
+	bool extract_building(int start_row);
 };
 
 

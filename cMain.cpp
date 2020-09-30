@@ -1040,6 +1040,16 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	
 	extract_parameters();
 
+	if (grid_tasks->IsSelection()) {
+		if (!grid_tasks->GetSelectedRows().begin()) {
+			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			return;
+		}
+		row_num = *grid_tasks->GetSelectedRows().begin();
+	} else {
+		row_num = grid_tasks->GetNumberRows();
+	}
+
 	if (setup_for_task_grid()) {
 		update_tasks_grid();
 		if (task == "Build") {
@@ -2202,7 +2212,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			build_row_of_buildings(x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Take") {
-			from_into = extract_define();
+			from_into = extract_define(i);
 			
 
 			if (units == "All") {
@@ -2212,7 +2222,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 		} else if (task == "Put") {
-			from_into = extract_define();
+			from_into = extract_define(i);
 
 			if (units == "All") {
 				row_put(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size);
@@ -2224,7 +2234,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		} else if (task == "Stop") {
 			stop(units);
 		} else if (task == "Limit") {
-			from_into = extract_define();
+			from_into = extract_define(i);
 
 			limit_row(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size);
 		} else if (task == "Priority") {
@@ -2236,7 +2246,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			priority_row(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size);
 		} else if (task == "Filter") {
 			
-			extract_building();
+			extract_building(i);
 
 			if (check_item(building, splitter_list)) {
 				filter_row(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size);
@@ -2508,7 +2518,7 @@ bool cMain::setup_for_task_grid() {
 
 	} else if (task == "Take" || task == "Put") {
 
-		if (!check_take_put(item)) {
+		if (!check_take_put(item, row_num)) {
 			wxMessageBox("The combination of From/Into and item is not valid for the building - please try again", "Please ensure that the combination is valid");
 			return false;
 		}
@@ -2974,14 +2984,14 @@ std::string cMain::extract_priority_out() {
 	return priority_out;
 }
 
-std::string cMain::extract_define() {
+std::string cMain::extract_define(int start_row) {
 	if (build_orientation == "chest") {
 		return take_put_list.chest;
 	} else if (build_orientation == "fuel") {
 		return take_put_list.fuel;
 	} else {
 
-		extract_building();
+		extract_building(start_row);
 
 		if (building == "Lab") {
 			if (build_orientation == "input") {
@@ -3007,11 +3017,9 @@ std::string cMain::extract_define() {
 	return "Not Found";
 }
 
-bool cMain::extract_building() {
-
-	int rows = grid_buildings->GetNumberRows();
+bool cMain::extract_building(int start_row) {
 	
-	for (int i = 0 ; i < rows; i++) {
+	for (int i = start_row; i > -1; i--) {
 		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Build") {
 			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
 				building = grid_tasks->GetCellValue(i, 4).ToStdString();
@@ -3033,10 +3041,10 @@ bool cMain::check_building(const std::string& item, const std::vector<std::strin
 	return false;
 }
 
-bool cMain::check_take_put(const std::string& item) {
+bool cMain::check_take_put(const std::string& item, int start_row) {
 	std::string to_check = extract_from_into();
 	string_capitalized(to_check);
-	bool building_check = extract_building();
+	bool building_check = extract_building(start_row);
 
 	if (to_check == "Chest") {
 		return true;
