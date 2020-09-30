@@ -23,7 +23,7 @@ static const std::vector<std::string> splitter_list = { "Splitter",
 static const std::vector<std::string> filter_inserter_list = { "Filter inserter", 
 															   "Stack filter inserter" };
 
-static const std::vector<std::string> hand_crafted_list = { "Wooden chest", 
+static const std::vector<std::string> handcrafted_list = { "Wooden chest", 
 															"Iron chest", 
 															"Steel chest", 
 															"Storage tank", 
@@ -174,7 +174,7 @@ static const std::vector<std::string> hand_crafted_list = { "Wooden chest",
 															"Electronic circuit", 
 															"Advanced circuit", 
 															"Flying robot frame", 
-															"Satellite", "Rocket part", 
+															"Satellite", 
 															"Rocket control unit", 
 															"Low density structure", 
 															"Uranium fuel cell", 
@@ -186,6 +186,14 @@ static const std::vector<std::string> hand_crafted_list = { "Wooden chest",
 															"Utility science pack", 
 															"Space science pack" };
 
+static const std::vector<std::string> science_packs = { "Automation science pack", 
+														"Logistic science pack", 
+														"Military science pack", 
+														"Chemical science pack", 
+														"Production science pack", 
+														"Utility science pack", 
+														"Space science pack" };
+
 static const std::vector<std::string> assemply_level1_list = { "Engine unit" };
 
 static const std::vector<std::string> assemply_level2_list = { "Express transport belt",
@@ -196,13 +204,6 @@ static const std::vector<std::string> assemply_level2_list = { "Express transpor
 															   "Processing unit",
 															   "Electric engine unit",
 															   "Rocket fuel",
-															   "Empty crude oil barrel",
-															   "Empty heavy oil barrel",
-															   "Empty light oil barrel",
-															   "Empty lubricant barrel",
-															   "Empty petroleum gas barrel",
-															   "Empty sulfuric acid barrel",
-															   "Empty water barrel",
 															   "Fill crude oil barrel",
 															   "Fill heavy oil barrel",
 															   "Fill light oil barrel",
@@ -211,16 +212,25 @@ static const std::vector<std::string> assemply_level2_list = { "Express transpor
 															   "Fill sulfuric acid barrel",
 															   "Fill water barrel"};
 
+static const std::vector<std::string> assemply_level2_extra_list = { "Empty crude oil barrel",
+																	 "Empty heavy oil barrel",
+																	 "Empty light oil barrel",
+																	 "Empty lubricant barrel",
+																	 "Empty petroleum gas barrel",
+																	 "Empty sulfuric acid barrel",
+																	 "Empty water barrel" };
+
 static const std::vector<std::string> chemical_plant_list = { "Flamethrower ammo",
 															  "Solid fuel", 
 															  "Plastic bar", 
-															  "Sulfur",
-															  "Sulfuric acid"
-															  "Lubricant",
-															  "Heavy oil cracking",
-															  "Light oil cracking",
+															  "Sulfur",															  
 															  "Battery",
 															  "Explosives" };
+
+static const std::vector<std::string> chemical_plant_extra_list = { "Sulfuric acid", 
+																	"Lubricant",
+																	"Heavy oil cracking",
+																	"Light oil cracking" };
 
 static const std::vector<std::string> centrifuge_list = { "Uranium processing",
 														  "Nuclear fuel", 
@@ -231,13 +241,22 @@ static const std::vector<std::string> oil_refinery_list = { "Basic oil processin
 															"Advanced oil processing",															
 															"Coal liquefaction" };
 
-static const std::vector<std::string> drop_list = { "Wood", 
-													"Coal", 
-													"Stone", 
-													"Iron ore", 
-													"Copper ore", 
-													"Uranium ore", 
-													"Raw fish" };
+static const std::vector<std::string> rocket_silo_list = { "Rocket part" };
+
+
+static const std::vector<std::string> raw_resource_list = { "Wood", 
+														    "Coal",
+															"Stone",
+															"Iron ore",
+															"Copper ore",
+															"Uranium ore",
+															"Raw fish" };
+
+static const std::vector<std::string> filter_take_put_drop_extra_list = { "Nuclear fuel",
+																		  "Uranium-235", 
+																		  "Uranium-238", 
+																		  "Uranium fuel cell",
+																		  "Used-up uranium fuel cell" };
 
 															
 static const std::vector<std::string> weapon_list = { "Pistol", 
@@ -340,11 +359,9 @@ static const std::vector<std::string> take_from = {"Input",
 												   "Chest"};
 
 
-static const std::vector<std::string> input_output = {"Left", "Right", "None"};
-
-
-
-static const std::vector<std::string> science_packs = {"Automation science pack", "Logistic science pack", "Military science pack", "Chemical science pack", "Production science pack", "Utility science pack", "Space science pack" };
+static const std::vector<std::string> input_output = { "Left", 
+													   "Right", 
+													   "None"};
 
 static const std::vector<std::string> module_list = {"Speed module", 
 													 "Speed module 2", 
@@ -356,7 +373,10 @@ static const std::vector<std::string> module_list = {"Speed module",
 													 "Productivity module 2", 
 													 "Productivity module 3"};
 
-static const std::vector<std::string> build_orientations = {"North", "East", "South", "West"};
+static const std::vector<std::string> build_orientations = { "North", 
+															 "East", 
+															 "South", 
+															 "West"};
 
 static const std::vector<std::string> tech_list = { "Advanced electronics",
 													"Advanced electronics 2",
@@ -367,7 +387,7 @@ static const std::vector<std::string> tech_list = { "Advanced electronics",
 													"Electric energy distribution 1",
 													"Electric energy distribution 2",
 													"Fast inserter",
-													"Fluid handlin",
+													"Fluid handling",
 													"Logistics",
 													"Logistics 2",
 													"Logistics 3",
@@ -484,14 +504,9 @@ static const std::vector<std::string> tech_list = { "Advanced electronics",
 													"Speed module 3",
 };
 
-static const std::vector<std::string> drills_list = { "Electric mining drill", "Pumpjack" };
+static const std::vector<std::string> drills_list = { "Electric mining drill", 
+													  "Pumpjack" };
 
-static const std::vector<std::string> recipies = { "Wooden chest", "Iron chest", "Steel chest", "Transport belt", "Burner inserter", "Inserter", "Small electric pole", "Pipe", "Pipe to ground" };
-
-
-
-
-//static const std::vector<std::string> chest_list = { "Wooden chest", "Iron chest", "Steel chest", "Wreck" };
 
 struct furnace_types {
 	std::string stone = "stone-furnace";

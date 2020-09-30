@@ -9,14 +9,27 @@
 #include <codecvt>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1620, 1080)) {
-	all_items.insert(all_items.end(), item_logistics.begin(), item_logistics.end());
-	all_items.insert(all_items.end(), item_production.begin(), item_production.end());
-	all_items.insert(all_items.end(), item_intermediates.begin(), item_intermediates.end());
-	all_items.insert(all_items.end(), item_combat.begin(), item_combat.end());
+	all_recipes.insert(all_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
+	all_recipes.insert(all_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
+	all_recipes.insert(all_recipes.end(), assemply_level2_list.begin(), assemply_level2_list.end());
+	all_recipes.insert(all_recipes.end(), assemply_level2_extra_list.begin(), assemply_level2_extra_list.end());
+	all_recipes.insert(all_recipes.end(), centrifuge_list.begin(), centrifuge_list.end());
+	all_recipes.insert(all_recipes.end(), chemical_plant_list.begin(), chemical_plant_list.end());
+	all_recipes.insert(all_recipes.end(), chemical_plant_extra_list.begin(), chemical_plant_extra_list.end());
+	all_recipes.insert(all_recipes.end(), oil_refinery_list.begin(), oil_refinery_list.end());
 
-	static const std::vector<std::string> all_items_const(all_items);
+	for (auto s : all_recipes) {
+		recipe_choices.Add(s);
+	}
 
-	for (auto s : all_items_const) {
+	all_items.insert(all_items.end(), handcrafted_list.begin(), handcrafted_list.end());
+	all_items.insert(all_items.end(), assemply_level1_list.begin(), assemply_level1_list.end());
+	all_items.insert(all_items.end(), assemply_level2_list.begin(), assemply_level2_list.end());
+	all_items.insert(all_items.end(), chemical_plant_list.begin(), chemical_plant_list.end());
+	all_items.insert(all_items.end(), filter_take_put_drop_extra_list.begin(), filter_take_put_drop_extra_list.end());
+	all_items.insert(all_items.end(), raw_resource_list.begin(), raw_resource_list.end());
+
+	for (auto s : all_items) {
 		item_choices.Add(s);
 	}
 
@@ -36,6 +49,10 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 		input_output_choices.Add(s);
 	}
 
+	for (auto s : handcrafted_list) {
+		handcrafted_choices.Add(s);
+	}
+
 	// set walk as default value and disable inputs not used
 	rbtn_walk->SetValue(true);
 	setup_paramters(parameter_choices.walk);
@@ -52,10 +69,10 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	cmb_direction_to_build->AutoComplete(building_orientation_choices);
 
 	cmb_item->Clear();
-	for (auto it = all_items_const.begin(); it < all_items_const.end(); it++) {
+	for (auto it = all_items.begin(); it < all_items.end(); it++) {
 		cmb_item->Append(*it);
 	}
-	cmb_item->SetValue(*all_items_const.begin());
+	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
 	cmb_from_into->Clear();
@@ -127,21 +144,48 @@ void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
 
 void cMain::OnBuildChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.build);
+
+
+
 	event.Skip();
 }
 
 void cMain::OnTakeChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.take);
+
+	cmb_item->Clear();
+	for (auto it = all_items.begin(); it < all_items.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*all_items.begin());
+	cmb_item->AutoComplete(item_choices);
+
 	event.Skip();
 }
 
 void cMain::OnPutChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.put);
+
+	cmb_item->Clear();
+	for (auto it = all_items.begin(); it < all_items.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*all_items.begin());
+	cmb_item->AutoComplete(item_choices);
+
 	event.Skip();
 }
 
 void cMain::OnCraftChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.craft);
+
+	cmb_item->Clear();
+	for (auto it = handcrafted_list.begin(); it < handcrafted_list.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*handcrafted_list.begin());
+	cmb_item->AutoComplete(handcrafted_choices);
+
 	event.Skip();
 }
 
@@ -152,11 +196,27 @@ void cMain::OnRotateChosen(wxCommandEvent& event) {
 
 void cMain::OnfilterChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.filter);
+
+	cmb_item->Clear();
+	for (auto it = all_items.begin(); it < all_items.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*all_items.begin());
+	cmb_item->AutoComplete(item_choices);
+
 	event.Skip();
 }
 
 void cMain::OnRecipeChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.recipe);
+
+	cmb_item->Clear();
+	for (auto it = all_recipes.begin(); it < all_recipes.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*all_recipes.begin());
+	cmb_item->AutoComplete(recipe_choices);
+
 	event.Skip();
 }
 
@@ -192,6 +252,14 @@ void cMain::OnPickUpChosen(wxCommandEvent& event) {
 
 void cMain::OnDropChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.drop);
+
+	cmb_item->Clear();
+	for (auto it = all_items.begin(); it < all_items.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*all_items.begin());
+	cmb_item->AutoComplete(item_choices);
+
 	event.Skip();
 }
 

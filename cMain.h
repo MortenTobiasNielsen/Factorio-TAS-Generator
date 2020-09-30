@@ -141,6 +141,8 @@ private:
 
 	parameter_choices_struct parameter_choices;
 
+	
+
 	std::vector<std::string>::iterator it1;
 	std::vector<std::string>::iterator it2;
 
@@ -154,6 +156,7 @@ private:
 	std::string data;
 	std::string not_relevant = "";
 	std::vector<std::string> all_items;
+	std::vector<std::string> all_recipes;
 
 	float x_cord_float;
 	float y_cord_float;
@@ -186,6 +189,9 @@ private:
 	wxArrayString group_choices;
 	wxArrayString template_choices;
 	wxArrayString input_output_choices;
+	wxArrayString handcrafted_choices;
+	wxArrayString recipe_choices;
+	wxArrayString filter_take_put_drop_choices;
 
 	std::string generate_code_file_location = "";
 	std::string save_file_location = "";
