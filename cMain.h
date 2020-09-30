@@ -117,7 +117,7 @@ private:
 	std::string save_groups_indicator = "Groups:";
 	std::string save_templates_indicator = "Templates:";
 	std::string save_file_indicator = "Save file location:";
-	std::string code_file_indicator = "Task file location:";
+	std::string code_file_indicator = "Task folder location:";
 
 	const struct parameter_choices_struct {
 		// x-cord, y-cord, units, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
@@ -196,7 +196,7 @@ private:
 	wxArrayString filter_take_put_drop_choices;
 	wxArrayString building_choices;
 
-	std::string generate_code_file_location = "";
+	std::string generate_code_folder_location = "";
 	std::string save_file_location = "";
 
 	std::string open_data_string;

@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
+    <ClInclude Include="control_info.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="utils.h" />

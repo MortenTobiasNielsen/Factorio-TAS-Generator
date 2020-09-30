@@ -2,6 +2,8 @@
 #include "GUI_Base.h"
 #include "utils.h"
 #include "Functions.h"
+#include "control_info.h"
+
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -1851,7 +1853,7 @@ void cMain::OnMenuNew(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.walk);
 
 	save_file_location = "";
-	generate_code_file_location = "";
+	generate_code_folder_location = "";
 
 	if (grid_group->GetNumberRows() > 0) {
 		grid_group->DeleteRows(0, grid_group->GetNumberRows());
@@ -1875,7 +1877,7 @@ void cMain::OnMenuNew(wxCommandEvent& event) {
 
 	tasks_data_to_save = {};
 	save_file_location = "";
-	generate_code_file_location = "";
+	generate_code_folder_location = "";
 
 	event.Skip();
 }
@@ -1921,7 +1923,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 		tasks_data_to_save = {};
 		save_file_location = "";
-		generate_code_file_location = "";
+		generate_code_folder_location = "";
 
 		group_map.clear();
 		cmb_choose_group->Clear();
@@ -2044,7 +2046,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				save_file_location = seglist[0];
 
 			} else {
-				generate_code_file_location = seglist[0];
+				generate_code_folder_location = seglist[0];
 			}
 		}
 
@@ -2120,19 +2122,35 @@ void cMain::OnMenuExit(wxCommandEvent& event) {
 }
 
 void cMain::OnChooseLocation(wxCommandEvent& event) {
-	wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	//wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	//if (dlg.ShowModal() == wxID_OK) {
+	//	generate_code_folder_location = dlg.GetPath().ToStdString();
+	//}
+
+	// make it so the user only need to select the folder and not the actual file. The file names need to be a specific way anyway
+
+	wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
 	if (dlg.ShowModal() == wxID_OK) {
-		generate_code_file_location = dlg.GetPath().ToStdString();
+		generate_code_folder_location = dlg.GetPath().ToStdString();
 	}
 
 	event.Skip();
 }
 
 void cMain::OnGenerateScript(wxCommandEvent& event) {
-	if (generate_code_file_location == "") {
-		wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (generate_code_folder_location == "") {
+		/*wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (dlg.ShowModal() == wxID_OK) {
-			generate_code_file_location = dlg.GetPath().ToStdString();
+			generate_code_folder_location = dlg.GetPath().ToStdString();
+		} else {
+			return;
+		}*/
+
+		wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+		if (dlg.ShowModal() == wxID_OK) {
+			generate_code_folder_location = dlg.GetPath().ToStdString();
 		} else {
 			return;
 		}
@@ -2233,12 +2251,21 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		}
 	}
 
-	std::ofstream myfile;
-	myfile.open(generate_code_file_location);
+	std::ofstream saver;
+	saver.open(generate_code_folder_location + "\\control.lua");
+	saver << control_lua;
+	saver.close();
 
-	myfile << end_tasks();
+	saver.open(generate_code_folder_location + "\\info.json");
+	saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+	saver << info;
+	saver.close();
 
-	myfile.close();
+	saver.open(generate_code_folder_location + "\\tasks.lua"); // ensure that this folder is created if it does not exist
+
+	saver << end_tasks();
+
+	saver.close();
 
 	clear_tasks();
 
@@ -3069,7 +3096,7 @@ bool cMain::check_take_put(const std::string& item) {
 }
 
 void cMain::save_file() {
-	
+
 	std::ofstream myfile;
 	myfile.open(save_file_location);
 
@@ -3100,12 +3127,12 @@ void cMain::save_file() {
 		}
 	}
 
-	if (generate_code_file_location != "") {
+	if (generate_code_folder_location != "") {
 		myfile << save_file_indicator << std::endl;
 		myfile << save_file_location << std::endl;
 
 		myfile << code_file_indicator << std::endl;
-		myfile << generate_code_file_location;
+		myfile << generate_code_folder_location;
 	} else {
 		myfile << save_file_indicator << std::endl;
 		myfile << save_file_location;
