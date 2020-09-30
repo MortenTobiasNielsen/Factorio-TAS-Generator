@@ -1853,7 +1853,29 @@ void cMain::OnMenuNew(wxCommandEvent& event) {
 	save_file_location = "";
 	generate_code_file_location = "";
 
+	if (grid_group->GetNumberRows() > 0) {
+		grid_group->DeleteRows(0, grid_group->GetNumberRows());
+	}
+
+	if (grid_template->GetNumberRows() > 0) {
+		grid_template->DeleteRows(0, grid_template->GetNumberRows());
+	}
+
+	group_name = "";
+	group_map.clear();
+	cmb_choose_group->Clear();
+	group_list = {};
+	group_choices = {};
+	
+	template_name = "";
+	template_map.clear();
+	cmb_choose_template->Clear();
+	template_list = {};
+	template_choices = {};
+
 	tasks_data_to_save = {};
+	save_file_location = "";
+	generate_code_file_location = "";
 
 	event.Skip();
 }
@@ -2326,6 +2348,18 @@ void cMain::OnIdleMenuSelected(wxCommandEvent& event) {
 void cMain::OnLaunchMenuSelected(wxCommandEvent& event) {
 	rbtn_launch->SetValue(true);
 	OnLaunchChosen(event);
+	event.Skip();
+}
+
+void cMain::OnDropMenuSelected(wxCommandEvent& event) {
+	rbtn_drop->SetValue(true);
+	OnDropChosen(event);
+	event.Skip();
+}
+
+void cMain::OnPickUpMenuSelected(wxCommandEvent& event) {
+	rbtn_pick_up->SetValue(true);
+	OnPickUpChosen(event);
 	event.Skip();
 }
 

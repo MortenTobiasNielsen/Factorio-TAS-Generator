@@ -48,6 +48,8 @@ protected:
 	void OnStopMenuSelected(wxCommandEvent& event);
 	void OnIdleMenuSelected(wxCommandEvent& event);
 	void OnLaunchMenuSelected(wxCommandEvent& event);
+	void OnDropMenuSelected(wxCommandEvent& event);
+	void OnPickUpMenuSelected(wxCommandEvent& event);
 
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
