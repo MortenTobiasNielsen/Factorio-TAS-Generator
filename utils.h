@@ -288,6 +288,11 @@ static const std::vector<std::string> science_packs = { "Automation science pack
 														"Utility science pack", 
 														"Space science pack" };
 
+static const std::vector<std::string> furnace_list = { "Iron plate",
+													   "Copper plate",
+													   "Steel",
+													   "Stone"};
+
 static const std::vector<std::string> assemply_level1_list = { "Engine unit" };
 
 static const std::vector<std::string> assemply_level2_list = { "Express transport belt",
@@ -449,7 +454,7 @@ static const std::vector<std::string> take_from = {"Input",
 												   "Output", 
 												   "Fuel", 
 												   "Modules", 
-												   "Chest"};
+												   "Chest" };
 
 
 static const std::vector<std::string> input_output = { "Left", 

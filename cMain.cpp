@@ -30,6 +30,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	all_items.insert(all_items.end(), chemical_plant_list.begin(), chemical_plant_list.end());
 	all_items.insert(all_items.end(), filter_take_put_drop_extra_list.begin(), filter_take_put_drop_extra_list.end());
 	all_items.insert(all_items.end(), raw_resource_list.begin(), raw_resource_list.end());
+	all_items.insert(all_items.end(), furnace_list.begin(), furnace_list.end());
 
 	for (auto s : all_items) {
 		item_choices.Add(s);
@@ -1949,12 +1950,18 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				groups_reached = true;
 
 			} else if (seglist[0] == save_templates_indicator) {
+				groups_reached = true;
 				templates_reached = true;
 
 			} else if (seglist[0] == save_file_indicator) {
+				groups_reached = true;
+				templates_reached = true;
 				save_file_reached = true;
 			
 			} else if (seglist[0] == code_file_indicator) {
+				groups_reached = true;
+				templates_reached = true;
+				save_file_reached = true;
 				task_file_reached = true;
 			
 			} else if (!groups_reached) {
@@ -2261,7 +2268,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	saver << info;
 	saver.close();
 
-	saver.open(generate_code_folder_location + "\\tasks.lua"); // ensure that this folder is created if it does not exist
+	saver.open(generate_code_folder_location + "\\tasks.lua");
 
 	saver << end_tasks();
 
@@ -2872,7 +2879,7 @@ std::string cMain::extract_y_cord() {
 }
 
 std::string cMain::extract_units() {
-	units = std::to_string(wxAtoi(txt_units->GetValue()));
+	units = std::to_string(wxAtof(txt_units->GetValue()));
 	
 	if (rbtn_game_speed->GetValue()) {
 		if (std::stof(units) < 0.01) {
@@ -3029,9 +3036,7 @@ bool cMain::check_building(const std::string& item, const std::vector<std::strin
 bool cMain::check_take_put(const std::string& item) {
 	std::string to_check = extract_from_into();
 	string_capitalized(to_check);
-	if (!extract_building()) {
-		return false;
-	}
+	bool building_check = extract_building();
 
 	if (to_check == "Chest") {
 		return true;
@@ -3044,51 +3049,57 @@ bool cMain::check_take_put(const std::string& item) {
 		}
 		return false;
 
-	} else if ( building == "Lab") {
-		if (to_check == "Input") {
-			for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
-				if (item == *it) {
-					return true;
-				}
-			}
-			return false;
-		} else if (to_check == "Modules") {
-			for (auto it = module_list.begin(); it < module_list.end(); it++) {
-				if (item == *it) {
-					return true;
-				}
-			}
-			
-			return false;
-		}
-
-	} else if (check_item(item, drills_list)) {
-		if (to_check == "Modules") {
-			for (auto it = module_list.begin(); it < module_list.end(); it++) {
-				if (item == *it) {
-					return true;
-				}
-			}
-
-			return false;
-		}
 	} else {
-		if (to_check == "Input") {
-			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
-			return true;
-		} else if (to_check == "Modules") { 
-			for (auto it = module_list.begin(); it < module_list.end(); it++) {
-				if (item == *it) {
-					return true;
+		if (!building_check) {
+			return false;
+		}
+
+		if (building == "Lab") {
+			if (to_check == "Input") {
+				for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
+					if (item == *it) {
+						return true;
+					}
 				}
+				return false;
+			} else if (to_check == "Modules") {
+				for (auto it = module_list.begin(); it < module_list.end(); it++) {
+					if (item == *it) {
+						return true;
+					}
+				}
+
+				return false;
 			}
 
-			return false;
-		} else if (to_check == "Output") {
-			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
-			return true;
+		} else if (check_item(building, drills_list)) {
+			if (to_check == "Modules") {
+				for (auto it = module_list.begin(); it < module_list.end(); it++) {
+					if (item == *it) {
+						return true;
+					}
+				}
+
+				return false;
+			}
 		} else {
-			return false;
+			if (to_check == "Input") {
+				// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+				return true;
+			} else if (to_check == "Modules") {
+				for (auto it = module_list.begin(); it < module_list.end(); it++) {
+					if (item == *it) {
+						return true;
+					}
+				}
+
+				return false;
+			} else if (to_check == "Output") {
+				// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
