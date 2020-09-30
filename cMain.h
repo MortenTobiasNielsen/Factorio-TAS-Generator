@@ -192,6 +192,7 @@ private:
 	wxArrayString handcrafted_choices;
 	wxArrayString recipe_choices;
 	wxArrayString filter_take_put_drop_choices;
+	wxArrayString building_choices;
 
 	std::string generate_code_file_location = "";
 	std::string save_file_location = "";

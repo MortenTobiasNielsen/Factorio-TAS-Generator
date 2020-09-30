@@ -33,6 +33,10 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 		item_choices.Add(s);
 	}
 
+	for (auto s : building_list) {
+		building_choices.Add(s);
+	}
+
 	for (auto s : take_from) {
 		take_from_choices.Add(s);
 	}
@@ -145,7 +149,12 @@ void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
 void cMain::OnBuildChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.build);
 
-
+	cmb_item->Clear();
+	for (auto it = building_list.begin(); it < building_list.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*building_list.begin());
+	cmb_item->AutoComplete(building_choices);
 
 	event.Skip();
 }
