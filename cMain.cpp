@@ -2889,7 +2889,7 @@ std::string cMain::extract_units() {
 		if (std::stof(units) < 1) {
 			units = "1";
 		}
-	} if (rbtn_limit->GetValue()) {
+	} else if (rbtn_limit->GetValue()) {
 		if (std::stof(units) < 0) {
 			units = "0";
 		}
