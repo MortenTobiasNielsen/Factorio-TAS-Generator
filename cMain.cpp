@@ -2891,11 +2891,11 @@ std::string cMain::extract_y_cord() {
 std::string cMain::extract_units() {
 	units = std::to_string(wxAtof(txt_units->GetValue()));
 	
-	if (rbtn_game_speed->GetValue()) {
+	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue()) {
 		if (std::stof(units) < 0.01) {
 			units = "0.01";
 		}
-	} else if (rbtn_mine->GetValue() || rbtn_rotate->GetValue() || rbtn_stop->GetValue()) {
+	} else if (rbtn_mine->GetValue() || rbtn_rotate->GetValue()) {
 		if (std::stof(units) < 1) {
 			units = "1";
 		}

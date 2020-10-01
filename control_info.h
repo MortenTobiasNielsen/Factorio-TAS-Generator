@@ -523,7 +523,7 @@ end)
 
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
-	if (task[state] == "break" or task[state] == "stop") then
+	if (task[state][1] == "break" or task[state][1] == "stop") then
 		return
 	end
 
