@@ -499,8 +499,6 @@ bool cMain::update_building_orientation() {
 	int orientation_location;
 
 	for (int i = 0; i < row_num; i++) {
-		x_cord = grid_buildings->GetCellValue(i, 0);
-		y_cord = grid_buildings->GetCellValue(i, 1);
 		build_orientation = grid_buildings->GetCellValue(i, 3);
 
 		if (x_cord != grid_buildings->GetCellValue(i, 0)) {
@@ -2185,6 +2183,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
 		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+
+		if (i > 824) {
+			int stop = 0;
+		}
 
 		if (task == "Game Speed") {
 			speed(units);

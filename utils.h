@@ -115,7 +115,8 @@ static const std::vector<std::string> building_list = { "Accumulator",
 														"Express underground belt",
 														"Express splitter",
 														"Concrete",
-														"Refined concrete" };
+														"Refined concrete",
+														"Stone brick" };
 
 static const std::vector<std::string> handcrafted_list = { "Accumulator",
 														   "Wooden chest",
@@ -291,7 +292,8 @@ static const std::vector<std::string> science_packs = { "Automation science pack
 static const std::vector<std::string> furnace_list = { "Iron plate",
 													   "Copper plate",
 													   "Steel",
-													   "Stone"};
+													   "Stone",
+													   "Stone brick" };
 
 static const std::vector<std::string> assemply_level1_list = { "Engine unit" };
 
