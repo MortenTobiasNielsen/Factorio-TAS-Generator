@@ -479,6 +479,7 @@ script.on_event(defines.events.on_tick, function(event)
 	if (task[state][1] == "stop") then
 		speed(task[state][2])
 		debug(string.format("Script stopped - Game speed: %d", task[state][2]))
+		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", position.x, position.y, player.online_time / 60, player.online_time))	
 		debug_state = false
 		return
 	end
@@ -529,8 +530,8 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	if event.entity.name == "rock-huge" then
 		event.buffer.clear()
-		player.insert{name="coal", count=37}
-		player.insert{name="stone", count=37}
+		player.insert{name="coal", count=47}
+		player.insert{name="stone", count=47}
 	end
 
 	if event.entity.name == "rock-big" then
@@ -552,4 +553,20 @@ script.on_event(defines.events.on_game_created_from_scenario, function()
 	remote.call("freeplay", "set_skip_intro", true)
 
 end)
+
+-- Skips the freeplay intro
+script.on_event(defines.events.on_research_finished, function(event)
+
+	if (event.research.name == "steel-axe") then
+		local seconds = player.online_time / 60
+		local minutes = math.floor(player.online_time / 60 / 60)
+		local seconds_remainder = seconds - (minutes * 60) 
+
+		debug(string.format("Contrats %s on reaching the end of your Steel Axe run - you completed it in %f seconds (%d min %f seconds) (%d ticks)", player.name, seconds, minutes, seconds_remainder , player.online_time))		
+		debug_state = false
+	end
+	
+
+end)
+
 )control_lua";
