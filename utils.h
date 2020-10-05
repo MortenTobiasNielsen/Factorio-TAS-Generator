@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 // it is important to go though all of the lists When changes to the game is implemented to ensure that the lists are still accurate
 
@@ -608,6 +609,8 @@ static const std::vector<std::string> drills_list = { "Electric mining drill",
 													  "Pumpjack" };
 
 
+static const std::map<std::string, std::vector<int>> building_size_list = {{ "Oil refinery", {5,5}}};
+
 struct furnace_types {
 	std::string stone = "stone-furnace";
 };
@@ -691,6 +694,14 @@ struct build_distance_struct {
 	float four = 5.8f;
 	float five = 3.8f;
 };
+
+
+// Observations. The middle of a normal mining path are x.5, y.5 So this should be the point used to calculate how close the player needs to be to mine it
+// The tip-over point from the game to choose one mining path over an adjacent seem to be at the x.0 mark, but this should be tested in the API with e.g. 1.00001 and see if it takes the patch at 0.5 or 1.5
+// It seems like the tip-over point for the player to reach something 3 tiles away is 0.269531 (very random)
+// It furthermore seems like the 3 tiles can only be reached for tiles being a maximum of 
+// maybe the walk function in lua should be changed, so it does not make the studdering but stops as soon as it has rached the distination so if it is 80.1235 then when it is 80.1235 or larger it will stop if it came from below 80.1235. i THink this complexity will slow down the script too much.
+
 
 struct mining_distance_struct {
 	float one = 2.65f;

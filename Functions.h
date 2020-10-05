@@ -7,6 +7,13 @@ static int task = 1;
 static std::string task_list = "local task = {}\n\n";
 static float player_x_cord = 0.0f;
 static float player_y_cord = 0.0f;
+static float target_x_cord = 0.0f;
+static float target_y_cord = 0.0f;
+static int x_building_size = 0;
+static int y_building_size = 0;
+
+const static int build_interact_distance = 10;
+
 
 const static build_distance_struct build_distance;
 const static mining_distance_struct mining_distance;
@@ -76,3 +83,7 @@ void clear_tasks();
 std::string convert_string(std::string input);
 
 void string_capitalized(std::string &string);
+
+void check_build_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string building_direction);
+
+float find_min_distance(float& new_x_cord, float& new_y_cord);
