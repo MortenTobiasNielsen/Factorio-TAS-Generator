@@ -609,7 +609,8 @@ static const std::vector<std::string> drills_list = { "Electric mining drill",
 													  "Pumpjack" };
 
 
-static const std::map<std::string, std::vector<int>> building_size_list = {{ "Oil refinery", {5,5}}};
+static const std::map<std::string, std::vector<int>> building_size_list = {{ "Oil refinery", {5, 5}},
+																		   { "Electric mining drill", {3, 3}}};
 
 struct furnace_types {
 	std::string stone = "stone-furnace";

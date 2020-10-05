@@ -2178,15 +2178,11 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
 		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
 		units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		item = convert_string(grid_tasks->GetCellValue(i, 4).ToStdString());
+		item = grid_tasks->GetCellValue(i, 4).ToStdString();
 		build_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
 		direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
 		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
-
-		if (i > 824) {
-			int stop = 0;
-		}
 
 		if (task == "Game Speed") {
 			speed(units);

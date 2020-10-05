@@ -11,60 +11,60 @@ void walk(std::string x_cord, std::string y_cord) {
 	task += 1;
 };
 
-float find_min_distance(float &new_x_cord, float &new_y_cord) {
+double find_min_distance(float &new_x_cord, float &new_y_cord) {
 	
-	float abs_x_cord = std::abs(target_x_cord - new_x_cord);
-	float abs_y_cord = std::abs(target_y_cord - new_y_cord);
+	//float abs_x_cord = std::abs(target_x_cord - new_x_cord);
+	//float abs_y_cord = std::abs(target_y_cord - new_y_cord);
 
-	float x_power = std::pow(abs_x_cord, 2);
-	float y_power = std::pow(abs_y_cord, 2);
+	//float x_power = std::pow(std::abs(target_x_cord - new_x_cord), 2);
+	//float y_power = std::pow(std::abs(target_y_cord - new_y_cord), 2);
 
-	float total_distance = std::pow(x_power + y_power, 0.5);
+	//double total_distance = std::pow(std::pow(std::abs(target_x_cord - new_x_cord), 2) + std::pow(std::abs(target_y_cord - new_y_cord), 2), 0.5);
 
 	
-	return total_distance;
+	return std::pow(std::pow(std::abs(target_x_cord - new_x_cord), 2) + std::pow(std::abs(target_y_cord - new_y_cord), 2), 0.5);
 
 }
 
 // You might need to split this into build and interact, given that e.g. a steam engine will have a further build distance than 10 if the steam engine is turned so the long side faces the player 
-void check_build_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string building_direction) {
+void check_build_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
 	target_x_cord = std::stof(x_cord);
 	target_y_cord = std::stof(y_cord);
 	
 	x_building_size = building_size_list.find(building_name)->second[0];
 	y_building_size = building_size_list.find(building_name)->second[1];
 
+	static const float buffer = 0.12f;
 	static const float delta_distance = 0.1f;
 	float min_x_edge;
 	float max_x_edge;
+
 	float min_y_edge;
 	float max_y_edge;
-
-	float buffer = 0.2;
-
+	
 	float new_x_cord = player_x_cord;
 	float new_y_cord = player_y_cord;
 
 
-	if (building_direction == "North" || building_direction == "South") {
-		min_x_edge = target_x_cord - (x_building_size / 2);
-		max_x_edge = target_x_cord + (x_building_size / 2);
-		min_y_edge = target_y_cord - (y_building_size / 2);
-		max_y_edge = target_y_cord + (y_building_size / 2);
-	} else {
-		min_x_edge = target_x_cord - (y_building_size / 2);
-		max_x_edge = target_x_cord + (y_building_size / 2);
-		min_y_edge = target_y_cord - (x_building_size / 2);
-		max_y_edge = target_y_cord + (x_building_size / 2);
+	if (orientation == "north" || orientation == "south") {
+		min_x_edge = target_x_cord - (static_cast<float>(x_building_size) / 2);
+		max_x_edge = target_x_cord + (static_cast<float>(x_building_size) / 2);
+		min_y_edge = target_y_cord - (static_cast<float>(y_building_size) / 2);
+		max_y_edge = target_y_cord + (static_cast<float>(y_building_size) / 2);
+	} else {															  
+		min_x_edge = target_x_cord + (static_cast<float>(y_building_size) / 2);
+		max_x_edge = target_x_cord - (static_cast<float>(y_building_size) / 2);
+		min_y_edge = target_y_cord + (static_cast<float>(x_building_size) / 2);
+		max_y_edge = target_y_cord - (static_cast<float>(x_building_size) / 2);
 	}
 
 	if (new_x_cord < min_x_edge) {
 		if (new_y_cord < min_y_edge) {
 			// Top left
-			target_x_cord = min_x_edge - buffer;
-			target_y_cord = min_y_edge - buffer;
+			target_x_cord = min_x_edge + buffer;
+			target_y_cord = min_y_edge + buffer;
 
-			while (find_min_distance(new_x_cord, new_y_cord) < build_interact_distance) {
+			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
 				if (new_x_cord < min_x_edge && new_y_cord < min_y_edge) {
 					new_x_cord += delta_distance;
 					new_y_cord += delta_distance;
@@ -74,13 +74,13 @@ void check_build_interact_distance(std::string x_cord, std::string y_cord, std::
 					new_y_cord += delta_distance;
 				}
 			}	
-		} else if (new_y_cord > min_y_edge) {
+		} else if (new_y_cord > max_y_edge) {
 			// bottom left
-			target_x_cord = min_x_edge - buffer;
+			target_x_cord = min_x_edge + buffer;
 			target_y_cord = max_y_edge - buffer;
 
-			while (find_min_distance(new_x_cord, new_y_cord) < build_interact_distance) {
-				if (new_x_cord < min_x_edge && new_y_cord > min_y_edge) {
+			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+				if (new_x_cord < min_x_edge && new_y_cord > max_y_edge) {
 					new_x_cord += delta_distance;
 					new_y_cord -= delta_distance;
 				} else if (new_x_cord < min_x_edge) {
@@ -91,9 +91,68 @@ void check_build_interact_distance(std::string x_cord, std::string y_cord, std::
 			}
 		} else {
 			// Mid left
-			while (find_min_distance(new_x_cord, new_y_cord) < build_interact_distance) {
+			target_x_cord = min_x_edge + buffer;
+			target_y_cord = new_y_cord;
+
+			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
 				new_x_cord += delta_distance;
 			}
+		}
+	} else if (new_x_cord > max_x_edge) {
+		if (new_y_cord < min_y_edge) {
+			// Top right
+			target_x_cord = max_x_edge - buffer;
+			target_y_cord = min_y_edge + buffer;
+
+			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+				if (new_x_cord > max_x_edge && new_y_cord < min_y_edge) {
+					new_x_cord -= delta_distance;
+					new_y_cord += delta_distance;
+				} else if (new_x_cord > max_x_edge) {
+					new_x_cord -= delta_distance;
+				} else {
+					new_y_cord += delta_distance;
+				}
+			}
+		} else if (new_y_cord > max_y_edge) {
+			// bottom right
+			target_x_cord = max_x_edge - buffer;
+			target_y_cord = max_y_edge - buffer;
+
+			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+				if (new_x_cord > max_x_edge && new_y_cord > max_y_edge) {
+					new_x_cord -= delta_distance;
+					new_y_cord -= delta_distance;
+				} else if (new_x_cord > max_x_edge) {
+					new_x_cord -= delta_distance;
+				} else {
+					new_y_cord -= delta_distance;
+				}
+			}
+		} else {
+			// Mid right
+			target_x_cord = max_x_edge - buffer;
+			target_y_cord = new_y_cord;
+
+			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+				new_x_cord -= delta_distance;
+			}
+		}
+	} else if (new_y_cord < min_y_edge) {
+		// Mid top
+		target_x_cord = new_x_cord;
+		target_y_cord = min_y_edge + buffer;
+
+		while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			new_y_cord += delta_distance;
+		}
+	} else if (new_y_cord > max_y_edge) {
+		// Mid bottom
+		target_x_cord = new_x_cord;
+		target_y_cord = max_y_edge - buffer;
+
+		while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			new_y_cord -= delta_distance;
 		}
 	}
 
@@ -407,16 +466,30 @@ void check_mining_distance(std::string x_cord, std::string y_cord) {
 };
 
 void craft(std::string amount, std::string item) {
+	item = convert_string(item);
+
 	task_list += "task[" + std::to_string(task) + "] = {\"craft\", " + amount + ", \"" + item + "\"}\n";
 	task += 1;
 };
 
-void build(std::string x_cord, std::string y_cord, std::string item, std::string direction) {
-	//check_build_distance(x_cord, y_cord);
+void build(std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
+	check_build_interact_distance(x_cord, y_cord, item, orientation);
 
-	check_build_interact_distance(x_cord, y_cord, item, direction);
+	item = convert_string(item);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + direction + "}\n";
+	if (orientation == "north") {
+		orientation = build_directions.north;
+	} else if (orientation == "south") {
+		orientation = build_directions.south;
+	} else if (orientation == "east") {
+		orientation = build_directions.east;
+	} else if (orientation == "west") {
+		orientation = build_directions.west;
+	} else {
+		return;
+	}
+
+	task_list += "task[" + std::to_string(task) + "] = {\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + "}\n";
 	task += 1;
 };
 
@@ -430,18 +503,27 @@ void mining(std::string x_cord, std::string y_cord, std::string times) {
 
 void take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from) {
 	check_build_distance(x_cord, y_cord);
+	
+	item = convert_string(item);
+	
 	task_list += "task[" + std::to_string(task) + "] = {\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + "}\n";
 	task += 1;
 }
 
 void put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string into) {
 	check_build_distance(x_cord, y_cord);
+
+	item = convert_string(item);
+
 	task_list += "task[" + std::to_string(task) + "] = {\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + "}\n";
 	task += 1;
 }
 
 void recipe(std::string x_cord, std::string y_cord, std::string item) {
 	check_build_distance(x_cord, y_cord);
+
+	item = convert_string(item);
+
 	task_list += "task[" + std::to_string(task) + "] = {\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
 	task += 1;
 }
@@ -479,6 +561,8 @@ void row_recipe(std::string x_cord, std::string y_cord, std::string item, std::s
 }
 
 void tech(std::string tech_to_research) {
+	tech_to_research = convert_string(tech_to_research);
+
 	task_list += "task[" + std::to_string(task) + "] = {\"tech\", \"" + tech_to_research + "\"}\n";
 	task += 1;
 }
@@ -576,6 +660,9 @@ void priority_row(std::string x_cord, std::string y_cord, std::string priority_i
 
 void filter(std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type) {
 	check_build_distance(x_cord, y_cord);
+
+	item = convert_string(item);
+
 	task_list += "task[" + std::to_string(task) + "] = {\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + units + ",  \"" + type + "\"}\n";
 	task += 1;
 }
@@ -612,6 +699,9 @@ void filter_row(std::string x_cord, std::string y_cord, std::string item, std::s
 
 void drop(std::string x_cord, std::string y_cord, std::string item) {
 	check_build_distance(x_cord, y_cord);
+
+	convert_string(item);
+
 	task_list += "task[" + std::to_string(task) + "] = {\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
 	task += 1;
 }
@@ -702,18 +792,6 @@ void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string 
 	building_size_int = std::stoi(building_size);
 	number_of_buildings_int = std::stoi(number_of_buildings);
 
-	if (direction == "north") {
-		direction = build_directions.north;
-	} else if (direction == "south") {
-		direction = build_directions.south;
-	} else if (direction == "east") {
-		direction = build_directions.east;
-	} else if (direction == "west") {
-		direction = build_directions.west;
-	} else {
-		return;
-	}
-
 	if (direction_to_build == "north") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			build(x_cord, std::to_string(start_y_cord - i * building_size_int), item, direction);
@@ -733,7 +811,7 @@ void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string 
 	}
 }
 
-void row_take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction_to_take, std::string number_of_buildings, std::string building_size) {
+void row_take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size) {
 	static float start_x_cord = std::stof(x_cord);
 	static float start_y_cord = std::stof(y_cord);
 	static int building_size_int = std::stoi(building_size);
@@ -744,26 +822,26 @@ void row_take(std::string x_cord, std::string y_cord, std::string amount, std::s
 	building_size_int = std::stoi(building_size);
 	number_of_buildings_int = std::stoi(number_of_buildings);
 
-	if (direction_to_take == "north") {
+	if (direction == "north") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(x_cord, std::to_string(start_y_cord - i * building_size_int), amount, item, from);
 		}
-	} else if (direction_to_take == "south") {
+	} else if (direction == "south") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(x_cord, std::to_string(start_y_cord + i * building_size_int), amount, item, from);
 		}
-	} else if (direction_to_take == "east") {
+	} else if (direction == "east") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(std::to_string(start_x_cord + i * building_size_int), y_cord, amount, item, from);
 		}
-	} else if (direction_to_take == "west") {
+	} else if (direction == "west") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			take(std::to_string(start_x_cord - i * building_size_int), y_cord, amount, item, from);
 		}
 	}
 }
 
-void row_put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction_to_take, std::string number_of_buildings, std::string building_size) {
+void row_put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size) {
 	static float start_x_cord = std::stof(x_cord);
 	static float start_y_cord = std::stof(y_cord);
 	static int building_size_int = std::stoi(building_size);
@@ -774,19 +852,19 @@ void row_put(std::string x_cord, std::string y_cord, std::string amount, std::st
 	building_size_int = std::stoi(building_size);
 	number_of_buildings_int = std::stoi(number_of_buildings);
 
-	if (direction_to_take == "north") {
+	if (direction == "north") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			put(x_cord, std::to_string(start_y_cord - i * building_size_int), amount, item, from);
 		}
-	} else if (direction_to_take == "south") {
+	} else if (direction == "south") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			put(x_cord, std::to_string(start_y_cord + i * building_size_int), amount, item, from);
 		}
-	} else if (direction_to_take == "east") {
+	} else if (direction == "east") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			put(std::to_string(start_x_cord + i * building_size_int), y_cord, amount, item, from);
 		}
-	} else if (direction_to_take == "west") {
+	} else if (direction == "west") {
 		for (int i = 0; i < number_of_buildings_int; i++) {
 			put(std::to_string(start_x_cord - i * building_size_int), y_cord, amount, item, from);
 		}

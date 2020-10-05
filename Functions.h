@@ -26,7 +26,7 @@ void check_mining_distance(std::string x_cord, std::string y_cord);
 
 void craft(std::string amount, std::string item);
 
-void build(std::string x_cord, std::string y_cord, std::string item, std::string direction);
+void build(std::string x_cord, std::string y_cord, std::string item, std::string orientation);
 
 void mining(std::string x_cord, std::string y_cord, std::string times = "1");
 
@@ -72,9 +72,9 @@ void rotate(std::string x_cord, std::string y_cord, std::string times);
 
 void build_row_of_buildings(std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string direction_to_build, std::string number_of_buildings, std::string building_size);
 
-void row_take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction_to_take, std::string number_of_buildings, std::string building_size);
+void row_take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size);
 
-void row_put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction_to_take, std::string number_of_buildings, std::string building_size);
+void row_put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size);
 
 std::string end_tasks();
 
@@ -86,4 +86,4 @@ void string_capitalized(std::string &string);
 
 void check_build_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string building_direction);
 
-float find_min_distance(float& new_x_cord, float& new_y_cord);
+double find_min_distance(float& new_x_cord, float& new_y_cord);
