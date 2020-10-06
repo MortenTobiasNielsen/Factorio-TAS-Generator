@@ -174,6 +174,9 @@ private:
 	float y_cord_float;
 	float building_size_float;
 
+	float new_x_cord;
+	float new_y_cord;
+
 	std::string task;
 	std::string x_cord;
 	std::string y_cord;
@@ -237,6 +240,7 @@ private:
 	bool update_limit();
 	bool update_priority();
 	bool update_filter();
+	void Update_rotation();
 	
 	void update_group_grid();
 	void update_template_grid();
@@ -271,6 +275,10 @@ private:
 	std::string extract_priority_out();
 	std::string extract_define(int start_row);
 	bool extract_building(int start_row);
+	bool extract_building_info();
+
+	void update_coordinates();
+	void update_future_rotate_tasks();
 };
 
 
