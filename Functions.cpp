@@ -1,6 +1,8 @@
 #include "Functions.h"
 #include <iostream>
 #include <algorithm>
+#include <vector>
+#include <string>
 
 
 
@@ -11,19 +13,8 @@ void walk(std::string x_cord, std::string y_cord) {
 	task += 1;
 };
 
-double find_min_distance(float &new_x_cord, float &new_y_cord) {
-	
-	//float abs_x_cord = std::abs(target_x_cord - new_x_cord);
-	//float abs_y_cord = std::abs(target_y_cord - new_y_cord);
-
-	//float x_power = std::pow(std::abs(target_x_cord - new_x_cord), 2);
-	//float y_power = std::pow(std::abs(target_y_cord - new_y_cord), 2);
-
-	//double total_distance = std::pow(std::pow(std::abs(target_x_cord - new_x_cord), 2) + std::pow(std::abs(target_y_cord - new_y_cord), 2), 0.5);
-
-	
+double find_min_distance(float &new_x_cord, float &new_y_cord) {	
 	return std::pow(std::pow(std::abs(target_x_cord - new_x_cord), 2) + std::pow(std::abs(target_y_cord - new_y_cord), 2), 0.5);
-
 }
 
 std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, float &min_y_edge, float &max_y_edge, const float &buffer) {
@@ -800,9 +791,7 @@ void pick_row(std::string x_cord, std::string y_cord, std::string direction_to_b
 
 void rotate(std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation) {
 
-	check_build_interact_distance(x_cord, y_cord, item, orientation);
-
-	//check_build_distance(x_cord, y_cord);
+	check_interact_distance(x_cord, y_cord, item, orientation);
 
 	for (int i = 0; i < std::stoi(times); i++) {
 		task_list += "task[" + std::to_string(task) + "] = {\"rotate\", {" + x_cord + ", " + y_cord + "}}\n";

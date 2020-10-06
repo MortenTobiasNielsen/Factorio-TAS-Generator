@@ -84,6 +84,6 @@ std::string convert_string(std::string input);
 
 void string_capitalized(std::string &string);
 
-void check_build_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string building_direction);
+void check_construction_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string building_direction);
 
 double find_min_distance(float& new_x_cord, float& new_y_cord);

@@ -279,6 +279,8 @@ private:
 
 	void update_coordinates();
 	void update_future_rotate_tasks();
+	void find_new_orientation();
+	bool find_old_orientation(int &start_row);
 };
 
 
