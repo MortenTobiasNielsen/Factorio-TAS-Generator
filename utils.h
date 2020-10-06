@@ -15,7 +15,12 @@ static const std::vector<std::string> fuel_list = { "Wood",
 
 static const std::vector<std::string> chest_list = { "Wooden chest", 
 													 "Iron chest", 
-													 "Steel chest" };
+													 "Steel chest",
+													 "Active provider chest",
+													 "Passive provider chest",
+													 "Storage chest",
+													 "Buffer chest",
+													 "Requester chest"};
 
 static const std::vector<std::string> splitter_list = { "Splitter", 
 														"Fast splitter", 
@@ -457,7 +462,8 @@ static const std::vector<std::string> take_from = {"Input",
 												   "Output", 
 												   "Fuel", 
 												   "Modules", 
-												   "Chest" };
+												   "Chest",
+												   "Wreck" };
 
 
 static const std::vector<std::string> input_output = { "Left", 
@@ -610,7 +616,8 @@ static const std::vector<std::string> drills_list = { "Electric mining drill",
 
 
 static const std::map<std::string, std::vector<int>> building_size_list = {{ "Oil refinery", {5, 5}},
-																		   { "Electric mining drill", {3, 3}}};
+																		   { "Electric mining drill", {3, 3}},
+																		   { "Stone furnace", {2, 2}}};
 
 struct furnace_types {
 	std::string stone = "stone-furnace";

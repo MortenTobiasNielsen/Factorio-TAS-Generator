@@ -256,7 +256,7 @@ private:
 
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
-	bool check_take_put(const std::string& item, int start_row);
+	bool check_take_put(const std::string& item);
 
 	void save_file();
 

@@ -1086,6 +1086,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 			if ((row_num + 1)< grid_tasks->GetNumberRows()) {
 				update_future_rotate_tasks();
 			}
+
 			update_buildings_grid_from_scratch();
 		}
 	}
@@ -2223,56 +2224,71 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			tech(item);
 
 		} else if (task == "Build") {
-			build_row_of_buildings(x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
+			row_build(x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Take") {
+			from_into = build_orientation;
 			from_into = extract_define(i);
-			extract_building(i);
-			
 
 			if (units == "All") {
-				row_take(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size);
+				row_take(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_take(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size);
+				row_take(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
 
 		} else if (task == "Put") {
+			from_into = build_orientation;
 			from_into = extract_define(i);
 
 			if (units == "All") {
-				row_put(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size);
+				row_put(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_put(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size);
+				row_put(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
+
 		} else if (task == "Recipe") {
-			row_recipe(x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings);
+			for (int j = i; j < -1; j++) {
+				if (find_old_orientation(j)) {
+					break;
+				}
+			}
+
+			row_recipe(x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
+
 		} else if (task == "Stop") {
 			stop(units);
+
 		} else if (task == "Limit") {
 			from_into = extract_define(i);
 
-			limit_row(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size);
+			for (int j = i; j < -1; j++) {
+				if (find_old_orientation(j)) {
+					break;
+				}
+			}
+
+			row_limit(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Priority") {
 			int pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
 
-			priority_row(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size);
+			row_priority(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size);
 		} else if (task == "Filter") {
 			
 			extract_building(i);
 
 			if (check_item(building, splitter_list)) {
-				filter_row(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size);
+				row_filter(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size);
 			} else {
-				filter_row(x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size);
+				row_filter(x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size);
 			}			
 		} else if (task == "Drop") {
-			drop_row(x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
+			row_drop(x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Pick up") {
-			pick_row(x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
+			row_pick(x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Launch") {
 			launch(x_cord, y_cord);
@@ -2532,8 +2548,7 @@ bool cMain::setup_for_task_grid() {
 
 	} else if (task == "Take" || task == "Put") {
 
-		if (!check_take_put(item, row_num)) {
-			wxMessageBox("The combination of From/Into and item is not valid for the building - please try again", "Please ensure that the combination is valid");
+		if (!check_take_put(item)) {
 			return false;
 		}
 
@@ -2999,31 +3014,33 @@ std::string cMain::extract_priority_out() {
 }
 
 std::string cMain::extract_define(int start_row) {
-	if (build_orientation == "chest") {
+	if (from_into == "chest") {
 		return take_put_list.chest;
-	} else if (build_orientation == "fuel") {
+	} else if (from_into == "fuel") {
 		return take_put_list.fuel;
 	} else {
-
-		extract_building(start_row);
-
-		if (building == "Lab") {
-			if (build_orientation == "input") {
-				return take_put_list.lab_input;
-			} else if (build_orientation == "modules") {
-				return take_put_list.lab_modules;
-			}
-		} else if (check_item(building, drills_list)) {
-			if (build_orientation == "modules") {
-				return take_put_list.drill_modules;
-			}
-		} else {
-			if (build_orientation == "input") {
-				return take_put_list.assembly_input;
-			} else if (build_orientation == "modules") {
-				return take_put_list.assembly_modules;
-			} else if (build_orientation == "output") {
-				return take_put_list.assembly_output;
+		
+		for (int i = start_row - 1; i > -1; i--) {
+			if (find_old_orientation(i)) {
+				if (building == "Lab") {
+					if (from_into == "input") {
+						return take_put_list.lab_input;
+					} else if (from_into == "modules") {
+						return take_put_list.lab_modules;
+					}
+				} else if (check_item(building, drills_list)) {
+					if (from_into == "modules") {
+						return take_put_list.drill_modules;
+					}
+				} else {
+					if (from_into == "input") {
+						return take_put_list.assembly_input;
+					} else if (from_into == "modules") {
+						return take_put_list.assembly_modules;
+					} else if (from_into == "output") {
+						return take_put_list.assembly_output;
+					}
+				}
 			}
 		}
 	}
@@ -3125,15 +3142,11 @@ void cMain::update_future_rotate_tasks() {
 }
 
 void cMain::find_new_orientation() {
-	int vector_location;
 	for (auto it = build_orientations.begin(); it < build_orientations.end(); it++) {
 		if (build_orientation == *it) {
-			vector_location = it - build_orientations.begin();
-			break;
+			build_orientation = build_orientations[((it - build_orientations.begin()) + std::stoi(units)) % 4];
 		}
 	}
-
-	build_orientation = build_orientations[(vector_location + std::stoi(units)) % 4];
 }
 
 bool cMain::find_old_orientation(int& row) {
@@ -3181,46 +3194,82 @@ bool cMain::check_building(const std::string& item, const std::vector<std::strin
 	return false;
 }
 
-bool cMain::check_take_put(const std::string& item, int start_row) {
+bool cMain::check_take_put(const std::string& item) {
 	std::string to_check = extract_from_into();
 	string_capitalized(to_check);
-	bool building_check = extract_building(start_row);
 
-	if (to_check == "Chest") {
+	if (to_check == "Wreck") {
 		return true;
+	}
 
-	} else if (to_check == "Fuel") {
-		for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
-			if (item == *it) {
+	for (int i = row_num - 1; i > -1; i--) {
+		if (find_old_orientation(i)) {
+			if (check_building(building, chest_list)) {
+				if (to_check == "Chest") {
+					return true;
+				}
+
+				wxMessageBox("Only Chest is a valid \"From/Into\" choice for a chest", "Please choose chest");
+				return false;
+			}
+
+			if (to_check == "Fuel") {
+				for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
+					if (item == *it) {
+						return true;
+					}
+				}
+
+				wxMessageBox("The item chosen is not a valid fuel", "Please select a valid fuel");
+				return false;
+			}
+
+			if (building == "Lab") {
+				if (to_check == "Input") {
+					for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
+						if (item == *it) {
+							return true;
+						}
+					}
+
+					wxMessageBox("The item chosen is not a science pack.\nOnly science packs can be used as input for a lab", "Please choose a science pack");
+					return false;
+
+				} else if (to_check == "Modules") {
+					for (auto it = module_list.begin(); it < module_list.end(); it++) {
+						if (item == *it) {
+							return true;
+						}
+					}
+
+					wxMessageBox("The item chosen is not a module", "Please choose a module");
+					return false;
+				}
+
+				wxMessageBox("Only Input and Modules are valid \"From/Into\" choices for a lab", "Please choose input or modules");
+				return false;
+			}
+
+			if (check_item(building, drills_list)) {
+				if (to_check == "Modules") {
+					for (auto it = module_list.begin(); it < module_list.end(); it++) {
+						if (item == *it) {
+							return true;
+						}
+					}
+					wxMessageBox("The item chosen is not a module", "Please choose a module");
+					return false;
+				}
+
+				wxMessageBox("Only Modules is a valid \"From/Into\" choice for a drill/Pump", "Please choose modules");
+				return false;
+			}
+
+			if (to_check == "Input") {
+				// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
 				return true;
 			}
-		}
-		return false;
-
-	} else {
-		if (!building_check) {
-			return false;
-		}
-
-		if (building == "Lab") {
-			if (to_check == "Input") {
-				for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
-					if (item == *it) {
-						return true;
-					}
-				}
-				return false;
-			} else if (to_check == "Modules") {
-				for (auto it = module_list.begin(); it < module_list.end(); it++) {
-					if (item == *it) {
-						return true;
-					}
-				}
-
-				return false;
-			}
-
-		} else if (check_item(building, drills_list)) {
+			
 			if (to_check == "Modules") {
 				for (auto it = module_list.begin(); it < module_list.end(); it++) {
 					if (item == *it) {
@@ -3228,29 +3277,20 @@ bool cMain::check_take_put(const std::string& item, int start_row) {
 					}
 				}
 
+				wxMessageBox("The item chosen is not a module", "Please choose a module");
 				return false;
 			}
-		} else {
-			if (to_check == "Input") {
+			
+			if (to_check == "Output") {
 				// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
 				return true;
-			} else if (to_check == "Modules") {
-				for (auto it = module_list.begin(); it < module_list.end(); it++) {
-					if (item == *it) {
-						return true;
-					}
-				}
+			} 
 
-				return false;
-			} else if (to_check == "Output") {
-				// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
-				return true;
-			} else {
-				return false;
-			}
+			return false;
 		}
 	}
-
+	
+	wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
 	return false;
 }
 
