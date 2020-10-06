@@ -26,37 +26,12 @@ double find_min_distance(float &new_x_cord, float &new_y_cord) {
 
 }
 
-// You might need to split this into build and interact, given that e.g. a steam engine will have a further build distance than 10 if the steam engine is turned so the long side faces the player 
-void check_build_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
-	target_x_cord = std::stof(x_cord);
-	target_y_cord = std::stof(y_cord);
+std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, float &min_y_edge, float &max_y_edge, const float &buffer) {
 	
-	x_building_size = building_size_list.find(building_name)->second[0];
-	y_building_size = building_size_list.find(building_name)->second[1];
-
-	static const float buffer = 0.12f;
 	static const float delta_distance = 0.1f;
-	float min_x_edge;
-	float max_x_edge;
-
-	float min_y_edge;
-	float max_y_edge;
 	
 	float new_x_cord = player_x_cord;
 	float new_y_cord = player_y_cord;
-
-
-	if (orientation == "north" || orientation == "south") {
-		min_x_edge = target_x_cord - (static_cast<float>(x_building_size) / 2);
-		max_x_edge = target_x_cord + (static_cast<float>(x_building_size) / 2);
-		min_y_edge = target_y_cord - (static_cast<float>(y_building_size) / 2);
-		max_y_edge = target_y_cord + (static_cast<float>(y_building_size) / 2);
-	} else {															  
-		min_x_edge = target_x_cord + (static_cast<float>(y_building_size) / 2);
-		max_x_edge = target_x_cord - (static_cast<float>(y_building_size) / 2);
-		min_y_edge = target_y_cord + (static_cast<float>(x_building_size) / 2);
-		max_y_edge = target_y_cord - (static_cast<float>(x_building_size) / 2);
-	}
 
 	if (new_x_cord < min_x_edge) {
 		if (new_y_cord < min_y_edge) {
@@ -73,7 +48,7 @@ void check_build_interact_distance(std::string x_cord, std::string y_cord, std::
 				} else {
 					new_y_cord += delta_distance;
 				}
-			}	
+			}
 		} else if (new_y_cord > max_y_edge) {
 			// bottom left
 			target_x_cord = min_x_edge + buffer;
@@ -156,9 +131,60 @@ void check_build_interact_distance(std::string x_cord, std::string y_cord, std::
 		}
 	}
 
-	if (player_x_cord != new_x_cord || player_y_cord != new_y_cord) {
-		walk(std::to_string(new_x_cord), std::to_string(new_y_cord));
+	return {new_x_cord, new_y_cord};
+}
+
+// You might need to split this into build and interact, given that e.g. a steam engine will have a further build distance than 10 if the steam engine is turned so the long side faces the player 
+void check_construction_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
+	static const float buffer = 0.12f;
+	int building_max_size = std::max(building_size_list.find(building_name)->second[0] , building_size_list.find(building_name)->second[1]);
+
+	float min_x_edge = std::stof(x_cord) - (static_cast<float>(building_max_size) / 2);
+	float max_x_edge = std::stof(x_cord) + (static_cast<float>(building_max_size) / 2);
+	float min_y_edge = std::stof(y_cord) - (static_cast<float>(building_max_size) / 2);
+	float max_y_edge = std::stof(y_cord) + (static_cast<float>(building_max_size) / 2);
+
+	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer);
+
+	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
+		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
 	}	
+}
+
+void check_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
+	target_x_cord = std::stof(x_cord);
+	target_y_cord = std::stof(y_cord);
+
+	x_building_size = building_size_list.find(building_name)->second[0];
+	y_building_size = building_size_list.find(building_name)->second[1];
+
+	static const float buffer = 0.12f;
+	float min_x_edge;
+	float max_x_edge;
+
+	float min_y_edge;
+	float max_y_edge;
+
+	float new_x_cord = player_x_cord;
+	float new_y_cord = player_y_cord;
+
+	if (orientation == "north" || orientation == "south") {
+		min_x_edge = std::stof(x_cord) - (static_cast<float>(x_building_size) / 2);
+		max_x_edge = std::stof(x_cord) + (static_cast<float>(x_building_size) / 2);
+		min_y_edge = std::stof(y_cord) - (static_cast<float>(y_building_size) / 2);
+		max_y_edge = std::stof(y_cord) + (static_cast<float>(y_building_size) / 2);
+	} else {
+		min_x_edge = std::stof(x_cord) + (static_cast<float>(y_building_size) / 2);
+		max_x_edge = std::stof(x_cord) - (static_cast<float>(y_building_size) / 2);
+		min_y_edge = std::stof(y_cord) + (static_cast<float>(x_building_size) / 2);
+		max_y_edge = std::stof(y_cord) - (static_cast<float>(x_building_size) / 2);
+	}
+
+	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer);
+
+	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
+		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
+	}
 }
 
 void check_build_distance(std::string x_cord, std::string y_cord) {
@@ -473,7 +499,7 @@ void craft(std::string amount, std::string item) {
 };
 
 void build(std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
-	check_build_interact_distance(x_cord, y_cord, item, orientation);
+	check_construction_distance(x_cord, y_cord, item, orientation);
 
 	item = convert_string(item);
 
@@ -772,8 +798,12 @@ void pick_row(std::string x_cord, std::string y_cord, std::string direction_to_b
 	}
 }
 
-void rotate(std::string x_cord, std::string y_cord, std::string times) {
-	check_build_distance(x_cord, y_cord);
+void rotate(std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation) {
+
+	check_build_interact_distance(x_cord, y_cord, item, orientation);
+
+	//check_build_distance(x_cord, y_cord);
+
 	for (int i = 0; i < std::stoi(times); i++) {
 		task_list += "task[" + std::to_string(task) + "] = {\"rotate\", {" + x_cord + ", " + y_cord + "}}\n";
 		task += 1;

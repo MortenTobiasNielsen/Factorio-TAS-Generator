@@ -515,12 +515,12 @@ bool cMain::update_building_orientation() {
 			}
 
 			if (wxAtoi(grid_tasks->GetCellValue(i, 8).ToStdString()) > 1) {
-				new_x_cord = wxAtof(x_cord);
-				new_y_cord = wxAtof(y_cord);
-				amount_of_buildings = wxAtoi(grid_tasks->GetCellValue(i, 8).ToStdString());
+				new_x_cord = wxAtof(grid_tasks->GetCellValue(i, 1).ToStdString());
+				new_y_cord = wxAtof(grid_tasks->GetCellValue(i, 2).ToStdString());
+				amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 				building_size_float = wxAtoi(grid_tasks->GetCellValue(i, 7).ToStdString());
 				direction_to_build = grid_tasks->GetCellValue(i, 5).ToStdString();
-				for (int j = 0; j < std::stof(amount_of_buildings); j++) {
+				for (int j = 0; j < std::stoi(amount_of_buildings); j++) {
 					update_coordinates();
 
 					if (std::to_string(new_x_cord) == x_cord && std::to_string(new_y_cord) == y_cord) {
@@ -2251,6 +2251,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			mining(x_cord, y_cord, units);
 
 		} else if (task == "Rotate") {
+
 			rotate(x_cord, y_cord, units);
 
 		} else if (task == "Craft") {
