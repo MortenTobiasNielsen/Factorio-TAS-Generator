@@ -9,8 +9,8 @@ static float player_x_cord = 0.0f;
 static float player_y_cord = 0.0f;
 static float target_x_cord = 0.0f;
 static float target_y_cord = 0.0f;
-static int x_building_size = 0;
-static int y_building_size = 0;
+static float x_building_size = 0;
+static float y_building_size = 0;
 
 const static int build_interact_distance = 10;
 
@@ -19,7 +19,7 @@ const static mining_distance_struct mining_distance;
 
 void walk(std::string x_cord, std::string y_cord);
 
-void mining(std::string x_cord, std::string y_cord, std::string times = "1");
+void mining(std::string x_cord, std::string y_cord, std::string times, std::string building_name, std::string orientation, bool is_building);
 
 void craft(std::string amount, std::string item);
 
@@ -74,7 +74,7 @@ void check_build_distance(std::string x_cord, std::string y_cord);
 
 double find_min_distance(float& new_x_cord, float& new_y_cord);
 
-std::vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer);
+std::vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, float& max_distance);
 
 void check_construction_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string building_direction);
 

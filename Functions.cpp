@@ -11,8 +11,13 @@ void walk(std::string x_cord, std::string y_cord) {
 	task += 1;
 };
 
-void mining(std::string x_cord, std::string y_cord, std::string times) {
-	check_mining_distance(x_cord, y_cord);
+void mining(std::string x_cord, std::string y_cord, std::string times, std::string building_name, std::string orientation, bool is_building) {
+	if (is_building) {
+		check_interact_distance(x_cord, y_cord, building_name, orientation);
+	} else {
+		check_mining_distance(x_cord, y_cord);
+	}
+
 	for (int i = 0; i < std::stoi(times); i++) {
 		task_list += "task[" + std::to_string(task) + "] = {\"mine\", {" + x_cord + ", " + y_cord + "}}\n";
 		task += 1;
@@ -264,7 +269,7 @@ void row_take(std::string x_cord, std::string y_cord, std::string amount, std::s
 	
 	take(x_cord, y_cord, amount, item, from, building, orientation);
 
-	for (int i = 1; i < std::stof(number_of_buildings); i++) {
+	for (int i = 0; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
 		take(x_cord, y_cord, amount, item, from, building, orientation);
@@ -595,7 +600,7 @@ double find_min_distance(float &new_x_cord, float &new_y_cord) {
 	return std::pow(std::pow(std::abs(target_x_cord - new_x_cord), 2) + std::pow(std::abs(target_y_cord - new_y_cord), 2), 0.5);
 }
 
-std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, float &min_y_edge, float &max_y_edge, const float &buffer) {
+std::vector<float> find_walk_location(float&min_x_edge, float&max_x_edge, float&min_y_edge, float&max_y_edge, const float&buffer, const float &max_distance) {
 	
 	static const float delta_distance = 0.1f;
 	
@@ -608,7 +613,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 			target_x_cord = min_x_edge + buffer;
 			target_y_cord = min_y_edge + buffer;
 
-			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 				if (new_x_cord < min_x_edge && new_y_cord < min_y_edge) {
 					new_x_cord += delta_distance;
 					new_y_cord += delta_distance;
@@ -623,7 +628,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 			target_x_cord = min_x_edge + buffer;
 			target_y_cord = max_y_edge - buffer;
 
-			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 				if (new_x_cord < min_x_edge && new_y_cord > max_y_edge) {
 					new_x_cord += delta_distance;
 					new_y_cord -= delta_distance;
@@ -638,7 +643,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 			target_x_cord = min_x_edge + buffer;
 			target_y_cord = new_y_cord;
 
-			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 				new_x_cord += delta_distance;
 			}
 		}
@@ -648,7 +653,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 			target_x_cord = max_x_edge - buffer;
 			target_y_cord = min_y_edge + buffer;
 
-			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 				if (new_x_cord > max_x_edge && new_y_cord < min_y_edge) {
 					new_x_cord -= delta_distance;
 					new_y_cord += delta_distance;
@@ -663,7 +668,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 			target_x_cord = max_x_edge - buffer;
 			target_y_cord = max_y_edge - buffer;
 
-			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 				if (new_x_cord > max_x_edge && new_y_cord > max_y_edge) {
 					new_x_cord -= delta_distance;
 					new_y_cord -= delta_distance;
@@ -678,7 +683,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 			target_x_cord = max_x_edge - buffer;
 			target_y_cord = new_y_cord;
 
-			while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+			while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 				new_x_cord -= delta_distance;
 			}
 		}
@@ -687,7 +692,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 		target_x_cord = new_x_cord;
 		target_y_cord = min_y_edge + buffer;
 
-		while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+		while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 			new_y_cord += delta_distance;
 		}
 	} else if (new_y_cord > max_y_edge) {
@@ -695,7 +700,7 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 		target_x_cord = new_x_cord;
 		target_y_cord = max_y_edge - buffer;
 
-		while (find_min_distance(new_x_cord, new_y_cord) > build_interact_distance) {
+		while (find_min_distance(new_x_cord, new_y_cord) > max_distance) {
 			new_y_cord -= delta_distance;
 		}
 	}
@@ -703,17 +708,18 @@ std::vector<float> find_walk_location(float &min_x_edge, float &max_x_edge, floa
 	return {new_x_cord, new_y_cord};
 }
 
-// You might need to split this into build and interact, given that e.g. a steam engine will have a further build distance than 10 if the steam engine is turned so the long side faces the player 
 void check_construction_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
-	static const float buffer = 0.12f;
-	int building_max_size = std::max(building_size_list.find(building_name)->second[0] , building_size_list.find(building_name)->second[1]);
+	static const float buffer = 0.45f; // this should be set correctly when can_place_entity is fixed or you know how to use it correctly
+	static const float max_distance = 10.0f;
 
-	float min_x_edge = std::stof(x_cord) - (static_cast<float>(building_max_size) / 2);
-	float max_x_edge = std::stof(x_cord) + (static_cast<float>(building_max_size) / 2);
-	float min_y_edge = std::stof(y_cord) - (static_cast<float>(building_max_size) / 2);
-	float max_y_edge = std::stof(y_cord) + (static_cast<float>(building_max_size) / 2);
+	float building_max_size = std::max(building_size_list.find(building_name)->second[0] , building_size_list.find(building_name)->second[1]);
 
-	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer);
+	float min_x_edge = std::stof(x_cord) - (building_max_size / 2);
+	float max_x_edge = std::stof(x_cord) + (building_max_size / 2);
+	float min_y_edge = std::stof(y_cord) - (building_max_size / 2);
+	float max_y_edge = std::stof(y_cord) + (building_max_size / 2);
+
+	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
 		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
@@ -721,35 +727,30 @@ void check_construction_distance(std::string x_cord, std::string y_cord, std::st
 }
 
 void check_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
-	target_x_cord = std::stof(x_cord);
-	target_y_cord = std::stof(y_cord);
-
 	x_building_size = building_size_list.find(building_name)->second[0];
 	y_building_size = building_size_list.find(building_name)->second[1];
 
-	static const float buffer = 0.12f;
+	static const float buffer = 0.25f;
+	static const float max_distance = 10.0f;
 	float min_x_edge;
 	float max_x_edge;
 
 	float min_y_edge;
 	float max_y_edge;
 
-	float new_x_cord = player_x_cord;
-	float new_y_cord = player_y_cord;
-
 	if (orientation == "north" || orientation == "south") {
-		min_x_edge = std::stof(x_cord) - (static_cast<float>(x_building_size) / 2);
-		max_x_edge = std::stof(x_cord) + (static_cast<float>(x_building_size) / 2);
-		min_y_edge = std::stof(y_cord) - (static_cast<float>(y_building_size) / 2);
-		max_y_edge = std::stof(y_cord) + (static_cast<float>(y_building_size) / 2);
+		min_x_edge = std::stof(x_cord) - (x_building_size / 2);
+		max_x_edge = std::stof(x_cord) + (x_building_size / 2);
+		min_y_edge = std::stof(y_cord) - (y_building_size / 2);
+		max_y_edge = std::stof(y_cord) + (y_building_size / 2);
 	} else {
-		min_x_edge = std::stof(x_cord) - (static_cast<float>(y_building_size) / 2);
-		max_x_edge = std::stof(x_cord) + (static_cast<float>(y_building_size) / 2);
-		min_y_edge = std::stof(y_cord) - (static_cast<float>(x_building_size) / 2);
-		max_y_edge = std::stof(y_cord) + (static_cast<float>(x_building_size) / 2);
+		min_x_edge = std::stof(x_cord) - (y_building_size / 2);
+		max_x_edge = std::stof(x_cord) + (y_building_size / 2);
+		min_y_edge = std::stof(y_cord) - (x_building_size / 2);
+		max_y_edge = std::stof(y_cord) + (x_building_size / 2);
 	}
 
-	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer);
+	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
 		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
@@ -757,133 +758,18 @@ void check_interact_distance(std::string x_cord, std::string y_cord, std::string
 }
 
 void check_mining_distance(std::string x_cord, std::string y_cord) {
-	static const float delta_distance = 0.1f;
+	static const float buffer = 0.5f;
+	static const float max_distance = 2.7f;
 
-	static bool needs_new_location = false;
+	float min_x_edge = std::stof(x_cord) - 0.5f;
+	float max_x_edge = std::stof(x_cord) + 0.5f;
+	float min_y_edge = std::stof(y_cord) - 0.5f;
+	float max_y_edge = std::stof(y_cord) + 0.5f;
 
-	static float start_x_cord = std::stof(x_cord);
-	static float start_y_cord = std::stof(y_cord);
+	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
-	static float new_x_cord = player_x_cord;
-	static float new_y_cord = player_y_cord;
-
-	static float x_cord_abs_diff = std::abs(player_x_cord - start_x_cord);
-	static float y_cord_abs_diff = std::abs(player_y_cord - start_y_cord);
-
-	static float x_cord_diff = player_x_cord - start_x_cord;
-	static float y_cord_diff = player_y_cord - start_y_cord;
-
-	needs_new_location = false;
-
-	start_x_cord = std::stof(x_cord);
-	start_y_cord = std::stof(y_cord);
-
-	new_x_cord = player_x_cord;
-	new_y_cord = player_y_cord;
-
-	x_cord_abs_diff = std::abs(player_x_cord - start_x_cord);
-	y_cord_abs_diff = std::abs(player_y_cord - start_y_cord);
-
-	x_cord_diff = player_x_cord - start_x_cord;
-	y_cord_diff = player_y_cord - start_y_cord;
-
-	while (true) {
-		if (x_cord_abs_diff <= mining_distance.one && y_cord_abs_diff <= mining_distance.three ||
-			x_cord_abs_diff <= mining_distance.two && y_cord_abs_diff <= mining_distance.two ||
-			x_cord_abs_diff <= mining_distance.three && y_cord_abs_diff <= mining_distance.one) {
-
-			std::cout << "new mining walk\n";
-			break;
-		}
-
-		needs_new_location = true;
-
-		// The delta from current location to build location is positive
-		if (x_cord_diff > mining_distance.one) {
-			if (y_cord_diff > mining_distance.three) {
-				new_x_cord -= delta_distance;
-				new_y_cord -= delta_distance;
-			} else if (y_cord_diff < -mining_distance.three) {
-				new_x_cord -= delta_distance;
-				new_y_cord += delta_distance;
-			} else {
-				new_x_cord -= delta_distance;
-			}
-		} else if (x_cord_diff > mining_distance.two) {
-			if (y_cord_diff > mining_distance.two) {
-				new_x_cord -= delta_distance;
-				new_y_cord -= delta_distance;
-			} else if (y_cord_diff < -mining_distance.two) {
-				new_x_cord -= delta_distance;
-				new_y_cord += delta_distance;
-			} else {
-				new_x_cord -= delta_distance;
-			}
-		} else if (x_cord_diff > mining_distance.three) {
-			if (y_cord_diff > mining_distance.one) {
-				new_x_cord -= delta_distance;
-				new_y_cord -= delta_distance;
-			} else if (y_cord_diff < -mining_distance.one) {
-				new_x_cord -= delta_distance;
-				new_y_cord += delta_distance;
-			} else {
-				new_x_cord -= delta_distance;
-			}
-		} else if (x_cord_diff < mining_distance.three && x_cord_diff > 0) {
-			if (y_cord_diff > mining_distance.one) {
-				new_y_cord -= delta_distance;
-			} else {
-				new_y_cord += delta_distance;
-			}
-
-			// The delta from current location to mining location is negative
-		} else if (x_cord_diff < -mining_distance.one) {
-			if (y_cord_diff > mining_distance.three) {
-				new_x_cord += delta_distance;
-				new_y_cord -= delta_distance;
-			} else if (y_cord_diff < -mining_distance.three) {
-				new_x_cord += delta_distance;
-				new_y_cord += delta_distance;
-			} else {
-				new_x_cord += delta_distance;
-			}
-		} else if (x_cord_diff < -mining_distance.two) {
-			if (y_cord_diff > mining_distance.two) {
-				new_x_cord += delta_distance;
-				new_y_cord -= delta_distance;
-			} else if (y_cord_diff < -mining_distance.two) {
-				new_x_cord += delta_distance;
-				new_y_cord += delta_distance;
-			} else {
-				new_x_cord += delta_distance;
-			}
-		} else if (x_cord_diff < -mining_distance.three) {
-			if (y_cord_diff > mining_distance.one) {
-				new_x_cord += delta_distance;
-				new_y_cord -= delta_distance;
-			} else if (y_cord_diff < -mining_distance.one) {
-				new_x_cord += delta_distance;
-				new_y_cord += delta_distance;
-			} else {
-				new_x_cord += delta_distance;
-			}
-		} else if (x_cord_diff < mining_distance.three) {
-			if (y_cord_diff > mining_distance.one) {
-				new_y_cord -= delta_distance;
-			} else {
-				new_y_cord += delta_distance;
-			}
-		}
-
-		x_cord_abs_diff = std::abs(new_x_cord - start_x_cord);
-		y_cord_abs_diff = std::abs(new_y_cord - start_y_cord);
-
-		x_cord_diff = new_x_cord - start_x_cord;
-		y_cord_diff = new_y_cord - start_y_cord;
-	}
-
-	if (needs_new_location) {
-		walk(std::to_string(new_x_cord), std::to_string(new_y_cord));
+	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
+		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
 	}
 }
 

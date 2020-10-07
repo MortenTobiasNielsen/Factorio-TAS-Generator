@@ -188,7 +188,7 @@ local function build()
 		return false
 	end
 
-	if player.can_place_entity{name = item, position = position, direction = direction} then
+	if player.can_place_entity{name = item, position = position} then
 		if player.surface.can_fast_replace{name = item, position = position, direction = direction, force = "player"} then
 			if player.surface.create_entity{name = item, position = position, direction = direction, force="player", fast_replace=true, player=player} then
 				state = state - 1

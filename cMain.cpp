@@ -2201,11 +2201,20 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			walk(x_cord, y_cord);
 
 		} else if (task == "Mine") {
-			mining(x_cord, y_cord, units);
+			for (int j = i; j > -1; j--) {
+				if (find_old_orientation(j)) {
+					mining(x_cord, y_cord, units, building, build_orientation, true);
+					break;
+				}
+
+				if (j == 0) {
+					mining(x_cord, y_cord, units, "", "", false);
+				}
+			}
 
 		} else if (task == "Rotate") {
 
-			for (int j = i; j < -1; j++) {
+			for (int j = i; j < -1; j--) {
 				if (find_old_orientation(j)) {
 					break;
 				}
@@ -2247,7 +2256,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 		} else if (task == "Recipe") {
-			for (int j = i; j < -1; j++) {
+			for (int j = i; j > -1; j--) {
 				if (find_old_orientation(j)) {
 					break;
 				}
@@ -3014,33 +3023,37 @@ std::string cMain::extract_priority_out() {
 }
 
 std::string cMain::extract_define(int start_row) {
-	if (from_into == "chest") {
-		return take_put_list.chest;
-	} else if (from_into == "fuel") {
-		return take_put_list.fuel;
-	} else {
-		
-		for (int i = start_row - 1; i > -1; i--) {
-			if (find_old_orientation(i)) {
-				if (building == "Lab") {
-					if (from_into == "input") {
-						return take_put_list.lab_input;
-					} else if (from_into == "modules") {
-						return take_put_list.lab_modules;
-					}
-				} else if (check_item(building, drills_list)) {
-					if (from_into == "modules") {
-						return take_put_list.drill_modules;
-					}
-				} else {
-					if (from_into == "input") {
-						return take_put_list.assembly_input;
-					} else if (from_into == "modules") {
-						return take_put_list.assembly_modules;
-					} else if (from_into == "output") {
-						return take_put_list.assembly_output;
-					}
+	for (int i = start_row - 1; i > -1; i--) {
+		if (find_old_orientation(i)) {
+	
+			if (from_into == "chest") {
+				return take_put_list.chest;
+			}
+			
+			if (from_into == "fuel") {
+				return take_put_list.fuel;
+			}
+			
+			if (building == "Lab") {
+				if (from_into == "input") {
+					return take_put_list.lab_input;
+				} else if (from_into == "modules") {
+					return take_put_list.lab_modules;
 				}
+			} 
+			if (check_item(building, drills_list)) {
+				return take_put_list.drill_modules;
+			}
+			
+			if (from_into == "input") {
+				return take_put_list.assembly_input;
+			}
+			
+			if (from_into == "modules") {
+				return take_put_list.assembly_modules;
+			} 
+			if (from_into == "output") {
+				return take_put_list.assembly_output;
 			}
 		}
 	}
@@ -3182,7 +3195,6 @@ bool cMain::find_old_orientation(int& row) {
 	}
 	return false;
 }
-
 
 bool cMain::check_building(const std::string& item, const std::vector<std::string>& all_items) {
 	for (auto it = all_items.begin(); it < all_items.end(); it++) {
