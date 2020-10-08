@@ -2201,24 +2201,14 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			walk(x_cord, y_cord);
 
 		} else if (task == "Mine") {
-			for (int j = i; j > -1; j--) {
-				if (find_old_orientation(j)) {
-					mining(x_cord, y_cord, units, building, build_orientation, true);
-					break;
-				}
-
-				if (j == 0) {
-					mining(x_cord, y_cord, units, "", "", false);
-				}
+			if (find_old_orientation(i)) {
+				mining(x_cord, y_cord, units, building, build_orientation, true);
+			} else {
+				mining(x_cord, y_cord, units, "", "", false);
 			}
 
 		} else if (task == "Rotate") {
-
-			for (int j = i; j > -1; j--) {
-				if (find_old_orientation(j)) {
-					break;
-				}
-			}
+			find_old_orientation(i);
 
 			rotate(x_cord, y_cord, units, item, build_orientation);
 
@@ -2256,11 +2246,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 		} else if (task == "Recipe") {
-			for (int j = i; j > -1; j--) {
-				if (find_old_orientation(j)) {
-					break;
-				}
-			}
+			find_old_orientation(i);
 
 			row_recipe(x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
 
@@ -2268,30 +2254,26 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			stop(units);
 
 		} else if (task == "Limit") {
+			from_into = build_orientation;
 			from_into = extract_define(i);
-
-			for (int j = i; j > -1; j++) {
-				if (find_old_orientation(j)) {
-					break;
-				}
-			}
 
 			row_limit(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Priority") {
+			find_old_orientation(i);
+
 			int pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
 
-			row_priority(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size);
+			row_priority(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Filter") {
-			
-			extract_building(i);
+			find_old_orientation(i);
 
 			if (check_item(building, splitter_list)) {
-				row_filter(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size);
+				row_filter(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_filter(x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size);
+				row_filter(x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}			
 		} else if (task == "Drop") {
 			row_drop(x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
@@ -3023,38 +3005,40 @@ std::string cMain::extract_priority_out() {
 }
 
 std::string cMain::extract_define(int start_row) {
-	for (int i = start_row - 1; i > -1; i--) {
-		if (find_old_orientation(i)) {
+	if (from_into == "wreck") {
+		return take_put_list.chest;
+	}
+
+	if (find_old_orientation(start_row)) {
 	
-			if (from_into == "chest") {
-				return take_put_list.chest;
-			}
+		if (from_into == "chest") {
+			return take_put_list.chest;
+		}
 			
-			if (from_into == "fuel") {
-				return take_put_list.fuel;
-			}
+		if (from_into == "fuel") {
+			return take_put_list.fuel;
+		}
 			
-			if (building == "Lab") {
-				if (from_into == "input") {
-					return take_put_list.lab_input;
-				} else if (from_into == "modules") {
-					return take_put_list.lab_modules;
-				}
-			} 
-			if (check_item(building, drills_list)) {
-				return take_put_list.drill_modules;
-			}
-			
+		if (building == "Lab") {
 			if (from_into == "input") {
-				return take_put_list.assembly_input;
+				return take_put_list.lab_input;
+			} else if (from_into == "modules") {
+				return take_put_list.lab_modules;
 			}
+		} 
+		if (check_item(building, drills_list)) {
+			return take_put_list.drill_modules;
+		}
 			
-			if (from_into == "modules") {
-				return take_put_list.assembly_modules;
-			} 
-			if (from_into == "output") {
-				return take_put_list.assembly_output;
-			}
+		if (from_into == "input") {
+			return take_put_list.assembly_input;
+		}
+			
+		if (from_into == "modules") {
+			return take_put_list.assembly_modules;
+		} 
+		if (from_into == "output") {
+			return take_put_list.assembly_output;
 		}
 	}
 
@@ -3158,41 +3142,45 @@ void cMain::find_new_orientation() {
 	for (auto it = build_orientations.begin(); it < build_orientations.end(); it++) {
 		if (build_orientation == *it) {
 			build_orientation = build_orientations[((it - build_orientations.begin()) + std::stoi(units)) % 4];
+			break;
 		}
 	}
 }
 
 bool cMain::find_old_orientation(int& row) {
-	if (grid_tasks->GetCellValue(row, 0).ToStdString() == "Build") {
-		if (grid_tasks->GetCellValue(row, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(row, 2).ToStdString() == y_cord) {
-			building = grid_tasks->GetCellValue(row, 4).ToStdString();
-			build_orientation = grid_tasks->GetCellValue(row, 5).ToStdString();
-			return true;
-		}
+	for (int i = row - 1; i > - 1; i--) {
+		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Build") {
+			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+				building = grid_tasks->GetCellValue(i, 4).ToStdString();
+				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				return true;
+			}
 
-		if (wxAtoi(grid_tasks->GetCellValue(row, 8).ToStdString()) > 1) {
-			new_x_cord = wxAtof(grid_tasks->GetCellValue(row, 1));
-			new_y_cord = wxAtof(grid_tasks->GetCellValue(row, 2));
-			amount_of_buildings = grid_tasks->GetCellValue(row, 8).ToStdString();
-			building_size_float = wxAtoi(grid_tasks->GetCellValue(row, 7));
-			direction_to_build = grid_tasks->GetCellValue(row, 5).ToStdString();
-			for (int j = 0; j < std::stoi(amount_of_buildings); j++) {
-				update_coordinates();
+			if (wxAtoi(grid_tasks->GetCellValue(i, 8).ToStdString()) > 1) {
+				new_x_cord = wxAtof(grid_tasks->GetCellValue(i, 1));
+				new_y_cord = wxAtof(grid_tasks->GetCellValue(i, 2));
+				amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+				building_size_float = wxAtoi(grid_tasks->GetCellValue(i, 7));
+				direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+				for (int j = 0; j < std::stoi(amount_of_buildings); j++) {
+					update_coordinates();
 
-				if (std::to_string(new_x_cord) == x_cord && std::to_string(new_y_cord) == y_cord) {
-					building = grid_tasks->GetCellValue(row, 4).ToStdString();
-					build_orientation = grid_tasks->GetCellValue(row, 5).ToStdString();
-					return true;
+					if (std::to_string(new_x_cord) == x_cord && std::to_string(new_y_cord) == y_cord) {
+						building = grid_tasks->GetCellValue(i, 4).ToStdString();
+						build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+						return true;
+					}
 				}
 			}
-		}
-	} else if (grid_tasks->GetCellValue(row, 0).ToStdString() == "Rotate") {
-		if (grid_tasks->GetCellValue(row, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(row, 2).ToStdString() == y_cord) {
-			building = grid_tasks->GetCellValue(row, 4).ToStdString();
-			build_orientation = grid_tasks->GetCellValue(row, 5).ToStdString();
-			return true;
+		} else if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Rotate") {
+			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+				building = grid_tasks->GetCellValue(i, 4).ToStdString();
+				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				return true;
+			}
 		}
 	}
+
 	return false;
 }
 

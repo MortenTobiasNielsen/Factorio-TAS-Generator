@@ -616,9 +616,19 @@ static const std::vector<std::string> drills_list = { "Electric mining drill",
 
 
 static const std::map<std::string, std::vector<float>> building_size_list = {{ "Oil refinery", {5, 5}},
-																		   { "Electric mining drill", {3, 3}},
-																		   { "Stone furnace", {1.8f, 2}},
-																		   { "Steam engine", {3, 5}} };
+																		    { "Electric mining drill", {3, 3}},
+																		    { "Stone furnace", {1.8f, 2}},
+																			{ "Steam engine", {3, 5}},
+																			{ "Burner mining drill", {2, 2}},
+																			{ "Offshore pump", {1, 2}},
+																			{ "Boiler", {2, 3}},
+																			{ "Small electric pole", {1, 1}},
+																			{ "Lab", {3, 3}},
+																			{ "Assembling machine 1", {3, 3}},
+																			{ "Assembling machine 1", {3, 3}},
+																			{ "Wooden chest", {1, 1}},
+																			{ "Wreck", {1, 1}},
+																			{ "Drop", {1, 1}} };
 
 struct furnace_types {
 	std::string stone = "stone-furnace";
