@@ -2214,7 +2214,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 		} else if (task == "Rotate") {
 
-			for (int j = i; j < -1; j--) {
+			for (int j = i; j > -1; j--) {
 				if (find_old_orientation(j)) {
 					break;
 				}
@@ -2270,7 +2270,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		} else if (task == "Limit") {
 			from_into = extract_define(i);
 
-			for (int j = i; j < -1; j++) {
+			for (int j = i; j > -1; j++) {
 				if (find_old_orientation(j)) {
 					break;
 				}
