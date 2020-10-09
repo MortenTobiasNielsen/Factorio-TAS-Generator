@@ -573,6 +573,7 @@ void cMain::update_buildings_grid_from_scratch() {
 			amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 			update_filter();
+
 		} else if (task == "Rotate") {
 			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
 			y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
