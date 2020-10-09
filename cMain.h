@@ -16,6 +16,8 @@ public:
 	cMain();
 
 protected:
+	void OnApplicationClose(wxCloseEvent& event);
+
 	void OnMenuNew(wxCommandEvent& event);
 	void OnMenuOpen(wxCommandEvent& event);
 	void OnMenuSave(wxCommandEvent& event);
@@ -226,6 +228,9 @@ private:
 	std::vector<std::string> groups_data_to_save;
 	std::vector<std::string> template_data_to_save;
 
+	void reset_to_new_window();
+	bool check_before_close();
+
 	bool move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid);
 	bool change_row(wxGrid* grid);
@@ -258,7 +263,7 @@ private:
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item);
 
-	void save_file();
+	bool save_file(bool save_as);
 
 	std::string extract_task();
 	std::string extract_x_cord();

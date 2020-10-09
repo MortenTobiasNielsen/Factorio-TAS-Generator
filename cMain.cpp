@@ -280,6 +280,73 @@ void cMain::OnStopChosen(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::reset_to_new_window() {
+	if (grid_tasks->GetNumberRows() > 0 || grid_buildings->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0) {
+		if (wxMessageBox("Are you sure you want to create a new file?\nAll in the current window will be cleared.", "Ensure that you have saved what you need before clicking yes", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
+			return;
+		}
+
+		if (grid_tasks->GetNumberRows() > 0) {
+			grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
+		}
+
+		if (grid_buildings->GetNumberRows() > 0) {
+			grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
+		}
+
+		if (grid_group->GetNumberRows() > 0) {
+			grid_group->DeleteRows(0, grid_group->GetNumberRows());
+		}
+
+		if (grid_template->GetNumberRows() > 0) {
+			grid_template->DeleteRows(0, grid_template->GetNumberRows());
+		}
+	}
+
+	rbtn_walk->SetValue(true);
+	setup_paramters(parameter_choices.walk);
+
+	save_file_location = "";
+	generate_code_folder_location = "";
+
+	group_name = "";
+	group_map.clear();
+	cmb_choose_group->Clear();
+	group_list = {};
+	group_choices = {};
+
+	template_name = "";
+	template_map.clear();
+	cmb_choose_template->Clear();
+	template_list = {};
+	template_choices = {};
+
+	tasks_data_to_save = {};
+	save_file_location = "";
+	generate_code_folder_location = "";
+}
+
+bool cMain::check_before_close() {
+	if (grid_tasks->GetNumberRows() > 0 || grid_buildings->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0) {
+		int answer = wxMessageBox("Do you want to save your changes?", "Ensure that you have saved what you need", wxICON_QUESTION | wxYES_NO | wxCANCEL, this);
+
+		if (answer == wxYES) {
+			if (save_file(false)) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} else if (answer == wxNO) {
+			return true;
+		}
+	} else {
+		return true;
+	}
+
+	return false;
+}
+
 bool cMain::move_row(wxGrid* grid, bool up) {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin()) {
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
@@ -1862,48 +1929,18 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnApplicationClose(wxCloseEvent& event) {
+
+	if (check_before_close()) {
+		event.Skip();
+	}
+
+	return;
+}
+
 void cMain::OnMenuNew(wxCommandEvent& event) {
 
-	if (grid_tasks->GetNumberRows() > 0) {
-		if (wxMessageBox("Are you sure you want to create a new file?\nAll in the current window will be cleared.", "Ensure that you have saved what you need in the file", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
-			return;
-		}
-		grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
-	}
-
-	if (grid_buildings->GetNumberRows() > 0) {
-		grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
-	}
-
-	rbtn_walk->SetValue(true);
-	setup_paramters(parameter_choices.walk);
-
-	save_file_location = "";
-	generate_code_folder_location = "";
-
-	if (grid_group->GetNumberRows() > 0) {
-		grid_group->DeleteRows(0, grid_group->GetNumberRows());
-	}
-
-	if (grid_template->GetNumberRows() > 0) {
-		grid_template->DeleteRows(0, grid_template->GetNumberRows());
-	}
-
-	group_name = "";
-	group_map.clear();
-	cmb_choose_group->Clear();
-	group_list = {};
-	group_choices = {};
-	
-	template_name = "";
-	template_map.clear();
-	cmb_choose_template->Clear();
-	template_list = {};
-	template_choices = {};
-
-	tasks_data_to_save = {};
-	save_file_location = "";
-	generate_code_folder_location = "";
+	reset_to_new_window();
 
 	event.Skip();
 }
@@ -2114,53 +2151,27 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 void cMain::OnMenuSave(wxCommandEvent& event) {
 
-	if (save_file_location == "") {
-		wxFileDialog dlg(this, "Save factorio script helper", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-		if (dlg.ShowModal() == wxID_OK) {
-			save_file_location = dlg.GetPath().ToStdString();
-		} else {
-			return;
-		}
-	}
-
-	save_file();
-
-	clear_tasks();
+	save_file(false);
 
 	event.Skip();
 }
 
 void cMain::OnMenuSaveAs(wxCommandEvent& event) {
 
-	wxFileDialog dlg(this, "Save factorio script helper", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-	if (dlg.ShowModal() == wxID_OK) {
-		save_file_location = dlg.GetPath().ToStdString();
-	} else {
-		return;
-	}
-
-	save_file();
-
-	clear_tasks();
+	save_file(true);
 
 	event.Skip();
 }
 
-void cMain::OnMenuExit(wxCommandEvent& event) {
+void cMain::OnMenuExit(wxCommandEvent& event) { 
+	wxCloseEvent close_event;
+	OnApplicationClose(close_event);
+
 	event.Skip();
 	Close();
 }
 
 void cMain::OnChooseLocation(wxCommandEvent& event) {
-	//wxFileDialog dlg(this, "Choose location to generate script", "", "", ".lua files (*.lua) | *.lua", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	//if (dlg.ShowModal() == wxID_OK) {
-	//	generate_code_folder_location = dlg.GetPath().ToStdString();
-	//}
-
-	// make it so the user only need to select the folder and not the actual file. The file names need to be a specific way anyway
-
 	wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
 	if (dlg.ShowModal() == wxID_OK) {
@@ -2180,6 +2191,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			return;
 		}
 	}
+
+	clear_tasks();
 
 	row_num = grid_tasks->GetNumberRows();
 
@@ -2305,8 +2318,6 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	saver << end_tasks();
 
 	saver.close();
-
-	clear_tasks();
 
 	event.Skip();
 }
@@ -3294,7 +3305,27 @@ bool cMain::check_take_put(const std::string& item) {
 	return false;
 }
 
-void cMain::save_file() {
+bool cMain::save_file(bool save_as) {
+
+	if (save_as) {
+		wxFileDialog dlg(this, "Save factorio script helper", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+		if (dlg.ShowModal() == wxID_OK) {
+			save_file_location = dlg.GetPath().ToStdString();
+		} else {
+			return false;
+		}
+	} else {
+		if (save_file_location == "") {
+			wxFileDialog dlg(this, "Save factorio script helper", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+			if (dlg.ShowModal() == wxID_OK) {
+				save_file_location = dlg.GetPath().ToStdString();
+			} else {
+				return false;
+			}
+		}
+	}
 
 	std::ofstream myfile;
 	myfile.open(save_file_location);
@@ -3338,6 +3369,8 @@ void cMain::save_file() {
 	}
 
 	myfile.close();
+
+	return true;
 }
 
 bool cMain::check_item(const std::string& item, const std::vector<std::string>& all_items) {

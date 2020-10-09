@@ -133,6 +133,7 @@ protected:
 	wxGrid* grid_buildings;
 
 	// Virtual event handlers, overide them in your derived class
+	virtual void OnApplicationClose(wxCloseEvent& event) { event.Skip(); }
 	virtual void OnMenuNew(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuOpen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuSave(wxCommandEvent& event) { event.Skip(); }
