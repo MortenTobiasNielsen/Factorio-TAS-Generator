@@ -4,35 +4,39 @@
 #include <vector>
 #include <string>
 
-void walk(std::string x_cord, std::string y_cord) {
-	task_list += "task[" + std::to_string(task) + "] = {\"walk\", {" + x_cord + ", " + y_cord + "}}\n";
+std::string signature(std::string task, std::string action) {
+	return "step[" + std::to_string(step) + "] = {{" + task + "," + action + "}, ";
+}
+
+void walk(std::string task, std::string action, std::string x_cord, std::string y_cord) {
+	step_list += signature(task, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}}\n";
 	player_x_cord = std::stof(x_cord);
 	player_y_cord = std::stof(y_cord);
-	task += 1;
+	step += 1;
 };
 
-void mining(std::string x_cord, std::string y_cord, std::string times, std::string building_name, std::string orientation, bool is_building) {
+void mining(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string building_name, std::string orientation, bool is_building) {
 	if (is_building) {
-		check_interact_distance(x_cord, y_cord, building_name, orientation);
+		check_interact_distance(task, "1", x_cord, y_cord, building_name, orientation);
 	} else {
-		check_mining_distance(x_cord, y_cord);
+		check_mining_distance(task, "1", x_cord, y_cord);
 	}
 
 	for (int i = 0; i < std::stoi(times); i++) {
-		task_list += "task[" + std::to_string(task) + "] = {\"mine\", {" + x_cord + ", " + y_cord + "}}\n";
-		task += 1;
+		step_list += signature(task, std::to_string(i+1)) + "\"mine\", {" + x_cord + ", " + y_cord + "}}\n";
+		step += 1;
 	}
 }
 
-void craft(std::string amount, std::string item) {
+void craft(std::string task, std::string amount, std::string item) {
 	item = convert_string(item);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"craft\", " + amount + ", \"" + item + "\"}\n";
-	task += 1;
+	step_list += signature(task, "1") + "\"craft\", " + amount + ", \"" + item + "\"}\n";
+	step += 1;
 };
 
-void build(std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
-	check_construction_distance(x_cord, y_cord, item, orientation);
+void build(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
+	check_construction_distance(task, action, x_cord, y_cord, item, orientation);
 
 	item = convert_string(item);
 
@@ -48,209 +52,210 @@ void build(std::string x_cord, std::string y_cord, std::string item, std::string
 		return;
 	}
 
-	task_list += "task[" + std::to_string(task) + "] = {\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + "}\n";
-	task += 1;
+	step_list += signature(task, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + "}\n";
+	step += 1;
 };
 
-void row_build(std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string direction, std::string number_of_buildings, std::string building_size) {
+void row_build(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string direction, std::string number_of_buildings, std::string building_size) {
 
-	build(x_cord, y_cord, item, orientation);
+	build(task, "1", x_cord, y_cord, item, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		build(x_cord, y_cord, item, orientation);
+		build(task, std::to_string(i+1), x_cord, y_cord, item, orientation);
 	}
 }
 
-void take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string building, std::string orientation) {
+void take(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string building, std::string orientation) {
 	if (orientation == "wreck") {
-		check_interact_distance(x_cord, y_cord, "Wreck", "north");
+		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "north");
 	} else {
-		check_interact_distance(x_cord, y_cord, building, orientation);
+		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
 	
 	item = convert_string(item);
 	
-	task_list += "task[" + std::to_string(task) + "] = {\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + "}\n";
-	task += 1;
+	step_list += signature(task, action) + "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + "}\n";
+	step += 1;
 }
 
-void row_take(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
+void row_take(std::string task, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
 	
-	take(x_cord, y_cord, amount, item, from, building, orientation);
+	take(task, "1", x_cord, y_cord, amount, item, from, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		take(x_cord, y_cord, amount, item, from, building, orientation);
+		take(task, std::to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation);
 	}
 }
 
-void put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string into, std::string building, std::string orientation) {
+void put(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string into, std::string building, std::string orientation) {
 	if (orientation == "wreck") {
-		check_interact_distance(x_cord, y_cord, "Wreck", "north");
+		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "north");
 	} else {
-		check_interact_distance(x_cord, y_cord, building, orientation);
+		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
 
 	item = convert_string(item);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + "}\n";
-	task += 1;
+	step_list += signature(task, action) + "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + "}\n";
+	step += 1;
 }
 
-void row_put(std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
-	put(x_cord, y_cord, amount, item, from, building, orientation);
+void row_put(std::string task, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
+	put(task, "1", x_cord, y_cord, amount, item, from, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		put(x_cord, y_cord, amount, item, from, building, orientation);
+		put(task, std::to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation);
 	}
 }
 
-void recipe(std::string x_cord, std::string y_cord, std::string item, std::string building, std::string orientation) {
-	check_interact_distance(x_cord, y_cord, building, orientation);
+void recipe(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building, std::string orientation) {
+	check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 
 	item = convert_string(item);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
-	task += 1;
+	step_list += signature(task, action) + "\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
+	step += 1;
 }
 
-void row_recipe(std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string building_size, std::string number_of_buildings, std::string building, std::string orientation) {
+void row_recipe(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string building_size, std::string number_of_buildings, std::string building, std::string orientation) {
 
-	recipe(x_cord, y_cord, item, building, orientation);
+	recipe(task, "1", x_cord, y_cord, item, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		recipe(x_cord, y_cord, item, building, orientation);
+		recipe(task, std::to_string(i + 1), x_cord, y_cord, item, building, orientation);
 	}
 }
 
-void limit(std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string building, std::string orientation) {
-	check_interact_distance(x_cord, y_cord, building, orientation);
+void limit(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string building, std::string orientation) {
+	check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + "}\n";
-	task += 1;
+	step_list += signature(task, action) + "\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + "}\n";
+	step += 1;
 }
 
-void row_limit(std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
+void row_limit(std::string task, std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
 	
-	limit(x_cord, y_cord, amount, from, building, orientation);
+	limit(task, "1", x_cord, y_cord, amount, from, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		limit(x_cord, y_cord, amount, from, building, orientation);
+		limit(task, std::to_string(i + 1), x_cord, y_cord, amount, from, building, orientation);
 	}
 }
 
-void priority(std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string building, std::string orientation) {
-	check_interact_distance(x_cord, y_cord, building, orientation);
-	task_list += "task[" + std::to_string(task) + "] = {\"priority\", {" + x_cord + ", " + y_cord + "}, \"" + priority_in + "\", \"" + priority_out + "\"}\n";
-	task += 1;
+void priority(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string building, std::string orientation) {
+	check_interact_distance(task, action, x_cord, y_cord, building, orientation);
+
+	step_list += signature(task, action) + "\"priority\", {" + x_cord + ", " + y_cord + "}, \"" + priority_in + "\", \"" + priority_out + "\"}\n";
+	step += 1;
 }
 
-void row_priority(std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
-	priority(x_cord, y_cord, priority_in, priority_out, building, orientation);
+void row_priority(std::string task, std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
+	priority(task, "1", x_cord, y_cord, priority_in, priority_out, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		priority(x_cord, y_cord, priority_in, priority_out, building, orientation);;
+		priority(task, std::to_string(i + 1), x_cord, y_cord, priority_in, priority_out, building, orientation);;
 	}
 }
 
-void filter(std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string building, std::string orientation) {
-	check_interact_distance(x_cord, y_cord, building, orientation);
+void filter(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string building, std::string orientation) {
+	check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 
 	item = convert_string(item);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + units + ",  \"" + type + "\"}\n";
-	task += 1;
+	step_list += signature(task, action) + "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + units + ",  \"" + type + "\"}\n";
+	step += 1;
 }
 
-void row_filter(std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
-	filter(x_cord, y_cord, item, units, type, building, orientation);
+void row_filter(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
+	filter(task, "1", x_cord, y_cord, item, units, type, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		filter(x_cord, y_cord, item, units, type, building, orientation);
+		filter(task, std::to_string(i + 1), x_cord, y_cord, item, units, type, building, orientation);
 	}
 }
 
-void drop(std::string x_cord, std::string y_cord, std::string item) {
-	check_interact_distance(x_cord, y_cord, "Drop", "north");
+void drop(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item) {
+	check_interact_distance(task, action, x_cord, y_cord, "Drop", "north");
 
 	convert_string(item);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
-	task += 1;
+	step_list += signature(task, action) + "\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
+	step += 1;
 }
 
-void row_drop(std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building_size) {
-	drop(x_cord, y_cord, item);
+void row_drop(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building_size) {
+	drop(task, "1", x_cord, y_cord, item);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		drop(x_cord, y_cord, item);
+		drop(task, std::to_string(i + 1), x_cord, y_cord, item);
 	}
 }
 
-void pick(std::string x_cord, std::string y_cord) {
-	walk(x_cord, y_cord);
-	task_list += "task[" + std::to_string(task) + "] = {\"pick\", {" + x_cord + ", " + y_cord + "}}\n";
-	task += 1;
+void pick(std::string task, std::string action, std::string x_cord, std::string y_cord) {
+	walk(task, action, x_cord, y_cord);
+	step_list += signature(task, action) +  "\"pick\", {" + x_cord + ", " + y_cord + "}}\n";
+	step += 1;
 }
 
-void row_pick(std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size) {
-	pick(x_cord, y_cord);
+void row_pick(std::string task, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size) {
+	pick(task, "1", x_cord, y_cord);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		pick(x_cord, y_cord);
+		pick(task, std::to_string(i + 1), x_cord, y_cord);
 	}
 }
 
-void tech(std::string tech_to_research) {
+void tech(std::string task, std::string tech_to_research) {
 	tech_to_research = convert_string(tech_to_research);
 
-	task_list += "task[" + std::to_string(task) + "] = {\"tech\", \"" + tech_to_research + "\"}\n";
-	task += 1;
+	step_list += signature(task, "1") + "\"tech\", \"" + tech_to_research + "\"}\n";
+	step += 1;
 }
 
-void speed(std::string speed) {
-	task_list += "task[" + std::to_string(task) + "] = {\"speed\", " + speed + "}\n";
-	task += 1;
+void speed(std::string task, std::string speed) {
+	step_list += signature(task, "1") + "\"speed\", " + speed + "}\n";
+	step += 1;
 }
-void stop(std::string speed) {
-	task_list += "task[" + std::to_string(task) + "] = {\"stop\", " + speed + "}\n";
-	task += 1;
-}
-
-void launch(std::string x_cord, std::string y_cord) {
-	task_list += "task[" + std::to_string(task) + "] = {\"launch\", {" + x_cord + ", " + y_cord + "}}\n";
-	task += 1;
+void stop(std::string task, std::string speed) {
+	step_list += signature(task, "1") + "\"stop\", " + speed + "}\n";
+	step += 1;
 }
 
-void idle(std::string amount) {
-	task_list += "task[" + std::to_string(task) + "] = {\"idle\", " + amount + "}\n";
-	task += 1;
+void launch(std::string task, std::string x_cord, std::string y_cord) {
+	step_list += signature(task, "1") + "\"launch\", {" + x_cord + ", " + y_cord + "}}\n";
+	step += 1;
 }
 
-void rotate(std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation) {
+void idle(std::string task, std::string amount) {
+	step_list += signature(task, "1") + "\"idle\", " + amount + "}\n";
+	step += 1;
+}
 
-	check_interact_distance(x_cord, y_cord, item, orientation);
+void rotate(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation) {
+
+	check_interact_distance(task, "1", x_cord, y_cord, item, orientation);
 
 	for (int i = 1; i < std::stoi(times); i++) {
-		task_list += "task[" + std::to_string(task) + "] = {\"rotate\", {" + x_cord + ", " + y_cord + "}}\n";
-		task += 1;
+		step_list += signature(task, std::to_string(i + 1)) + "\"rotate\", {" + x_cord + ", " + y_cord + "}}\n";
+		step += 1;
 	}
 }
 
@@ -366,7 +371,7 @@ std::vector<float> find_walk_location(float&min_x_edge, float&max_x_edge, float&
 	return {new_x_cord, new_y_cord};
 }
 
-void check_construction_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
+void check_construction_distance(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
 	static const float buffer = 0.45f; // this should be set correctly when you get a better understanding of how it is actually calculated in the game
 	static const float max_distance = 10.0f;
 
@@ -380,11 +385,11 @@ void check_construction_distance(std::string x_cord, std::string y_cord, std::st
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
-		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
+		walk(task, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]));
 	}	
 }
 
-void check_interact_distance(std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
+void check_interact_distance(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
 	x_building_size = building_size_list.find(building_name)->second[0];
 	y_building_size = building_size_list.find(building_name)->second[1];
 
@@ -411,11 +416,11 @@ void check_interact_distance(std::string x_cord, std::string y_cord, std::string
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
-		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
+		walk(task, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]));
 	}
 }
 
-void check_mining_distance(std::string x_cord, std::string y_cord) {
+void check_mining_distance(std::string task, std::string action, std::string x_cord, std::string y_cord) {
 	static const float buffer = 0.50f; // this should be set correctly when you get a better understanding of how it is actually calculated in the game
 	static const float max_distance = 2.7f;
 
@@ -427,7 +432,7 @@ void check_mining_distance(std::string x_cord, std::string y_cord) {
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
-		walk(std::to_string(coordinates[0]), std::to_string(coordinates[1]));
+		walk(task, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]));
 	}
 }
 
@@ -449,12 +454,12 @@ void find_coordinates(std::string& x_cord, std::string& y_cord, std::string& dir
 }
 
 std::string end_tasks() {
-	return task_list + "task[" + std::to_string(task) + "] = {\"break\"}\n\n" + "return task";
+	return step_list + "step[" + std::to_string(step) + "] = {\"break\"}\n\n" + "return step";
 }
 
 void clear_tasks() {
-	task = 1;
-	task_list = "local task = {}\n\n";
+	step = 1;
+	step_list = "local step = {}\n\n";
 	player_x_cord = 0.0f;
 	player_y_cord = 0.0f;
 }

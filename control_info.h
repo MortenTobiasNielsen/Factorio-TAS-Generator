@@ -13,13 +13,14 @@ std::string info = { R"info(
 
 std::string control_lua = R"control_lua(
 require "util"
-local task = require("tasks")
+local steps = require("steps")
 local walk_proximity = 0.1
 local debug_state = true
 
-local state = 1
-local state_reached = 0
+local step = 1
+local step_reached = 0
 local idle = 0
+local mining = 0
 
 local player
 local player_selection
@@ -27,7 +28,8 @@ local position
 local destination
 local target_inventory
 local walking
-local step
+local task
+local task_category
 local count
 local item
 local direction
@@ -51,7 +53,7 @@ local function check_selection_reach()
 
 	if not player_selection then
 		if not walking.walking then
-			debug(string.format("Step %d - %s: Cannot select entity", state, step))
+			debug(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot select entity", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -59,7 +61,7 @@ local function check_selection_reach()
 
 	if not player.can_reach_entity(player_selection) then
 		if not walking.walking then
-			debug(string.format("Step %d - %s: Cannot reach entity", state, step))
+			debug(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot reach entity", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -74,7 +76,7 @@ local function check_inventory()
 
 	if not target_inventory then
 		if not walking.walking then
-			debug(string.format("Step: %d - %s: Cannot get entity inventory", state, step))
+			debug(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot get entity inventory", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -84,7 +86,7 @@ local function check_inventory()
 end
 
 -- Place an item from the character's inventory into an entity's inventory
--- Returns false on failure to prevent advancing state until within reach
+-- Returns false on failure to prevent advancing step until within reach
 -- It is possible to put 0 items if none are in the character's inventory
 local function put()
 
@@ -103,14 +105,14 @@ local function put()
 	end
 
     if amount == 0 then
-		debug(string.format("Step %d - Put: Nothing to put", state))
+		debug(string.format("Task: %s, Action: %s, Step: %d - Put: Nothing to put", task[1], task[2], step))
 		return true
 	end
 
 	amount = target_inventory.insert{name=item, count=amount}
 
 	if amount == 0 then
-		debug(string.format("Step %d - Put: Entity is already full", state))
+		debug(string.format("Task: %s, Action: %s, Step: %d - Put: Entity is already full", task[1], task[2], step))
 		return true
 	end
 
@@ -119,7 +121,7 @@ local function put()
 end
 
 -- Place an item into the character's inventory from an entity's inventory
--- Returns false on failure to prevent advancing state until within reach
+-- Returns false on failure to prevent advancing step until within reach
 -- It is possible to take 0 items if none are in the entity's inventory
 local function take()
 
@@ -138,14 +140,14 @@ local function take()
 	end
 
 	if amount == 0 then
-		debug(string.format("Step %d - Take: Nothing to take", state))
+		debug(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
 
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
-		debug(string.format("Step %d - Take: Nothing to take", state))
+		debug(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
 
@@ -167,9 +169,9 @@ local function craft()
 
 		return true
     else
-        if(state > state_reached) then 
-            debug(string.format("Step %d - Craft: It is not possible to craft %s - Please check the script", state, item:gsub("-", " "):gsub("^%l", string.upper)))
-            state_reached = state
+        if(step > step_reached) then 
+            debug(string.format("Task: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+            step_reached = step
 		end
 		
         return false
@@ -180,9 +182,9 @@ end
 local function build()
 
 	if player.get_item_count(item) == 0 then
-		if(state > state_reached) then 
-			debug(string.format("Step %d - Build: %s not available", state, item:gsub("-", " "):gsub("^%l", string.upper)))
-			state_reached = state
+		if(step > step_reached) then 
+			debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s not available", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			step_reached = step
 		end
 
 		return false
@@ -191,7 +193,7 @@ local function build()
 	if player.can_place_entity{name = item, position = position} then
 		if player.surface.can_fast_replace{name = item, position = position, direction = direction, force = "player"} then
 			if player.surface.create_entity{name = item, position = position, direction = direction, force="player", fast_replace=true, player=player} then
-				state = state - 1
+				step = step - 1
 				player.remove_item({name = item, count = 1})
 				return true
 			end
@@ -204,7 +206,7 @@ local function build()
 
 	else 
 		if not walking.walking then
-			debug(string.format("Step %d - Build: %s cannot be placed", state, item:gsub("-", " "):gsub("^%l", string.upper)))
+			debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 		end
 
 		return false
@@ -276,7 +278,7 @@ local function speed(speed)
 end
 
 -- Set the inventory slot space on chests (and probably other items, which are untested)
--- Returns false on failure to prevent advancing state until within reach
+-- Returns false on failure to prevent advancing step until within reach
 local function limit()
 	if not check_selection_reach() then
 		return false
@@ -348,7 +350,7 @@ local function drop()
 end
 
 -- Manually launch the rocket
--- Returns false on failure to prevent advancing state until the launch succeeds
+-- Returns false on failure to prevent advancing step until the launch succeeds
 local function launch()
 	if not check_selection_reach() then
 		return false
@@ -357,102 +359,115 @@ local function launch()
 	return player_selection.launch_rocket()
 end
 
--- Routing function to perform one of the many available tasks
--- True: Indicates the calling function should advance the state. 
--- False: Indicates the calling function should not advance state.
-local function doTask(task)
-	if task[1] == "craft" then
-		step = "Craft"
-		count = task[2]
-		item = task[3]
+-- Routing function to perform one of the many available steps
+-- True: Indicates the calling function should advance the step. 
+-- False: Indicates the calling function should not advance step.
+local function doStep(steps)
+	if steps[2] == "craft" then
+        task_category = "Craft"
+        task = steps[1]
+		count = steps[3]
+		item = steps[4]
 
 		return craft()
 
-	elseif task[1] == "build" then
-		step = "Build"
-		position = task[2]
-		item = task[3]
-		direction = task[4]
+	elseif steps[2] == "build" then
+        task_category = "Build"
+        task = steps[1]
+		position = steps[3]
+		item = steps[4]
+		direction = steps[5]
 
 		return build()
 
-	elseif task[1] == "take" then
-		step = "Take"
-		position = task[2]
-		item = task[3]
-		amount = task[4]
-		slot = task[5]
+	elseif steps[2] == "take" then
+        task_category = "Take"
+        task = steps[1]
+		position = steps[3]
+		item = steps[4]
+		amount = steps[5]
+		slot = steps[6]
 
 		return take()
 
-	elseif task[1] == "put" then
-		step = "Put"
-		position = task[2]
-		item = task[3]
-		amount = task[4]
-		slot = task[5]
+	elseif steps[2] == "put" then
+        task_category = "Put"
+        task = steps[1]
+		position = steps[3]
+		item = steps[4]
+		amount = steps[5]
+		slot = steps[6]
 
-		return put(task[2], task[3], task[4], task[5])
+		return put()
 
-	elseif task[1] == "rotate" then
-		step = "Rotate"
-		position = task[2]
+	elseif steps[2] == "rotate" then
+        task_category = "Rotate"
+        task = steps[1]
+		position = steps[3]
 
 		return rotate()
 
-	elseif task[1] == "tech" then
-		step = "Tech"
-		item = task[2]
+	elseif steps[2] == "tech" then
+        task_category = "Tech"
+        task = steps[1]
+		item = steps[3]
 
 		return tech()
 
-	elseif task[1] == "recipe" then
-		step = "Recipe"
-		position = task[2]
-		item = task[3]
+	elseif steps[2] == "recipe" then
+        task_category = "Recipe"
+        task = steps[1]
+		position = steps[3]
+		item = steps[4]
 
 		return recipe()
 
-	elseif task[1] == "limit" then
-		step = "limit"
-		position = task[2]
-		amount = task[3]
-		slot = task[4]
+	elseif steps[2] == "limit" then
+        task_category = "limit"
+        task = steps[1]
+		position = steps[3]
+		amount = steps[4]
+		slot = steps[5]
 		
 		return limit()
 
-	elseif task[1] == "priority" then
-		step = "priority"
-		position = task[2]
-		input = task[3]
-		output = task[4]
+	elseif steps[2] == "priority" then
+        task_category = "priority"
+        task = steps[1]
+		position = steps[3]
+		input = steps[4]
+		output = steps[5]
 
 		return priority()
 
-	elseif task[1] == "filter" then
-		step = "filter"
-		position = task[2]
-		item = task[3]
-		slot = task[4]
-		type = task[5]
+	elseif steps[2] == "filter" then
+        task_category = "filter"
+        task = steps[1]
+		position = steps[3]
+		item = steps[4]
+		slot = steps[5]
+		type = steps[6]
 
 		return filter()
 
-	elseif task[1] == "drop" then
-		drop_position = task[2]
-		drop_item = task[3]
+    elseif steps[2] == "drop" then
+        task = steps[1]
+		drop_position = steps[3]
+		drop_item = steps[4]
 		return drop()
 
-	elseif task[1] == "pick" then
+	elseif steps[2] == "pick" then
 		player.picking_state = true
 		return true
 
-	elseif task[1] == "idle" then
-		idle = task[2]
+	elseif steps[2] == "idle" then
+		idle = steps[3]
 		return true
 	
-	elseif task[1] == "launch" then
-		position = task[2]
+	elseif steps[2] == "launch" then
+		task_category = "launch"
+        task = steps[1]
+		position = steps[3]
 
 		return launch()
 	end
@@ -470,24 +485,24 @@ script.on_event(defines.events.on_tick, function(event)
 
 	position = player.position
 
-	if task[state] == nil or task[state][1] == "break" then
+	if steps[step] == nil or steps[step][2] == "break" then
 		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", position.x, position.y, player.online_time / 60, player.online_time))		
 		debug_state = false
 		return
 	end
 
-	if (task[state][1] == "stop") then
-		speed(task[state][2])
-		debug(string.format("Script stopped - Game speed: %d", task[state][2]))
+	if (steps[step][2] == "stop") then
+		speed(steps[step][3])
+		debug(string.format("Script stopped - Game speed: %d", steps[step][2]))
 		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", position.x, position.y, player.online_time / 60, player.online_time))	
 		debug_state = false
 		return
 	end
 
-	if (task[state][1] == "speed") then
-		debug(string.format("Game speed: %d", task[state][2]))
-		speed(task[state][2])
-		state = state + 1
+	if (steps[step][2] == "speed") then
+		debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+		speed(steps[step][3])
+		step = step + 1
 	end
 
 	-- primary movement
@@ -496,25 +511,38 @@ script.on_event(defines.events.on_tick, function(event)
 
 		if idle > 0 then
 			idle = idle - 1
-		elseif task[state][1] == "walk" then
-			destination = {x = task[state][2][1], y = task[state][2][2]}
+		elseif steps[step][2] == "walk" then
+			destination = {x = steps[step][3][1], y = steps[step][3][2]}
 			walking = walk(destination.x - position.x, destination.y - position.y)
-			state = state + 1
+			step = step + 1
 
-		elseif task[state][1] == "mine" then
-			player.update_selected_entity(task[state][2])
-			player.mining_state = {mining = true, position = task[state][2]}
+        elseif steps[step][2] == "mine" then
+            
+			player.update_selected_entity(steps[step][3])
 
-		elseif doTask(task[state]) then
-			-- Do task while standing still
-			state = state + 1
+			player.mining_state = {mining = true, position = steps[step][3]}
+
+			mining = mining + 1
+			if mining > 5 then
+				if player.character_mining_progress == 0 then
+					debug(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					debug_state = false
+				else 
+					mining = 0
+				end
+			end
+			
+
+		elseif doStep(steps[step]) then
+			-- Do step while standing still
+			step = step + 1
 
 		end
 	else
-		if task[state][1] ~= "walk" and task[state][1] ~= "mine" and task[state][1] ~= "idle" and task[state][1] ~= "pick" then
-			if doTask(task[state]) then
-				-- Do task while walking
-				state = state + 1
+		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
+			if doStep(steps[step]) then
+				-- Do step while walking
+				step = step + 1
 			end
 		end
 	end
@@ -524,7 +552,7 @@ end)
 
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
-	if (task[state][1] == "break" or task[state][1] == "stop") then
+	if (steps[step][2] == "break" or steps[step][2] == "stop") then
 		return
 	end
 
@@ -544,7 +572,8 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 		player.insert{name="stone", count=20}
 	end	
 
-	state = state + 1
+	step = step + 1
+	mining = 0
 end)
 
 -- Skips the freeplay intro
@@ -568,5 +597,4 @@ script.on_event(defines.events.on_research_finished, function(event)
 	
 
 end)
-
 )control_lua";

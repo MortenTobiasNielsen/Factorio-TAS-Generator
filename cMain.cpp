@@ -2208,44 +2208,44 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 		if (task == "Game Speed") {
-			speed(units);
+			speed(std::to_string(i + 1), units);
 
 		} else if (task == "Walk") {
-			walk(x_cord, y_cord);
+			walk(std::to_string(i+1), "1", x_cord, y_cord);
 
 		} else if (task == "Mine") {
 			if (find_old_orientation(i)) {
-				mining(x_cord, y_cord, units, building, build_orientation, true);
+				mining(std::to_string(i +1), x_cord, y_cord, units, building, build_orientation, true);
 			} else {
-				mining(x_cord, y_cord, units, "", "", false);
+				mining(std::to_string(i +1), x_cord, y_cord, units, "", "", false);
 			}
 
 		} else if (task == "Rotate") {
 			find_old_orientation(i);
 
-			rotate(x_cord, y_cord, units, item, build_orientation);
+			rotate(std::to_string(i +1), x_cord, y_cord, units, item, build_orientation);
 
 		} else if (task == "Craft") {
 			if (units == "All") {
-				craft("-1", item);
+				craft(std::to_string(i +1), "-1", item);
 			} else {
-				craft(units, item);
+				craft(std::to_string(i +1), units, item);
 			}
 			
 		} else if (task == "Tech") {
-			tech(item);
+			tech(std::to_string(i + 1), item);
 
 		} else if (task == "Build") {
-			row_build(x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
+			row_build(std::to_string(i +1), x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Take") {
 			from_into = build_orientation;
 			from_into = extract_define(i);
 
 			if (units == "All") {
-				row_take(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_take(std::to_string(i +1), x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_take(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_take(std::to_string(i +1), x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
 
 		} else if (task == "Put") {
@@ -2253,24 +2253,24 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			from_into = extract_define(i);
 
 			if (units == "All") {
-				row_put(x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_put(std::to_string(i +1), x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_put(x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_put(std::to_string(i +1), x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
 
 		} else if (task == "Recipe") {
 			find_old_orientation(i);
 
-			row_recipe(x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
+			row_recipe(std::to_string(i +1), x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
 
 		} else if (task == "Stop") {
-			stop(units);
+			stop(std::to_string(i + 1), units);
 
 		} else if (task == "Limit") {
 			from_into = build_orientation;
 			from_into = extract_define(i);
 
-			row_limit(x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_limit(std::to_string(i +1), x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Priority") {
 			find_old_orientation(i);
 
@@ -2279,26 +2279,26 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
 
-			row_priority(x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_priority(std::to_string(i +1), x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Filter") {
 			find_old_orientation(i);
 
 			if (check_item(building, splitter_list)) {
-				row_filter(x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_filter(std::to_string(i +1), x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_filter(x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_filter(std::to_string(i +1), x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}			
 		} else if (task == "Drop") {
-			row_drop(x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
+			row_drop(std::to_string(i +1), x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Pick up") {
-			row_pick(x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
+			row_pick(std::to_string(i +1), x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Launch") {
-			launch(x_cord, y_cord);
+			launch(std::to_string(i + 1), x_cord, y_cord);
 
 		} else if (task== "Idle") {
-			idle(units);
+			idle(std::to_string(i + 1), units);
 
 		}
 	}
@@ -2313,7 +2313,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	saver << info;
 	saver.close();
 
-	saver.open(generate_code_folder_location + "\\tasks.lua");
+	saver.open(generate_code_folder_location + "\\steps.lua");
 
 	saver << end_tasks();
 
