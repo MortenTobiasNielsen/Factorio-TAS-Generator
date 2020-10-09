@@ -246,6 +246,8 @@ private:
 	bool update_priority();
 	bool update_filter();
 	void Update_rotation();
+
+	void background_colour_update(wxGrid* grid, int row, std::string task);
 	
 	void update_group_grid();
 	void update_template_grid();

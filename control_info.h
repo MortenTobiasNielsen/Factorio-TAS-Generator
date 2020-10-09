@@ -12,7 +12,6 @@ std::string info = { R"info(
 };
 
 std::string control_lua = R"control_lua(
-require "util"
 local steps = require("steps")
 local walk_proximity = 0.1
 local debug_state = true
@@ -261,7 +260,11 @@ local function recipe()
 		return false
 	end
 
-	player_selection.set_recipe(item)
+	local items_returned = player_selection.set_recipe(item)
+
+	for name, count in pairs (items_returned) do
+		player.insert{name = name, count = count}
+	end
 
 	return true
 end

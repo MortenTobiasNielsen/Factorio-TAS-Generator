@@ -119,6 +119,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	// set buildings grid formatting
 	grid_buildings->SetColFormatFloat(0, 4, 1);
 	grid_buildings->SetColFormatFloat(1, 4, 1);
+	grid_buildings->SetSelectionMode(grid_buildings->wxGridSelectRows);
 
 	// set group grid formatting
 	grid_group->SetColFormatFloat(1, 4, 1);
@@ -277,6 +278,7 @@ void cMain::OnDropChosen(wxCommandEvent& event) {
 
 void cMain::OnStopChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.stop);
+	rbtn_stop->SetValue(true);
 	event.Skip();
 }
 
@@ -419,7 +421,19 @@ bool cMain::change_row(wxGrid* grid) {
 	grid->SetCellValue(row_num, 7, building_size);
 	grid->SetCellValue(row_num, 8, amount_of_buildings);
 
+	background_colour_update(grid, row_num, task);
+
 	return true;
+}
+
+void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
+	if (task == "Stop") {
+		grid->SetCellBackgroundColour(row, 0, *wxRED);
+	} else if (task == "Game Speed") {
+		grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
+	} else {
+		grid->SetCellBackgroundColour(row, 0, *wxWHITE);
+	}
 }
 
 void cMain::update_tasks_grid() {
@@ -450,10 +464,12 @@ void cMain::update_tasks_grid() {
 		it1 = tasks_data_to_save.begin();
 		it1 += row_num;
 
-		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 	} else {
-		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
-	}	
+		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+	}
+	
+	background_colour_update(grid_tasks, row_num, task);
 }
 
 void cMain::change_task() {
@@ -474,7 +490,7 @@ void cMain::change_task() {
 	grid_tasks->SetCellValue(row_num, 7, building_size);
 	grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
 
-	tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+	tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 
 	update_buildings_grid_from_scratch();
 }
@@ -1079,6 +1095,8 @@ void cMain::update_group_grid() {
 		grid_group->SetCellValue(i, 6, seglist[6]);
 		grid_group->SetCellValue(i, 7, seglist[7]);
 		grid_group->SetCellValue(i, 8, seglist[8]);
+
+		background_colour_update(grid_group, i, seglist[0]);
 	}
 }
 
@@ -1108,6 +1126,8 @@ void cMain::update_template_grid() {
 		grid_template->SetCellValue(i, 6, seglist[6]);
 		grid_template->SetCellValue(i, 7, seglist[7]);
 		grid_template->SetCellValue(i, 8, seglist[8]);
+
+		background_colour_update(grid_template, i, seglist[0]);
 	}
 }
 
@@ -1166,7 +1186,7 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 
 	if (setup_for_task_grid()) {
 		if (change_row(grid_tasks)) {
-			tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+			tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 
 			update_buildings_grid_from_scratch();
 		}
@@ -1185,7 +1205,7 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 
 void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 
-	row_count = cmb_choose_group->GetCount();
+	group_row_count = cmb_choose_group->GetCount();
 	group_name = cmb_choose_group->GetValue().ToStdString();
 
 	if (group_name == "") {
@@ -1193,7 +1213,7 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	for (int i = 0; i < row_count; i++) {
+	for (int i = 0; i < group_row_count; i++) {
 		if (group_name == cmb_choose_group->GetString(i).ToStdString()) {
 			wxMessageBox("Group names has to be unique - please write a new name in the Choose Group field", "Group names should be unique");
 			return;
@@ -1211,13 +1231,13 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
 			return;
 		}
-		row_num = *grid_group->GetSelectedRows().begin();
-		row_count = grid_group->GetSelectedRows().GetCount();
+		group_row_num = *grid_group->GetSelectedRows().begin();
+		group_row_count = grid_group->GetSelectedRows().GetCount();
 	} else {
-		row_count = grid_group->GetNumberRows();
+		group_row_count = grid_group->GetNumberRows();
 
-		if (row_count) {
-			row_num = 0;
+		if (group_row_count) {
+			group_row_num = 0;
 		} else {
 			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
 			event.Skip();
@@ -1225,7 +1245,7 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 		}
 	}
 
-	for (int i = row_num; i < row_num + row_count; i++) {
+	for (int i = group_row_num; i < group_row_num + group_row_count; i++) {
 		task = grid_group->GetCellValue(i, 0).ToStdString();
 		x_cord = grid_group->GetCellValue(i, 1).ToStdString();
 		y_cord = grid_group->GetCellValue(i, 2).ToStdString();
@@ -1237,6 +1257,8 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
 
 		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+	
+		background_colour_update(grid_group, i, task);
 	}
 	
 	group_map.insert(std::pair<std::string, std::vector<std::string>> (group_name, group_list));
@@ -1272,34 +1294,39 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	static int row;
-
 	if (grid_group->IsSelection()) {
 		if (!grid_group->GetSelectedRows().begin()) {
 			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
 			return;
 		}
-		row = *grid_group->GetSelectedRows().begin();
+		group_row_num = *grid_group->GetSelectedRows().begin();
 	} else {
-		row = grid_group->GetNumberRows();
+		group_row_num = grid_group->GetNumberRows();
 	}
 
 	row_num = *grid_tasks->GetSelectedRows().begin();
 	row_count = grid_tasks->GetSelectedRows().GetCount();
 
-	grid_group->InsertRows(row, row_count);
+	grid_group->InsertRows(group_row_num, row_count);
 
-	for (int i = row_num; i < (row_num + row_count); i++) {
+	int total_rows = row_num + row_count;
+	group_row_num = group_row_num - row_num;
 
-		grid_group->SetCellValue(row + i - row_num, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 1, grid_tasks->GetCellValue(i, 1).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 2, grid_tasks->GetCellValue(i, 2).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 3, grid_tasks->GetCellValue(i, 3).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 4, grid_tasks->GetCellValue(i, 4).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 5, grid_tasks->GetCellValue(i, 5).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 6, grid_tasks->GetCellValue(i, 6).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
-		grid_group->SetCellValue(row + i - row_num, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
+	for (int i = row_num; i < total_rows; i++) {
+
+		row_num = group_row_num + i;
+
+		grid_group->SetCellValue(group_row_num + i, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 1, grid_tasks->GetCellValue(i, 1).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 2, grid_tasks->GetCellValue(i, 2).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 3, grid_tasks->GetCellValue(i, 3).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 4, grid_tasks->GetCellValue(i, 4).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 5, grid_tasks->GetCellValue(i, 5).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 6, grid_tasks->GetCellValue(i, 6).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
+		grid_group->SetCellValue(group_row_num + i, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
+
+		background_colour_update(grid_group, row_num, grid_tasks->GetCellValue(i, 0).ToStdString());
 	}
 
 	if (!(group_map.find(cmb_choose_group->GetValue().ToStdString()) == group_map.end())) {
@@ -1318,16 +1345,14 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 		}
 	}
 
-	int row_num_group;
-	int row_count_group;
-	int counter = 0;
+	bool check = false;
 
 	for (auto block : grid_group->GetSelectedRowBlocks()) {
-		row_num_group = block.GetTopRow();
-		row_count_group = block.GetBottomRow() - row_num_group + 1;
-		
-		for (int i = row_num_group; i < (row_num_group + row_count_group); i++) {
-			grid_tasks->InsertRows(row_num + counter);
+		group_row_num = block.GetTopRow();
+		group_row_count = block.GetBottomRow() - group_row_num + 1;
+
+		for (int i = group_row_num; i < (group_row_num + group_row_count); i++) {
+			grid_tasks->InsertRows(row_num);
 
 			task = grid_group->GetCellValue(i, 0).ToStdString();
 			x_cord = grid_group->GetCellValue(i, 1).ToStdString();
@@ -1339,35 +1364,39 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 			building_size = grid_group->GetCellValue(i, 7).ToStdString();
 			amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
 
-			grid_tasks->SetCellValue(row_num + counter, 0, grid_group->GetCellValue(i, 0));
-			grid_tasks->SetCellValue(row_num + counter, 1, grid_group->GetCellValue(i, 1));
-			grid_tasks->SetCellValue(row_num + counter, 2, grid_group->GetCellValue(i, 2));
-			grid_tasks->SetCellValue(row_num + counter, 3, grid_group->GetCellValue(i, 3));
-			grid_tasks->SetCellValue(row_num + counter, 4, grid_group->GetCellValue(i, 4));
-			grid_tasks->SetCellValue(row_num + counter, 5, grid_group->GetCellValue(i, 5));
-			grid_tasks->SetCellValue(row_num + counter, 6, grid_group->GetCellValue(i, 6));
-			grid_tasks->SetCellValue(row_num + counter, 7, grid_group->GetCellValue(i, 7));
-			grid_tasks->SetCellValue(row_num + counter, 8, grid_group->GetCellValue(i, 8));
+			grid_tasks->SetCellValue(row_num, 0, grid_group->GetCellValue(i, 0));
+			grid_tasks->SetCellValue(row_num, 1, grid_group->GetCellValue(i, 1));
+			grid_tasks->SetCellValue(row_num, 2, grid_group->GetCellValue(i, 2));
+			grid_tasks->SetCellValue(row_num, 3, grid_group->GetCellValue(i, 3));
+			grid_tasks->SetCellValue(row_num, 4, grid_group->GetCellValue(i, 4));
+			grid_tasks->SetCellValue(row_num, 5, grid_group->GetCellValue(i, 5));
+			grid_tasks->SetCellValue(row_num, 6, grid_group->GetCellValue(i, 6));
+			grid_tasks->SetCellValue(row_num, 7, grid_group->GetCellValue(i, 7));
+			grid_tasks->SetCellValue(row_num, 8, grid_group->GetCellValue(i, 8));
 
 			it1 = tasks_data_to_save.begin();
-			it1 += row_num + counter;
+			it1 += row_num;
 
-			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 
-			counter += 1;
+			background_colour_update(grid_tasks, row_num, task);
+
+			row_num +=1;
+
+			check = true;
 		}		
 	}
 
-	if (counter > 0) {
+	if (check) {
 		update_buildings_grid_from_scratch();
 		return;
 	}
 
-	row_num_group = 0;
-	row_count_group = grid_group->GetNumberRows();
+	group_row_num = 0;
+	group_row_count = grid_group->GetNumberRows();
 
-	for (int i = row_num_group; i < (row_num_group + row_count_group); i++) {
-		grid_tasks->InsertRows(row_num + i);
+	for (int i = group_row_num; i < (group_row_num + group_row_count); i++) {
+		grid_tasks->InsertRows(row_num);
 
 		task = grid_group->GetCellValue(i, 0).ToStdString();
 		x_cord = grid_group->GetCellValue(i, 1).ToStdString();
@@ -1379,20 +1408,24 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 		building_size = grid_group->GetCellValue(i, 7).ToStdString();
 		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
 
-		grid_tasks->SetCellValue(row_num + i, 0, grid_group->GetCellValue(i, 0));
-		grid_tasks->SetCellValue(row_num + i, 1, grid_group->GetCellValue(i, 1));
-		grid_tasks->SetCellValue(row_num + i, 2, grid_group->GetCellValue(i, 2));
-		grid_tasks->SetCellValue(row_num + i, 3, grid_group->GetCellValue(i, 3));
-		grid_tasks->SetCellValue(row_num + i, 4, grid_group->GetCellValue(i, 4));
-		grid_tasks->SetCellValue(row_num + i, 5, grid_group->GetCellValue(i, 5));
-		grid_tasks->SetCellValue(row_num + i, 6, grid_group->GetCellValue(i, 6));
-		grid_tasks->SetCellValue(row_num + i, 7, grid_group->GetCellValue(i, 7));
-		grid_tasks->SetCellValue(row_num + i, 8, grid_group->GetCellValue(i, 8));
+		grid_tasks->SetCellValue(row_num, 0, grid_group->GetCellValue(i, 0));
+		grid_tasks->SetCellValue(row_num, 1, grid_group->GetCellValue(i, 1));
+		grid_tasks->SetCellValue(row_num, 2, grid_group->GetCellValue(i, 2));
+		grid_tasks->SetCellValue(row_num, 3, grid_group->GetCellValue(i, 3));
+		grid_tasks->SetCellValue(row_num, 4, grid_group->GetCellValue(i, 4));
+		grid_tasks->SetCellValue(row_num, 5, grid_group->GetCellValue(i, 5));
+		grid_tasks->SetCellValue(row_num, 6, grid_group->GetCellValue(i, 6));
+		grid_tasks->SetCellValue(row_num, 7, grid_group->GetCellValue(i, 7));
+		grid_tasks->SetCellValue(row_num, 8, grid_group->GetCellValue(i, 8));
 
 		it1 = tasks_data_to_save.begin();
-		it1 += row_num + i;
+		it1 += row_num;
 
-		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+		
+		background_colour_update(grid_tasks, row_num, task);
+
+		row_num += 1;
 	}
 	
 	update_buildings_grid_from_scratch();
@@ -1409,7 +1442,7 @@ void cMain::OnGroupChangeClicked(wxCommandEvent& event) {
 		group_name = cmb_choose_group->GetValue().ToStdString();
 
 		if (!(group_map.find(group_name) == group_map.end())) {
-			group_map[group_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+			group_map[group_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 		}
 	}
 
@@ -1594,24 +1627,23 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	static int row;
-	static float x_offset;
-	static float y_offset;
-
 	if (grid_template->IsSelection()) {
 		if (!grid_template->GetSelectedRows().begin()) {
 			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
 			return;
 		}
-		row = *grid_template->GetSelectedRows().begin();
+		template_row_num = *grid_template->GetSelectedRows().begin();
 	} else {
-		row = grid_template->GetNumberRows();
+		template_row_num = grid_template->GetNumberRows();
 	}
 
 	row_num = *grid_tasks->GetSelectedRows().begin();
 	row_count = grid_tasks->GetSelectedRows().GetCount();
 
-	grid_template->InsertRows(row, row_count);
+	grid_template->InsertRows(template_row_num, row_count);
+
+	static float x_offset;
+	static float y_offset;
 
 	for (int i = row_num; i < (row_num + row_count); i++) {
 
@@ -1630,15 +1662,19 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 
 		}
 
-		grid_template->SetCellValue(row + i - row_num, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
-		grid_template->SetCellValue(row + i - row_num, 1, x_cord);
-		grid_template->SetCellValue(row + i - row_num, 2, y_cord);
-		grid_template->SetCellValue(row + i - row_num, 3, grid_tasks->GetCellValue(i, 3).ToStdString());
-		grid_template->SetCellValue(row + i - row_num, 4, grid_tasks->GetCellValue(i, 4).ToStdString());
-		grid_template->SetCellValue(row + i - row_num, 5, grid_tasks->GetCellValue(i, 5).ToStdString());
-		grid_template->SetCellValue(row + i - row_num, 6, grid_tasks->GetCellValue(i, 6).ToStdString());
-		grid_template->SetCellValue(row + i - row_num, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
-		grid_template->SetCellValue(row + i - row_num, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
+		grid_template->SetCellValue(template_row_num, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
+		grid_template->SetCellValue(template_row_num, 1, x_cord);
+		grid_template->SetCellValue(template_row_num, 2, y_cord);
+		grid_template->SetCellValue(template_row_num, 3, grid_tasks->GetCellValue(i, 3).ToStdString());
+		grid_template->SetCellValue(template_row_num, 4, grid_tasks->GetCellValue(i, 4).ToStdString());
+		grid_template->SetCellValue(template_row_num, 5, grid_tasks->GetCellValue(i, 5).ToStdString());
+		grid_template->SetCellValue(template_row_num, 6, grid_tasks->GetCellValue(i, 6).ToStdString());
+		grid_template->SetCellValue(template_row_num, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
+		grid_template->SetCellValue(template_row_num, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
+
+		background_colour_update(grid_template, template_row_num, grid_tasks->GetCellValue(i, 0).ToStdString());
+
+		template_row_num += 1;
 	}
 
 	if (!(template_map.find(cmb_choose_template->GetValue().ToStdString()) == template_map.end())) {
@@ -1659,18 +1695,16 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 		}
 	}
 
-	int row_num_template;
-	int row_count_template;
-	int counter = 0;
+	bool check = false;
 	static float x_offset;
 	static float y_offset;
 
 	for (auto block : grid_template->GetSelectedRowBlocks()) {
-		row_num_template = block.GetTopRow();
-		row_count_template = block.GetBottomRow() - row_num_template + 1;
+		template_row_num = block.GetTopRow();
+		template_row_count = block.GetBottomRow() - template_row_num + 1;
 
-		for (int i = row_num_template; i < (row_num_template + row_count_template); i++) {
-			grid_tasks->InsertRows(row_num + counter);
+		for (int i = template_row_num; i < (template_row_num + template_row_count); i++) {
+			grid_tasks->InsertRows(row_num);
 
 			task = grid_template->GetCellValue(i, 0).ToStdString();
 			x_cord = grid_template->GetCellValue(i, 1).ToStdString();
@@ -1682,44 +1716,47 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 			building_size = grid_template->GetCellValue(i, 7).ToStdString();
 			amount_of_buildings = grid_template->GetCellValue(i, 8).ToStdString();
 
-			x_cord_float = std::stof(x_cord);
-			y_cord_float = std::stof(y_cord);
+			if (x_cord != "" && y_cord != "") {
+				x_offset = wxAtof(txt_template_x_offset->GetValue());
+				y_offset = wxAtof(txt_template_y_offset->GetValue());
 
-			x_offset = wxAtof(txt_template_x_offset->GetValue());
-			y_offset = wxAtof(txt_template_y_offset->GetValue());
+				x_cord = std::to_string(x_cord_float + x_offset);
+				y_cord = std::to_string(y_cord_float + y_offset);
+			}
 
-			x_cord = std::to_string(x_cord_float + x_offset);
-			y_cord = std::to_string(y_cord_float + y_offset);
+			grid_tasks->SetCellValue(row_num, 0, task);
+			grid_tasks->SetCellValue(row_num, 1, x_cord);
+			grid_tasks->SetCellValue(row_num, 2, y_cord);
+			grid_tasks->SetCellValue(row_num, 3, units);
+			grid_tasks->SetCellValue(row_num, 4, item);
+			grid_tasks->SetCellValue(row_num, 5, build_orientation);
+			grid_tasks->SetCellValue(row_num, 6, direction_to_build);
+			grid_tasks->SetCellValue(row_num, 7, building_size);
+			grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
 
-			grid_tasks->SetCellValue(row_num + counter, 0, task);
-			grid_tasks->SetCellValue(row_num + counter, 1, x_cord);
-			grid_tasks->SetCellValue(row_num + counter, 2, y_cord);
-			grid_tasks->SetCellValue(row_num + counter, 3, units);
-			grid_tasks->SetCellValue(row_num + counter, 4, item);
-			grid_tasks->SetCellValue(row_num + counter, 5, build_orientation);
-			grid_tasks->SetCellValue(row_num + counter, 6, direction_to_build);
-			grid_tasks->SetCellValue(row_num + counter, 7, building_size);
-			grid_tasks->SetCellValue(row_num + counter, 8, amount_of_buildings);
+			background_colour_update(grid_tasks, row_num, task);
 
 			it1 = tasks_data_to_save.begin();
-			it1 += row_num + counter;
+			it1 += row_num;
 
-			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+			check = true;
 
-			counter += 1;
+			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+		
+			row_num += 1;
 		}
 	}
 
-	if (counter > 0) {
+	if (check) {
 		update_buildings_grid_from_scratch();
 		return;
 	}
 
-	row_num_template = 0;
-	row_count_template = grid_template->GetNumberRows();
+	template_row_num = 0;
+	template_row_count = grid_template->GetNumberRows();
 
-	for (int i = row_num_template; i < (row_num_template + row_count_template); i++) {
-		grid_tasks->InsertRows(row_num + i);
+	for (int i = template_row_num; i < (template_row_num + template_row_count); i++) {
+		grid_tasks->InsertRows(row_num);
 
 		task = grid_template->GetCellValue(i, 0).ToStdString();
 		x_cord = grid_template->GetCellValue(i, 1).ToStdString();
@@ -1731,29 +1768,32 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 		building_size = grid_template->GetCellValue(i, 7).ToStdString();
 		amount_of_buildings = grid_template->GetCellValue(i, 8).ToStdString();
 
-		x_cord_float = std::stof(x_cord);
-		y_cord_float = std::stof(y_cord);
+		if (x_cord != "" && y_cord != "") {
+			x_offset = wxAtof(txt_template_x_offset->GetValue());
+			y_offset = wxAtof(txt_template_y_offset->GetValue());
 
-		x_offset = wxAtof(txt_template_x_offset->GetValue());
-		y_offset = wxAtof(txt_template_y_offset->GetValue());
+			x_cord = std::to_string(x_cord_float + x_offset);
+			y_cord = std::to_string(y_cord_float + y_offset);
+		} 	
 
-		x_cord = std::to_string(x_cord_float + x_offset);
-		y_cord = std::to_string(y_cord_float + y_offset);
+		grid_tasks->SetCellValue(row_num, 0, task);
+		grid_tasks->SetCellValue(row_num, 1, x_cord);
+		grid_tasks->SetCellValue(row_num, 2, y_cord);
+		grid_tasks->SetCellValue(row_num, 3, units);
+		grid_tasks->SetCellValue(row_num, 4, item);
+		grid_tasks->SetCellValue(row_num, 5, build_orientation);
+		grid_tasks->SetCellValue(row_num, 6, direction_to_build);
+		grid_tasks->SetCellValue(row_num, 7, building_size);
+		grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
 
-		grid_tasks->SetCellValue(row_num + i, 0, task);
-		grid_tasks->SetCellValue(row_num + i, 1, x_cord);
-		grid_tasks->SetCellValue(row_num + i, 2, y_cord);
-		grid_tasks->SetCellValue(row_num + i, 3, units);
-		grid_tasks->SetCellValue(row_num + i, 4, item);
-		grid_tasks->SetCellValue(row_num + i, 5, build_orientation);
-		grid_tasks->SetCellValue(row_num + i, 6, direction_to_build);
-		grid_tasks->SetCellValue(row_num + i, 7, building_size);
-		grid_tasks->SetCellValue(row_num + i, 8, amount_of_buildings);
+		background_colour_update(grid_tasks, row_num, task);
 
 		it1 = tasks_data_to_save.begin();
-		it1 += row_num + i;
+		it1 += row_num;
 
-		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+	
+		row_num += 1;
 	}
 
 	update_buildings_grid_from_scratch();
@@ -1770,7 +1810,7 @@ void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event) {
 		template_name = cmb_choose_template->GetValue().ToStdString();
 
 		if (!(template_map.find(template_name) == template_map.end())) {
-			template_map[template_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+			template_map[template_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 		}		
 	}
 
@@ -2746,8 +2786,8 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
 	} else if (task == "Stop") {
-		OnStopChosen(event);
 		txt_units->SetValue(units);
+		OnStopChosen(event);
 	} else if (task == "Limit") {
 		OnLimitMenuSelected(event);
 		txt_x_cord->SetValue(x_cord);
@@ -3143,7 +3183,7 @@ void cMain::update_future_rotate_tasks() {
 				building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 				amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
-				tasks_data_to_save[i] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings);
+				tasks_data_to_save[i] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 			}
 		}
 	}
