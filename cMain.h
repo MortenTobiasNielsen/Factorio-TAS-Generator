@@ -269,6 +269,7 @@ private:
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item);
 	bool check_buildings_grid();
+	bool check_mine_building();
 
 	bool save_file(bool save_as);
 

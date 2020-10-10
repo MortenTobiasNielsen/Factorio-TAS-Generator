@@ -583,6 +583,10 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 					break;
 				}
 			}
+		} else if (task == "Mine") {
+			if (check_mine_building()) {
+				grid_buildings->DeleteRows(building_row_num);
+			}
 		}
 	}
 }
@@ -595,11 +599,7 @@ bool cMain::update_building_orientation() {
 			find_new_orientation();
 			return true;
 
-		} else if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Mine") {
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
-				return false;
-			}
-		}
+		} 
 	}
 
 	return false;
@@ -3031,9 +3031,27 @@ bool cMain::check_buildings_grid() {
 
 		extract_parameters();
 
-		if (task == "Mine") {
-			if (find_building()) {
-				grid_buildings->DeleteRows(building_row_num);
+		if (task == "Mine")  {
+			if (check_mine_building()) {
+				int total_rows = grid_tasks->GetNumberRows();
+
+				for (int i = row_num; i < total_rows; i++) {
+					if (grid_tasks->GetCellValue(i, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+						if (wxMessageBox("Are you sure you want to remove this building?\nAll future tasks associated with the building will be removed to avoid issues.", "The building you are removing has tasks associated with it", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
+							grid_buildings->DeleteRows(building_row_num);
+							for (int j = i; j < total_rows; j++) {
+								if (grid_tasks->GetCellValue(i, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+									grid_tasks->DeleteRows(j);
+									j--;
+									total_rows--;
+								}
+							}
+							
+							return true;
+						}
+						return false;
+					}
+				}
 			}
 
 		} else if (task == "Recipe") {
@@ -3065,7 +3083,7 @@ bool cMain::check_buildings_grid() {
 
 		} else if (task == "Rotate") {
 			if (!Update_rotation()) {
-				wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 				return false;
 			}
 
@@ -3081,6 +3099,14 @@ bool cMain::check_buildings_grid() {
 	}
 
 	return true;
+}
+
+bool cMain::check_mine_building() {
+	amount_of_buildings = "1";
+	if (find_building()) {
+		return true;
+	}
+	return false;
 }
 
 bool cMain::save_file(bool save_as) {
