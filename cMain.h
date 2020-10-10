@@ -241,8 +241,8 @@ private:
 	void update_tasks_grid();
 	void change_task();
 	void update_buildings_grid();
-	void update_buildings_grid_from_scratch();
-	void Update_buildings();
+	void update_buildings_grid_from_scratch(int start_row, int end_row);
+	void update_buildings();
 	bool update_building_orientation();
 	bool update_recipe();
 	bool update_limit();
@@ -267,6 +267,7 @@ private:
 	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item);
+	bool check_buildings_grid();
 
 	bool save_file(bool save_as);
 
