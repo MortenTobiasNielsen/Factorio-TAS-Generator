@@ -191,6 +191,7 @@ private:
 	std::string building_size;
 	std::string amount_of_buildings;
 	std::string building;
+	std::string new_orientation;
 
 	std::string x_cord_origen;
 	std::string y_cord_origen;
@@ -248,7 +249,7 @@ private:
 	bool update_limit();
 	bool update_priority();
 	bool update_filter();
-	void Update_rotation();
+	bool Update_rotation();
 
 	void background_colour_update(wxGrid* grid, int row, std::string task);
 	
