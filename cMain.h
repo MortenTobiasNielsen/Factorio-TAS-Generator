@@ -192,6 +192,9 @@ private:
 	std::string amount_of_buildings;
 	std::string building;
 
+	std::string x_cord_origen;
+	std::string y_cord_origen;
+
 	std::string limit;
 	std::string recipe;
 	std::string priority_in;
@@ -239,7 +242,7 @@ private:
 	void change_task();
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch();
-	void building_row();
+	void Update_buildings();
 	bool update_building_orientation();
 	bool update_recipe();
 	bool update_limit();
@@ -284,10 +287,13 @@ private:
 	bool extract_building(int start_row);
 	bool extract_building_info();
 
+	int find_row_num(wxGrid* grid);
+
 	void update_coordinates();
 	void update_future_rotate_tasks();
 	void find_new_orientation();
 	bool find_old_orientation(int &start_row);
+	bool find_building();
 };
 
 

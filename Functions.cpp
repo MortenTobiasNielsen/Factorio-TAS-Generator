@@ -438,16 +438,16 @@ void check_mining_distance(std::string task, std::string action, std::string x_c
 
 void find_coordinates(std::string& x_cord, std::string& y_cord, std::string& direction, std::string& building_size) {
 
-	if (direction == "north") {
+	if (direction == "north" || direction == "North") {
 		y_cord = std::to_string(std::stof(y_cord) - std::stof(building_size));
 
-	} else if (direction == "south") {
+	} else if (direction == "south" || direction == "South") {
 		y_cord = std::to_string(std::stof(y_cord) + std::stof(building_size));
 
-	} else if (direction == "east") {
+	} else if (direction == "east" || direction == "East") {
 		x_cord = std::to_string(std::stof(x_cord) + std::stof(building_size));
 
-	} else if (direction == "west") {
+	} else if (direction == "west" || direction == "West") {
 		x_cord = std::to_string(std::stof(x_cord) - std::stof(building_size));
 
 	}

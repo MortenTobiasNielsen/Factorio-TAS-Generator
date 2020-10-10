@@ -438,14 +438,11 @@ void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
 
 void cMain::update_tasks_grid() {
 
-	if (grid_tasks->IsSelection() ) {
-		if (!grid_tasks->GetSelectedRows().begin()) {
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
-			return;
-		}
-		row_num = *grid_tasks->GetSelectedRows().begin();
-	} else {
-		row_num = grid_tasks->GetNumberRows();
+	row_num = find_row_num(grid_tasks);
+
+	if (row_num == -1) {
+		wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+		return;
 	}
 
 	grid_tasks->InsertRows(row_num, 1);
@@ -528,7 +525,7 @@ void cMain::update_buildings_grid_from_scratch() {
 			building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 			amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
-			building_row();
+			Update_buildings();
 
 		} else if (task == "Recipe") {
 			x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
@@ -606,118 +603,142 @@ bool cMain::update_building_orientation() {
 	return false;
 }
 
-void cMain::building_row() {
+void cMain::Update_buildings() {
 	limit = "";
 	recipe = "";
 	priority_in = "";
 	priority_out = "";
 	filter = "";
 
-	x_cord_float = std::stof(x_cord);
-	y_cord_float = std::stof(y_cord);
-	building_size_float = std::stof(building_size);
+	x_cord_origen = x_cord;
+	y_cord_origen = y_cord;
 
+	update_buildings_grid();
 
-	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
-		if (direction_to_build == "North") {
-			y_cord = std::to_string(y_cord_float - building_size_float * i);
-			update_buildings_grid();
-
-		} else if (direction_to_build == "South") {
-			y_cord = std::to_string(y_cord_float + building_size_float * i);
-			update_buildings_grid();
-
-		} else if (direction_to_build == "East") {
-			x_cord = std::to_string(x_cord_float + building_size_float * i);
-			update_buildings_grid();
-
-		} else if (direction_to_build == "West") {
-			x_cord = std::to_string(x_cord_float - building_size_float * i);
-			update_buildings_grid();
-		}
+	for (int i = 1; i < std::stoi(amount_of_buildings); i++) {
+		find_coordinates(x_cord, y_cord, direction_to_build, building_size);
+		update_buildings_grid();
 	}
+
+	x_cord = x_cord_origen;
+	y_cord = y_cord_origen;
 }
 
 bool cMain::update_recipe() {
 	row_num = grid_buildings->GetNumberRows();
 
-	x_cord_float = std::stof(x_cord);
-	y_cord_float = std::stof(y_cord);
-	building_size_float = std::stof(building_size);
+	x_cord_origen = x_cord;
+	y_cord_origen = y_cord;
 
 	int amount_true = 0;
 
-	for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
-		if (direction_to_build == "North") {
-			y_cord = std::to_string(y_cord_float - building_size_float * i);
-			for (int i = 0; i < row_num; i++) {
+	if (find_building()) {
+		amount_true += 1;
 
-				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
-					continue;
-				}
-				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
-					continue;
-				}
+		for (int i = 1; i < std::stoi(amount_of_buildings); i++) {
+			find_coordinates(x_cord, y_cord, direction_to_build, building_size);
 
-				grid_buildings->SetCellValue(i, 5, item);
+			if (x_cord == grid_buildings->GetCellValue(building_row_num + i, 0) && y_cord == grid_buildings->GetCellValue(building_row_num + i, 1)) {
 				amount_true += 1;
-				break;
-			}
-
-		} else if (direction_to_build == "South") {
-			y_cord = std::to_string(y_cord_float + building_size_float * i);
-			for (int i = 0; i < row_num; i++) {
-
-				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
-					continue;
-				}
-				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
-					continue;
-				}
-
-				grid_buildings->SetCellValue(i, 5, item);
-				amount_true += 1;
-				break;
-			}
-
-		} else if (direction_to_build == "East") {
-			x_cord = std::to_string(x_cord_float + building_size_float * i);
-			for (int i = 0; i < row_num; i++) {
-
-				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
-					continue;
-				}
-				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
-					continue;
-				}
-
-				grid_buildings->SetCellValue(i, 5, item);
-				amount_true += 1;
-				break;
-			}
-		} else if (direction_to_build == "West") {
-			x_cord = std::to_string(x_cord_float - building_size_float * i);
-			for (int i = 0; i < row_num; i++) {
-
-				if (x_cord != grid_buildings->GetCellValue(i, 0)) {
-					continue;
-				}
-				if (y_cord != grid_buildings->GetCellValue(i, 1)) {
-					continue;
-				}
-
-				grid_buildings->SetCellValue(i, 5, item);
-				amount_true += 1;
-				break;
+			} else {
+				return false;
 			}
 		}
+	} else {
+		return false;
 	}
 
 	if (amount_true == std::stoi(amount_of_buildings)) {
-		return true;
-	} 
+		for (int i = building_row_num; i < (building_row_num + std::stoi(amount_of_buildings)); i++) {
+			grid_buildings->SetCellValue(i, 5, item);
+		}
+	} else {
+		return false;
+	}
 
-	return false;
+	x_cord = x_cord_origen;
+	y_cord = y_cord_origen;
+
+	return true;
+
+
+	//x_cord_float = std::stof(x_cord);
+	//y_cord_float = std::stof(y_cord);
+	//building_size_float = std::stof(building_size);
+
+	//
+
+	//for (int i = 0; i < std::stoi(amount_of_buildings); i++) {
+	//	if (direction_to_build == "North") {
+	//		y_cord = std::to_string(y_cord_float - building_size_float * i);
+	//		for (int i = 0; i < row_num; i++) {
+
+	//			if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+	//				continue;
+	//			}
+	//			if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+	//				continue;
+	//			}
+
+	//			grid_buildings->SetCellValue(i, 5, item);
+	//			amount_true += 1;
+	//			break;
+	//		}
+
+	//	} else if (direction_to_build == "South") {
+	//		y_cord = std::to_string(y_cord_float + building_size_float * i);
+	//		for (int i = 0; i < row_num; i++) {
+
+	//			if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+	//				continue;
+	//			}
+	//			if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+	//				continue;
+	//			}
+
+	//			grid_buildings->SetCellValue(i, 5, item);
+	//			amount_true += 1;
+	//			break;
+	//		}
+
+	//	} else if (direction_to_build == "East") {
+	//		x_cord = std::to_string(x_cord_float + building_size_float * i);
+	//		for (int i = 0; i < row_num; i++) {
+
+	//			if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+	//				continue;
+	//			}
+	//			if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+	//				continue;
+	//			}
+
+	//			grid_buildings->SetCellValue(i, 5, item);
+	//			amount_true += 1;
+	//			break;
+	//		}
+	//	} else if (direction_to_build == "West") {
+	//		x_cord = std::to_string(x_cord_float - building_size_float * i);
+	//		for (int i = 0; i < row_num; i++) {
+
+	//			if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+	//				continue;
+	//			}
+	//			if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+	//				continue;
+	//			}
+
+	//			grid_buildings->SetCellValue(i, 5, item);
+	//			amount_true += 1;
+	//			break;
+	//		}
+	//	}
+	//}
+
+	//if (amount_true == std::stoi(amount_of_buildings)) {
+	//	return true;
+	//} 
+
+	//return false;
 }
 
 bool cMain::update_limit() {
@@ -1136,22 +1157,19 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	
 	extract_parameters();
 
-	if (grid_tasks->IsSelection()) {
-		if (!grid_tasks->GetSelectedRows().begin()) {
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
-			return;
-		}
-		row_num = *grid_tasks->GetSelectedRows().begin();
-	} else {
-		row_num = grid_tasks->GetNumberRows();
+	row_num = find_row_num(grid_tasks);
+
+	if (row_num == -1) {
+		wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+		return;
 	}
 
 	if (setup_for_task_grid()) {
 		update_tasks_grid();
-		if (task == "Build") {
+		/*if (task == "Build") {
 			building_row();
 
-		} else if (task == "Recipe") {
+		} else*/ if (task == "Recipe") {
 			if (!update_recipe()) {
 				wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
 			}
@@ -2547,6 +2565,10 @@ bool cMain::setup_for_task_grid() {
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
 
+		if (find_building()) {
+			grid_buildings->DeleteRows(building_row_num);
+		}
+
 	} else if (task == "Rotate") { // it might be needed to have a "can it rotate" check.
 		
 		if (!update_building_orientation()) {
@@ -2587,6 +2609,8 @@ bool cMain::setup_for_task_grid() {
 			return false;
 		}
 
+		Update_buildings();
+		
 		units = not_relevant;
 
 	} else if (task == "Take" || task == "Put") {
@@ -2620,6 +2644,11 @@ bool cMain::setup_for_task_grid() {
 	} else if (task == "Recipe") {
 		if (!check_item(item, all_recipes)) { // A check of the building should be made and then the recipes for that building should be checked
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+			return false;
+		}
+
+		if (!update_recipe()) {
+			wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
 			return false;
 		}
 
@@ -3146,6 +3175,19 @@ bool cMain::extract_building_info() {
 	return false;
 }
 
+int cMain::find_row_num(wxGrid* grid) {
+	if (grid->IsSelection()) {
+		if (!grid->GetSelectedRows().begin()) {
+			return -1;
+		}
+		return *grid->GetSelectedRows().begin();
+	} else {
+		return grid->GetNumberRows();
+	}
+
+	return -1;
+}
+
 void cMain::update_coordinates() {
 	if (direction_to_build == "North") {
 		new_y_cord = new_y_cord - building_size_float;
@@ -3231,6 +3273,26 @@ bool cMain::find_old_orientation(int& row) {
 				return true;
 			}
 		}
+	}
+
+	return false;
+}
+
+bool cMain::find_building() {
+	building_row_num = grid_buildings->GetNumberRows();
+
+	for (int i = 0; i < building_row_num; i++) {
+
+		if (x_cord != grid_buildings->GetCellValue(i, 0)) {
+			continue;
+		}
+		if (y_cord != grid_buildings->GetCellValue(i, 1)) {
+			continue;
+		}
+
+		building = grid_buildings->GetCellValue(i, 2); // this should be used to check if the building can make that function - e.g. set a recipe
+		building_row_num = i;
+		return true;
 	}
 
 	return false;
