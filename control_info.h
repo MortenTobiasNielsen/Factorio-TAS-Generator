@@ -35,6 +35,7 @@ local direction
 local input
 local output
 local type
+local rev
 
 local drop_item
 local drop_position
@@ -249,7 +250,12 @@ local function rotate()
 		return false;
 	end
 
-	player_selection.rotate()
+	if rev then
+		player_selection.rotate({reverse = true})
+		return true
+	end 
+
+	player_selection.rotate({reverse = false})
 	
 	return true
 end
@@ -407,6 +413,7 @@ local function doStep(steps)
         task_category = "Rotate"
         task = steps[1]
 		position = steps[3]
+		rev = steps[4]
 
 		return rotate()
 
@@ -488,7 +495,7 @@ script.on_event(defines.events.on_tick, function(event)
 
 	position = player.position
 
-	if steps[step] == nil or steps[step][2] == "break" then
+	if steps[step] == nil or steps[step][1] == "break" then
 		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", position.x, position.y, player.online_time / 60, player.online_time))		
 		debug_state = false
 		return
@@ -555,7 +562,7 @@ end)
 
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
-	if (steps[step][2] == "break" or steps[step][2] == "stop") then
+	if (steps[step][1] == "break" or steps[step][2] == "stop") then
 		return
 	end
 
