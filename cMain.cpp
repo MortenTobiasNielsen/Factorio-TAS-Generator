@@ -32,11 +32,15 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	all_items.insert(all_items.end(), raw_resource_list.begin(), raw_resource_list.end());
 	all_items.insert(all_items.end(), furnace_list.begin(), furnace_list.end());
 
+	for (auto it = building_size_list.begin(); it != building_size_list.end(); ++it) {
+		all_buildings.push_back(it->first);
+	}
+
 	for (auto s : all_items) {
 		item_choices.Add(s);
 	}
 
-	for (auto s : building_list) {
+	for (auto s : all_buildings) {
 		building_choices.Add(s);
 	}
 
@@ -154,10 +158,10 @@ void cMain::OnBuildChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.build);
 
 	cmb_item->Clear();
-	for (auto it = building_list.begin(); it < building_list.end(); it++) {
+	for (auto it = all_buildings.begin(); it < all_buildings.end(); it++) {
 		cmb_item->Append(*it);
 	}
-	cmb_item->SetValue(*building_list.begin());
+	cmb_item->SetValue(*all_buildings.begin());
 	cmb_item->AutoComplete(building_choices);
 
 	event.Skip();
@@ -2131,7 +2135,7 @@ bool cMain::setup_for_task_grid() {
 		amount_of_buildings = not_relevant;
 		
 	} else if (task == "Build") {
-		if (!check_item(item, building_list)) {
+		if (!check_item(item, all_buildings)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
 		}

@@ -169,6 +169,7 @@ private:
 
 	std::string data;
 	std::string not_relevant = "";
+	std::vector<std::string> all_buildings;
 	std::vector<std::string> all_items;
 	std::vector<std::string> all_recipes;
 
