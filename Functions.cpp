@@ -253,10 +253,17 @@ void rotate(std::string task, std::string x_cord, std::string y_cord, std::strin
 
 	check_interact_distance(task, "1", x_cord, y_cord, item, orientation);
 
-	for (int i = 1; i < std::stoi(times); i++) {
-		step_list += signature(task, std::to_string(i + 1)) + "\"rotate\", {" + x_cord + ", " + y_cord + "}}\n";
+	if (std::stoi(times) == 3) {
+		step_list += signature(task, "1") + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true}\n";
 		step += 1;
+	} else {
+		for (int i = 0; i < std::stoi(times); i++) {
+			step_list += signature(task, std::to_string(i + 1)) + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false}\n";
+			step += 1;
+		}
 	}
+
+	
 }
 
 double find_min_distance(float &new_x_cord, float &new_y_cord) {	

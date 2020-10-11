@@ -1598,37 +1598,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			return;
 		}
 
-		if (grid_tasks->GetNumberRows() > 0) {
-			if (wxMessageBox("Are you sure you want to open this file?\nAll in the current window will be cleared and the new data inserted.", "Ensure that you have saved what you need in the file", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
-				return;
-			}
-			grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
-			if (grid_buildings->GetNumberRows() > 0) {
-				grid_buildings->DeleteRows(0, grid_buildings->GetNumberRows());
-			}
-		}
-
-		if (grid_group->GetNumberRows() > 0) {
-			grid_group->DeleteRows(0, grid_group->GetNumberRows());
-		}
-
-		if (grid_template->GetNumberRows() > 0) {
-			grid_template->DeleteRows(0, grid_template->GetNumberRows());
-		}
-
-		tasks_data_to_save = {};
-		save_file_location = "";
-		generate_code_folder_location = "";
-
-		group_map.clear();
-		cmb_choose_group->Clear();
-		group_choices = {};
-		group_name = "";
-
-		template_map.clear();
-		cmb_choose_template->Clear();
-		template_choices = {};
-		template_name = "";
+		reset_to_new_window();
 
 		while (std::getline(inFile, open_data_string)) {
 			std::stringstream data_line;
@@ -3135,7 +3105,7 @@ bool cMain::save_file(bool save_as) {
 	myfile.open(save_file_location);
 
 	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
-		myfile << *it << ";" << std::endl;
+		myfile << *it << std::endl;
 	}
 
 	std::string name;
