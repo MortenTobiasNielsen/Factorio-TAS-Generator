@@ -13,7 +13,6 @@ std::string info = { R"info(
 
 std::string control_lua = R"control_lua(
 local steps = require("steps")
-local walk_proximity = 0.1
 local debug_state = true
 
 local step = 1
@@ -23,8 +22,9 @@ local mining = 0
 
 local player
 local player_selection
-local position
+local player_position
 local destination
+local target_position
 local target_inventory
 local walking
 local task
@@ -37,6 +37,12 @@ local output
 local type
 local rev
 
+local pos_pos = false
+local pos_neg = false
+local neg_pos = false
+local neg_neg = false
+
+
 local drop_item
 local drop_position
 
@@ -48,7 +54,7 @@ end
 
 -- Check that the entity can be selected and is within reach
 local function check_selection_reach()
-	player.update_selected_entity(position)
+	player.update_selected_entity(target_position)
 	player_selection = player.selected
 
 	if not player_selection then
@@ -190,15 +196,15 @@ local function build()
 		return false
 	end
 
-	if player.can_place_entity{name = item, position = position} then
-		if player.surface.can_fast_replace{name = item, position = position, direction = direction, force = "player"} then
-			if player.surface.create_entity{name = item, position = position, direction = direction, force="player", fast_replace=true, player=player} then
+	if player.can_place_entity{name = item, position = target_position, direction = direction} then
+		if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
+			if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player} then
 				step = step - 1
 				player.remove_item({name = item, count = 1})
 				return true
 			end
 		else
-			if player.surface.create_entity{name = item, position = position, direction = direction, force="player"} then
+			if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player"} then
 				player.remove_item({name = item, count = 1})
 				return true
 			end
@@ -213,33 +219,153 @@ local function build()
 	end
 end
 
-local function walk(delta_x, delta_y)
-	if delta_x > walk_proximity then
-		-- Easterly
-		if delta_y > walk_proximity then
-			return {walking = true, direction = defines.direction.southeast}
-		elseif delta_y < -walk_proximity then
-			return {walking = true, direction = defines.direction.northeast}
-		else
-			return {walking = true, direction = defines.direction.east}
-		end
-	elseif delta_x < -walk_proximity then
-		-- Westerly
-		if delta_y > walk_proximity then
-			return {walking = true, direction = defines.direction.southwest}
-		elseif delta_y < -walk_proximity then
+-- local function walk(delta_x, delta_y)
+-- 	if delta_x > walk_proximity then
+-- 		-- Easterly
+-- 		if delta_y > walk_proximity then
+-- 			return {walking = true, direction = defines.direction.southeast}
+-- 		elseif delta_y < -walk_proximity then
+-- 			return {walking = true, direction = defines.direction.northeast}
+-- 		else
+-- 			return {walking = true, direction = defines.direction.east}
+-- 		end
+-- 	elseif delta_x < -walk_proximity then
+-- 		-- Westerly
+-- 		if delta_y > walk_proximity then
+-- 			return {walking = true, direction = defines.direction.southwest}
+-- 		elseif delta_y < -walk_proximity then
+-- 			return {walking = true, direction = defines.direction.northwest}
+-- 		else
+-- 			return {walking = true, direction = defines.direction.west}
+-- 		end
+-- 	else
+-- 		-- Vertically
+-- 		if delta_y > walk_proximity then
+-- 			return {walking = true, direction = defines.direction.south}
+-- 		elseif delta_y < -walk_proximity then
+-- 			return {walking = true, direction = defines.direction.north}
+-- 		else
+-- 			return {walking = false, direction = defines.direction.north}
+-- 		end
+-- 	end
+-- end
+
+local function walk_pos_pos()
+	if player_position.x > destination.x then
+		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northwest}
+			
 		else
 			return {walking = true, direction = defines.direction.west}
 		end
 	else
-		-- Vertically
-		if delta_y > walk_proximity then
-			return {walking = true, direction = defines.direction.south}
-		elseif delta_y < -walk_proximity then
+		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			return {walking = false, direction = defines.direction.north}
+			return {walking = false, direction = defines.direction.north}	
+		end
+	end
+end
+
+local function walk_pos_neg()
+	if player_position.x > destination.x then
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.southwest}
+		else
+			return {walking = true, direction = defines.direction.west}
+		end
+	else
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.south}
+		else
+			return {walking = false, direction = defines.direction.north}	
+		end
+	end
+end
+
+local function walk_neg_pos()
+	if player_position.x < destination.x then
+		if player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.northeast}
+		else
+			return {walking = true, direction = defines.direction.east}
+		end
+	else
+		if player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.north}
+		else
+			return {walking = false, direction = defines.direction.north}	
+		end
+	end
+end
+
+local function walk_neg_neg()
+	if player_position.x < destination.x then
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.southeast}
+		else
+			return {walking = true, direction = defines.direction.east}
+		end
+	else
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.south}
+		else
+			return {walking = false, direction = defines.direction.north}	
+		end
+	end
+end
+
+local function walk()
+	if pos_pos then
+		return walk_pos_pos()
+	elseif pos_neg then
+		return walk_pos_neg()
+	elseif neg_pos then
+		return walk_neg_pos()
+	elseif neg_neg then
+		return walk_neg_neg()
+	end
+end
+
+local function find_walking_pattern() 
+	if (player_position.x - destination.x >= 0) then
+		if (player_position.y - destination.y >= 0) then
+			game.print("pos_pos")
+
+			pos_pos = true
+
+			pos_neg = false
+			neg_pos = false
+			neg_neg = false
+		elseif (player_position.y - destination.y < 0) then
+			game.print("pos_neg")
+			walking = walk_pos_neg()
+
+			pos_neg = true
+
+			pos_pos = false
+			neg_pos = false
+			neg_neg = false
+		end
+	else
+		if (player_position.y - destination.y >= 0) then
+			game.print("neg_pos")
+			walking = walk_neg_pos()
+
+			neg_pos = true
+
+			pos_pos = false
+			pos_neg = false
+			neg_neg = false
+		elseif (player_position.y - destination.y < 0) then
+			game.print("neg_neg")
+			walking = walk_neg_neg()
+
+			neg_neg = true
+
+			pos_pos = false
+			pos_neg = false
+			neg_pos = false
 		end
 	end
 end
@@ -383,7 +509,7 @@ local function doStep(steps)
 	elseif steps[2] == "build" then
         task_category = "Build"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		item = steps[4]
 		direction = steps[5]
 
@@ -392,7 +518,7 @@ local function doStep(steps)
 	elseif steps[2] == "take" then
         task_category = "Take"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		item = steps[4]
 		amount = steps[5]
 		slot = steps[6]
@@ -402,7 +528,7 @@ local function doStep(steps)
 	elseif steps[2] == "put" then
         task_category = "Put"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		item = steps[4]
 		amount = steps[5]
 		slot = steps[6]
@@ -412,7 +538,7 @@ local function doStep(steps)
 	elseif steps[2] == "rotate" then
         task_category = "Rotate"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		rev = steps[4]
 
 		return rotate()
@@ -427,7 +553,7 @@ local function doStep(steps)
 	elseif steps[2] == "recipe" then
         task_category = "Recipe"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		item = steps[4]
 
 		return recipe()
@@ -435,7 +561,7 @@ local function doStep(steps)
 	elseif steps[2] == "limit" then
         task_category = "limit"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		amount = steps[4]
 		slot = steps[5]
 		
@@ -444,7 +570,7 @@ local function doStep(steps)
 	elseif steps[2] == "priority" then
         task_category = "priority"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		input = steps[4]
 		output = steps[5]
 
@@ -453,7 +579,7 @@ local function doStep(steps)
 	elseif steps[2] == "filter" then
         task_category = "filter"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 		item = steps[4]
 		slot = steps[5]
 		type = steps[6]
@@ -477,7 +603,7 @@ local function doStep(steps)
 	elseif steps[2] == "launch" then
 		task_category = "launch"
         task = steps[1]
-		position = steps[3]
+		target_position = steps[3]
 
 		return launch()
 	end
@@ -488,76 +614,79 @@ script.on_event(defines.events.on_tick, function(event)
 
     if not player then 
 		player = game.players[1]
-		position = player.position
-		destination = {x = position.x, y = position.y}
+		player_position = player.position
+		destination = {x = player_position.x, y = player_position.y}
 		player.force.research_queue_enabled = true
-	end
+		walking = {walking = false, direction = defines.direction.north}
 
-	position = player.position
+	elseif player.character ~= nil then
+		player_position = player.position
 
-	if steps[step] == nil or steps[step][1] == "break" then
-		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", position.x, position.y, player.online_time / 60, player.online_time))		
-		debug_state = false
-		return
-	end
+		if steps[step] == nil or steps[step][1] == "break" then
+			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))		
+			debug_state = false
+			return
+		end
 
-	if (steps[step][2] == "stop") then
-		speed(steps[step][3])
-		debug(string.format("Script stopped - Game speed: %d", steps[step][2]))
-		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", position.x, position.y, player.online_time / 60, player.online_time))	
-		debug_state = false
-		return
-	end
+		if (steps[step][2] == "stop") then
+			speed(steps[step][3])
+			debug(string.format("Script stopped - Game speed: %d", steps[step][3]))
+			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
+			debug_state = false
+			return
+		end
 
-	if (steps[step][2] == "speed") then
-		debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
-		speed(steps[step][3])
-		step = step + 1
-	end
-
-	-- primary movement
-	walking = walk(destination.x - position.x, destination.y - position.y)
-	if walking.walking == false then
-
-		if idle > 0 then
-			idle = idle - 1
-		elseif steps[step][2] == "walk" then
-			destination = {x = steps[step][3][1], y = steps[step][3][2]}
-			walking = walk(destination.x - position.x, destination.y - position.y)
+		if (steps[step][2] == "speed") then
+			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+			speed(steps[step][3])
 			step = step + 1
+		end
 
-        elseif steps[step][2] == "mine" then
-            
-			player.update_selected_entity(steps[step][3])
+		if walking.walking == false then
+			if idle > 0 then
+				idle = idle - 1
+			elseif steps[step][2] == "walk" then
+				destination = {x = steps[step][3][1], y = steps[step][3][2]}
 
-			player.mining_state = {mining = true, position = steps[step][3]}
+				find_walking_pattern()
 
-			mining = mining + 1
-			if mining > 5 then
-				if player.character_mining_progress == 0 then
-					debug(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
-					debug_state = false
-				else 
-					mining = 0
+				step = step + 1
+
+			elseif steps[step][2] == "mine" then
+				
+				player.update_selected_entity(steps[step][3])
+
+				player.mining_state = {mining = true, target_position = steps[step][3]}
+
+				mining = mining + 1
+				if mining > 5 then
+					if player.character_mining_progress == 0 then
+						debug(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+						debug_state = false
+					else 
+						mining = 0
+					end
+				end
+				
+			elseif doStep(steps[step]) then
+				-- Do step while standing still
+				step = step + 1
+
+			end
+		else
+			if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
+				if doStep(steps[step]) then
+					
+					-- Do step while walking
+					step = step + 1
 				end
 			end
-			
-
-		elseif doStep(steps[step]) then
-			-- Do step while standing still
-			step = step + 1
-
 		end
-	else
-		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
-			if doStep(steps[step]) then
-				-- Do step while walking
-				step = step + 1
-			end
-		end
-	end
 
-	player.walking_state = walking
+		walking = walk()
+
+		player.walking_state = walking
+	end	
 end)
 
 script.on_event(defines.events.on_player_mined_entity, function(event)
