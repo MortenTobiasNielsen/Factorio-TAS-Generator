@@ -11,7 +11,7 @@ std::string info = { R"info(
 })info"
 };
 
-std::string control_lua = R"control_lua(
+std::string control_lua1 = R"control_lua1(
 local steps = require("steps")
 local debug_state = true
 
@@ -219,37 +219,6 @@ local function build()
 	end
 end
 
--- local function walk(delta_x, delta_y)
--- 	if delta_x > walk_proximity then
--- 		-- Easterly
--- 		if delta_y > walk_proximity then
--- 			return {walking = true, direction = defines.direction.southeast}
--- 		elseif delta_y < -walk_proximity then
--- 			return {walking = true, direction = defines.direction.northeast}
--- 		else
--- 			return {walking = true, direction = defines.direction.east}
--- 		end
--- 	elseif delta_x < -walk_proximity then
--- 		-- Westerly
--- 		if delta_y > walk_proximity then
--- 			return {walking = true, direction = defines.direction.southwest}
--- 		elseif delta_y < -walk_proximity then
--- 			return {walking = true, direction = defines.direction.northwest}
--- 		else
--- 			return {walking = true, direction = defines.direction.west}
--- 		end
--- 	else
--- 		-- Vertically
--- 		if delta_y > walk_proximity then
--- 			return {walking = true, direction = defines.direction.south}
--- 		elseif delta_y < -walk_proximity then
--- 			return {walking = true, direction = defines.direction.north}
--- 		else
--- 			return {walking = false, direction = defines.direction.north}
--- 		end
--- 	end
--- end
-
 local function walk_pos_pos()
 	if player_position.x > destination.x then
 		if player_position.y > destination.y then
@@ -265,6 +234,8 @@ local function walk_pos_pos()
 			return {walking = false, direction = defines.direction.north}	
 		end
 	end
+
+	return {walking = false, direction = defines.direction.north}	
 end
 
 local function walk_pos_neg()
@@ -281,6 +252,8 @@ local function walk_pos_neg()
 			return {walking = false, direction = defines.direction.north}	
 		end
 	end
+
+	return {walking = false, direction = defines.direction.north}	
 end
 
 local function walk_neg_pos()
@@ -297,6 +270,8 @@ local function walk_neg_pos()
 			return {walking = false, direction = defines.direction.north}	
 		end
 	end
+
+	return {walking = false, direction = defines.direction.north}	
 end
 
 local function walk_neg_neg()
@@ -313,6 +288,8 @@ local function walk_neg_neg()
 			return {walking = false, direction = defines.direction.north}	
 		end
 	end
+
+	return {walking = false, direction = defines.direction.north}	 
 end
 
 local function walk()
@@ -325,44 +302,31 @@ local function walk()
 	elseif neg_neg then
 		return walk_neg_neg()
 	end
+
+	return {walking = false, direction = defines.direction.north}	 
 end
 
 local function find_walking_pattern() 
 	if (player_position.x - destination.x >= 0) then
 		if (player_position.y - destination.y >= 0) then
-			game.print("pos_pos")
-
 			pos_pos = true
-
 			pos_neg = false
 			neg_pos = false
 			neg_neg = false
 		elseif (player_position.y - destination.y < 0) then
-			game.print("pos_neg")
-			walking = walk_pos_neg()
-
 			pos_neg = true
-
 			pos_pos = false
 			neg_pos = false
 			neg_neg = false
 		end
 	else
 		if (player_position.y - destination.y >= 0) then
-			game.print("neg_pos")
-			walking = walk_neg_pos()
-
 			neg_pos = true
-
 			pos_pos = false
 			pos_neg = false
 			neg_neg = false
 		elseif (player_position.y - destination.y < 0) then
-			game.print("neg_neg")
-			walking = walk_neg_neg()
-
 			neg_neg = true
-
 			pos_pos = false
 			pos_neg = false
 			neg_pos = false
@@ -683,12 +647,14 @@ script.on_event(defines.events.on_tick, function(event)
 			end
 		end
 
-		walking = walk()
+		walking = walk()		
 
 		player.walking_state = walking
 	end	
 end)
+)control_lua1";
 
+std::string control_lua2 = R"control_lua2(
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	if (steps[step][1] == "break" or steps[step][2] == "stop") then
@@ -697,19 +663,19 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	if event.entity.name == "rock-huge" then
 		event.buffer.clear()
-		player.insert{name="coal", count=47}
-		player.insert{name="stone", count=47}
+		player.insert {name = "coal", count = 47}
+		player.insert{ name = "stone", count = 47 }
 	end
 
 	if event.entity.name == "rock-big" then
 		event.buffer.clear()
-		player.insert{name="stone", count=20}
+		player.insert {name = "stone", count = 20}
 	end
 
 	if event.entity.name == "sand-rock-big" then
 		event.buffer.clear()
-		player.insert{name="stone", count=20}
-	end	
+		player.insert {name = "stone", count = 20}
+	end
 
 	step = step + 1
 	mining = 0
@@ -722,18 +688,18 @@ script.on_event(defines.events.on_game_created_from_scenario, function()
 
 end)
 
--- Skips the freeplay intro
+-- Triggered on research completed
 script.on_event(defines.events.on_research_finished, function(event)
 
 	if (event.research.name == "steel-axe") then
 		local seconds = player.online_time / 60
 		local minutes = math.floor(player.online_time / 60 / 60)
-		local seconds_remainder = seconds - (minutes * 60) 
+		local seconds_remainder = seconds - (minutes * 60)
 
-		debug(string.format("Contrats %s on reaching the end of your Steel Axe run - you completed it in %f seconds (%d min %f seconds) (%d ticks)", player.name, seconds, minutes, seconds_remainder , player.online_time))		
+		debug(string.format("Contrats %s on reaching the end of your Steel Axe run - you completed it in %f seconds (%d min %f seconds) (%d ticks)", player.name, seconds, minutes, seconds_remainder, player.online_time))
 		debug_state = false
 	end
-	
+
 
 end)
-)control_lua";
+)control_lua2";

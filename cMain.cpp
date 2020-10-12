@@ -1889,7 +1889,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		} else if (task == "Filter") {
 			find_old_orientation(i);
 
-			if (check_item(building, splitter_list)) {
+			if (check_input(building, splitter_list)) {
 				row_filter(std::to_string(i +1), x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
 				row_filter(std::to_string(i +1), x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
@@ -1911,7 +1911,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	std::ofstream saver;
 	saver.open(generate_code_folder_location + "\\control.lua");
-	saver << control_lua;
+	saver << control_lua1;
+	saver << control_lua2;
 	saver.close();
 
 	saver.open(generate_code_folder_location + "\\info.json");
@@ -2122,7 +2123,7 @@ bool cMain::setup_for_task_grid() {
 		amount_of_buildings = not_relevant;
 	
 	} else if (task == "Craft") {
-		if (!check_item(item, handcrafted_list)) {
+		if (!check_input(item, handcrafted_list)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
 		}
@@ -2135,17 +2136,17 @@ bool cMain::setup_for_task_grid() {
 		amount_of_buildings = not_relevant;
 		
 	} else if (task == "Build") {
-		if (!check_item(item, all_buildings)) {
+		if (!check_input(item, all_buildings)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
 		}
 
-		if (!check_building(build_orientation, build_orientations)) {
+		if (!check_input(build_orientation, build_orientations)) {
 			wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
 			return false;
 		}
 
-		if (!check_building(direction_to_build, build_orientations)) {
+		if (!check_input(direction_to_build, build_orientations)) {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 			return false;
 		}
@@ -2158,7 +2159,7 @@ bool cMain::setup_for_task_grid() {
 			return false;
 		}
 
-		if (!check_building(direction_to_build, build_orientations)) {
+		if (!check_input(direction_to_build, build_orientations)) {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 			return false;
 		}
@@ -2166,7 +2167,7 @@ bool cMain::setup_for_task_grid() {
 		build_orientation = from_into;
 
 	} else if (task == "Tech") {
-		if (!check_item(tech_to_start, tech_list)) {
+		if (!check_input(tech_to_start, tech_list)) {
 			wxMessageBox("The tech is not valid - please try again", "Please use the tech dropdown menu");
 			return false;
 		}
@@ -2181,7 +2182,7 @@ bool cMain::setup_for_task_grid() {
 
 		item = tech_to_start;
 	} else if (task == "Recipe") {
-		if (!check_item(item, all_recipes)) { // A check of the building should be made and then the recipes for that building should be checked
+		if (!check_input(item, all_recipes)) { // A check of the building should be made and then the recipes for that building should be checked
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
 		}
@@ -2206,12 +2207,12 @@ bool cMain::setup_for_task_grid() {
 		item = not_relevant;
 		units = not_relevant;
 
-		if (!check_item(priority_in, input_output)) {
+		if (!check_input(priority_in, input_output)) {
 			wxMessageBox("The input priority chosen is not valid - please try again", "Please use the input dropdown menu");
 			return false;
 		}
 
-		if (!check_item(priority_out, input_output)) {
+		if (!check_input(priority_out, input_output)) {
 			wxMessageBox("The output priority chosen is not valid - please try again", "Please use the output dropdown menu");
 			return false;
 		}
@@ -2554,7 +2555,7 @@ std::string cMain::extract_units() {
 
 std::string cMain::extract_item() {
 	item = cmb_item->GetValue().ToStdString();
-	string_capitalized(item);
+	string_capitalized(item); // this might not be needed if the check afterwards is case insensitive and simply takes the correct item
 
 	return item;
 }
@@ -2640,7 +2641,7 @@ std::string cMain::extract_define(int start_row) {
 				return take_put_list.lab_modules;
 			}
 		} 
-		if (check_item(building, drills_list)) {
+		if (check_input(building, drills_list)) {
 			return take_put_list.drill_modules;
 		}
 			
@@ -2833,16 +2834,17 @@ bool cMain::find_building() {
 		break;
 	}
 
+	item = grid_buildings->GetCellValue(building_row_num, 2).ToStdString();
 	if (task == "Limit") {
-		if (!check_building(grid_buildings->GetCellValue(building_row_num, 2).ToStdString(), chest_list)) {
+		if (!check_input(item, chest_list)) {
 			return false;
 		}
 	} else if (task == "Priority") {
-		if (!check_building(grid_buildings->GetCellValue(building_row_num, 2).ToStdString(), splitter_list)) {
+		if (!check_input(item, splitter_list)) {
 			return false;
 		}
 	} else if (task == "Filter") {
-		if (!check_building(grid_buildings->GetCellValue(building_row_num, 2).ToStdString(), splitter_list) && !check_building(grid_buildings->GetCellValue(building_row_num, 2).ToStdString(), filter_inserter_list)) {
+		if (!check_input(item, splitter_list) && !check_input(item, filter_inserter_list)) {
 			return false;
 		}
 	}
@@ -2860,16 +2862,17 @@ bool cMain::find_building() {
 			return false;
 		}
 
+		item = grid_buildings->GetCellValue(building_row_num + i, 2).ToStdString();
 		if (task == "Limit") {
-			if (!check_building(grid_buildings->GetCellValue(building_row_num + i, 2).ToStdString(), chest_list)) {
+			if (!check_input(item, chest_list)) {
 				return false;
 			}
 		} else if (task == "Priority") {
-			if (!check_building(grid_buildings->GetCellValue(building_row_num, 2).ToStdString(), splitter_list)) {
+			if (!check_input(item, splitter_list)) {
 				return false;
 			}
 		} else if (task == "Filter") {
-			if (!check_building(grid_buildings->GetCellValue(building_row_num, 2).ToStdString(), splitter_list) && !check_building(grid_buildings->GetCellValue(building_row_num, 2).ToStdString(), filter_inserter_list)) {
+			if (!check_input(item, splitter_list) && !check_input(item, filter_inserter_list)) {
 				return false;
 			}
 		}
@@ -2886,16 +2889,6 @@ bool cMain::find_building() {
 	return false;
 }
 
-bool cMain::check_building(const std::string& item, const std::vector<std::string>& all_items) {
-	for (auto it = all_items.begin(); it < all_items.end(); it++) {
-		if (item == *it) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
 bool cMain::check_take_put(const std::string& item) {
 	std::string to_check = extract_from_into();
 	string_capitalized(to_check);
@@ -2906,7 +2899,7 @@ bool cMain::check_take_put(const std::string& item) {
 
 	for (int i = row_num - 1; i > -1; i--) {
 		if (find_old_orientation(i)) {
-			if (check_building(building, chest_list)) {
+			if (check_input(building, chest_list)) {
 				if (to_check == "Chest") {
 					return true;
 				}
@@ -2952,7 +2945,7 @@ bool cMain::check_take_put(const std::string& item) {
 				return false;
 			}
 
-			if (check_item(building, drills_list)) {
+			if (check_input(building, drills_list)) {
 				if (to_check == "Modules") {
 					for (auto it = module_list.begin(); it < module_list.end(); it++) {
 						if (item == *it) {
@@ -3151,10 +3144,22 @@ bool cMain::save_file(bool save_as) {
 	return true;
 }
 
-bool cMain::check_item(const std::string& item, const std::vector<std::string>& all_items) {
-	
+bool cMain::check_input(std::string& item, const std::vector<std::string>& all_items) {
+	std::string item_lower = "";
+	for (unsigned int i = 0; i < item.size(); i++) {
+		item_lower.push_back(std::tolower(item[i]));
+	}
+
 	for (auto it = all_items.begin(); it < all_items.end(); it++) {
-		if (item == *it) {
+
+		std::string check_item_lower = "";
+
+		for (unsigned int i = 0; i < (*it).size(); i++) {
+			check_item_lower.push_back(std::tolower((*it)[i]));
+		}
+
+		if (item_lower == check_item_lower) {
+			item = *it;
 			return true;
 		}
 	}

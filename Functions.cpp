@@ -8,6 +8,56 @@ std::string signature(std::string task, std::string action) {
 	return "step[" + std::to_string(step) + "] = {{" + task + "," + action + "}, ";
 }
 
+std::string check_item_name(std::string item) {
+	if (item == "Passive provider chest") {
+		return item = "logistic-chest-passive-provider";
+	} else if (item == "Active provider chest") {
+		return item = "logistic-chest-active-provider";
+	} else if (item == "Storage chest") {
+		return item = "logistic-chest-storage";
+	} else if (item == "Buffer chest") {
+		return item = "logistic-chest-buffer";
+	} else if (item == "Requester chest") {
+		return item = "logistic-chest-requester";
+	} else if (item == "Wall") {
+		return item = "stone-wall";
+	} else if (item == "Discharge defense") {
+		return item = "discharge-defense-equipment";
+	} else if (item == "Exoskeleton") {
+		return item = "exoskeleton-equipment";
+	} else if (item == "Personal roboport") {
+		return item = "personal-roboport-equipment";
+	} else if (item == "Personal roboport MK2") {
+		return item = "personal-roboport-mk2-equipment";
+	} else if (item == "Night vision") {
+		return item = "night-vision-equipment";
+	} else if (item == "Personal battery") {
+		return item = "battery-equipment";
+	} else if (item == "Personal battery MK2") {
+		return item = "battery-mk2-equipment";
+	} else if (item == "Portable solar panel") {
+		return item = "solar-panel-equipment";
+	} else if (item == "Personal laser defence") {
+		return item = "personal-laser-defence-equipment";
+	} else if (item == "Energy shield") {
+		return item = "energy-shield-equipment";
+	} else if (item == "Energy shield MK2") {
+		return item = "energy-shield-mk2-equipment";
+	} else if (item == "Portable fusion reactor") {
+		return item = "fusion-reactor-equipment";
+	} else if (item == "Efficiency module") {
+		return item = "effectivity-module";
+	} else if (item == "Efficiency module 2") {
+		return item = "effectivity-module-2";
+	} else if (item == "Efficiency module 3") {
+		return item = "effectivity-module-3";
+	} else {
+		return item = convert_string(item);
+	}
+
+	return "Not a known item";
+}
+
 void walk(std::string task, std::string action, std::string x_cord, std::string y_cord) {
 	step_list += signature(task, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}}\n";
 	player_x_cord = std::stof(x_cord);
@@ -29,7 +79,7 @@ void mining(std::string task, std::string x_cord, std::string y_cord, std::strin
 }
 
 void craft(std::string task, std::string amount, std::string item) {
-	item = convert_string(item);
+	item = check_item_name(item);
 
 	step_list += signature(task, "1") + "\"craft\", " + amount + ", \"" + item + "\"}\n";
 	step += 1;
@@ -38,7 +88,7 @@ void craft(std::string task, std::string amount, std::string item) {
 void build(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string orientation) {
 	check_interact_distance(task, action, x_cord, y_cord, item, orientation);
 
-	item = convert_string(item);
+	item = check_item_name(item);
 
 	if (orientation == "north") {
 		orientation = build_directions.north;
@@ -74,7 +124,7 @@ void take(std::string task, std::string action, std::string x_cord, std::string 
 		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
 
-	item = convert_string(item);
+	item = check_item_name(item);
 
 	step_list += signature(task, action) + "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + "}\n";
 	step += 1;
@@ -98,7 +148,7 @@ void put(std::string task, std::string action, std::string x_cord, std::string y
 		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
 
-	item = convert_string(item);
+	item = check_item_name(item);
 
 	step_list += signature(task, action) + "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + "}\n";
 	step += 1;
@@ -117,7 +167,7 @@ void row_put(std::string task, std::string x_cord, std::string y_cord, std::stri
 void recipe(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building, std::string orientation) {
 	check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 
-	item = convert_string(item);
+	item = check_item_name(item);
 
 	step_list += signature(task, action) + "\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
 	step += 1;
@@ -172,7 +222,7 @@ void row_priority(std::string task, std::string x_cord, std::string y_cord, std:
 void filter(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string building, std::string orientation) {
 	check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 
-	item = convert_string(item);
+	item = check_item_name(item);
 
 	step_list += signature(task, action) + "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + units + ",  \"" + type + "\"}\n";
 	step += 1;

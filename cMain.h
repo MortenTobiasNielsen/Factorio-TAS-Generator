@@ -266,8 +266,7 @@ private:
 	void update_group_map();
 	void update_template_map();
 
-	bool check_item(const std::string& item, const std::vector<std::string>& all_items);
-	bool check_building(const std::string& item, const std::vector<std::string>& all_items);
+	bool check_input (std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item);
 	bool check_buildings_grid();
 	bool check_mine_building();
