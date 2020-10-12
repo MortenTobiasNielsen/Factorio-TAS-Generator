@@ -413,6 +413,8 @@ bool cMain::change_row(wxGrid* grid) {
 		return false;
 	}
 
+	extract_parameters();
+
 	row_num = *grid->GetSelectedRows().begin();
 
 	grid->SetCellValue(row_num, 0, task);

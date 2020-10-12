@@ -298,5 +298,3 @@ private:
 	bool find_old_orientation(int &start_row);
 	bool find_building();
 };
-
-
