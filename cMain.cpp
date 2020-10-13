@@ -726,18 +726,76 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
-void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
-	if (!delete_row(grid_tasks)) {
+// Start from here -----------------------------------------------------------------------------------------------------------------
 
-		event.Skip();
+void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection()) {
+		wxMessageBox("Please select row(s) to be deleted", "Selection not valid");
 		return;
+	}
+
+	// Find the first block of rows selected - extract the first row and the amount of rows in the block
+	for (auto block : grid_tasks->GetSelectedRowBlocks()) {
+		building_row_num = block.GetTopRow();
+		building_row_count = block.GetBottomRow() - building_row_num + 1;
+		break;
+	}
+
+	// If the last row of the block is also the tasks_grid's last row the rows are just deleted
+	if ((building_row_num + building_row_count) == grid_tasks->GetNumberRows()) {
+		grid_tasks->DeleteRows(building_row_num, building_row_count);
+
+	} else {
+		// Otherwise the rows are run through to see if at least one of the tasks is a build task
+		for (int i = building_row_num; i < (building_row_num + building_row_count); i++) {
+			building_task = grid_tasks->GetCellValue(i, 0).ToStdString();
+
+			if (building_task == "Build") {
+				if (wxMessageBox("At least one of the rows selected is a build task - are you sure you want to delete the rows selected?\nAll future tasks associated with the building(s) will be removed to avoid issues.", "The build task(s) you are deleting could be associated with future tasks", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
+					return;
+				}
+			}
+		}
+
+		// The rows are run through, if there are no build tasks or the user gives permission to delete the build tasks
+		for (int i = building_row_num; i < (building_row_num + building_row_count); i++) {
+			building_task = grid_tasks->GetCellValue(i, 0).ToStdString();
+
+			if (building_task == "Build" && building_row_num != grid_tasks->GetNumberRows()) {
+				building_x_cord = grid_tasks->GetCellValue(building_row_num, 1).ToStdString();
+				building_y_cord = grid_tasks->GetCellValue(building_row_num, 2).ToStdString();
+				building_direction_to_build = grid_tasks->GetCellValue(building_row_num, 6).ToStdString();
+				building_building_size = grid_tasks->GetCellValue(building_row_num, 7).ToStdString();
+				building_amount_of_buildings = grid_tasks->GetCellValue(building_row_num, 8).ToStdString();
+
+				// The current row is a build task and each building of the task are run through to check for associated tasks 
+				for (int j = 0; j < std::stoi(building_amount_of_buildings); j++) {
+					int total_rows = grid_tasks->GetNumberRows();
+
+					// All of the future tasks on the tasks grid are run through
+					for (int k = i + 1; k < total_rows; k++) {
+						if (grid_tasks->GetCellValue(k, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(k, 1).ToStdString() == building_x_cord && grid_tasks->GetCellValue(k, 2).ToStdString() == building_y_cord) {
+							grid_tasks->DeleteRows(k);
+							k--;
+							total_rows--;
+						}
+					}
+
+					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+				}
+
+				grid_tasks->DeleteRows(i);
+			} else {
+				grid_tasks->DeleteRows(i);
+			}
+		}
 	}
 
 	it1 = tasks_data_to_save.begin();
 	it2 = tasks_data_to_save.begin();
 
-	it1 += row_num;
-	it2 += row_num + row_count;
+	it1 += building_row_num;
+	it2 += building_row_num + building_row_count;
 
 	tasks_data_to_save.erase(it1, it2);
 
@@ -2908,8 +2966,6 @@ bool cMain::check_take_put(const std::string& item) {
 	return false;
 }
 
-// It seems like this function should be refactored to use the new building_ variables
-// The building_ variables needs to be set here, so they are updated when underlying functions are used
 bool cMain::check_buildings_grid() {
 	
 	if (building_task == "Mine")  {
@@ -2930,8 +2986,9 @@ bool cMain::check_buildings_grid() {
 						}
 							
 						return true;
+					} else {
+						return false;
 					}
-					return false;
 				}
 			}
 		}
