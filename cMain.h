@@ -177,9 +177,10 @@ private:
 	float y_cord_float;
 	float building_size_float;
 
-	float new_x_cord;
-	float new_y_cord;
+	float new_x_cord; // Should most likely be std::string or removed 
+	float new_y_cord; // Should most likely be std::string or removed 
 
+	// Overall variables for parameters
 	std::string task;
 	std::string x_cord;
 	std::string y_cord;
@@ -191,8 +192,25 @@ private:
 	std::string direction_to_build;
 	std::string building_size;
 	std::string amount_of_buildings;
+
+
 	std::string building;
 	std::string new_orientation;
+
+	// Variables specific to the buildings grid
+	std::string building_task;
+	std::string building_x_cord;
+	std::string building_y_cord;
+	std::string building_units;
+	std::string building_item;
+	//std::string building_from_into;
+	//std::string building_tech_to_start;
+	std::string building_build_orientation;
+	std::string building_direction_to_build;
+	std::string building_building_size;
+	std::string building_amount_of_buildings;
+	//std::string building_building;
+	//std::string building_new_orientation;
 
 	std::string x_cord_origen;
 	std::string y_cord_origen;
@@ -241,11 +259,9 @@ private:
 	bool change_row(wxGrid* grid);
 
 	void update_tasks_grid();
-	void change_task();
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch(int start_row, int end_row);
 	void update_buildings();
-	bool update_building_orientation();
 	bool update_recipe();
 	bool update_limit();
 	bool update_priority();
@@ -254,14 +270,13 @@ private:
 
 	void background_colour_update(wxGrid* grid, int row, std::string task);
 	
-	void update_group_grid();
-	void update_template_grid();
+	void update_group_template_grid(wxGrid* grid, std::vector<std::string>& list, std::map<std::string, std::vector<std::string>>& map, std::string map_name);
 
 	void setup_paramters(std::vector<bool> parameters);
 
 	bool setup_for_task_grid();
 
-	void extract_parameters();
+	
 	void update_parameteres(wxGrid* grid, wxCommandEvent& event);
 	void update_group_map();
 	void update_template_map();
@@ -271,21 +286,30 @@ private:
 	bool check_buildings_grid();
 	bool check_mine_building();
 
+	bool extra_building_checks();
+
 	bool save_file(bool save_as);
 
+
+	void extract_parameters();
 	std::string extract_task();
 	std::string extract_x_cord();
 	std::string extract_y_cord();
 	std::string extract_units();
 	std::string extract_item();
-	std::string extract_amount_of_buildings();
-	std::string extract_building_size();
 	std::string extract_from_into();
-	std::string extract_direction_to_build();
-	std::string extract_building_orientation();
 	std::string extract_tech();
 	std::string extract_priority_in();
 	std::string extract_priority_out();
+	std::string extract_building_orientation();
+	std::string extract_direction_to_build();
+	std::string extract_building_size();
+	std::string extract_amount_of_buildings();
+
+	
+	
+	
+	
 	std::string extract_define(int start_row);
 	bool extract_building(int start_row);
 	bool extract_building_info();
@@ -295,6 +319,6 @@ private:
 	void update_coordinates();
 	void update_future_rotate_tasks();
 	void find_new_orientation();
-	bool find_old_orientation(int &start_row);
+	bool find_old_orientation();
 	bool find_building();
 };
