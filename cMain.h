@@ -171,6 +171,9 @@ private:
 	std::string not_relevant = "";
 	std::vector<std::string> all_buildings;
 	std::vector<std::string> all_items;
+	std::vector<std::string> part_assembly_recipes;
+	std::vector<std::string> full_assembly_recipes;
+	std::vector<std::string> full_chemical_plant_recipes;
 	std::vector<std::string> all_recipes;
 
 	float x_cord_float;
@@ -209,6 +212,8 @@ private:
 	std::string building_direction_to_build;
 	std::string building_building_size;
 	std::string building_amount_of_buildings;
+	std::string building_priority_in;
+	std::string building_priority_out;
 	//std::string building_building;
 	//std::string building_new_orientation;
 

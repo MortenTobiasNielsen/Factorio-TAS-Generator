@@ -11,13 +11,20 @@
 #include <codecvt>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1620, 1080)) {
+	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
+	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
+	
+	full_assembly_recipes.insert(full_assembly_recipes.end(), part_assembly_recipes.begin(), part_assembly_recipes.end());
+	full_assembly_recipes.insert(full_assembly_recipes.end(), assemply_level2_list.begin(), assemply_level2_list.end());
+	full_assembly_recipes.insert(full_assembly_recipes.end(), assemply_level2_extra_list.begin(), assemply_level2_extra_list.end());
+
+	full_chemical_plant_recipes.insert(full_chemical_plant_recipes.end(), chemical_plant_list.begin(), chemical_plant_list.end());
+	full_chemical_plant_recipes.insert(full_chemical_plant_recipes.end(), chemical_plant_extra_list.begin(), chemical_plant_extra_list.end());
+
 	all_recipes.insert(all_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
-	all_recipes.insert(all_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
-	all_recipes.insert(all_recipes.end(), assemply_level2_list.begin(), assemply_level2_list.end());
-	all_recipes.insert(all_recipes.end(), assemply_level2_extra_list.begin(), assemply_level2_extra_list.end());
+	all_recipes.insert(all_recipes.end(), full_assembly_recipes.begin(), full_assembly_recipes.end());
 	all_recipes.insert(all_recipes.end(), centrifuge_list.begin(), centrifuge_list.end());
-	all_recipes.insert(all_recipes.end(), chemical_plant_list.begin(), chemical_plant_list.end());
-	all_recipes.insert(all_recipes.end(), chemical_plant_extra_list.begin(), chemical_plant_extra_list.end());
+	all_recipes.insert(all_recipes.end(), full_chemical_plant_recipes.begin(), full_chemical_plant_recipes.end());
 	all_recipes.insert(all_recipes.end(), oil_refinery_list.begin(), oil_refinery_list.end());
 
 	for (auto s : all_recipes) {
@@ -390,6 +397,7 @@ bool cMain::move_row(wxGrid* grid, bool up) {
 	return true;
 }
 
+// ensure that you are not deleting rows, which you are not supposed to if the user has ctrl + clicked multiple blocks of tasks
 bool cMain::delete_row(wxGrid* grid) {
 	if (!grid->IsSelection()) {
 		wxMessageBox("Please select row(s) to be deleted", "Selection not valid");
@@ -441,11 +449,13 @@ void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
 // ensure that the variables are actually what they are supposed to be
 void cMain::update_tasks_grid() {
 
-	row_num = find_row_num(grid_tasks);
-
-	if (row_num == -1) {
-		wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
-		return;
+	if (grid_tasks->IsSelection()) {
+		if (!grid_tasks->GetSelectedRows().begin()) {
+			return;
+		}
+		row_num = *grid_tasks->GetSelectedRows().begin();
+	} else {
+		row_num = grid_tasks->GetNumberRows();
 	}
 
 	grid_tasks->InsertRows(row_num, 1);
@@ -484,8 +494,8 @@ void cMain::update_buildings_grid() {
 	grid_buildings->SetCellValue(building_row_num, 3, building_build_orientation);
 	grid_buildings->SetCellValue(building_row_num, 4, limit);
 	grid_buildings->SetCellValue(building_row_num, 5, recipe);
-	grid_buildings->SetCellValue(building_row_num, 6, priority_in);
-	grid_buildings->SetCellValue(building_row_num, 7, priority_out);
+	grid_buildings->SetCellValue(building_row_num, 6, building_priority_in);
+	grid_buildings->SetCellValue(building_row_num, 7, building_priority_out);
 	grid_buildings->SetCellValue(building_row_num, 8, filter);
 }
 
@@ -506,27 +516,27 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 		building_building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
 		building_amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
-		if (task == "Build" ) {
+		if (building_task == "Build" ) {
 			update_buildings();
 
-		} else if (task == "Recipe") {
+		} else if (building_task == "Recipe") {
 			update_recipe();
 
-		} else if (task == "Limit") {
+		} else if (building_task == "Limit") {
 			update_limit();
 
-		} else if (task == "Priority") {	
+		} else if (building_task == "Priority") {
 			int pos = building_build_orientation.find(",");
 
-			priority_in = building_build_orientation.substr(0, pos);
-			priority_out = building_build_orientation.substr(pos + 2);
+			building_priority_in = building_build_orientation.substr(0, pos);
+			building_priority_out = building_build_orientation.substr(pos + 2);
 
 			update_priority();
 
-		} else if (task == "Filter") {
+		} else if (building_task == "Filter") {
 			update_filter();
 
-		} else if (task == "Rotate") {
+		} else if (building_task == "Rotate") {
 
 			for (int j = 0; j < grid_buildings->GetNumberRows(); j++) {
 				if (grid_buildings->GetCellValue(j, 0).ToStdString() == building_x_cord && grid_buildings->GetCellValue(j, 1).ToStdString() == building_y_cord) {
@@ -534,9 +544,9 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 					break;
 				}
 			}
-		} else if (task == "Mine") {
+		} else if (building_task == "Mine") {
 			building_amount_of_buildings = "1";
-			if (check_mine_building()) {
+			if (find_building()) {
 				grid_buildings->DeleteRows(building_row_num);
 			}
 		}
@@ -546,8 +556,8 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 void cMain::update_buildings() {
 	limit = "";
 	recipe = "";
-	priority_in = "";
-	priority_out = "";
+	building_priority_in = "";
+	building_priority_out = "";
 	filter = "";
 
 	update_buildings_grid();
@@ -585,8 +595,8 @@ bool cMain::update_limit() {
 bool cMain::update_priority() {
 	if (find_building()) {
 		for (int i = building_row_num; i < (building_row_num + std::stoi(building_amount_of_buildings)); i++) {
-			grid_buildings->SetCellValue(i, 6, priority_in);
-			grid_buildings->SetCellValue(i, 7, priority_out);
+			grid_buildings->SetCellValue(i, 6, building_priority_in);
+			grid_buildings->SetCellValue(i, 7, building_priority_out);
 		}
 	} else {
 		return false;
@@ -660,24 +670,48 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		}
 		row_num = *grid_tasks->GetSelectedRows().begin();
 	} else {
-		row_num = grid_tasks->GetNumberRows()
+		row_num = grid_tasks->GetNumberRows();
 	}
 
 	extract_parameters();
 
-	// You most likely need to run a check to see if it is needed to rebuild the buildings grid. 
+	if (task == "Mine" || task == "Recipe" || task == "Build" || task == "Limit" || task == "Priority" || task == "Filter" || task == "Rotate" || task == "Put" || task == "Take" || task == "Launch") {
+		if (row_num != grid_tasks->GetNumberRows()) {
+			update_buildings_grid_from_scratch(0, row_num);
+		}
+		
+		building_task = task;
+		building_x_cord = x_cord;
+		building_y_cord = y_cord;
+		building_units = units;
+		building_item = item;
+		building_build_orientation = build_orientation;
+		building_direction_to_build = direction_to_build;
+		building_building_size = building_size;
+		building_amount_of_buildings = amount_of_buildings;
+		building_priority_in = priority_in;
+		building_priority_out = priority_out;
 
-	if (check_buildings_grid()) {
+		if (check_buildings_grid()) {
+			if (setup_for_task_grid()) {
+
+				update_tasks_grid();	
+			}
+		}
+
+		if (row_num != grid_tasks->GetNumberRows()) {
+			update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
+		}
+	} else {
 		if (setup_for_task_grid()) {
-			
 			update_tasks_grid();
-			update_buildings_grid_from_scratch(row_num + 1, grid_tasks->GetNumberRows());
 		}
 	}
 
 	event.Skip();
 }
 
+// You still need to get this to work with the different checks nessesary to ensure that the change do not break something
 void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	extract_parameters();
 
@@ -1986,7 +2020,6 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 }
 
 bool cMain::setup_for_task_grid() {
-	extract_parameters();
 
 	if (task == "Game Speed") {
 		x_cord = not_relevant;
@@ -2015,7 +2048,7 @@ bool cMain::setup_for_task_grid() {
 	} else if (task == "Rotate") {
 
 		item = building;
-		build_orientation = new_orientation;
+
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
@@ -2080,9 +2113,36 @@ bool cMain::setup_for_task_grid() {
 
 		item = tech_to_start;
 	} else if (task == "Recipe") {
-		if (!check_input(item, all_recipes)) { // A check of the building should be made and then the recipes for that building should be checked
-			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
-			return false;
+		if (building == "Assembling machine 1") {
+			if (!check_input(item, part_assembly_recipes)) {
+				wxMessageBox("The item chosen is not a valid recipe for an assembling machine 1", "Item chosen is not valid");
+				return false;
+			}
+		} else if (building == "Assembling machine 2" || building == "Assembling machine 3") {
+			if (!check_input(item, full_assembly_recipes)) {
+				wxMessageBox("The item chosen is not a valid recipe for an assembling machine", "Item chosen is not valid");
+				return false;
+			}
+		} else if (building == "Oil refinery") {
+			if (!check_input(item, oil_refinery_list)) {
+				wxMessageBox("The item chosen is not a valid recipe for an oil refinery", "Item chosen is not valid");
+				return false;
+			}
+		} else if (building == "Chemical plant") {
+			if (!check_input(item, full_chemical_plant_recipes)) {
+				wxMessageBox("The item chosen is not a valid recipe for a chemical plant", "Item chosen is not valid");
+				return false;
+			}
+		} else if (building == "Centrifuge") {
+			if (!check_input(item, centrifuge_list)) {
+				wxMessageBox("The item chosen is not a valid recipe for a centrifuge", "Item chosen is not valid");
+				return false;
+			}
+		} else if (building == "Stone furnace" || building == "Steel furnace" || building == "Electric furnace") {
+			if (!check_input(item, furnace_list)) { 
+				wxMessageBox("The item chosen is not a valid recipe for a furnace", "Item chosen is not valid");
+				return false;
+			}
 		}
 
 		units = not_relevant;
@@ -2610,7 +2670,7 @@ void cMain::update_future_rotate_tasks() {
 				units = grid_tasks->GetCellValue(i, 3).ToStdString();
 				find_new_orientation();
 
-				grid_tasks->SetCellValue(i, 5, new_orientation);
+				grid_tasks->SetCellValue(i, 5, building_build_orientation);
 
 				task = grid_tasks->GetCellValue(i, 0).ToStdString();
 				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
@@ -2693,6 +2753,7 @@ bool cMain::find_building() {
 			continue;
 		}
 
+		building = grid_buildings->GetCellValue(i, 3);
 		building_row_num = i;
 		break;
 	}
@@ -2758,74 +2819,38 @@ bool cMain::check_take_put(const std::string& item) {
 	}
 
 	for (int i = row_num - 1; i > -1; i--) {
-		if (find_old_orientation(i)) { // find new function which is more tailored for this 
-			if (check_input(building, chest_list)) {
-				if (to_check == "Chest") {
-					return true;
-				}
-
-				wxMessageBox("Only Chest is a valid \"From/Into\" choice for a chest", "Please choose chest");
-				return false;
+		if (check_input(building, chest_list)) {
+			if (to_check == "Chest") {
+				return true;
 			}
 
-			if (to_check == "Fuel") {
-				for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
+			wxMessageBox("Only Chest is a valid \"From/Into\" choice for a chest", "Please choose chest");
+			return false;
+		}
+
+		if (to_check == "Fuel") {
+			for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
+				if (item == *it) {
+					return true;
+				}
+			}
+
+			wxMessageBox("The item chosen is not a valid fuel", "Please select a valid fuel");
+			return false;
+		}
+
+		if (building == "Lab") {
+			if (to_check == "Input") {
+				for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
 					if (item == *it) {
 						return true;
 					}
 				}
 
-				wxMessageBox("The item chosen is not a valid fuel", "Please select a valid fuel");
+				wxMessageBox("The item chosen is not a science pack.\nOnly science packs can be used as input for a lab", "Please choose a science pack");
 				return false;
-			}
 
-			if (building == "Lab") {
-				if (to_check == "Input") {
-					for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
-						if (item == *it) {
-							return true;
-						}
-					}
-
-					wxMessageBox("The item chosen is not a science pack.\nOnly science packs can be used as input for a lab", "Please choose a science pack");
-					return false;
-
-				} else if (to_check == "Modules") {
-					for (auto it = module_list.begin(); it < module_list.end(); it++) {
-						if (item == *it) {
-							return true;
-						}
-					}
-
-					wxMessageBox("The item chosen is not a module", "Please choose a module");
-					return false;
-				}
-
-				wxMessageBox("Only Input and Modules are valid \"From/Into\" choices for a lab", "Please choose input or modules");
-				return false;
-			}
-
-			if (check_input(building, drills_list)) {
-				if (to_check == "Modules") {
-					for (auto it = module_list.begin(); it < module_list.end(); it++) {
-						if (item == *it) {
-							return true;
-						}
-					}
-					wxMessageBox("The item chosen is not a module", "Please choose a module");
-					return false;
-				}
-
-				wxMessageBox("Only Modules is a valid \"From/Into\" choice for a drill/Pump", "Please choose modules");
-				return false;
-			}
-
-			if (to_check == "Input") {
-				// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
-				return true;
-			}
-			
-			if (to_check == "Modules") {
+			} else if (to_check == "Modules") {
 				for (auto it = module_list.begin(); it < module_list.end(); it++) {
 					if (item == *it) {
 						return true;
@@ -2835,14 +2860,48 @@ bool cMain::check_take_put(const std::string& item) {
 				wxMessageBox("The item chosen is not a module", "Please choose a module");
 				return false;
 			}
-			
-			if (to_check == "Output") {
-				// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
-				return true;
-			} 
 
+			wxMessageBox("Only Input and Modules are valid \"From/Into\" choices for a lab", "Please choose input or modules");
 			return false;
 		}
+
+		if (check_input(building, drills_list)) {
+			if (to_check == "Modules") {
+				for (auto it = module_list.begin(); it < module_list.end(); it++) {
+					if (item == *it) {
+						return true;
+					}
+				}
+				wxMessageBox("The item chosen is not a module", "Please choose a module");
+				return false;
+			}
+
+			wxMessageBox("Only Modules is a valid \"From/Into\" choice for a drill/Pump", "Please choose modules");
+			return false;
+		}
+
+		if (to_check == "Input") {
+			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+			return true;
+		}
+			
+		if (to_check == "Modules") {
+			for (auto it = module_list.begin(); it < module_list.end(); it++) {
+				if (item == *it) {
+					return true;
+				}
+			}
+
+			wxMessageBox("The item chosen is not a module", "Please choose a module");
+			return false;
+		}
+			
+		if (to_check == "Output") {
+			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+			return true;
+		} 
+
+		return false;
 	}
 	
 	wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
@@ -2852,89 +2911,85 @@ bool cMain::check_take_put(const std::string& item) {
 // It seems like this function should be refactored to use the new building_ variables
 // The building_ variables needs to be set here, so they are updated when underlying functions are used
 bool cMain::check_buildings_grid() {
-
 	
-	
+	if (building_task == "Mine")  {
+		building_amount_of_buildings = "1";
+		if (find_building()) {
+			int total_rows = grid_tasks->GetNumberRows();
 
-	if (task == "Mine" || task == "Recipe" || task == "Build" || task == "Limit" || task == "Priority" || task == "Filter" || task == "Rotate") {
-
-		update_buildings_grid_from_scratch(0, row_num);
-
-		if (task == "Mine")  {
-			if (check_mine_building()) {
-				int total_rows = grid_tasks->GetNumberRows();
-
-				for (int i = row_num; i < total_rows; i++) {
-					if (grid_tasks->GetCellValue(i, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
-						if (wxMessageBox("Are you sure you want to remove this building?\nAll future tasks associated with the building will be removed to avoid issues.", "The building you are removing has tasks associated with it", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
-							grid_buildings->DeleteRows(building_row_num);
-							for (int j = i; j < total_rows; j++) {
-								if (grid_tasks->GetCellValue(i, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
-									grid_tasks->DeleteRows(j);
-									j--;
-									total_rows--;
-								}
+			for (int i = row_num; i < total_rows; i++) {
+				if (grid_tasks->GetCellValue(i, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+					if (wxMessageBox("Are you sure you want to remove this building?\nAll future tasks associated with the building will be removed to avoid issues.", "The building you are removing has tasks associated with it", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
+						grid_buildings->DeleteRows(building_row_num);
+						for (int j = i; j < total_rows; j++) {
+							if (grid_tasks->GetCellValue(j, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(j, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == y_cord) {
+								grid_tasks->DeleteRows(j);
+								j--;
+								total_rows--;
 							}
-							
-							return true;
 						}
-						return false;
+							
+						return true;
 					}
+					return false;
 				}
 			}
-
-		} else if (task == "Recipe") {
-			if (!update_recipe()) {
-				wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return false;
-			}
-
-		} else if (task == "Build") {
-			update_buildings();
-
-		} else if (task == "Limit") {
-			if (!update_limit()) {
-				wxMessageBox("Building is not a chest or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Ensure that all are chests\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return false;
-			}
-
-		} else if (task == "Priority") {
-			if (!update_priority()) {
-				wxMessageBox("Building is not a splitter or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return false;
-			}
-
-		} else if (task == "Filter") {
-			if (!update_filter()) {
-				wxMessageBox("Building is not a splitter, filter inserter or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters or filter inserters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return false;
-			}
-
-		} else if (task == "Rotate") {
-			if (!Update_rotation()) {
-				wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return false;
-			}
-
-			std::string saved_orientation = new_orientation;
-
-			if ((row_num + 1) < grid_tasks->GetNumberRows()) {
-				build_orientation = new_orientation;
-				update_future_rotate_tasks();
-			}
-
-			new_orientation = saved_orientation;
 		}
-	}
 
+	} else if (building_task == "Recipe") {
+		if (!update_recipe()) {
+			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			return false;
+		}
+
+	} else if (building_task == "Build") {
+		update_buildings();
+
+	} else if (building_task == "Limit") {
+		if (!update_limit()) {
+			wxMessageBox("Building is not a chest or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Ensure that all are chests\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			return false;
+		}
+
+	} else if (building_task == "Priority") {
+
+		if (!update_priority()) {
+			wxMessageBox("Building is not a splitter or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			return false;
+		}
+
+	} else if (building_task == "Filter") {
+		if (!update_filter()) {
+			wxMessageBox("Building is not a splitter, filter inserter or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters or filter inserters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			return false;
+		}
+
+	} else if (building_task == "Take" || building_task == "Put") {
+		if (!find_building()) {
+			return false;
+		}
+
+	} else if (building_task == "Launch") {
+		building_amount_of_buildings = "1";
+		if (!find_building()) {
+			return false;
+		}
+
+	} else if (building_task == "Rotate") {
+		if (!Update_rotation()) {
+			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			return false;
+		}
+
+		std::string saved_orientation = building_build_orientation;
+
+		if ((row_num + 1) < grid_tasks->GetNumberRows()) {
+			update_future_rotate_tasks();
+		}
+
+		build_orientation = saved_orientation;
+	}
 	return true;
-}
-
-bool cMain::check_mine_building() {
-	if (find_building()) {
-		return true;
-	}
-	return false;
 }
 
 bool cMain::save_file(bool save_as) {
