@@ -260,7 +260,7 @@ private:
 	bool check_before_close();
 
 	bool move_row(wxGrid* grid, bool up = false);
-	bool delete_row(wxGrid* grid);
+	bool delete_row(wxGrid* grid, std::map<std::string, std::vector<std::string>> map = {});
 	bool change_row(wxGrid* grid);
 
 	void update_tasks_grid();
@@ -284,7 +284,7 @@ private:
 	bool setup_for_task_grid();
 
 	
-	void update_parameteres(wxGrid* grid, wxCommandEvent& event);
+	void update_parameters(wxGrid* grid, wxCommandEvent& event);
 	void update_group_map();
 	void update_template_map();
 
