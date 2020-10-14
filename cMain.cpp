@@ -662,7 +662,7 @@ void cMain::update_group_template_grid(wxGrid* grid, std::vector<std::string>& l
 	}
 }
 
-// there is something wrong with the way update_buildings_grid_from_scratch is used
+// You have chosen not to implement a check to see if there are already a building at the location, given that it would open for a lot of concerns about fast replaceing buildings 
 void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	if (grid_tasks->IsSelection()) {
 		if (!grid_tasks->GetSelectedRows().begin()) {
@@ -711,7 +711,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
-// You still need to get this to work with the different checks nessesary to ensure that the change do not break something
+// It has been chosen to not make massive checks when a task is changed, given that it would be very complicated
 void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	extract_parameters();
 
@@ -726,11 +726,13 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
-// Start from here -----------------------------------------------------------------------------------------------------------------
-
 void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	if (!grid_tasks->IsSelection()) {
 		wxMessageBox("Please select row(s) to be deleted", "Selection not valid");
+		return;
+	}
+
+	if (wxMessageBox("Are you sure you want to delete this task?", "Delete task", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
 		return;
 	}
 
@@ -761,20 +763,24 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 		for (int i = building_row_num; i < (building_row_num + building_row_count); i++) {
 			building_task = grid_tasks->GetCellValue(i, 0).ToStdString();
 
-			if (building_task == "Build" && building_row_num != grid_tasks->GetNumberRows()) {
-				building_x_cord = grid_tasks->GetCellValue(building_row_num, 1).ToStdString();
-				building_y_cord = grid_tasks->GetCellValue(building_row_num, 2).ToStdString();
-				building_direction_to_build = grid_tasks->GetCellValue(building_row_num, 6).ToStdString();
-				building_building_size = grid_tasks->GetCellValue(building_row_num, 7).ToStdString();
-				building_amount_of_buildings = grid_tasks->GetCellValue(building_row_num, 8).ToStdString();
+			if (building_task == "Build") {
+				building_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
+				building_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
+				building_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
+				building_building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
+				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
 
 				// The current row is a build task and each building of the task are run through to check for associated tasks 
 				for (int j = 0; j < std::stoi(building_amount_of_buildings); j++) {
 					int total_rows = grid_tasks->GetNumberRows();
 
 					// All of the future tasks on the tasks grid are run through
-					for (int k = i + 1; k < total_rows; k++) {
-						if (grid_tasks->GetCellValue(k, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(k, 1).ToStdString() == building_x_cord && grid_tasks->GetCellValue(k, 2).ToStdString() == building_y_cord) {
+					for (int k = (building_row_num + building_row_count); k < total_rows; k++) {
+						if (grid_tasks->GetCellValue(k, 1).ToStdString() == building_x_cord && grid_tasks->GetCellValue(k, 2).ToStdString() == building_y_cord) {
+							if (grid_tasks->GetCellValue(k, 0).ToStdString() != "Mine" || grid_tasks->GetCellValue(k, 0).ToStdString() != "Build") {
+								break;
+							}
+
 							grid_tasks->DeleteRows(k);
 							k--;
 							total_rows--;
@@ -783,6 +789,15 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 
 					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 				}
+
+				grid_tasks->DeleteRows(i);
+			} else if (building_task == "Rotate") {
+				building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				row_num  = i;
+				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();;
+				y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();;
+
+				update_future_rotate_tasks();
 
 				grid_tasks->DeleteRows(i);
 			} else {
@@ -804,6 +819,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
+// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveUpClicked(wxCommandEvent& event) {
 	if (!move_row(grid_tasks, true)) {
 		return;
@@ -824,6 +840,7 @@ void cMain::OnMoveUpClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
+// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 	if (!move_row(grid_tasks, false)) {
 		return;
@@ -863,9 +880,14 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 
 	for (int i = 0; i < group_row_count; i++) {
 		if (group_name == cmb_choose_group->GetString(i).ToStdString()) {
-			wxMessageBox("Group names has to be unique - please write a new name in the Choose Group field", "Group names should be unique");
+			wxMessageBox("Group names have to be unique - please write a new name in the Choose Group field", "Group names should be unique");
 			return;
 		}
+	}
+
+	if (grid_group->IsSelection() && !grid_group->GetSelectedRows().begin()) {
+		wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
+		return;
 	}
 
 	cmb_choose_group->Clear();
@@ -875,34 +897,21 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 	group_list = {};
 
 	if (grid_group->IsSelection()) {
-		if (!grid_group->GetSelectedRows().begin()) {
-			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
-			return;
-		}
 		group_row_num = *grid_group->GetSelectedRows().begin();
 		group_row_count = grid_group->GetSelectedRows().GetCount();
 	} else {
+		group_row_num = 0;
 		group_row_count = grid_group->GetNumberRows();
 
-		if (group_row_count) {
-			group_row_num = 0;
-		} else {
+		if (!group_row_count) {
 			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
 			event.Skip();
 			return;
 		}
 	}
 
-	for (int i = group_row_num; i < group_row_num + group_row_count; i++) {
-		task = grid_group->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_group->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_group->GetCellValue(i, 2).ToStdString();
-		units = grid_group->GetCellValue(i, 3).ToStdString();
-		item = grid_group->GetCellValue(i, 4).ToStdString();
-		build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
-		direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
-		building_size = grid_group->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
+	for (int i = group_row_num; i < (group_row_num + group_row_count); i++) {
+		grid_extract_parameters(i, grid_group);
 
 		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 	
@@ -917,6 +926,10 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnDeleteGroupClicked(wxCommandEvent& event) {
+	if (wxMessageBox("Are you sure you want to delete this group?", "Delete group", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
+		return;
+	}
+
 	group_name = cmb_choose_group->GetValue();
 
 	if (group_map.find(group_name) != group_map.end()) {
@@ -938,7 +951,7 @@ void cMain::OnDeleteGroupClicked(wxCommandEvent& event) {
 
 void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 	if (!grid_tasks->IsSelection()) {
-		wxMessageBox("No task is chosen - please select a row in the task list", "Cannot add task to group");
+		wxMessageBox("No task is chosen - please select row(s) in the task list", "Cannot add task to group");
 		return;
 	}
 
@@ -952,45 +965,42 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 		group_row_num = grid_group->GetNumberRows();
 	}
 
-	row_num = *grid_tasks->GetSelectedRows().begin();
-	row_count = grid_tasks->GetSelectedRows().GetCount();
+	for (auto block : grid_tasks->GetSelectedRowBlocks()) {
+		row_num = block.GetTopRow();
+		row_count = block.GetBottomRow() - row_num + 1;
 
-	grid_group->InsertRows(group_row_num, row_count);
+		grid_group->InsertRows(group_row_num, row_count);
 
-	int total_rows = row_num + row_count;
-	group_row_num = group_row_num - row_num;
+		int total_rows = row_num + row_count;
 
-	for (int i = row_num; i < total_rows; i++) {
+		for (int i = row_num; i < total_rows; i++) {
 
-		row_num = group_row_num + i;
+			grid_extract_parameters(i, grid_tasks);
 
-		grid_group->SetCellValue(group_row_num + i, 0, grid_tasks->GetCellValue(i, 0).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 1, grid_tasks->GetCellValue(i, 1).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 2, grid_tasks->GetCellValue(i, 2).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 3, grid_tasks->GetCellValue(i, 3).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 4, grid_tasks->GetCellValue(i, 4).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 5, grid_tasks->GetCellValue(i, 5).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 6, grid_tasks->GetCellValue(i, 6).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 7, grid_tasks->GetCellValue(i, 7).ToStdString());
-		grid_group->SetCellValue(group_row_num + i, 8, grid_tasks->GetCellValue(i, 8).ToStdString());
+			grid_insert_data(group_row_num, grid_group);
 
-		background_colour_update(grid_group, row_num, grid_tasks->GetCellValue(i, 0).ToStdString());
-	}
+			background_colour_update(grid_group, group_row_num, grid_tasks->GetCellValue(i, 0).ToStdString());
 
-	if (!(group_map.find(cmb_choose_group->GetValue().ToStdString()) == group_map.end())) {
-		update_group_map();
+			group_row_num += 1;
+		}
+
+		if (group_map.find(cmb_choose_group->GetValue().ToStdString()) != group_map.end()) {
+			update_group_map();
+		}
 	}
 }
 
+// You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
-	if (!grid_tasks->IsSelection()) {
-		row_num = grid_tasks->GetNumberRows();
-	} else {
+	if (grid_tasks->IsSelection()) {
 		if (!grid_tasks->GetSelectedRows().begin()) {
 			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
 		} else {
 			row_num = *grid_tasks->GetSelectedRows().begin();
 		}
+
+	} else {
+		row_num = grid_tasks->GetNumberRows();
 	}
 
 	bool check = false;
@@ -999,28 +1009,15 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 		group_row_num = block.GetTopRow();
 		group_row_count = block.GetBottomRow() - group_row_num + 1;
 
-		for (int i = group_row_num; i < (group_row_num + group_row_count); i++) {
-			grid_tasks->InsertRows(row_num);
+		grid_tasks->InsertRows(row_num, group_row_count);
 
-			task = grid_group->GetCellValue(i, 0).ToStdString();
-			x_cord = grid_group->GetCellValue(i, 1).ToStdString();
-			y_cord = grid_group->GetCellValue(i, 2).ToStdString();
-			units = grid_group->GetCellValue(i, 3).ToStdString();
-			item = grid_group->GetCellValue(i, 4).ToStdString();
-			build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
-			direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
-			building_size = grid_group->GetCellValue(i, 7).ToStdString();
-			amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
+		int total_rows = group_row_num + group_row_count;
 
-			grid_tasks->SetCellValue(row_num, 0, grid_group->GetCellValue(i, 0));
-			grid_tasks->SetCellValue(row_num, 1, grid_group->GetCellValue(i, 1));
-			grid_tasks->SetCellValue(row_num, 2, grid_group->GetCellValue(i, 2));
-			grid_tasks->SetCellValue(row_num, 3, grid_group->GetCellValue(i, 3));
-			grid_tasks->SetCellValue(row_num, 4, grid_group->GetCellValue(i, 4));
-			grid_tasks->SetCellValue(row_num, 5, grid_group->GetCellValue(i, 5));
-			grid_tasks->SetCellValue(row_num, 6, grid_group->GetCellValue(i, 6));
-			grid_tasks->SetCellValue(row_num, 7, grid_group->GetCellValue(i, 7));
-			grid_tasks->SetCellValue(row_num, 8, grid_group->GetCellValue(i, 8));
+		for (int i = group_row_num; i < total_rows; i++) {
+
+			grid_extract_parameters(i, grid_group);
+
+			grid_insert_data(row_num, grid_group);
 
 			it1 = tasks_data_to_save.begin();
 			it1 += row_num;
@@ -1040,31 +1037,14 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	group_row_num = 0;
 	group_row_count = grid_group->GetNumberRows();
+	grid_tasks->InsertRows(row_num, group_row_count);
 
-	for (int i = group_row_num; i < (group_row_num + group_row_count); i++) {
-		grid_tasks->InsertRows(row_num);
+	for (int i = 0; i < group_row_count; i++) {
 
-		task = grid_group->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_group->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_group->GetCellValue(i, 2).ToStdString();
-		units = grid_group->GetCellValue(i, 3).ToStdString();
-		item = grid_group->GetCellValue(i, 4).ToStdString();
-		build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
-		direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
-		building_size = grid_group->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
+		grid_extract_parameters(i, grid_group);
 
-		grid_tasks->SetCellValue(row_num, 0, grid_group->GetCellValue(i, 0));
-		grid_tasks->SetCellValue(row_num, 1, grid_group->GetCellValue(i, 1));
-		grid_tasks->SetCellValue(row_num, 2, grid_group->GetCellValue(i, 2));
-		grid_tasks->SetCellValue(row_num, 3, grid_group->GetCellValue(i, 3));
-		grid_tasks->SetCellValue(row_num, 4, grid_group->GetCellValue(i, 4));
-		grid_tasks->SetCellValue(row_num, 5, grid_group->GetCellValue(i, 5));
-		grid_tasks->SetCellValue(row_num, 6, grid_group->GetCellValue(i, 6));
-		grid_tasks->SetCellValue(row_num, 7, grid_group->GetCellValue(i, 7));
-		grid_tasks->SetCellValue(row_num, 8, grid_group->GetCellValue(i, 8));
+		grid_insert_data(row_num, grid_group);
 
 		it1 = tasks_data_to_save.begin();
 		it1 += row_num;
@@ -1080,6 +1060,30 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 
 	event.Skip();
 }
+
+void cMain::grid_extract_parameters(const int &row, wxGrid* grid) {
+	task = grid->GetCellValue(row, 0).ToStdString();
+	x_cord = grid->GetCellValue(row, 1).ToStdString();
+	y_cord = grid->GetCellValue(row, 2).ToStdString();
+	units = grid->GetCellValue(row, 3).ToStdString();
+	item = grid->GetCellValue(row, 4).ToStdString();
+	build_orientation = grid->GetCellValue(row, 5).ToStdString();
+	direction_to_build = grid->GetCellValue(row, 6).ToStdString();
+	building_size = grid->GetCellValue(row, 7).ToStdString();
+	amount_of_buildings = grid->GetCellValue(row, 8).ToStdString();;
+}
+
+void cMain::grid_insert_data(const int& row, wxGrid* grid) {
+	grid->SetCellValue(row, 0, task);
+	grid->SetCellValue(row, 1, x_cord);
+	grid->SetCellValue(row, 2, y_cord);
+	grid->SetCellValue(row, 3, units);
+	grid->SetCellValue(row, 4, item);
+	grid->SetCellValue(row, 5, build_orientation);
+	grid->SetCellValue(row, 6, direction_to_build);
+	grid->SetCellValue(row, 7, building_size);
+	grid->SetCellValue(row, 8, amount_of_buildings);
+}	
 
 void cMain::OnGroupChangeClicked(wxCommandEvent& event) {
 	extract_parameters();
@@ -1099,6 +1103,10 @@ void cMain::OnGroupChangeClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnGroupDeleteClicked(wxCommandEvent& event) {
+	if (wxMessageBox("Are you sure you want to delete this group task?", "Delete group task", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
+		return;
+	}
+
 	if (!delete_row(grid_group)) {
 
 		event.Skip();
@@ -1250,6 +1258,10 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnDeleteTemplateClicked(wxCommandEvent& event) {
+	if (wxMessageBox("Are you sure you want to delete this template?", "Delete template", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
+		return;
+	}
+
 	template_name = cmb_choose_template->GetValue();
 	
 	if (template_map.find(template_name) != template_map.end()) {
@@ -1332,6 +1344,7 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
+// You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 	if (!grid_tasks->IsSelection()) {
 		row_num = grid_tasks->GetNumberRows();
@@ -1466,6 +1479,10 @@ void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event) {
 }
 
 void cMain::OnTemplateDeleteTaskClicked(wxCommandEvent& event) {
+	if (wxMessageBox("Are you sure you want to delete this template task?", "Delete template task", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
+		return;
+	}
+
 	if (!delete_row(grid_template)) {
 
 		event.Skip();
@@ -2349,9 +2366,11 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
+
 	} else if (task == "Stop") {
 		txt_units->SetValue(units);
 		OnStopChosen(event);
+
 	} else if (task == "Limit") {
 		OnLimitMenuSelected(event);
 		txt_x_cord->SetValue(x_cord);
@@ -2360,6 +2379,7 @@ void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
+
 	} else if (task == "Priority") {
 		OnPriorityMenuSelected(event);
 		txt_x_cord->SetValue(x_cord);
@@ -2721,19 +2741,18 @@ void cMain::update_coordinates() {
 void cMain::update_future_rotate_tasks() {
 	int total_rows = grid_tasks->GetNumberRows();
 	
+	// Ensure that the building is still the same. 
+
 	for (int i = row_num + 1; i < total_rows; i++) {
 
 		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Rotate") {
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord && grid_tasks->GetCellValue(i, 4).ToStdString() == building) {
 				units = grid_tasks->GetCellValue(i, 3).ToStdString();
 				find_new_orientation();
 
 				grid_tasks->SetCellValue(i, 5, building_build_orientation);
 
 				task = grid_tasks->GetCellValue(i, 0).ToStdString();
-				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-				y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-				units = grid_tasks->GetCellValue(i, 3).ToStdString();
 				item = grid_tasks->GetCellValue(i, 4).ToStdString();
 				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
 				direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
@@ -2974,20 +2993,26 @@ bool cMain::check_buildings_grid() {
 			int total_rows = grid_tasks->GetNumberRows();
 
 			for (int i = row_num; i < total_rows; i++) {
-				if (grid_tasks->GetCellValue(i, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
-					if (wxMessageBox("Are you sure you want to remove this building?\nAll future tasks associated with the building will be removed to avoid issues.", "The building you are removing has tasks associated with it", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
-						grid_buildings->DeleteRows(building_row_num);
-						for (int j = i; j < total_rows; j++) {
-							if (grid_tasks->GetCellValue(j, 1).ToStdString() != "Mine" && grid_tasks->GetCellValue(j, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == y_cord) {
-								grid_tasks->DeleteRows(j);
-								j--;
-								total_rows--;
+				if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+					if (grid_tasks->GetCellValue(i, 0).ToStdString() != "Mine" || grid_tasks->GetCellValue(i, 0).ToStdString() != "Build") {
+						if (wxMessageBox("Are you sure you want to remove this building?\nAll future tasks associated with the building will be removed to avoid issues.", "The building you are removing has tasks associated with it", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
+							grid_buildings->DeleteRows(building_row_num);
+							for (int j = i; j < total_rows; j++) {
+								if (grid_tasks->GetCellValue(j, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == y_cord) {
+									if (grid_tasks->GetCellValue(j, 0).ToStdString() != "Mine" || grid_tasks->GetCellValue(j, 0).ToStdString() != "Build") {
+										break;
+									}
+								
+									grid_tasks->DeleteRows(j);
+									j--;
+									total_rows--;
+								}
 							}
-						}
 							
-						return true;
-					} else {
-						return false;
+							return true;
+						} else {
+							return false;
+						}
 					}
 				}
 			}

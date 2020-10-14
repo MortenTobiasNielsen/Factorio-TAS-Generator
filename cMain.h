@@ -276,6 +276,8 @@ private:
 	void background_colour_update(wxGrid* grid, int row, std::string task);
 	
 	void update_group_template_grid(wxGrid* grid, std::vector<std::string>& list, std::map<std::string, std::vector<std::string>>& map, std::string map_name);
+	void grid_extract_parameters(const int& row, wxGrid* grid);
+	void grid_insert_data(const int& row, wxGrid* grid);
 
 	void setup_paramters(std::vector<bool> parameters);
 
