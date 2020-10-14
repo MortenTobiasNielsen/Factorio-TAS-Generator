@@ -167,6 +167,8 @@ private:
 
 	int row_to_move;
 
+	std::string task_number;
+
 	std::string data;
 	std::string not_relevant = "";
 	std::vector<std::string> all_buildings;
@@ -259,8 +261,8 @@ private:
 	void reset_to_new_window();
 	bool check_before_close();
 
-	bool move_row(wxGrid* grid, bool up = false);
-	bool delete_row(wxGrid* grid, std::map<std::string, std::vector<std::string>> map = {});
+	void move_row(wxGrid* grid, bool up = false);
+	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>> map = {}); // check if this should have a group_template function
 	bool change_row(wxGrid* grid);
 
 	void update_tasks_grid();
@@ -274,6 +276,8 @@ private:
 	bool Update_rotation();
 
 	void background_colour_update(wxGrid* grid, int row, std::string task);
+
+	void group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>> map);
 	
 	void update_group_template_grid(wxGrid* grid, std::vector<std::string>& list, std::map<std::string, std::vector<std::string>>& map, std::string map_name);
 	void grid_extract_parameters(const int& row, wxGrid* grid);
@@ -283,6 +287,7 @@ private:
 
 	bool setup_for_task_grid();
 
+	bool find_building_for_script(int& row);
 	
 	void update_parameters(wxGrid* grid, wxCommandEvent& event);
 	void update_group_map();

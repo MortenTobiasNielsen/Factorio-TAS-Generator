@@ -357,48 +357,131 @@ bool cMain::check_before_close() {
 	return false;
 }
 
-bool cMain::move_row(wxGrid* grid, bool up) {
+void cMain::move_row(wxGrid* grid, bool up) {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin()) {
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
-		return false;
 	}
 
-	if (up) {
-		if (*grid->GetSelectedRows().begin() == 0) {
-			return false;
+	for (auto block : grid->GetSelectedRowBlocks()) {
+		row_num = block.GetTopRow();
+		row_count = block.GetBottomRow() - row_num + 1;
+
+		if (up) {
+			if (row_num == 0) {
+				continue;
+			}
+
+			row_to_move = row_num - 1;
+
+		} else {
+			if ( (row_num + row_count) == (grid->GetNumberRows()) ) {
+				continue;
+			}
+
+			row_to_move = row_num + row_count + 1;
+			row_count = 0;
 		}
-		row_count = grid->GetSelectedRows().GetCount();
-		row_num = *grid->GetSelectedRows().begin();
-		row_to_move = row_num - 1;
-	} else {
-		if ((*grid->GetSelectedRows().begin() + grid->GetSelectedRows().GetCount()) == (grid->GetNumberRows())) {
-			return false;
+
+		grid->InsertRows(row_num + row_count);
+
+		grid_extract_parameters(row_to_move, grid);
+
+		grid_insert_data(row_num + row_count, grid);
+
+		grid->DeleteRows(row_to_move);
+	
+		if (up) {
+			it1 = tasks_data_to_save.begin();
+			it1 += row_to_move;
+
+			data = *it1;
+			tasks_data_to_save.erase(it1);
+
+			it2 = tasks_data_to_save.begin();
+			it2 += row_num + row_count - 1;
+
+			tasks_data_to_save.insert(it2, data);
+		} else {
+			it1 = tasks_data_to_save.begin();
+			it1 += row_to_move - 1;
+
+			it2 = tasks_data_to_save.begin();
+			it2 += row_num;
+
+			data = *it1;
+			tasks_data_to_save.erase(it1, it1 + 1);
+			tasks_data_to_save.insert(it2, data);
 		}
-		row_count = grid->GetSelectedRows().GetCount();
-		row_num = *grid->GetSelectedRows().begin();
-		row_to_move = row_num + row_count + 1;
-		row_count = 0;
 	}
 
-	grid->InsertRows(row_num + row_count, 1);
+	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+}
 
-	grid->SetCellValue(row_num + row_count, 0, grid->GetCellValue(row_to_move, 0).ToStdString());
-	grid->SetCellValue(row_num + row_count, 1, grid->GetCellValue(row_to_move, 1).ToStdString());
-	grid->SetCellValue(row_num + row_count, 2, grid->GetCellValue(row_to_move, 2).ToStdString());
-	grid->SetCellValue(row_num + row_count, 3, grid->GetCellValue(row_to_move, 3).ToStdString());
-	grid->SetCellValue(row_num + row_count, 4, grid->GetCellValue(row_to_move, 4).ToStdString());
-	grid->SetCellValue(row_num + row_count, 5, grid->GetCellValue(row_to_move, 5).ToStdString());
-	grid->SetCellValue(row_num + row_count, 6, grid->GetCellValue(row_to_move, 6).ToStdString());
-	grid->SetCellValue(row_num + row_count, 7, grid->GetCellValue(row_to_move, 7).ToStdString());
-	grid->SetCellValue(row_num + row_count, 8, grid->GetCellValue(row_to_move, 8).ToStdString());
+void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>> map) {
+	if (!grid->IsSelection() || !grid->GetSelectedRows().begin()) {
+		wxMessageBox("Please select row(s) to move", "Select row(s)");
+	}
 
-	grid->DeleteRows(row_to_move, 1);
+	for (auto block : grid->GetSelectedRowBlocks()) {
+		row_num = block.GetTopRow();
+		row_count = block.GetBottomRow() - row_num + 1;
 
-	return true;
+		if (up) {
+			if (row_num == 0) {
+				continue;
+			}
+
+			row_to_move = row_num - 1;
+
+		} else {
+			if ((row_num + row_count) == (grid->GetNumberRows())) {
+				continue;
+			}
+
+			row_to_move = row_num + row_count + 1;
+			row_count = 0;
+		}
+
+		grid->InsertRows(row_num + row_count);
+
+		grid_extract_parameters(row_to_move, grid);
+
+		grid_insert_data(row_num + row_count, grid);
+
+		grid->DeleteRows(row_to_move);
+
+		if (!map.empty()) {
+			std::string map_name = cmb->GetValue().ToStdString();
+			if (map.find(map_name) != map.end()) {
+				if (up) {
+
+					it1 = map[map_name].begin();
+					it1 += row_to_move;
+
+					data = *it1;
+					map[map_name].erase(it1);
+
+					it2 = map[map_name].begin();
+					it2 += row_num + row_count - 1;
+					map[map_name].insert(it2, data);
+				} else {
+					it1 = map[map_name].begin();
+					it1 += row_to_move - 1;
+
+					it2 = map[map_name].begin();
+					it2 += row_num;
+
+					data = *it1;
+					map[map_name].erase(it1, it1 + 1);
+					map[map_name].insert(it2, data);
+				}
+			}
+		}
+	}
 }
 
 // ensure that you are not deleting rows, which you are not supposed to if the user has ctrl + clicked multiple blocks of tasks
-bool cMain::delete_row(wxGrid* grid, std::map<std::string, std::vector<std::string>> map) {
+bool cMain::delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>> map) {
 	if (!grid->IsSelection()) {
 		wxMessageBox("Please select row(s) to be deleted", "Selection not valid");
 		return false;
@@ -410,7 +493,7 @@ bool cMain::delete_row(wxGrid* grid, std::map<std::string, std::vector<std::stri
 		grid->DeleteRows(row_num, row_count);
 		
 		if (!map.empty()) {
-			std::string map_name = cmb_choose_group->GetValue().ToStdString();
+			std::string map_name = cmb->GetValue().ToStdString();
 
 			if (map.find(map_name) != map.end()) {
 				it1 = map[map_name].begin();
@@ -799,10 +882,11 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 
 				grid_tasks->DeleteRows(i);
 			} else if (building_task == "Rotate") {
-				building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-				row_num  = i;
 				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();;
 				y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();;
+				building = grid_tasks->GetCellValue(i, 4).ToStdString();
+				building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				row_num = i;
 
 				update_future_rotate_tasks();
 
@@ -828,41 +912,14 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveUpClicked(wxCommandEvent& event) {
-	if (!move_row(grid_tasks, true)) {
-		return;
-	}
-
-	it1 = tasks_data_to_save.begin();
-	it1 += row_to_move;
-
-	data = *it1;
-	tasks_data_to_save.erase(it1);
-
-	it2 = tasks_data_to_save.begin();
-	it2 += row_num + row_count - 1;
-	tasks_data_to_save.insert(it2, data);
-
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+	move_row(grid_tasks, true);
 
 	event.Skip();
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveDownClicked(wxCommandEvent& event) {
-	if (!move_row(grid_tasks, false)) {
-		return;
-	}
-
-	it1 = tasks_data_to_save.begin();
-	it1 += row_to_move - 1;
-	it2 = tasks_data_to_save.begin();
-	it2 += row_num;
-
-	data = *it1;
-	tasks_data_to_save.erase(it1, it1 + 1);
-	tasks_data_to_save.insert(it2, data);
-
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+	move_row(grid_tasks, false);
 
 	event.Skip();
 }
@@ -962,12 +1019,14 @@ void cMain::OnDeleteGroupClicked(wxCommandEvent& event) {
 void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 	if (!grid_tasks->IsSelection()) {
 		wxMessageBox("No task is chosen - please select row(s) in the task list", "Cannot add task to group");
+		event.Skip();
 		return;
 	}
 
 	if (grid_group->IsSelection()) {
 		if (!grid_group->GetSelectedRows().begin()) {
 			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
+			event.Skip();
 			return;
 		}
 		group_row_num = *grid_group->GetSelectedRows().begin();
@@ -1044,6 +1103,7 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 
 	if (check) {
 		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+		event.Skip();
 		return;
 	}
 
@@ -1117,57 +1177,21 @@ void cMain::OnGroupDeleteClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	if (!delete_row(grid_group, group_map)) {
-
-		event.Skip();
-		return;
-	}
+	delete_row(grid_group, cmb_choose_group, group_map);
 
 	event.Skip();
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnGroupMoveUpClicked(wxCommandEvent& event) {
-	if (!move_row(grid_group, true)) {
-		event.Skip();
-		return;
-	}
+	group_template_move_row(grid_group, cmb_choose_group, true, group_map);
 
-	group_name = cmb_choose_group->GetValue().ToStdString();
-
-	if (group_map.find(group_name) != group_map.end()) {
-		it1 = group_map[group_name].begin();
-		it1 += row_to_move;
-
-		data = *it1;
-		group_map[group_name].erase(it1);
-
-		it2 = group_map[group_name].begin();
-		it2 += row_num + row_count - 1;
-		group_map[group_name].insert(it2, data);
-	}
 	event.Skip();
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnGroupMoveDownClicked(wxCommandEvent& event) {
-	if (!move_row(grid_group, false)) {
-		event.Skip();
-		return;
-	}
-
-	group_name = cmb_choose_group->GetValue().ToStdString();
-
-	if (group_map.find(group_name) != group_map.end()) {
-		it1 = group_map[group_name].begin();
-		it1 += row_to_move - 1;
-		it2 = group_map[group_name].begin();
-		it2 += row_num;
-
-		data = *it1;
-		group_map[group_name].erase(it1, it1 + 1);
-		group_map[group_name].insert(it2, data);
-	}
+	group_template_move_row(grid_group, cmb_choose_group, false, group_map);
 
 	event.Skip();
 }
@@ -1255,6 +1279,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event) {
 
 void cMain::OnDeleteTemplateClicked(wxCommandEvent& event) {
 	if (wxMessageBox("Are you sure you want to delete this template?", "Delete template", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
+		event.Skip();
 		return;
 	}
 
@@ -1280,12 +1305,14 @@ void cMain::OnDeleteTemplateClicked(wxCommandEvent& event) {
 void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 	if (!grid_tasks->IsSelection()) {
 		wxMessageBox("No task is chosen - please select a row in the task list", "Cannot add task to group");
+		event.Skip();
 		return;
 	}
 
 	if (grid_template->IsSelection()) {
 		if (!grid_template->GetSelectedRows().begin()) {
 			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
+			event.Skip();
 			return;
 		}
 		template_row_num = *grid_template->GetSelectedRows().begin();
@@ -1307,7 +1334,7 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 
 			if (grid_tasks->GetCellValue(i, 1).ToStdString() != "") {
 				x_cord = std::to_string(std::stof(x_cord) + wxAtof(txt_template_x_offset->GetValue()));
-				y_cord = std::to_string(std::stof(y_cord) + wxAtof(txt_template_y_offset->GetValue()));;
+				y_cord = std::to_string(std::stof(y_cord) + wxAtof(txt_template_y_offset->GetValue()));
 			} 
 
 			grid_insert_data(template_row_num, grid_template);
@@ -1338,43 +1365,24 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 	}
 
 	bool check = false;
-	static float x_offset;
-	static float y_offset;
 
 	for (auto block : grid_template->GetSelectedRowBlocks()) {
 		template_row_num = block.GetTopRow();
 		template_row_count = block.GetBottomRow() - template_row_num + 1;
 
-		for (int i = template_row_num; i < (template_row_num + template_row_count); i++) {
-			grid_tasks->InsertRows(row_num);
+		grid_tasks->InsertRows(row_num, template_row_count);
 
-			task = grid_template->GetCellValue(i, 0).ToStdString();
-			x_cord = grid_template->GetCellValue(i, 1).ToStdString();
-			y_cord = grid_template->GetCellValue(i, 2).ToStdString();
-			units = grid_template->GetCellValue(i, 3).ToStdString();
-			item = grid_template->GetCellValue(i, 4).ToStdString();
-			build_orientation = grid_template->GetCellValue(i, 5).ToStdString();
-			direction_to_build = grid_template->GetCellValue(i, 6).ToStdString();
-			building_size = grid_template->GetCellValue(i, 7).ToStdString();
-			amount_of_buildings = grid_template->GetCellValue(i, 8).ToStdString();
+		int total_rows = template_row_num + template_row_count;
 
-			if (x_cord != "" && y_cord != "") {
-				x_offset = wxAtof(txt_template_x_offset->GetValue());
-				y_offset = wxAtof(txt_template_y_offset->GetValue());
+		for (int i = template_row_num; i < total_rows; i++) {
+			grid_extract_parameters(i, grid_template);
 
-				x_cord = std::to_string(x_cord_float + x_offset);
-				y_cord = std::to_string(y_cord_float + y_offset);
+			if (x_cord != "" || y_cord != "") {
+				x_cord = std::to_string(std::stof(x_cord) + wxAtof(txt_template_x_offset->GetValue()));
+				y_cord = std::to_string(std::stof(y_cord) + wxAtof(txt_template_y_offset->GetValue()));
 			}
 
-			grid_tasks->SetCellValue(row_num, 0, task);
-			grid_tasks->SetCellValue(row_num, 1, x_cord);
-			grid_tasks->SetCellValue(row_num, 2, y_cord);
-			grid_tasks->SetCellValue(row_num, 3, units);
-			grid_tasks->SetCellValue(row_num, 4, item);
-			grid_tasks->SetCellValue(row_num, 5, build_orientation);
-			grid_tasks->SetCellValue(row_num, 6, direction_to_build);
-			grid_tasks->SetCellValue(row_num, 7, building_size);
-			grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
+			grid_insert_data(row_num, grid_tasks);
 
 			background_colour_update(grid_tasks, row_num, task);
 
@@ -1391,42 +1399,24 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 
 	if (check) {
 		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+		event.Skip();
 		return;
 	}
 
-	template_row_num = 0;
 	template_row_count = grid_template->GetNumberRows();
 
-	for (int i = template_row_num; i < (template_row_num + template_row_count); i++) {
-		grid_tasks->InsertRows(row_num);
+	grid_tasks->InsertRows(row_num, template_row_count);
 
-		task = grid_template->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_template->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_template->GetCellValue(i, 2).ToStdString();
-		units = grid_template->GetCellValue(i, 3).ToStdString();
-		item = grid_template->GetCellValue(i, 4).ToStdString();
-		build_orientation = grid_template->GetCellValue(i, 5).ToStdString();
-		direction_to_build = grid_template->GetCellValue(i, 6).ToStdString();
-		building_size = grid_template->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_template->GetCellValue(i, 8).ToStdString();
+	for (int i = 0; i < template_row_count; i++) {
+		
+		grid_extract_parameters(i, grid_template);
 
-		if (x_cord != "" && y_cord != "") {
-			x_offset = wxAtof(txt_template_x_offset->GetValue());
-			y_offset = wxAtof(txt_template_y_offset->GetValue());
-
-			x_cord = std::to_string(x_cord_float + x_offset);
-			y_cord = std::to_string(y_cord_float + y_offset);
+		if (x_cord != "" || y_cord != "") {
+			x_cord = std::to_string(std::stof(x_cord) + wxAtof(txt_template_x_offset->GetValue()));
+			y_cord = std::to_string(std::stof(y_cord) + wxAtof(txt_template_y_offset->GetValue()));
 		} 	
 
-		grid_tasks->SetCellValue(row_num, 0, task);
-		grid_tasks->SetCellValue(row_num, 1, x_cord);
-		grid_tasks->SetCellValue(row_num, 2, y_cord);
-		grid_tasks->SetCellValue(row_num, 3, units);
-		grid_tasks->SetCellValue(row_num, 4, item);
-		grid_tasks->SetCellValue(row_num, 5, build_orientation);
-		grid_tasks->SetCellValue(row_num, 6, direction_to_build);
-		grid_tasks->SetCellValue(row_num, 7, building_size);
-		grid_tasks->SetCellValue(row_num, 8, amount_of_buildings);
+		grid_insert_data(row_num, grid_tasks);
 
 		background_colour_update(grid_tasks, row_num, task);
 
@@ -1464,70 +1454,21 @@ void cMain::OnTemplateDeleteTaskClicked(wxCommandEvent& event) {
 		return;
 	}
 
-	if (!delete_row(grid_template)) {
-
-		event.Skip();
-		return;
-	}
-
-	template_name = cmb_choose_template->GetValue().ToStdString();
-
-	if (!(template_map.find(template_name) == template_map.end())) {
-		it1 = template_map[template_name].begin();
-		it2 = template_map[template_name].begin();
-
-		it1 += row_num;
-		it2 += row_num + row_count;
-
-		template_map[template_name].erase(it1, it2);
-	}
+	delete_row(grid_template, cmb_choose_template, template_map);
 
 	event.Skip();
 }
 
+// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnTemplateMoveUpClicked(wxCommandEvent& event) {
-	if (!move_row(grid_template, true)) {
-		
-		event.Skip();
-		return;
-	}
-
-	template_name = cmb_choose_template->GetValue().ToStdString();
-
-	if (!(template_map.find(template_name) == template_map.end())) {
-		it1 = template_map[template_name].begin();
-		it1 += row_to_move;
-
-		data = *it1;
-		template_map[template_name].erase(it1);
-
-		it2 = template_map[template_name].begin();
-		it2 += row_num + row_count - 1;
-		template_map[template_name].insert(it2, data);
-	}
-
+	group_template_move_row(grid_template, cmb_choose_template, true, template_map);
+	
 	event.Skip();
 }
 
+// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnTemplateMoveDownClicked(wxCommandEvent& event) {
-	if (!move_row(grid_template, false)) {
-		
-		event.Skip();
-		return;
-	}
-
-	template_name = cmb_choose_template->GetValue().ToStdString();
-
-	if (!(template_map.find(template_name) == template_map.end())) {
-		it1 = template_map[template_name].begin();
-		it1 += row_to_move - 1;
-		it2 = template_map[template_name].begin();
-		it2 += row_num;
-
-		data = *it1;
-		template_map[template_name].erase(it1, it1 + 1);
-		template_map[template_name].insert(it2, data);
-	}
+	group_template_move_row(grid_template, cmb_choose_template, false, template_map);
 
 	event.Skip();
 }
@@ -1543,21 +1484,19 @@ void cMain::OnTemplateGridDoubleLeftClick(wxGridEvent& event) {
 void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 	row_num = event.GetRow();
 
-	x_cord = grid_buildings->GetCellValue(row_num, 0).ToStdString();
-	y_cord = grid_buildings->GetCellValue(row_num, 1).ToStdString();
-	item = grid_buildings->GetCellValue(row_num, 2).ToStdString();
-	build_orientation = grid_buildings->GetCellValue(row_num, 3).ToStdString();
-
-	txt_x_cord->SetValue(x_cord);
-	txt_y_cord->SetValue(y_cord);
-	cmb_item->SetValue(item);
-	cmb_building_orientation->SetValue(build_orientation);
+	txt_x_cord->SetValue(grid_buildings->GetCellValue(row_num, 0).ToStdString());
+	txt_y_cord->SetValue(grid_buildings->GetCellValue(row_num, 1).ToStdString());
+	cmb_item->SetValue(grid_buildings->GetCellValue(row_num, 2).ToStdString());
+	cmb_building_orientation->SetValue(grid_buildings->GetCellValue(row_num, 3).ToStdString());
+	txt_units->SetValue(grid_buildings->GetCellValue(row_num, 4).ToStdString());
+	cmb_input->SetValue(grid_buildings->GetCellValue(row_num, 6).ToStdString());
+	cmb_output->SetValue(grid_buildings->GetCellValue(row_num, 7).ToStdString());
 
 	event.Skip();
 }
 
 void cMain::OnApplicationClose(wxCloseEvent& event) {
-	if (check_before_close()) {
+	if (check_before_close()) { // You do not want to skip the event if the application shouldn't be closed
 		event.Skip();
 	}
 }
@@ -1571,7 +1510,7 @@ void cMain::OnMenuNew(wxCommandEvent& event) {
 
 void cMain::OnMenuOpen(wxCommandEvent& event) {
 	
-	wxFileDialog dlg(this, "Open saved factorio script helper file", "", "", ".txt files (*.txt) | *.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	wxFileDialog dlg(this, "Open saved file", "", "", ".txt files (*.txt) | *.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (dlg.ShowModal() == wxID_OK) {
 		std::ifstream inFile;
@@ -1634,7 +1573,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 					update_tasks_grid();
 				} else {
-					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
+					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
 				}
 			} else if (!templates_reached) {
@@ -1671,7 +1610,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				} else if (seglist[0] == "") {
 
 				} else {
-					wxMessageBox("It seems like the structure of the file does not correspond with a factorio script helper file", "A file error occurred");
+					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
 				}
 			} else if (!save_file_reached) {
@@ -1791,108 +1730,122 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	row_num = grid_tasks->GetNumberRows();
 
 	for (int i = 0; i < row_num; i++) {
-		task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		item = grid_tasks->GetCellValue(i, 4).ToStdString();
-		build_orientation = convert_string(grid_tasks->GetCellValue(i, 5).ToStdString());
-		direction_to_build = convert_string(grid_tasks->GetCellValue(i, 6).ToStdString());
-		building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+		grid_extract_parameters(i, grid_tasks);
+
+		task_number = std::to_string(i + 1);
 
 		if (task == "Game Speed") {
-			speed(std::to_string(i + 1), units);
+			speed(task_number, units);
 
 		} else if (task == "Walk") {
-			walk(std::to_string(i+1), "1", x_cord, y_cord);
+			walk(task_number, "1", x_cord, y_cord);
 
 		} else if (task == "Mine") {
-			if (find_old_orientation(i)) { // find new function which is more tailored for this 
-				mining(std::to_string(i +1), x_cord, y_cord, units, building, build_orientation, true);
+			if (find_building_for_script(i)) {
+				mining(task_number, x_cord, y_cord, units, building, build_orientation, true);
 			} else {
-				mining(std::to_string(i +1), x_cord, y_cord, units, "", "", false);
+				mining(task_number, x_cord, y_cord, units, "", "", false);
 			}
 
 		} else if (task == "Rotate") {
-			find_old_orientation(i); // find new function which is more tailored for this 
+			if (!find_building_for_script(i)) {
+				return;
+			}
 
-			rotate(std::to_string(i +1), x_cord, y_cord, units, item, build_orientation);
+			rotate(task_number, x_cord, y_cord, units, item, build_orientation);
 
 		} else if (task == "Craft") {
 			if (units == "All") {
-				craft(std::to_string(i +1), "-1", item);
+				craft(task_number, "-1", item);
 			} else {
-				craft(std::to_string(i +1), units, item);
+				craft(task_number, units, item);
 			}
 			
 		} else if (task == "Tech") {
-			tech(std::to_string(i + 1), item);
+			tech(task_number, item);
 
 		} else if (task == "Build") {
-			row_build(std::to_string(i +1), x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
+			row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Take") {
 			from_into = build_orientation;
 			from_into = extract_define(i);
 
+			if (from_into == "Not Found") {
+				return;
+			}
+
 			if (units == "All") {
-				row_take(std::to_string(i +1), x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_take(task_number, x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_take(std::to_string(i +1), x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_take(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
 
 		} else if (task == "Put") {
 			from_into = build_orientation;
 			from_into = extract_define(i);
 
+			if (from_into == "Not Found") {
+				return;
+			}
+
 			if (units == "All") {
-				row_put(std::to_string(i +1), x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_put(task_number, x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_put(std::to_string(i +1), x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_put(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
 
 		} else if (task == "Recipe") {
-			find_old_orientation(i); // find new function which is more tailored for this 
+			if (!find_building_for_script(i)) {
+				return;
+			}
 
-			row_recipe(std::to_string(i +1), x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
+			row_recipe(task_number, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
 
 		} else if (task == "Stop") {
-			stop(std::to_string(i + 1), units);
+			stop(task_number, units);
 
 		} else if (task == "Limit") {
 			from_into = build_orientation;
 			from_into = extract_define(i);
 
-			row_limit(std::to_string(i +1), x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			if (from_into == "Not Found") {
+				return;
+			}
+
+			row_limit(task_number, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Priority") {
-			find_old_orientation(i); // find new function which is more tailored for this 
+			if (!find_building_for_script(i)) {
+				return;
+			}
 
 			int pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
 
-			row_priority(std::to_string(i +1), x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_priority(task_number, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Filter") {
-			find_old_orientation(i); // find new function which is more tailored for this 
+			if (!find_building_for_script(i)) {
+				return;
+			}
 
 			if (check_input(building, splitter_list)) {
-				row_filter(std::to_string(i +1), x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_filter(task_number, x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
-				row_filter(std::to_string(i +1), x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				row_filter(task_number, x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}			
 		} else if (task == "Drop") {
-			row_drop(std::to_string(i +1), x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
+			row_drop(task_number, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Pick up") {
-			row_pick(std::to_string(i +1), x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
+			row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Launch") {
-			launch(std::to_string(i + 1), x_cord, y_cord);
+			launch(task_number, x_cord, y_cord);
 
 		} else if (task== "Idle") {
-			idle(std::to_string(i + 1), units);
+			idle(task_number, units);
 
 		}
 	}
@@ -2266,16 +2219,8 @@ bool cMain::setup_for_task_grid() {
 	return true;
 }
 
-void cMain::update_parameteres(wxGrid* grid, wxCommandEvent& event) {
-	task = grid->GetCellValue(row_num, 0).ToStdString();
-	x_cord = grid->GetCellValue(row_num, 1).ToStdString();
-	y_cord = grid->GetCellValue(row_num, 2).ToStdString();
-	units = grid->GetCellValue(row_num, 3).ToStdString();
-	item = grid->GetCellValue(row_num, 4).ToStdString();
-	build_orientation = grid->GetCellValue(row_num, 5).ToStdString();
-	direction_to_build = grid->GetCellValue(row_num, 6).ToStdString();
-	building_size = grid->GetCellValue(row_num, 7).ToStdString();
-	amount_of_buildings = grid->GetCellValue(row_num, 8).ToStdString();
+void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
+	grid_extract_parameters(row_num, grid);
 
 	if (task == "Game Speed") {
 		OnGameSpeedMenuSelected(event);
@@ -2417,21 +2362,12 @@ void cMain::update_group_map() {
 	row_num = grid_group->GetNumberRows();
 
 	for (int i = 0; i < row_num; i++) {
-		task = grid_group->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_group->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_group->GetCellValue(i, 2).ToStdString();
-		units = grid_group->GetCellValue(i, 3).ToStdString();
-		item = grid_group->GetCellValue(i, 4).ToStdString();
-		build_orientation = grid_group->GetCellValue(i, 5).ToStdString();
-		direction_to_build = grid_group->GetCellValue(i, 6).ToStdString();
-		building_size = grid_group->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_group->GetCellValue(i, 8).ToStdString();
+		grid_extract_parameters(i, grid_group);
 
 		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 	}
 
 	group_map[group_name] = group_list;
-
 }
 
 void cMain::update_template_map() {
@@ -2439,21 +2375,12 @@ void cMain::update_template_map() {
 	row_num = grid_template->GetNumberRows();
 
 	for (int i = 0; i < row_num; i++) {
-		task = grid_template->GetCellValue(i, 0).ToStdString();
-		x_cord = grid_template->GetCellValue(i, 1).ToStdString();
-		y_cord = grid_template->GetCellValue(i, 2).ToStdString();
-		units = grid_template->GetCellValue(i, 3).ToStdString();
-		item = grid_template->GetCellValue(i, 4).ToStdString();
-		build_orientation = grid_template->GetCellValue(i, 5).ToStdString();
-		direction_to_build = grid_template->GetCellValue(i, 6).ToStdString();
-		building_size = grid_template->GetCellValue(i, 7).ToStdString();
-		amount_of_buildings = grid_template->GetCellValue(i, 8).ToStdString();
+		grid_extract_parameters(i, grid_template);
 
 		template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 	}
 
 	template_map[template_name] = template_list;
-
 }
 
 void cMain::extract_parameters() {
@@ -2613,38 +2540,39 @@ std::string cMain::extract_priority_out() {
 }
 
 std::string cMain::extract_define(int start_row) {
+
 	if (from_into == "wreck") {
 		return take_put_list.chest;
 	}
 
-	if (find_old_orientation(start_row)) { // find new function which is more tailored for this 
-	
+	if (find_building_for_script(start_row)) {
 		if (from_into == "chest") {
 			return take_put_list.chest;
 		}
-			
+
 		if (from_into == "fuel") {
 			return take_put_list.fuel;
 		}
-			
+
 		if (building == "Lab") {
 			if (from_into == "input") {
 				return take_put_list.lab_input;
 			} else if (from_into == "modules") {
 				return take_put_list.lab_modules;
 			}
-		} 
+		}
+
 		if (check_input(building, drills_list)) {
 			return take_put_list.drill_modules;
 		}
-			
+
 		if (from_into == "input") {
 			return take_put_list.assembly_input;
 		}
-			
+
 		if (from_into == "modules") {
 			return take_put_list.assembly_modules;
-		} 
+		}
 		if (from_into == "output") {
 			return take_put_list.assembly_output;
 		}
@@ -2653,94 +2581,21 @@ std::string cMain::extract_define(int start_row) {
 	return "Not Found";
 }
 
-bool cMain::extract_building(int start_row) {
-	
-	for (int i = start_row; i > -1; i--) {
-		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Build" || grid_tasks->GetCellValue(i, 0).ToStdString() == "Mine" || grid_tasks->GetCellValue(i, 0).ToStdString() == "Build") {
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
-
-				if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Mine") {
-					wxMessageBox("It seems like you have removed the building.", "The building does not exist");
-				}
-
-				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				/*build_orientation = grid_tasks->GetCellValue(i, 4).ToStdString();*/
-				return true;
-			}
-		}
-	}
-
-	 return false;
-}
-
-bool cMain::extract_building_info() {
-	for (int i = row_num - 1; i > -1; i--) { // check if it is correct that 1 should be subtracted from the row_num
-
-		if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
-
-			if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Build" || grid_tasks->GetCellValue(i, 0).ToStdString() == "Rotate") {
-				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-				return true;
-			}
-			
-			if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Mine") {
-				wxMessageBox("It seems like you have removed the building.", "The building doesn't exist");
-				return false;
-			}
-		}
-
-
-		if (grid_tasks->GetCellValue(i, 8).ToStdString() != "") {
-			
-		}
-
-		
-	}
-
-	wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
-	return false;
-}
-
-void cMain::update_coordinates() {
-	if (direction_to_build == "North") {
-		new_y_cord = new_y_cord - building_size_float;
-
-	} else if (direction_to_build == "South") {
-		new_y_cord = new_y_cord + building_size_float;
-
-	} else if (direction_to_build == "East") {
-		new_x_cord = new_x_cord + building_size_float;
-		
-	} else if (direction_to_build == "West") {
-		new_x_cord = new_x_cord - building_size_float;
-		
-	}
-}
-
-// remember to ensure that the call to find_new_orientation is handeled correctly
 void cMain::update_future_rotate_tasks() {
 	int total_rows = grid_tasks->GetNumberRows();
-	
-	// Ensure that the building is still the same. 
 
 	for (int i = row_num + 1; i < total_rows; i++) {
 
 		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Rotate") {
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord && grid_tasks->GetCellValue(i, 4).ToStdString() == building) {
-				units = grid_tasks->GetCellValue(i, 3).ToStdString();
+			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord && grid_tasks->GetCellValue(i, 4).ToStdString() == building) {				
+				
+				grid_extract_parameters(i, grid_tasks);
+
 				find_new_orientation();
 
 				grid_tasks->SetCellValue(i, 5, building_build_orientation);
 
-				task = grid_tasks->GetCellValue(i, 0).ToStdString();
-				item = grid_tasks->GetCellValue(i, 4).ToStdString();
-				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-				direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
-				building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-				amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
-
-				tasks_data_to_save[i] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+				tasks_data_to_save[i] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + building_build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 			}
 		}
 	}
@@ -2755,44 +2610,43 @@ void cMain::find_new_orientation() {
 	}
 }
 
-
-
-bool cMain::find_old_orientation() {
-	for (int i = row_num - 1; i > - 1; i--) {
-		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Build") {
-
-		// Maybe this part should be a seperate function called something like "find_building"
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+bool cMain::find_building_for_script(int& row) {
+	for (int i = row - 1; i > -1; i--) {
+		if (grid_tasks->GetCellValue(i, 0) == "Build") {
+			if (x_cord == grid_tasks->GetCellValue(i, 1) || y_cord == grid_tasks->GetCellValue(i, 2)) {
 				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+
 				return true;
-			}
+					
+			} else {
+				building_x_cord = x_cord;
+				building_y_cord = y_cord;
+				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
 
-			if (wxAtoi(grid_tasks->GetCellValue(i, 8).ToStdString()) > 1) {
-				building_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-				building_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
-				building_building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-				building_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
 				for (int j = 0; j < std::stoi(building_amount_of_buildings); j++) {
-					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+					find_coordinates(building_x_cord, building_y_cord, direction_to_build, building_size);
 
-					if (building_x_cord == x_cord && building_y_cord == y_cord) {
+					if (x_cord == building_x_cord && y_cord == building_y_cord) {
 						building = grid_tasks->GetCellValue(i, 4).ToStdString();
-						building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+						build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+
 						return true;
 					}
 				}
 			}
-		} else if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Rotate") {
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
+
+		} else if (grid_tasks->GetCellValue(i, 0) == "Rotate") {
+			if (x_cord == grid_tasks->GetCellValue(i, 1) && y_cord == grid_tasks->GetCellValue(i, 2)) {
 				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+
 				return true;
 			}
 		}
 	}
 
+	wxMessageBox("Task: " + task_number + " have no building associated with it - please correct the error and try again", "The building does not exist");
 	return false;
 }
 
@@ -2867,6 +2721,9 @@ bool cMain::extra_building_checks() {
 
 	return true;
 }
+
+// ---- start here -----
+// It seems like there should be a find_building function somewhere to ensure that the building actually exists. 
 
 bool cMain::check_take_put(const std::string& item) {
 	std::string to_check = extract_from_into();
@@ -3058,7 +2915,7 @@ bool cMain::check_buildings_grid() {
 bool cMain::save_file(bool save_as) {
 
 	if (save_as) {
-		wxFileDialog dlg(this, "Save factorio script helper", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+		wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (dlg.ShowModal() == wxID_OK) {
 			save_file_location = dlg.GetPath().ToStdString();
@@ -3067,7 +2924,7 @@ bool cMain::save_file(bool save_as) {
 		}
 	} else {
 		if (save_file_location == "") {
-			wxFileDialog dlg(this, "Save factorio script helper", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 			if (dlg.ShowModal() == wxID_OK) {
 				save_file_location = dlg.GetPath().ToStdString();
