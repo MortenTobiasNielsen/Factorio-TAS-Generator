@@ -3190,6 +3190,11 @@ bool cMain::save_file(bool save_as) {
 	std::ofstream myfile;
 	myfile.open(save_file_location);
 
+	myfile << total_tasks_indicator << std::endl;
+	myfile << total_lines << std::endl;
+
+	myfile << tasks_indicator << std::endl;
+
 	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
 		myfile << *it << std::endl;
 

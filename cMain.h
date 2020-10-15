@@ -118,6 +118,8 @@ private:
 	Shortcuts_Menu* shortcuts = nullptr;
 	dialog_progress_bar_base* dialog_progress_bar = nullptr;
 
+	std::string total_tasks_indicator = "Total lines:";
+	std::string tasks_indicator = "Tasks:";
 	std::string save_groups_indicator = "Groups:";
 	std::string save_templates_indicator = "Templates:";
 	std::string save_file_indicator = "Save file location:";
