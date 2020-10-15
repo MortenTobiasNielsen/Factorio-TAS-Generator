@@ -805,6 +805,14 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	extract_parameters();
 
+	// This is done to make it available to the setup_for_task_grid function
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select a row to change", "Selection not valid");
+		return;
+	}
+
+	row_num = *grid_tasks->GetSelectedRows().begin();
+
 	if (setup_for_task_grid()) {
 		if (change_row(grid_tasks)) {
 			tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
@@ -2722,9 +2730,6 @@ bool cMain::extra_building_checks() {
 	return true;
 }
 
-// ---- start here -----
-// It seems like there should be a find_building function somewhere to ensure that the building actually exists. 
-
 bool cMain::check_take_put(const std::string& item) {
 	std::string to_check = extract_from_into();
 	string_capitalized(to_check);
@@ -2733,7 +2738,7 @@ bool cMain::check_take_put(const std::string& item) {
 		return true;
 	}
 
-	for (int i = row_num - 1; i > -1; i--) {
+	if(find_building_for_script(row_num)){
 		if (check_input(building, chest_list)) {
 			if (to_check == "Chest") {
 				return true;
@@ -2838,7 +2843,7 @@ bool cMain::check_buildings_grid() {
 							for (int j = i; j < total_rows; j++) {
 								if (grid_tasks->GetCellValue(j, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(j, 2).ToStdString() == y_cord) {
 									if (grid_tasks->GetCellValue(j, 0).ToStdString() != "Mine" || grid_tasks->GetCellValue(j, 0).ToStdString() != "Build") {
-										break;
+										return true;
 									}
 								
 									grid_tasks->DeleteRows(j);
@@ -2851,6 +2856,8 @@ bool cMain::check_buildings_grid() {
 						} else {
 							return false;
 						}
+					} else {
+						return true;
 					}
 				}
 			}
