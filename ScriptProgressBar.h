@@ -2,19 +2,23 @@
 #include "GUI_Base.h"
 #include <wx/wx.h>
 
-class script_progress_bar : public DialogGeneratingScript {
+class dialog_progress_bar_base : public BaseForDialogProgress {
 public:
 
-	script_progress_bar(wxWindow* parent) : DialogGeneratingScript(parent) {
+	dialog_progress_bar_base(wxWindow* parent, wxWindowID id, const wxString& title) : BaseForDialogProgress(parent, id, title) {
 	};
 
 	void set_progress(const int &progress) {
-		generate_script_progress->SetValue(progress);
+		progress_bar->SetValue(progress);
 	};
 
 	void set_button_enable(bool enabled) {
-		btn_generate_script_done->Enable(enabled);
+		btn_dialog_progress_done->Enable(enabled);
 	};
+
+	void set_text(const std::string& text) {
+		txt_dialog_text->SetLabelText(text);
+	}
 
 protected:
 

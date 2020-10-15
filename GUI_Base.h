@@ -321,16 +321,16 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class DialogGeneratingScript
+/// Class BaseForDialogProgress
 ///////////////////////////////////////////////////////////////////////////////
-class DialogGeneratingScript : public wxDialog {
+class BaseForDialogProgress : public wxDialog {
 private:
 
 protected:
 	wxPanel* m_panel7;
-	wxStaticText* txt_generate_script;
-	wxGauge* generate_script_progress;
-	wxButton* btn_generate_script_done;
+	wxStaticText* txt_dialog_text;
+	wxGauge* progress_bar;
+	wxButton* btn_dialog_progress_done;
 
 	// Virtual event handlers, overide them in your derived class
 	virtual void GenerateScriptOnClick(wxCommandEvent& event) { event.Skip(); }
@@ -338,8 +338,8 @@ protected:
 
 public:
 
-	DialogGeneratingScript(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Generating Script"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
-	~DialogGeneratingScript();
+	BaseForDialogProgress(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Generating Script"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
+	~BaseForDialogProgress();
 
 };
 

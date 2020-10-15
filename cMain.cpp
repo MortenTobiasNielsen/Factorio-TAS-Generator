@@ -1645,8 +1645,8 @@ void cMain::OnApplicationClose(wxCloseEvent& event) {
 			delete shortcuts;
 		}
 
-		if (generate_script_dialog) {
-			delete generate_script_dialog;
+		if (dialog_progress_bar) {
+			delete dialog_progress_bar;
 		}
 
 		event.Skip();
@@ -1883,13 +1883,15 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	row_num = grid_tasks->GetNumberRows();
 
-	if (!generate_script_dialog) {
-		generate_script_dialog = new script_progress_bar(this);
+	if (!dialog_progress_bar) {
+		dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
 	}
 
-	generate_script_dialog->Show();
-	generate_script_dialog->set_button_enable(false);
-	generate_script_dialog->set_progress(0);
+	dialog_progress_bar->set_text("Generating Script");
+	dialog_progress_bar->set_button_enable(false);
+	dialog_progress_bar->set_progress(0);
+	dialog_progress_bar->Show();
+	
 
 	for (int i = 0; i < row_num; i++) {
 		grid_extract_parameters(i, grid_tasks);
@@ -2012,7 +2014,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		}
 
 		if (i > 0 && i % 25 == 0) {
-			generate_script_dialog->set_progress(static_cast<float>(i)/ static_cast<float>(row_num)*100.0f);
+			dialog_progress_bar->set_progress(static_cast<float>(i)/ static_cast<float>(row_num)*100.0f - 1);
 			wxYield();
 		}
 	}
@@ -2034,8 +2036,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	saver.close();
 
-	generate_script_dialog->set_progress(100);
-	generate_script_dialog->set_button_enable(true);
+	dialog_progress_bar->set_progress(100);
+	dialog_progress_bar->set_button_enable(true);
 
 	event.Skip();
 }
@@ -3173,14 +3175,32 @@ bool cMain::save_file(bool save_as) {
 		}
 	}
 
+	int total_lines = tasks_data_to_save.size() + group_map.size() + template_map.size();
+	int lines_processed = 0; 
+
+	if (!dialog_progress_bar) {
+		dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
+	}
+
+	dialog_progress_bar->set_text("Saving file");
+	dialog_progress_bar->set_button_enable(false);
+	dialog_progress_bar->set_progress(0);
+	dialog_progress_bar->Show();
+
 	std::ofstream myfile;
 	myfile.open(save_file_location);
 
 	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
 		myfile << *it << std::endl;
+
+		lines_processed++;
+
+		if (lines_processed > 0 && lines_processed % 25 == 0) {
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
+			wxYield();
+		}
 	}
 
-	std::string name;
 	std::vector<std::string> values;
 
 	if (group_map.size()) {
@@ -3189,6 +3209,13 @@ bool cMain::save_file(bool save_as) {
 
 			for (auto value : element.second) {
 				myfile << element.first + ";" + value << std::endl;
+
+				lines_processed++;
+
+				if (lines_processed > 0 && lines_processed % 25 == 0) {
+					dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
+					wxYield();
+				}
 			}
 		}
 	}
@@ -3199,6 +3226,13 @@ bool cMain::save_file(bool save_as) {
 
 			for (auto value : element.second) {
 				myfile << element.first + ";" + value << std::endl;
+
+				lines_processed++;
+
+				if (lines_processed > 0 && lines_processed % 25 == 0) {
+					dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
+					wxYield();
+				}
 			}
 		}
 	}
@@ -3215,6 +3249,9 @@ bool cMain::save_file(bool save_as) {
 	}
 
 	myfile.close();
+
+	dialog_progress_bar->set_progress(100);
+	dialog_progress_bar->set_button_enable(true);
 
 	return true;
 }

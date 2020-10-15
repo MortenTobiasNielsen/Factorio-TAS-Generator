@@ -116,7 +116,7 @@ protected:
 
 private:
 	Shortcuts_Menu* shortcuts = nullptr;
-	script_progress_bar* generate_script_dialog = nullptr;
+	dialog_progress_bar_base* dialog_progress_bar = nullptr;
 
 	std::string save_groups_indicator = "Groups:";
 	std::string save_templates_indicator = "Templates:";

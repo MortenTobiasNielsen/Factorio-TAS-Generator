@@ -1687,7 +1687,7 @@ MyFrame3::MyFrame3(wxWindow* parent, wxWindowID id, const wxString& title, const
 MyFrame3::~MyFrame3() {
 }
 
-DialogGeneratingScript::DialogGeneratingScript(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, title, pos, size, style) {
+BaseForDialogProgress::BaseForDialogProgress(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, title, pos, size, style) {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
 	wxBoxSizer* bSizer111;
@@ -1700,13 +1700,13 @@ DialogGeneratingScript::DialogGeneratingScript(wxWindow* parent, wxWindowID id, 
 	wxBoxSizer* bSizer113;
 	bSizer113 = new wxBoxSizer(wxVERTICAL);
 
-	txt_generate_script = new wxStaticText(m_panel7, wxID_ANY, wxT("Generating script"), wxDefaultPosition, wxDefaultSize, 0);
-	txt_generate_script->Wrap(-1);
-	bSizer113->Add(txt_generate_script, 0, wxALIGN_CENTER | wxALL, 5);
+	txt_dialog_text = new wxStaticText(m_panel7, wxID_ANY, wxT("Generating script"), wxDefaultPosition, wxDefaultSize, 0);
+	txt_dialog_text->Wrap(-1);
+	bSizer113->Add(txt_dialog_text, 0, wxALIGN_CENTER | wxALL, 5);
 
-	generate_script_progress = new wxGauge(m_panel7, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
-	generate_script_progress->SetValue(0);
-	bSizer113->Add(generate_script_progress, 0, wxALL, 5);
+	progress_bar = new wxGauge(m_panel7, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+	progress_bar->SetValue(0);
+	bSizer113->Add(progress_bar, 0, wxALL, 5);
 
 
 	bSizer112->Add(bSizer113, 1, wxEXPAND, 5);
@@ -1714,10 +1714,10 @@ DialogGeneratingScript::DialogGeneratingScript(wxWindow* parent, wxWindowID id, 
 	wxBoxSizer* bSizer114;
 	bSizer114 = new wxBoxSizer(wxHORIZONTAL);
 
-	btn_generate_script_done = new wxButton(m_panel7, wxID_ANY, wxT("Done"), wxDefaultPosition, wxDefaultSize, 0);
-	btn_generate_script_done->Enable(false);
+	btn_dialog_progress_done = new wxButton(m_panel7, wxID_ANY, wxT("Done"), wxDefaultPosition, wxDefaultSize, 0);
+	btn_dialog_progress_done->Enable(false);
 
-	bSizer114->Add(btn_generate_script_done, 1, wxALIGN_CENTER | wxALL, 5);
+	bSizer114->Add(btn_dialog_progress_done, 1, wxALIGN_CENTER | wxALL, 5);
 
 
 	bSizer112->Add(bSizer114, 1, wxEXPAND, 5);
@@ -1736,11 +1736,11 @@ DialogGeneratingScript::DialogGeneratingScript(wxWindow* parent, wxWindowID id, 
 	this->Centre(wxBOTH);
 
 	// Connect Events
-	btn_generate_script_done->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DialogGeneratingScript::GenerateScriptOnClick), NULL, this);
+	btn_dialog_progress_done->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(BaseForDialogProgress::GenerateScriptOnClick), NULL, this);
 }
 
-DialogGeneratingScript::~DialogGeneratingScript() {
+BaseForDialogProgress::~BaseForDialogProgress() {
 	// Disconnect Events
-	btn_generate_script_done->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DialogGeneratingScript::GenerateScriptOnClick), NULL, this);
+	btn_dialog_progress_done->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(BaseForDialogProgress::GenerateScriptOnClick), NULL, this);
 
 }
