@@ -1686,3 +1686,61 @@ MyFrame3::MyFrame3(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 MyFrame3::~MyFrame3() {
 }
+
+DialogGeneratingScript::DialogGeneratingScript(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, title, pos, size, style) {
+	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
+
+	wxBoxSizer* bSizer111;
+	bSizer111 = new wxBoxSizer(wxVERTICAL);
+
+	m_panel7 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+	wxBoxSizer* bSizer112;
+	bSizer112 = new wxBoxSizer(wxVERTICAL);
+
+	wxBoxSizer* bSizer113;
+	bSizer113 = new wxBoxSizer(wxVERTICAL);
+
+	txt_generate_script = new wxStaticText(m_panel7, wxID_ANY, wxT("Generating script"), wxDefaultPosition, wxDefaultSize, 0);
+	txt_generate_script->Wrap(-1);
+	bSizer113->Add(txt_generate_script, 0, wxALIGN_CENTER | wxALL, 5);
+
+	generate_script_progress = new wxGauge(m_panel7, wxID_ANY, 100, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+	generate_script_progress->SetValue(0);
+	bSizer113->Add(generate_script_progress, 0, wxALL, 5);
+
+
+	bSizer112->Add(bSizer113, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer114;
+	bSizer114 = new wxBoxSizer(wxHORIZONTAL);
+
+	btn_generate_script_done = new wxButton(m_panel7, wxID_ANY, wxT("Done"), wxDefaultPosition, wxDefaultSize, 0);
+	btn_generate_script_done->Enable(false);
+
+	bSizer114->Add(btn_generate_script_done, 1, wxALIGN_CENTER | wxALL, 5);
+
+
+	bSizer112->Add(bSizer114, 1, wxEXPAND, 5);
+
+
+	m_panel7->SetSizer(bSizer112);
+	m_panel7->Layout();
+	bSizer112->Fit(m_panel7);
+	bSizer111->Add(m_panel7, 1, wxEXPAND | wxALL, 5);
+
+
+	this->SetSizer(bSizer111);
+	this->Layout();
+	bSizer111->Fit(this);
+
+	this->Centre(wxBOTH);
+
+	// Connect Events
+	btn_generate_script_done->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DialogGeneratingScript::GenerateScriptOnClick), NULL, this);
+}
+
+DialogGeneratingScript::~DialogGeneratingScript() {
+	// Disconnect Events
+	btn_generate_script_done->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(DialogGeneratingScript::GenerateScriptOnClick), NULL, this);
+
+}

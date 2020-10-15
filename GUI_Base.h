@@ -30,6 +30,8 @@
 #include <wx/notebook.h>
 #include <wx/frame.h>
 #include <wx/scrolwin.h>
+#include <wx/gauge.h>
+#include <wx/dialog.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -315,6 +317,29 @@ public:
 	MyFrame3(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(785, 612), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 	~MyFrame3();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class DialogGeneratingScript
+///////////////////////////////////////////////////////////////////////////////
+class DialogGeneratingScript : public wxDialog {
+private:
+
+protected:
+	wxPanel* m_panel7;
+	wxStaticText* txt_generate_script;
+	wxGauge* generate_script_progress;
+	wxButton* btn_generate_script_done;
+
+	// Virtual event handlers, overide them in your derived class
+	virtual void GenerateScriptOnClick(wxCommandEvent& event) { event.Skip(); }
+
+
+public:
+
+	DialogGeneratingScript(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Generating Script"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
+	~DialogGeneratingScript();
 
 };
 

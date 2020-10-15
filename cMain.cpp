@@ -1645,6 +1645,10 @@ void cMain::OnApplicationClose(wxCloseEvent& event) {
 			delete shortcuts;
 		}
 
+		if (generate_script_dialog) {
+			delete generate_script_dialog;
+		}
+
 		event.Skip();
 	}
 }
@@ -1879,6 +1883,14 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	row_num = grid_tasks->GetNumberRows();
 
+	if (!generate_script_dialog) {
+		generate_script_dialog = new script_progress_bar(this);
+	}
+
+	generate_script_dialog->Show();
+	generate_script_dialog->set_button_enable(false);
+	generate_script_dialog->set_progress(0);
+
 	for (int i = 0; i < row_num; i++) {
 		grid_extract_parameters(i, grid_tasks);
 
@@ -1998,6 +2010,11 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			idle(task_number, units);
 
 		}
+
+		if (i > 0 && i % 25 == 0) {
+			generate_script_dialog->set_progress(static_cast<float>(i)/ static_cast<float>(row_num)*100.0f);
+			wxYield();
+		}
 	}
 
 	std::ofstream saver;
@@ -2016,6 +2033,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	saver << end_tasks();
 
 	saver.close();
+
+	generate_script_dialog->set_progress(100);
+	generate_script_dialog->set_button_enable(true);
 
 	event.Skip();
 }

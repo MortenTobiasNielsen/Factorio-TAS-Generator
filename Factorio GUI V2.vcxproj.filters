@@ -47,5 +47,8 @@
     <ClInclude Include="control_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
