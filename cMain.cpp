@@ -1669,12 +1669,19 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		std::locale utf8_locale(std::locale(), new std::codecvt_utf8<wchar_t>);
 		inFile.imbue(utf8_locale);
 		inFile.open(dlg.GetPath().ToStdString());
+		
+		bool total_tasks_reached = false;
+		bool tasks_reached = false;
 		bool groups_reached = false;
 		bool templates_reached = false;
-		bool groups_in_file = false;
-		bool templates_in_file = false;
 		bool save_file_reached = false;
 		bool task_file_reached = false;
+
+		bool groups_in_file = false;
+		bool templates_in_file = false;
+
+		int total_lines = 0;
+		int lines_processed = 0;
 
 		if (!inFile) {
 			wxMessageBox("It was not possible to open the file", "A file error occurred");
@@ -1684,6 +1691,15 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		if (!reset_to_new_window("open this file")) {
 			return;
 		}
+
+		if (!dialog_progress_bar) {
+			dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
+		}
+
+		dialog_progress_bar->set_text("Opening file");
+		dialog_progress_bar->set_button_enable(false);
+		dialog_progress_bar->set_progress(0);
+		dialog_progress_bar->Show();
 
 		while (std::getline(inFile, open_data_string)) {
 			std::stringstream data_line;
@@ -1695,7 +1711,17 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				seglist.push_back(segment);
 			}
 
-			if (seglist[0] == save_groups_indicator) {
+			if (!total_tasks_reached){
+				if (seglist[0] == total_tasks_indicator) {
+					total_tasks_reached = true;
+				} else {
+					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					return;
+				}
+			
+			} else if (seglist[0] == tasks_indicator) {
+				tasks_reached = true;
+			} else if (seglist[0] == save_groups_indicator) {
 				groups_reached = true;
 
 			} else if (seglist[0] == save_templates_indicator) {
@@ -1713,6 +1739,21 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				save_file_reached = true;
 				task_file_reached = true;
 			
+			} else if (!tasks_reached) {
+				if (seglist.size() == 1) {
+					if (is_number(seglist[0])){
+						total_lines = std::stoi(seglist[0]);
+					} else {
+						wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+						return;
+					}
+
+					
+				} else {
+					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					return;
+				}				
+
 			} else if (!groups_reached) {
 				if (seglist.size() == 9) {
 					task = seglist[0];
@@ -1726,6 +1767,14 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					amount_of_buildings = seglist[8];
 
 					update_tasks_grid();
+
+					lines_processed++;
+
+					if (lines_processed > 0 && lines_processed % 25 == 0) {
+						dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
+						wxYield();
+					}
+
 				} else {
 					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
@@ -1761,8 +1810,14 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					amount_of_buildings = seglist[9];
 
 					group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
-				} else if (seglist[0] == "") {
+				
+					lines_processed++;
 
+					if (lines_processed > 0 && lines_processed % 25 == 0) {
+						dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
+						wxYield();
+					}
+				
 				} else {
 					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
@@ -1796,6 +1851,14 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					amount_of_buildings = seglist[9];
 
 					template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+				
+					lines_processed++;
+
+					if (lines_processed > 0 && lines_processed % 25 == 0) {
+						dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
+						wxYield();
+					}
+
 				} 
 				
 			} else if (!task_file_reached) {
@@ -1832,6 +1895,9 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 	}
 
 	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+
+	dialog_progress_bar->set_progress(100);
+	dialog_progress_bar->set_button_enable(true);
 	
 	event.Skip();
 }

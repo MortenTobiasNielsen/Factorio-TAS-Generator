@@ -83,3 +83,5 @@ void check_interact_distance(std::string task, std::string action, std::string x
 void check_mining_distance(std::string task, std::string action, std::string x_cord, std::string y_cord);
 
 void find_coordinates(std::string& x_cord, std::string& y_cord, std::string& direction, std::string& building_size);
+
+bool is_number(const std::string& s);

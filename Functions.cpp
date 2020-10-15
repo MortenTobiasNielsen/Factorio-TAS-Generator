@@ -541,3 +541,13 @@ void string_capitalized(std::string& string) {
 		}
 	}
 }
+
+bool is_number(const std::string& str) {
+	for (auto s : str) {
+		if (!std::isdigit(s)) {
+			return false;
+		}
+	}
+
+	return true;
+}
