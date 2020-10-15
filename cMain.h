@@ -126,6 +126,9 @@ private:
 
 	std::string open_data_string;
 
+	std::string no_longer_connected = " is no longer connected with a building.\nPlease reverse the change/move or connect the task again by adding a build task in front of it.";
+	std::string no_longer_connected_heading = "Tasks are no longer aligned correctly";
+
 	const struct parameter_choices_struct {
 		// x-cord, y-cord, units, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
 		std::vector<bool> game_speed = { false, false, true, false, false, false, false, false, false , false, false, false};
@@ -155,6 +158,8 @@ private:
 
 	std::string segment;
 	std::vector<std::string> seglist;
+
+	std::vector<std::string> row_selections;
 	
 	int row_num;
 	int row_count;
@@ -169,6 +174,8 @@ private:
 	int template_row_count;
 
 	int row_to_move;
+
+	bool mine_building_found;
 
 	std::string task_number;
 
@@ -241,11 +248,11 @@ private:
 	// Used when the tasks are saved to a file
 	std::vector<std::string> tasks_data_to_save;
 
-	void reset_to_new_window();
+	bool reset_to_new_window(std::string to_insert);
 	bool check_before_close();
 
 	void move_row(wxGrid* grid, bool up = false);
-	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>> map); 
+	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>>& map);
 	bool change_row(wxGrid* grid);
 
 	void update_tasks_grid();
@@ -260,7 +267,7 @@ private:
 
 	void background_colour_update(wxGrid* grid, int row, std::string task);
 
-	void group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>> map);
+	void group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>>& map);
 	
 	void update_group_template_grid(wxGrid* grid, std::vector<std::string>& list, std::map<std::string, std::vector<std::string>>& map, std::string map_name);
 	void grid_extract_parameters(const int& row, wxGrid* grid);
@@ -268,7 +275,7 @@ private:
 
 	void setup_paramters(std::vector<bool> parameters);
 
-	bool setup_for_task_grid();
+	bool setup_for_task_group_template_grid();
 
 	bool find_building_for_script(int& row);
 	
