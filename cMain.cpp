@@ -362,7 +362,7 @@ void cMain::move_row(wxGrid* grid, bool up) {
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
-	for (auto block : grid->GetSelectedRowBlocks()) {
+	for (const auto& block : grid->GetSelectedRowBlocks()) {
 		row_num = block.GetTopRow();
 		row_count = block.GetBottomRow() - row_num + 1;
 
@@ -422,7 +422,7 @@ void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std:
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
-	for (auto block : grid->GetSelectedRowBlocks()) {
+	for (const auto& block : grid->GetSelectedRowBlocks()) {
 		row_num = block.GetTopRow();
 		row_count = block.GetBottomRow() - row_num + 1;
 
@@ -487,7 +487,7 @@ bool cMain::delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std:
 		return false;
 	}
 
-	for (auto block : grid->GetSelectedRowBlocks()) {
+	for (const auto& block : grid->GetSelectedRowBlocks()) {
 		row_num = block.GetTopRow();
 		row_count = block.GetBottomRow() - row_num + 1;
 		grid->DeleteRows(row_num, row_count);
@@ -835,13 +835,13 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	}
 
 	// Find the first block of rows selected - extract the first row and the amount of rows in the block
-	for (auto block : grid_tasks->GetSelectedRowBlocks()) {
+	for (const auto& block : grid_tasks->GetSelectedRowBlocks()) {
 		building_row_num = block.GetTopRow();
 		building_row_count = block.GetBottomRow() - building_row_num + 1;
 		break;
 	}
 
-	// If the last row of the block is also the tasks_grid's last row the rows are just deleted
+	// If the last row of the block is also the tasks_grid's last row then the rows are just deleted
 	if ((building_row_num + building_row_count) == grid_tasks->GetNumberRows()) {
 		grid_tasks->DeleteRows(building_row_num, building_row_count);
 
@@ -1042,7 +1042,7 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event) {
 		group_row_num = grid_group->GetNumberRows();
 	}
 
-	for (auto block : grid_tasks->GetSelectedRowBlocks()) {
+	for (const auto& block : grid_tasks->GetSelectedRowBlocks()) {
 		row_num = block.GetTopRow();
 		row_count = block.GetBottomRow() - row_num + 1;
 
@@ -1082,7 +1082,7 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 
 	bool check = false;
 
-	for (auto block : grid_group->GetSelectedRowBlocks()) {
+	for (const auto& block : grid_group->GetSelectedRowBlocks()) {
 		group_row_num = block.GetTopRow();
 		group_row_count = block.GetBottomRow() - group_row_num + 1;
 
@@ -1328,7 +1328,7 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 		template_row_num = grid_template->GetNumberRows();
 	}
 
-	for (auto block : grid_tasks->GetSelectedRowBlocks()) {
+	for (const auto& block : grid_tasks->GetSelectedRowBlocks()) {
 		row_num = block.GetTopRow();
 		row_count = block.GetBottomRow() - row_num + 1;
 
@@ -1374,7 +1374,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 
 	bool check = false;
 
-	for (auto block : grid_template->GetSelectedRowBlocks()) {
+	for (const auto& block : grid_template->GetSelectedRowBlocks()) {
 		template_row_num = block.GetTopRow();
 		template_row_count = block.GetBottomRow() - template_row_num + 1;
 
@@ -2496,11 +2496,13 @@ std::string cMain::extract_units() {
 		} else if (std::stof(units) > 5) {
 			return units = "5";
 		}
-	} else{
+	} else {
 		if (std::stof(units) < 1) {
 			return units = "All";
 		}
 	}
+
+	return "1";
 }
 
 std::string cMain::extract_item() {
@@ -2673,7 +2675,7 @@ bool cMain::find_building() {
 			continue;
 		}
 
-		building = grid_buildings->GetCellValue(i, 3);
+		building = grid_buildings->GetCellValue(i, 2);
 		building_row_num = i;
 		break;
 	}

@@ -121,6 +121,11 @@ private:
 	std::string save_file_indicator = "Save file location:";
 	std::string code_file_indicator = "Task folder location:";
 
+	std::string generate_code_folder_location = "";
+	std::string save_file_location = "";
+
+	std::string open_data_string;
+
 	const struct parameter_choices_struct {
 		// x-cord, y-cord, units, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
 		std::vector<bool> game_speed = { false, false, true, false, false, false, false, false, false , false, false, false};
@@ -144,8 +149,6 @@ private:
 	};
 
 	parameter_choices_struct parameter_choices;
-
-	
 
 	std::vector<std::string>::iterator it1;
 	std::vector<std::string>::iterator it2;
@@ -178,13 +181,6 @@ private:
 	std::vector<std::string> full_chemical_plant_recipes;
 	std::vector<std::string> all_recipes;
 
-	float x_cord_float;
-	float y_cord_float;
-	float building_size_float;
-
-	float new_x_cord; // Should most likely be std::string or removed 
-	float new_y_cord; // Should most likely be std::string or removed 
-
 	// Overall variables for parameters
 	std::string task;
 	std::string x_cord;
@@ -198,9 +194,7 @@ private:
 	std::string building_size;
 	std::string amount_of_buildings;
 
-
 	std::string building;
-	std::string new_orientation;
 
 	// Variables specific to the buildings grid
 	std::string building_task;
@@ -208,19 +202,12 @@ private:
 	std::string building_y_cord;
 	std::string building_units;
 	std::string building_item;
-	//std::string building_from_into;
-	//std::string building_tech_to_start;
 	std::string building_build_orientation;
 	std::string building_direction_to_build;
 	std::string building_building_size;
 	std::string building_amount_of_buildings;
 	std::string building_priority_in;
 	std::string building_priority_out;
-	//std::string building_building;
-	//std::string building_new_orientation;
-
-	std::string x_cord_origen;
-	std::string y_cord_origen;
 
 	std::string limit;
 	std::string recipe;
@@ -228,6 +215,7 @@ private:
 	std::string priority_out;
 	std::string filter;
 
+	// Arrays used to populate combo boxes
 	wxArrayString item_choices;
 	wxArrayString take_from_choices;
 	wxArrayString tech_choices;
@@ -240,12 +228,8 @@ private:
 	wxArrayString recipe_choices;
 	wxArrayString filter_take_put_drop_choices;
 	wxArrayString building_choices;
-
-	std::string generate_code_folder_location = "";
-	std::string save_file_location = "";
-
-	std::string open_data_string;
 	
+	// For group and template strucktures
 	std::string group_name;
 	std::vector<std::string> group_list;
 	std::map<std::string, std::vector<std::string>> group_map;
@@ -254,15 +238,14 @@ private:
 	std::vector<std::string> template_list;
 	std::map<std::string, std::vector<std::string>> template_map;
 
+	// Used when the tasks are saved to a file
 	std::vector<std::string> tasks_data_to_save;
-	std::vector<std::string> groups_data_to_save;
-	std::vector<std::string> template_data_to_save;
 
 	void reset_to_new_window();
 	bool check_before_close();
 
 	void move_row(wxGrid* grid, bool up = false);
-	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>> map = {}); // check if this should have a group_template function
+	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>> map); 
 	bool change_row(wxGrid* grid);
 
 	void update_tasks_grid();
@@ -296,12 +279,12 @@ private:
 	bool check_input (std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(const std::string& item);
 	bool check_buildings_grid();
-	bool check_mine_building();
 
 	bool extra_building_checks();
 
 	bool save_file(bool save_as);
 
+	std::string extract_define(int start_row);
 
 	void extract_parameters();
 	std::string extract_task();
@@ -318,19 +301,7 @@ private:
 	std::string extract_building_size();
 	std::string extract_amount_of_buildings();
 
-	
-	
-	
-	
-	std::string extract_define(int start_row);
-	bool extract_building(int start_row);
-	bool extract_building_info();
-
-	int find_row_num(wxGrid* grid);
-
-	void update_coordinates();
 	void update_future_rotate_tasks();
 	void find_new_orientation();
-	bool find_old_orientation();
 	bool find_building();
 };
