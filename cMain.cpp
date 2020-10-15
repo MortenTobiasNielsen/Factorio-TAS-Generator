@@ -334,6 +334,8 @@ bool cMain::reset_to_new_window(std::string to_insert) {
 	tasks_data_to_save = {};
 	save_file_location = "";
 	generate_code_folder_location = "";
+
+	return true;
 }
 
 bool cMain::check_before_close() {
@@ -687,9 +689,11 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 				grid_buildings->DeleteRows(building_row_num);
 			}
 		} else if (building_task == "Take" || building_task == "Put") {
-			if (!find_building()) {
-				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
-				return;
+			if (building_build_orientation != "Wreck") {
+				if (!find_building()) {
+					wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
+					return;
+				}
 			}
 		}
 	}
@@ -840,6 +844,13 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 
 				update_tasks_grid();	
 			}
+		} else {
+			if (row_num != grid_tasks->GetNumberRows()) {
+				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
+			}
+
+			event.Skip();
+			return;
 		}
 
 		if (row_num != grid_tasks->GetNumberRows()) {
@@ -858,7 +869,6 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	extract_parameters();
 
-	
 	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
 		wxMessageBox("Please select a row to change", "Selection not valid");
 		return;
@@ -868,6 +878,43 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	if (setup_for_task_group_template_grid()) {
+
+		// This should be developed so it is able to take change future tasks to take into account the change - especially to move put, take, fuel, etc tasks so they stay aligned with the buildings 
+		if (task == "Build" && grid_tasks->GetCellValue(row_num, 0) == "Build") {
+			std::string saved_x_cord = x_cord;
+			std::string saved_y_cord = y_cord;
+
+			building_x_cord = grid_tasks->GetCellValue(row_num, 1);
+			building_y_cord = grid_tasks->GetCellValue(row_num, 2);
+			building_direction_to_build = grid_tasks->GetCellValue(row_num, 6);
+			building_building_size = grid_tasks->GetCellValue(row_num, 7);
+
+			int total_rows = grid_tasks->GetNumberRows();
+
+			building_amount_of_buildings = std::to_string(std::min(std::stoi(amount_of_buildings), wxAtoi(grid_tasks->GetCellValue(row_num, 8))));
+
+			for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
+				for (int j = row_num + 1; j < total_rows; j++) {
+					if (grid_tasks->GetCellValue(j, 1) == building_x_cord && grid_tasks->GetCellValue(j, 2) == building_y_cord) {
+						if (grid_tasks->GetCellValue(j, 0) == "Mine") {
+							break;
+						}
+
+						grid_tasks->SetCellValue(j, 1, x_cord);
+						grid_tasks->SetCellValue(j, 2, y_cord);
+							
+					}
+				}
+
+				find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+				find_coordinates(x_cord, y_cord, direction_to_build, building_size);
+			}
+				
+			x_cord = saved_x_cord;
+			y_cord = saved_y_cord;
+
+		}
+
 		if (change_row(grid_tasks)) {
 			tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
 
@@ -1594,6 +1641,10 @@ void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 
 void cMain::OnApplicationClose(wxCloseEvent& event) {
 	if (check_before_close()) { // You do not want to skip the event if the application shouldn't be closed
+		if (shortcuts) {
+			delete shortcuts;
+		}
+
 		event.Skip();
 	}
 }
@@ -1867,7 +1918,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
 
 		} else if (task == "Take") {
-			from_into = build_orientation;
+			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
 			if (from_into == "Not Found") {
@@ -1881,7 +1932,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 		} else if (task == "Put") {
-			from_into = build_orientation;
+			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
 			if (from_into == "Not Found") {
@@ -1905,7 +1956,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			stop(task_number, units);
 
 		} else if (task == "Limit") {
-			from_into = build_orientation;
+			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
 			if (from_into == "Not Found") {
@@ -1970,7 +2021,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 }
 
 void cMain::OnChangeShortcuts(wxCommandEvent& event) {
-	shortcuts = new Shortcuts_Menu(this);
+	if (!shortcuts) {
+		shortcuts = new Shortcuts_Menu(this);
+	}
+
 	shortcuts->Show();
 	event.Skip();
 }
@@ -2199,9 +2253,24 @@ bool cMain::setup_for_task_group_template_grid() {
 
 	} else if (task == "Take" || task == "Put") {
 
-		if (!check_take_put(item)) {
+		if (row_num != grid_tasks->GetNumberRows()) {
+			update_buildings_grid_from_scratch(0, row_num);
+
+			building_x_cord = x_cord;
+			building_y_cord = y_cord;
+
+			if (!check_take_put(item)) {
+				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());	
+				return false;
+			}
+
+			update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
+
+		} else {
 			return false;
 		}
+
+		
 
 		if (!check_input(direction_to_build, build_orientations)) {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
@@ -2752,6 +2821,10 @@ bool cMain::find_building_for_script(int& row) {
 		}
 	}
 
+	if (task == "Mine") {
+		return false;
+	}
+
 	wxMessageBox("Task: " + task_number + " have no building associated with it - please correct the error and try again", "The building does not exist");
 	return false;
 }
@@ -2840,7 +2913,7 @@ bool cMain::check_take_put(const std::string& item) {
 		return true;
 	}
 
-	if(find_building_for_script(row_num)){
+	if(find_building()){
 		if (check_input(building, chest_list)) {
 			if (to_check == "Chest") {
 				return true;
@@ -3031,6 +3104,7 @@ bool cMain::check_buildings_grid() {
 
 	} else if (building_task == "Take" || building_task == "Put") {
 		if (!find_building()) {
+			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
