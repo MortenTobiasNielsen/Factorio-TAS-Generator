@@ -2142,6 +2142,15 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	saver.open(generate_code_folder_location + "\\control.lua");
 	saver << control_lua1;
 	saver << control_lua2;
+
+	if (menu_goals->GetMenuItems()[0]->IsChecked()) {
+		saver << control_steel_axe << std::endl;
+	} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+		saver << control_GOTLAP << std::endl;
+	} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+		saver << control_any_percent << std::endl;
+	} 
+
 	saver.close();
 
 	saver.open(generate_code_folder_location + "\\info.json");

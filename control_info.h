@@ -687,7 +687,9 @@ script.on_event(defines.events.on_game_created_from_scenario, function()
 	remote.call("freeplay", "set_skip_intro", true)
 
 end)
+)control_lua2";
 
+std::string control_steel_axe = R"control_lua2(
 -- Triggered on research completed
 script.on_event(defines.events.on_research_finished, function(event)
 
@@ -696,10 +698,38 @@ script.on_event(defines.events.on_research_finished, function(event)
 		local minutes = math.floor(player.online_time / 60 / 60)
 		local seconds_remainder = seconds - (minutes * 60)
 
-		debug(string.format("Contrats %s on reaching the end of your Steel Axe run - you completed it in %f seconds (%d min %f seconds) (%d ticks)", player.name, seconds, minutes, seconds_remainder, player.online_time))
-		debug_state = false
+		player.print(string.format("Contrats %s on reaching the end of your Steel Axe run", player.name), {r=0, g=1, b=0, a=1})
+		player.print(string.format("You completed it in %f seconds (%d min %f seconds) (%d ticks)", seconds, minutes, seconds_remainder, player.online_time), {r=0, g=1, b=0, a=1})
 	end
 
+end)
+)control_lua2";
 
+std::string control_GOTLAP = R"control_lua2(
+-- Triggered on item crafted
+script.on_event(defines.events.on_player_crafted_item, function(event)
+
+	if (event.item_stack.name == "locomotive") then
+		local seconds = player.online_time / 60
+		local minutes = math.floor(player.online_time / 60 / 60)
+		local seconds_remainder = seconds - (minutes * 60)
+
+		player.print(string.format("Contrats %s on reaching the end of your Getting On Track Like A Pro run", player.name), {r=0, g=1, b=0, a=1})
+		player.print(string.format("You completed it in %f seconds (%d min %f seconds) (%d ticks)", seconds, minutes, seconds_remainder, player.online_time), {r=0, g=1, b=0, a=1})
+	end
+
+end)
+)control_lua2";
+
+std::string control_any_percent = R"control_lua2(
+-- Triggered on rocket launched
+script.on_event(defines.events.on_rocket_launched, function(event)
+	local seconds = player.online_time / 60
+	local minutes = math.floor(player.online_time / 60 / 60)
+	local seconds_remainder = seconds - (minutes * 60)
+
+	player.print(string.format("Contrats %s on reaching the end of your any %% run", player.name), {r=0, g=1, b=0, a=1})
+	player.print(string.format("You completed it in %f seconds (%d min %f seconds) (%d ticks)", seconds, minutes, seconds_remainder, player.online_time), {r=0, g=1, b=0, a=1})
+	
 end)
 )control_lua2";
