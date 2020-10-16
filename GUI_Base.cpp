@@ -621,6 +621,8 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer1261->Add(label_choose_group, 0, wxALIGN_CENTER | wxALL, 5);
 
 	cmb_choose_group = new wxComboBox(m_panel3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT);
+	cmb_choose_group->SetMinSize(wxSize(150, -1));
+
 	bSizer1261->Add(cmb_choose_group, 0, wxALIGN_CENTER | wxALL, 5);
 
 	btn_new_group = new wxButton(m_panel3, wxID_ANY, wxT("New Group"), wxDefaultPosition, wxSize(105, -1), 0);
@@ -694,7 +696,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_group->SetColSize(1, 50);
 	grid_group->SetColSize(2, 50);
 	grid_group->SetColSize(3, 50);
-	grid_group->SetColSize(4, 135);
+	grid_group->SetColSize(4, 150);
 	grid_group->SetColSize(5, 70);
 	grid_group->SetColSize(6, 70);
 	grid_group->SetColSize(7, 50);
@@ -720,7 +722,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_group->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_group->SetMinSize(wxSize(700, 2500));
+	grid_group->SetMinSize(wxSize(715, 2500));
 
 	bSizer50->Add(grid_group, 0, wxALL, 5);
 
@@ -750,6 +752,8 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer126->Add(label_choose_template, 0, wxALIGN_CENTER | wxALL, 5);
 
 	cmb_choose_template = new wxComboBox(m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0);
+	cmb_choose_template->SetMinSize(wxSize(150, -1));
+
 	bSizer126->Add(cmb_choose_template, 0, wxALIGN_CENTER | wxALL, 5);
 
 	btn_template_new = new wxButton(m_panel6, wxID_ANY, wxT("New Template"), wxDefaultPosition, wxSize(105, -1), 0);
@@ -858,7 +862,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_template->SetColSize(1, 50);
 	grid_template->SetColSize(2, 50);
 	grid_template->SetColSize(3, 50);
-	grid_template->SetColSize(4, 135);
+	grid_template->SetColSize(4, 150);
 	grid_template->SetColSize(5, 70);
 	grid_template->SetColSize(6, 70);
 	grid_template->SetColSize(7, 50);
@@ -884,7 +888,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_template->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_template->SetMinSize(wxSize(700, 2500));
+	grid_template->SetMinSize(wxSize(715, 2500));
 
 	bSizer502->Add(grid_template, 0, wxALL, 5);
 
@@ -926,6 +930,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer1001;
 	bSizer1001 = new wxBoxSizer(wxHORIZONTAL);
 
+
+	bSizer1001->Add(125, 0, 1, wxEXPAND, 5);
+
 	btn_add_task11 = new wxButton(m_panel31, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0);
 	bSizer1001->Add(btn_add_task11, 0, wxALIGN_CENTER | wxALL, 5);
 
@@ -942,7 +949,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer1001->Add(btn_move_down11, 0, wxALL, 5);
 
 
-	bSizer5611->Add(bSizer1001, 1, wxALIGN_CENTER, 5);
+	bSizer5611->Add(bSizer1001, 0, 0, 5);
 
 	wxBoxSizer* bSizer501;
 	bSizer501 = new wxBoxSizer(wxVERTICAL);
@@ -961,7 +968,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_tasks->SetColSize(1, 50);
 	grid_tasks->SetColSize(2, 50);
 	grid_tasks->SetColSize(3, 50);
-	grid_tasks->SetColSize(4, 135);
+	grid_tasks->SetColSize(4, 150);
 	grid_tasks->SetColSize(5, 70);
 	grid_tasks->SetColSize(6, 70);
 	grid_tasks->SetColSize(7, 50);
@@ -987,7 +994,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_tasks->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_tasks->SetMinSize(wxSize(700, 2500));
+	grid_tasks->SetMinSize(wxSize(715, 2500));
 
 	bSizer501->Add(grid_tasks, 0, wxALL, 5);
 
@@ -1036,13 +1043,13 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	// Columns
 	grid_buildings->SetColSize(0, 50);
 	grid_buildings->SetColSize(1, 50);
-	grid_buildings->SetColSize(2, 135);
+	grid_buildings->SetColSize(2, 150);
 	grid_buildings->SetColSize(3, 70);
 	grid_buildings->SetColSize(4, 50);
-	grid_buildings->SetColSize(5, 135);
+	grid_buildings->SetColSize(5, 150);
 	grid_buildings->SetColSize(6, 50);
 	grid_buildings->SetColSize(7, 50);
-	grid_buildings->SetColSize(8, 135);
+	grid_buildings->SetColSize(8, 150);
 	grid_buildings->EnableDragColMove(false);
 	grid_buildings->EnableDragColSize(false);
 	grid_buildings->SetColLabelValue(0, wxT("X-cord"));
@@ -1064,7 +1071,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_buildings->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_buildings->SetMinSize(wxSize(825, 2500));
+	grid_buildings->SetMinSize(wxSize(870, 2500));
 
 	bSizer5011->Add(grid_buildings, 0, wxALL, 5);
 

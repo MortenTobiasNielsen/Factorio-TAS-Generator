@@ -10,7 +10,7 @@
 #include <locale>
 #include <codecvt>
 
-cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1620, 1080)) {
+cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1705, 1080)) {
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
 	
@@ -1945,13 +1945,13 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		}
 
 		inFile.close();
+
+		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+
+		dialog_progress_bar->set_progress(100);
+		dialog_progress_bar->set_button_enable(true);
 	}
 
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-
-	dialog_progress_bar->set_progress(100);
-	dialog_progress_bar->set_button_enable(true);
-	
 	event.Skip();
 }
 
