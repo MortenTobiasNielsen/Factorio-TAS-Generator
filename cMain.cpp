@@ -143,6 +143,9 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	grid_template->SetColFormatFloat(2, 4, 1);
 	grid_template->SetColFormatFloat(3, 4, 2);
 	grid_template->SetSelectionMode(grid_group->wxGridSelectRows);
+
+	// Checking steel axe as a goal
+	menu_goals->GetMenuItems()[0]->Check();
 }
 
 
@@ -293,12 +296,8 @@ void cMain::OnStopChosen(wxCommandEvent& event) {
 	event.Skip();
 }
 
-bool cMain::reset_to_new_window(std::string to_insert) {
+void cMain::reset_to_new_window() {
 	if (grid_tasks->GetNumberRows() > 0 || grid_buildings->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0) {
-		if (wxMessageBox("Are you sure you want to " + to_insert + "?\nAll in the current window will be cleared.", "Ensure that you have saved what you need before clicking yes", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
-			return false;
-		}
-
 		if (grid_tasks->GetNumberRows() > 0) {
 			grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
 		}
@@ -335,7 +334,7 @@ bool cMain::reset_to_new_window(std::string to_insert) {
 	save_file_location = "";
 	generate_code_folder_location = "";
 
-	return true;
+	dialog_progress_bar->Hide();
 }
 
 bool cMain::check_before_close() {
@@ -1653,9 +1652,25 @@ void cMain::OnApplicationClose(wxCloseEvent& event) {
 	}
 }
 
+bool cMain::checks_before_reset_window() {
+	if (grid_tasks->GetNumberRows() > 0 || grid_buildings->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0) {
+		return true;
+	}
+
+	if (group_map.size() > 0 || template_map.size() > 0) {
+		return true;
+	}
+
+	return false;
+}
+
 void cMain::OnMenuNew(wxCommandEvent& event) {
 
-	reset_to_new_window("create a new file");
+	if (checks_before_reset_window()) {
+		if (wxMessageBox("Are you sure you want to reset the window?\nAll in the current window will be cleared.", "Ensure that you have saved what you need before clicking yes", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
+			reset_to_new_window();
+		}
+	}
 
 	event.Skip();
 }
@@ -1671,6 +1686,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		inFile.open(dlg.GetPath().ToStdString());
 		
 		bool total_tasks_reached = false;
+		bool goal_reached = false;
 		bool tasks_reached = false;
 		bool groups_reached = false;
 		bool templates_reached = false;
@@ -1688,8 +1704,12 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			return;
 		}
 
-		if (!reset_to_new_window("open this file")) {
-			return;
+		if (checks_before_reset_window()) {
+			if (wxMessageBox("Are you sure you want to open this file?\nAll in the current window will be cleared.", "Ensure that you have saved what you need before clicking yes", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
+				reset_to_new_window();
+			} else { 
+				return;
+			}
 		}
 
 		if (!dialog_progress_bar) {
@@ -1715,12 +1735,17 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				if (seglist[0] == total_tasks_indicator) {
 					total_tasks_reached = true;
 				} else {
+					reset_to_new_window();
 					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
 				}
 			
+			} else if (seglist[0] == goal_indicator) {
+				goal_reached = true;
+
 			} else if (seglist[0] == tasks_indicator) {
 				tasks_reached = true;
+
 			} else if (seglist[0] == save_groups_indicator) {
 				groups_reached = true;
 
@@ -1739,20 +1764,42 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				save_file_reached = true;
 				task_file_reached = true;
 			
-			} else if (!tasks_reached) {
+			} else if (!goal_reached) {
 				if (seglist.size() == 1) {
 					if (is_number(seglist[0])){
 						total_lines = std::stoi(seglist[0]);
 					} else {
+						reset_to_new_window();
 						wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 						return;
 					}
 
 					
 				} else {
+					reset_to_new_window();
 					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
 				}				
+
+			} else if (!tasks_reached) {
+				if (seglist.size() == 1) {
+					if (seglist[0] == goal_steelaxe_text) {
+						menu_goals->GetMenuItems()[0]->Check();
+					} else if (seglist[0] == goal_GOTLAP_text) {
+						menu_goals->GetMenuItems()[1]->Check();
+					} else if (seglist[0] == goal_any_percent_text) {
+						menu_goals->GetMenuItems()[2]->Check();
+					} else {
+						reset_to_new_window();
+						wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+						return;
+					}
+
+				} else {
+					reset_to_new_window();
+					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					return;
+				}
 
 			} else if (!groups_reached) {
 				if (seglist.size() == 9) {
@@ -1776,6 +1823,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					}
 
 				} else {
+					reset_to_new_window();
 					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
 				}
@@ -1819,6 +1867,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					}
 				
 				} else {
+					reset_to_new_window();
 					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 					return;
 				}
@@ -1859,7 +1908,11 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 						wxYield();
 					}
 
-				} 
+				} else {
+					reset_to_new_window();
+					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					return;
+				}
 				
 			} else if (!task_file_reached) {
 				save_file_location = seglist[0];
@@ -3258,6 +3311,18 @@ bool cMain::save_file(bool save_as) {
 
 	myfile << total_tasks_indicator << std::endl;
 	myfile << total_lines << std::endl;
+
+	myfile << goal_indicator << std::endl;
+
+	if (menu_goals->GetMenuItems()[0]->IsChecked()) {
+		myfile << goal_steelaxe_text << std::endl;
+	} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+		myfile << goal_GOTLAP_text << std::endl;
+	} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+		myfile << goal_any_percent_text << std::endl;
+	} else {
+		myfile << goal_steelaxe_text << std::endl;
+	}
 
 	myfile << tasks_indicator << std::endl;
 

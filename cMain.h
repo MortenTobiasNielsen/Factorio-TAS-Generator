@@ -19,15 +19,18 @@ public:
 protected:
 	void OnApplicationClose(wxCloseEvent& event);
 
+	// File menu items
 	void OnMenuNew(wxCommandEvent& event);
 	void OnMenuOpen(wxCommandEvent& event);
 	void OnMenuSave(wxCommandEvent& event);
 	void OnMenuSaveAs(wxCommandEvent& event);
 	void OnMenuExit(wxCommandEvent& event);
 
+	// Script menu items
 	void OnChooseLocation(wxCommandEvent& event);
 	void OnGenerateScript(wxCommandEvent& event);
 	
+	// Shortcut menu items
 	void OnChangeShortcuts(wxCommandEvent& event);
 
 	void OnWalkMenuSelected(wxCommandEvent& event);
@@ -54,6 +57,7 @@ protected:
 	void OnDropMenuSelected(wxCommandEvent& event);
 	void OnPickUpMenuSelected(wxCommandEvent& event);
 
+	// Radio buttons
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
 	void OnCraftChosen(wxCommandEvent& event); 
@@ -119,11 +123,16 @@ private:
 	dialog_progress_bar_base* dialog_progress_bar = nullptr;
 
 	std::string total_tasks_indicator = "Total lines:";
+	std::string goal_indicator = "Goal:";
 	std::string tasks_indicator = "Tasks:";
 	std::string save_groups_indicator = "Groups:";
 	std::string save_templates_indicator = "Templates:";
 	std::string save_file_indicator = "Save file location:";
 	std::string code_file_indicator = "Task folder location:";
+
+	std::string goal_steelaxe_text = "Steel Axe";
+	std::string goal_GOTLAP_text = "Getting On Track Like A Pro";
+	std::string goal_any_percent_text = "Any %";
 
 	std::string generate_code_folder_location = "";
 	std::string save_file_location = "";
@@ -252,8 +261,10 @@ private:
 	// Used when the tasks are saved to a file
 	std::vector<std::string> tasks_data_to_save;
 
-	bool reset_to_new_window(std::string to_insert);
+	void reset_to_new_window();
+	bool checks_before_reset_window();
 	bool check_before_close();
+
 
 	void move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>>& map);

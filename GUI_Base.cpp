@@ -146,6 +146,22 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	m_menubar1->Append(menu_shortcuts, wxT("Shortcuts"));
 
+	menu_goals = new wxMenu();
+	wxMenuItem* goal_steelaxe;
+	goal_steelaxe = new wxMenuItem(menu_goals, wxID_ANY, wxString(wxT("Steel Axe")), wxEmptyString, wxITEM_RADIO);
+	menu_goals->Append(goal_steelaxe);
+	goal_steelaxe->Check(true);
+
+	wxMenuItem* goal_GOTLAP;
+	goal_GOTLAP = new wxMenuItem(menu_goals, wxID_ANY, wxString(wxT("Getting On Track Like A Pro")), wxEmptyString, wxITEM_RADIO);
+	menu_goals->Append(goal_GOTLAP);
+
+	wxMenuItem* goal_any_percent;
+	goal_any_percent = new wxMenuItem(menu_goals, wxID_ANY, wxString(wxT("Any %")), wxEmptyString, wxITEM_RADIO);
+	menu_goals->Append(goal_any_percent);
+
+	m_menubar1->Append(menu_goals, wxT("Goal"));
+
 	this->SetMenuBar(m_menubar1);
 
 	wxBoxSizer* bSizer1;
@@ -1114,6 +1130,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDeleteMenuSelected), this, shortcut_delete_task->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMoveUpMenuSelected), this, shortcut_move_up->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMoveDownMenuSelected), this, shortcut_move_down->GetId());
+	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSteelAxeClicked), this, goal_steelaxe->GetId());
+	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuGOTLAPClicked), this, goal_GOTLAP->GetId());
+	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAnyPercentClicked), this, goal_any_percent->GetId());
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
 	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
 	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
@@ -1635,56 +1654,6 @@ Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& 
 }
 
 Shortcuts_Menu::~Shortcuts_Menu() {
-}
-
-MyFrame3::MyFrame3(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
-	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
-
-	wxBoxSizer* bSizer93;
-	bSizer93 = new wxBoxSizer(wxVERTICAL);
-
-	m_panel2 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-	wxBoxSizer* bSizer94;
-	bSizer94 = new wxBoxSizer(wxVERTICAL);
-
-	wxBoxSizer* bSizer95;
-	bSizer95 = new wxBoxSizer(wxHORIZONTAL);
-
-	m_button9 = new wxButton(m_panel2, wxID_ANY, wxT("Add Task"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer95->Add(m_button9, 0, wxALL, 5);
-
-	m_button10 = new wxButton(m_panel2, wxID_ANY, wxT("Change Task"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer95->Add(m_button10, 0, wxALL, 5);
-
-	m_button11 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer95->Add(m_button11, 0, wxALL, 5);
-
-	m_button12 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer95->Add(m_button12, 0, wxALL, 5);
-
-	m_button13 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer95->Add(m_button13, 0, wxALL, 5);
-
-	m_button14 = new wxButton(m_panel2, wxID_ANY, wxT("MyButton"), wxDefaultPosition, wxDefaultSize, 0);
-	bSizer95->Add(m_button14, 0, wxALL, 5);
-
-
-	bSizer94->Add(bSizer95, 1, wxEXPAND, 5);
-
-
-	m_panel2->SetSizer(bSizer94);
-	m_panel2->Layout();
-	bSizer94->Fit(m_panel2);
-	bSizer93->Add(m_panel2, 1, wxEXPAND | wxALL, 5);
-
-
-	this->SetSizer(bSizer93);
-	this->Layout();
-
-	this->Centre(wxBOTH);
-}
-
-MyFrame3::~MyFrame3() {
 }
 
 BaseForDialogProgress::BaseForDialogProgress(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, title, pos, size, style) {

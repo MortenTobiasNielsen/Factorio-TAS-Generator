@@ -47,6 +47,7 @@ protected:
 	wxMenu* menu_file;
 	wxMenu* menu_script;
 	wxMenu* menu_shortcuts;
+	wxMenu* menu_goals;
 	wxPanel* m_panel1;
 	wxStaticText* label_x_cord;
 	wxTextCtrl* txt_x_cord;
@@ -167,6 +168,9 @@ protected:
 	virtual void OnDeleteMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveUpMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveDownMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuSteelAxeClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuGOTLAPClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuAnyPercentClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedChosen(wxCommandEvent& event) { event.Skip(); }
@@ -294,29 +298,6 @@ public:
 	Shortcuts_Menu(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Change Shortcuts"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(570, 396), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
 
 	~Shortcuts_Menu();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class MyFrame3
-///////////////////////////////////////////////////////////////////////////////
-class MyFrame3 : public wxFrame {
-private:
-
-protected:
-	wxPanel* m_panel2;
-	wxButton* m_button9;
-	wxButton* m_button10;
-	wxButton* m_button11;
-	wxButton* m_button12;
-	wxButton* m_button13;
-	wxButton* m_button14;
-
-public:
-
-	MyFrame3(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(785, 612), long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);
-
-	~MyFrame3();
 
 };
 
