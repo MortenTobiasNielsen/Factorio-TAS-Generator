@@ -2405,9 +2405,10 @@ bool cMain::setup_for_task_group_template_grid() {
 
 		if (row_num != grid_tasks->GetNumberRows()) {
 			update_buildings_grid_from_scratch(0, row_num);
-
+			building_task = task;
 			building_x_cord = x_cord;
 			building_y_cord = y_cord;
+			building_amount_of_buildings = amount_of_buildings;
 
 			if (!check_take_put(item)) {
 				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());	
@@ -2417,7 +2418,14 @@ bool cMain::setup_for_task_group_template_grid() {
 			update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
 
 		} else {
-			return false;
+			building_task = task;
+			building_x_cord = x_cord;
+			building_y_cord = y_cord;
+			building_amount_of_buildings = amount_of_buildings;
+
+			if (!check_take_put(item)) {
+				return false;
+			 }
 		}
 
 		
