@@ -915,6 +915,7 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 		building_building_size = grid_tasks->GetCellValue(row_num, 7);
 
 		int total_rows = grid_tasks->GetNumberRows();
+		std::vector<int> changed_rows = {};
 
 		building_amount_of_buildings = std::to_string(std::min(std::stoi(amount_of_buildings), wxAtoi(grid_tasks->GetCellValue(row_num, 8))));
 
@@ -924,10 +925,11 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 					if (grid_tasks->GetCellValue(j, 0) == "Mine") {
 						break;
 					}
-
-					grid_tasks->SetCellValue(j, 1, x_cord);
-					grid_tasks->SetCellValue(j, 2, y_cord);
-
+					if (std::find(changed_rows.begin(), changed_rows.end(), j) == changed_rows.end()) {
+						grid_tasks->SetCellValue(j, 1, x_cord);
+						grid_tasks->SetCellValue(j, 2, y_cord);
+						changed_rows.push_back(j);
+					}
 				}
 			}
 
@@ -2813,25 +2815,25 @@ std::string cMain::extract_units() {
 		}
 	} else if (rbtn_mine->GetValue() || rbtn_rotate->GetValue() || rbtn_idle->GetValue()) {
 		if (std::stof(units) < 1) {
-			return units = "1";
+			return "1";
 		}
 	} else if (rbtn_limit->GetValue()) {
 		if (std::stof(units) < 0) {
-			return units = "0";
+			return "0";
 		}
 	} else if (rbtn_filter->GetValue()) {
 		if (std::stof(units) < 1) {
-			return units = "1";
+			return "1";
 		} else if (std::stof(units) > 5) {
-			return units = "5";
+			return "5";
 		}
 	} else {
 		if (std::stof(units) < 1) {
-			return units = "All";
+			return "All";
 		}
 	}
 
-	return "1";
+	return units;
 }
 
 std::string cMain::extract_item() {
