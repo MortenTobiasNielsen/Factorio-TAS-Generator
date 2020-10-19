@@ -90,13 +90,13 @@ void build(std::string task, std::string action, std::string x_cord, std::string
 
 	item = check_item_name(item);
 
-	if (orientation == "north") {
+	if (orientation == "North") {
 		orientation = build_directions.north;
-	} else if (orientation == "south") {
+	} else if (orientation == "South") {
 		orientation = build_directions.south;
-	} else if (orientation == "east") {
+	} else if (orientation == "East") {
 		orientation = build_directions.east;
-	} else if (orientation == "west") {
+	} else if (orientation == "West") {
 		orientation = build_directions.west;
 	} else {
 		return;
@@ -119,7 +119,7 @@ void row_build(std::string task, std::string x_cord, std::string y_cord, std::st
 
 void take(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string building, std::string orientation) {
 	if (orientation == "wreck") {
-		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "north");
+		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "North");
 	} else {
 		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
@@ -143,7 +143,7 @@ void row_take(std::string task, std::string x_cord, std::string y_cord, std::str
 
 void put(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string into, std::string building, std::string orientation) {
 	if (orientation == "wreck") {
-		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "north");
+		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "North");
 	} else {
 		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
@@ -239,7 +239,7 @@ void row_filter(std::string task, std::string x_cord, std::string y_cord, std::s
 }
 
 void drop(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item) {
-	check_interact_distance(task, action, x_cord, y_cord, "Drop", "north");
+	check_interact_distance(task, action, x_cord, y_cord, "Drop", "North");
 
 	convert_string(item);
 
@@ -323,7 +323,7 @@ double find_min_distance(float& new_x_cord, float& new_y_cord) {
 std::vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, const float& max_distance) {
 
 	static const float delta_distance = 0.01f;
-	static const float not_to_close = 0.1f;
+	static const float not_to_close = 0.2f;
 
 	float new_x_cord = player_x_cord;
 	float new_y_cord = player_y_cord;
@@ -460,7 +460,7 @@ void check_interact_distance(std::string task, std::string action, std::string x
 	float min_y_edge;
 	float max_y_edge;
 
-	if (orientation == "north" || orientation == "south") {
+	if (orientation == "North" || orientation == "South") {
 		min_x_edge = std::stof(x_cord) - (x_building_size / 2);
 		max_x_edge = std::stof(x_cord) + (x_building_size / 2);
 		min_y_edge = std::stof(y_cord) - (y_building_size / 2);

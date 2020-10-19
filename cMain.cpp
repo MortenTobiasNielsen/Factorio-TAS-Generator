@@ -21,7 +21,6 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(3
 	full_chemical_plant_recipes.insert(full_chemical_plant_recipes.end(), chemical_plant_list.begin(), chemical_plant_list.end());
 	full_chemical_plant_recipes.insert(full_chemical_plant_recipes.end(), chemical_plant_extra_list.begin(), chemical_plant_extra_list.end());
 
-	all_recipes.insert(all_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	all_recipes.insert(all_recipes.end(), full_assembly_recipes.begin(), full_assembly_recipes.end());
 	all_recipes.insert(all_recipes.end(), centrifuge_list.begin(), centrifuge_list.end());
 	all_recipes.insert(all_recipes.end(), full_chemical_plant_recipes.begin(), full_chemical_plant_recipes.end());
@@ -541,6 +540,8 @@ bool cMain::change_row(wxGrid* grid) {
 
 	row_num = *grid->GetSelectedRows().begin();
 
+	setup_for_task_group_template_grid();
+
 	grid_insert_data(row_num, grid);
 
 	background_colour_update(grid, row_num, task);
@@ -870,55 +871,78 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 
 	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
 		wxMessageBox("Please select a row to change", "Selection not valid");
+		event.Skip();
 		return;
 	}
-
-	// This is done to make it available to the setup_for_task_group_template_grid function
+	
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
-	if (setup_for_task_group_template_grid()) {
+	// setup buildingsgrid and ensure the building exists
+	if (task == "Mine" || task == "Recipe" || task == "Build" || task == "Limit" || task == "Priority" || task == "Filter" || task == "Rotate" || task == "Put" || task == "Take" || task == "Launch") {
+		if (row_num != grid_tasks->GetNumberRows()) {
+			update_buildings_grid_from_scratch(0, row_num);
+		}
 
-		// This should be developed so it is able to take change future tasks to take into account the change - especially to move put, take, fuel, etc tasks so they stay aligned with the buildings 
-		if (task == "Build" && grid_tasks->GetCellValue(row_num, 0) == "Build") {
-			std::string saved_x_cord = x_cord;
-			std::string saved_y_cord = y_cord;
+		building_task = task;
+		building_x_cord = x_cord;
+		building_y_cord = y_cord;
+		building_units = units;
+		building_item = item;
+		building_build_orientation = build_orientation;
+		building_direction_to_build = direction_to_build;
+		building_building_size = building_size;
+		building_amount_of_buildings = amount_of_buildings;
+		building_priority_in = priority_in;
+		building_priority_out = priority_out;
 
-			building_x_cord = grid_tasks->GetCellValue(row_num, 1);
-			building_y_cord = grid_tasks->GetCellValue(row_num, 2);
-			building_direction_to_build = grid_tasks->GetCellValue(row_num, 6);
-			building_building_size = grid_tasks->GetCellValue(row_num, 7);
-
-			int total_rows = grid_tasks->GetNumberRows();
-
-			building_amount_of_buildings = std::to_string(std::min(std::stoi(amount_of_buildings), wxAtoi(grid_tasks->GetCellValue(row_num, 8))));
-
-			for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
-				for (int j = row_num + 1; j < total_rows; j++) {
-					if (grid_tasks->GetCellValue(j, 1) == building_x_cord && grid_tasks->GetCellValue(j, 2) == building_y_cord) {
-						if (grid_tasks->GetCellValue(j, 0) == "Mine") {
-							break;
-						}
-
-						grid_tasks->SetCellValue(j, 1, x_cord);
-						grid_tasks->SetCellValue(j, 2, y_cord);
-							
-					}
-				}
-
-				find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
-				find_coordinates(x_cord, y_cord, direction_to_build, building_size);
+		if (!check_buildings_grid() || !setup_for_task_group_template_grid()) {
+			if (row_num != grid_tasks->GetNumberRows()) {
+				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
 			}
-				
-			x_cord = saved_x_cord;
-			y_cord = saved_y_cord;
 
+			event.Skip();
+			return;
+		}
+	}
+
+	if (task == "Build" && grid_tasks->GetCellValue(row_num, 0) == "Build") {
+		std::string saved_x_cord = x_cord;
+		std::string saved_y_cord = y_cord;
+
+		building_x_cord = grid_tasks->GetCellValue(row_num, 1);
+		building_y_cord = grid_tasks->GetCellValue(row_num, 2);
+		building_direction_to_build = grid_tasks->GetCellValue(row_num, 6);
+		building_building_size = grid_tasks->GetCellValue(row_num, 7);
+
+		int total_rows = grid_tasks->GetNumberRows();
+
+		building_amount_of_buildings = std::to_string(std::min(std::stoi(amount_of_buildings), wxAtoi(grid_tasks->GetCellValue(row_num, 8))));
+
+		for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
+			for (int j = row_num + 1; j < total_rows; j++) {
+				if (grid_tasks->GetCellValue(j, 1) == building_x_cord && grid_tasks->GetCellValue(j, 2) == building_y_cord) {
+					if (grid_tasks->GetCellValue(j, 0) == "Mine") {
+						break;
+					}
+
+					grid_tasks->SetCellValue(j, 1, x_cord);
+					grid_tasks->SetCellValue(j, 2, y_cord);
+
+				}
+			}
+
+			find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+			find_coordinates(x_cord, y_cord, direction_to_build, building_size);
 		}
 
-		if (change_row(grid_tasks)) {
-			tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+		x_cord = saved_x_cord;
+		y_cord = saved_y_cord;
+	}
 
-			update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-		}
+	if (change_row(grid_tasks)) {
+		tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+
+		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	}
 
 	event.Skip();
@@ -961,6 +985,8 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 			if (building_task == "Build") {
 				if (wxMessageBox("At least one of the rows selected is a build task - are you sure you want to delete the rows selected?\nAll future tasks associated with the building(s) will be removed to avoid issues.", "The build task(s) you are deleting could be associated with future tasks", wxICON_QUESTION | wxYES_NO, this) != wxYES) {
 					return;
+				} else {
+					break;
 				}
 			}
 		}
@@ -992,6 +1018,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 							grid_tasks->DeleteRows(k);
 							k--;
 							total_rows_inner--;
+							total_rows--;
 						}
 					}
 
@@ -999,6 +1026,8 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 				}
 
 				grid_tasks->DeleteRows(i);
+				i--;
+				total_rows--;
 			} else if (building_task == "Rotate") {
 				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();;
 				y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();;
@@ -2403,32 +2432,9 @@ bool cMain::setup_for_task_group_template_grid() {
 
 	} else if (task == "Take" || task == "Put") {
 
-		if (row_num != grid_tasks->GetNumberRows()) {
-			update_buildings_grid_from_scratch(0, row_num);
-			building_task = task;
-			building_x_cord = x_cord;
-			building_y_cord = y_cord;
-			building_amount_of_buildings = amount_of_buildings;
-
-			if (!check_take_put(item)) {
-				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());	
-				return false;
-			}
-
-			update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
-
-		} else {
-			building_task = task;
-			building_x_cord = x_cord;
-			building_y_cord = y_cord;
-			building_amount_of_buildings = amount_of_buildings;
-
-			if (!check_take_put(item)) {
-				return false;
-			 }
+		if (!check_take_put(item)) {
+			return false;
 		}
-
-		
 
 		if (!check_input(direction_to_build, build_orientations)) {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
@@ -3071,74 +3077,38 @@ bool cMain::check_take_put(const std::string& item) {
 		return true;
 	}
 
-	if(find_building()){
-		if (check_input(building, chest_list)) {
-			if (to_check == "Chest") {
-				return true;
-			}
-
-			wxMessageBox("Only Chest is a valid \"From/Into\" choice for a chest", "Please choose chest");
-			return false;
+	if (check_input(building, chest_list)) {
+		if (to_check == "Chest") {
+			return true;
 		}
 
-		if (to_check == "Fuel") {
-			for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
+		wxMessageBox("Only Chest is a valid \"From/Into\" choice for a chest", "Please choose chest");
+		return false;
+	}
+
+	if (to_check == "Fuel") {
+		for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
+			if (item == *it) {
+				return true;
+			}
+		}
+
+		wxMessageBox("The item chosen is not a valid fuel", "Please select a valid fuel");
+		return false;
+	}
+
+	if (building == "Lab") {
+		if (to_check == "Input") {
+			for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
 				if (item == *it) {
 					return true;
 				}
 			}
 
-			wxMessageBox("The item chosen is not a valid fuel", "Please select a valid fuel");
+			wxMessageBox("The item chosen is not a science pack.\nOnly science packs can be used as input for a lab", "Please choose a science pack");
 			return false;
-		}
 
-		if (building == "Lab") {
-			if (to_check == "Input") {
-				for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
-					if (item == *it) {
-						return true;
-					}
-				}
-
-				wxMessageBox("The item chosen is not a science pack.\nOnly science packs can be used as input for a lab", "Please choose a science pack");
-				return false;
-
-			} else if (to_check == "Modules") {
-				for (auto it = module_list.begin(); it < module_list.end(); it++) {
-					if (item == *it) {
-						return true;
-					}
-				}
-
-				wxMessageBox("The item chosen is not a module", "Please choose a module");
-				return false;
-			}
-
-			wxMessageBox("Only Input and Modules are valid \"From/Into\" choices for a lab", "Please choose input or modules");
-			return false;
-		}
-
-		if (check_input(building, drills_list)) {
-			if (to_check == "Modules") {
-				for (auto it = module_list.begin(); it < module_list.end(); it++) {
-					if (item == *it) {
-						return true;
-					}
-				}
-				wxMessageBox("The item chosen is not a module", "Please choose a module");
-				return false;
-			}
-
-			wxMessageBox("Only Modules is a valid \"From/Into\" choice for a drill/Pump", "Please choose modules");
-			return false;
-		}
-
-		if (to_check == "Input") {
-			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
-			return true;
-		}
-			
-		if (to_check == "Modules") {
+		} else if (to_check == "Modules") {
 			for (auto it = module_list.begin(); it < module_list.end(); it++) {
 				if (item == *it) {
 					return true;
@@ -3148,14 +3118,46 @@ bool cMain::check_take_put(const std::string& item) {
 			wxMessageBox("The item chosen is not a module", "Please choose a module");
 			return false;
 		}
-			
-		if (to_check == "Output") {
-			// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
-			return true;
-		} 
 
+		wxMessageBox("Only Input and Modules are valid \"From/Into\" choices for a lab", "Please choose input or modules");
 		return false;
 	}
+
+	if (check_input(building, drills_list)) {
+		if (to_check == "Modules") {
+			for (auto it = module_list.begin(); it < module_list.end(); it++) {
+				if (item == *it) {
+					return true;
+				}
+			}
+			wxMessageBox("The item chosen is not a module", "Please choose a module");
+			return false;
+		}
+
+		wxMessageBox("Only Modules is a valid \"From/Into\" choice for a drill/Pump", "Please choose modules");
+		return false;
+	}
+
+	if (to_check == "Input") {
+		// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+		return true;
+	}
+			
+	if (to_check == "Modules") {
+		for (auto it = module_list.begin(); it < module_list.end(); it++) {
+			if (item == *it) {
+				return true;
+			}
+		}
+
+		wxMessageBox("The item chosen is not a module", "Please choose a module");
+		return false;
+	}
+			
+	if (to_check == "Output") {
+		// You might want to make some check that the input makes sense - but it might be pretty difficult to do in a good way
+		return true;
+	} 
 	
 	wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
 	return false;
