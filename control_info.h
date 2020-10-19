@@ -36,6 +36,8 @@ local input
 local output
 local type
 local rev
+local duration = 0
+local ticks_mining = 0
 
 local pos_pos = false
 local pos_neg = false
@@ -620,14 +622,24 @@ script.on_event(defines.events.on_tick, function(event)
 				
 				player.update_selected_entity(steps[step][3])
 
-				player.mining_state = {mining = true, target_position = steps[step][3]}
+				player.mining_state = {mining = true, position = steps[step][3]}
+
+				duration = steps[step][4]
+
+				ticks_mining = ticks_mining + 1
+
+				if ticks_mining >= duration then
+					player.mining_state = {mining = false, position = steps[step][3]}
+					step = step + 1
+					mining = 0
+				end
 
 				mining = mining + 1
 				if mining > 5 then
 					if player.character_mining_progress == 0 then
 						debug(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 						debug_state = false
-					else 
+					else
 						mining = 0
 					end
 				end

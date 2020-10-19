@@ -21,7 +21,7 @@ std::string signature(std::string task, std::string action);
 
 void walk(std::string task, std::string action, std::string x_cord, std::string y_cord);
 
-void mining(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string building_name, std::string orientation, bool is_building);
+void mining(std::string task, std::string x_cord, std::string y_cord, std::string duration, std::string building_name, std::string orientation, bool is_building);
 
 void craft(std::string task, std::string amount, std::string item);
 

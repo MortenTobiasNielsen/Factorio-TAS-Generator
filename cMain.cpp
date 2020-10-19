@@ -2961,12 +2961,14 @@ bool cMain::find_building_for_script(int& row) {
 				return true;
 					
 			} else {
-				building_x_cord = x_cord;
-				building_y_cord = y_cord;
+				building_x_cord = grid_tasks->GetCellValue(i, 1);
+				building_y_cord = grid_tasks->GetCellValue(i, 2);
+				building_direction_to_build = grid_tasks->GetCellValue(i, 6);
+				building_building_size = grid_tasks->GetCellValue(i, 7);
 				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
 
-				for (int j = 0; j < std::stoi(building_amount_of_buildings); j++) {
-					find_coordinates(building_x_cord, building_y_cord, direction_to_build, building_size);
+				for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
+					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 
 					if (x_cord == building_x_cord && y_cord == building_y_cord) {
 						building = grid_tasks->GetCellValue(i, 4).ToStdString();

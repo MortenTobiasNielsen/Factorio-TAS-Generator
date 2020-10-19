@@ -65,17 +65,15 @@ void walk(std::string task, std::string action, std::string x_cord, std::string 
 	step += 1;
 };
 
-void mining(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string building_name, std::string orientation, bool is_building) {
+void mining(std::string task, std::string x_cord, std::string y_cord, std::string duration, std::string building_name, std::string orientation, bool is_building) {
 	if (is_building) {
 		check_interact_distance(task, "1", x_cord, y_cord, building_name, orientation);
 	} else {
 		check_mining_distance(task, "1", x_cord, y_cord);
 	}
 
-	for (int i = 0; i < std::stoi(times); i++) {
-		step_list += signature(task, std::to_string(i + 1)) + "\"mine\", {" + x_cord + ", " + y_cord + "}}\n";
-		step += 1;
-	}
+	step_list += signature(task, "1") + "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration + "}\n";
+	step += 1;
 }
 
 void craft(std::string task, std::string amount, std::string item) {
