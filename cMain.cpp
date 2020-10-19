@@ -2055,6 +2055,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			walk(task_number, "1", x_cord, y_cord);
 
 		} else if (task == "Mine") {
+			if (units == "All") {
+				units = 1000;
+			}
+
 			if (find_building_for_script(i)) {
 				mining(task_number, x_cord, y_cord, units, building, build_orientation, true);
 			} else {
@@ -2813,7 +2817,7 @@ std::string cMain::extract_units() {
 		if (std::stof(units) < 0.01) {
 			return "0.01";
 		}
-	} else if (rbtn_mine->GetValue() || rbtn_rotate->GetValue() || rbtn_idle->GetValue()) {
+	} else if (rbtn_rotate->GetValue() || rbtn_idle->GetValue()) {
 		if (std::stof(units) < 1) {
 			return "1";
 		}

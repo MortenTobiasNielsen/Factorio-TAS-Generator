@@ -632,6 +632,7 @@ script.on_event(defines.events.on_tick, function(event)
 					player.mining_state = {mining = false, position = steps[step][3]}
 					step = step + 1
 					mining = 0
+					ticks_mining = 0
 				end
 
 				mining = mining + 1
@@ -691,6 +692,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	step = step + 1
 	mining = 0
+	ticks_mining = 0
 end)
 
 -- Skips the freeplay intro
