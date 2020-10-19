@@ -323,7 +323,7 @@ double find_min_distance(float& new_x_cord, float& new_y_cord) {
 std::vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, const float& max_distance) {
 
 	static const float delta_distance = 0.01f;
-	static const float not_to_close = 0.2f;
+	static const float not_to_close = 0.15f;
 
 	float new_x_cord = player_x_cord;
 	float new_y_cord = player_y_cord;

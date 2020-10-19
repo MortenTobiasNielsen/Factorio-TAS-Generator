@@ -706,10 +706,10 @@ end)
 )control_lua2";
 
 std::string control_GOTLAP = R"control_lua2(
--- Triggered on item crafted
-script.on_event(defines.events.on_player_crafted_item, function(event)
+-- Triggered on item built
+script.on_event(defines.events.on_built_entity, function(event)
 
-	if (event.item_stack.name == "locomotive") then
+	if (event.created_entity.name == "locomotive") then
 		local seconds = player.online_time / 60
 		local minutes = math.floor(player.online_time / 60 / 60)
 		local seconds_remainder = seconds - (minutes * 60)
