@@ -611,6 +611,13 @@ script.on_event(defines.events.on_tick, function(event)
 		if walking.walking == false then
 			if idle > 0 then
 				idle = idle - 1
+				idled = idled + 1
+
+				debug(string.format("Task: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
+
+				if idle == 0 then
+					idled = 0
+				end
 			elseif steps[step][2] == "walk" then
 				destination = {x = steps[step][3][1], y = steps[step][3][2]}
 
