@@ -379,6 +379,8 @@ void cMain::move_row(wxGrid* grid, bool up) {
 
 			grid_insert_data(row_num + row_count, grid);
 
+			background_colour_update(grid, row_num + row_count, grid->GetCellValue(row_num + row_count, 0).ToStdString());
+
 			grid->DeleteRows(row_to_move);
 
 			it1 = tasks_data_to_save.begin();
@@ -406,6 +408,8 @@ void cMain::move_row(wxGrid* grid, bool up) {
 			grid->InsertRows(row_num);
 
 			grid_insert_data(row_num, grid);
+
+			background_colour_update(grid, row_num, grid->GetCellValue(row_num, 0).ToStdString());
 
 			it1 = tasks_data_to_save.begin();
 			it1 += row_to_move;
@@ -452,6 +456,8 @@ void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std:
 		grid_extract_parameters(row_to_move, grid);
 
 		grid_insert_data(row_num + row_count, grid);
+
+		background_colour_update(grid, row_num + row_count, grid->GetCellValue(row_num + row_count, 0).ToStdString());
 
 		grid->DeleteRows(row_to_move);
 
@@ -690,9 +696,14 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 			}
 		} else if (building_task == "Take" || building_task == "Put") {
 			if (building_build_orientation != "Wreck") {
-				if (!find_building()) {
-					wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
-					return;
+				for (int j = 0; j < std::stoi(building_amount_of_buildings); j++) {
+
+					if (!find_building()) {
+						wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
+						return;
+					}
+
+					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 				}
 			}
 		}
@@ -715,55 +726,63 @@ void cMain::update_buildings() {
 }
 
 bool cMain::update_recipe() {
-	if (find_building()) {
-		for (int i = building_row_num; i < (building_row_num + std::stoi(building_amount_of_buildings)); i++) {
-			grid_buildings->SetCellValue(i, 5, building_item);
+	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
+		if (find_building()) {
+			grid_buildings->SetCellValue(building_row_num, 5, building_item);
+		} else {
+			return false;
 		}
-	} else {
-		return false;
+
+		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 	}
 
 	return true;
 }
 
 bool cMain::update_limit() {
-	if (find_building()) {
-		for (int i = building_row_num; i < (building_row_num + std::stoi(building_amount_of_buildings)); i++) {
-			grid_buildings->SetCellValue(i, 4, building_units);
+	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
+		if (find_building()) {
+			grid_buildings->SetCellValue(building_row_num, 4, building_units);
+		} else {
+			return false;
 		}
-	} else {
-		return false;
-	}
 
+		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+	}
 	return true;
 }
 
 bool cMain::update_priority() {
-	if (find_building()) {
-		for (int i = building_row_num; i < (building_row_num + std::stoi(building_amount_of_buildings)); i++) {
-			grid_buildings->SetCellValue(i, 6, building_priority_in);
-			grid_buildings->SetCellValue(i, 7, building_priority_out);
+	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
+		if (find_building()) {
+			grid_buildings->SetCellValue(building_row_num, 6, building_priority_in);
+			grid_buildings->SetCellValue(building_row_num, 7, building_priority_out);
+		} else {
+			return false;
 		}
-	} else {
-		return false;
+
+		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 	}
 
 	return true;
 }
 
 bool cMain::update_filter() {
-	if (find_building()) {
-		for (int i = building_row_num; i < (building_row_num + std::stoi(building_amount_of_buildings)); i++) {
-			grid_buildings->SetCellValue(i, 8, building_item);
+	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
+		if (find_building()) {
+			grid_buildings->SetCellValue(building_row_num, 8, building_item);
+		} else {
+			return false;
 		}
-	} else {
-		return false;
+
+		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 	}
 
 	return true;
 }
 
 bool cMain::Update_rotation() {
+	building_amount_of_buildings = "1";
 	if (find_building()) {
 		building_build_orientation = grid_buildings->GetCellValue(building_row_num, 5);
 
@@ -3001,6 +3020,7 @@ bool cMain::find_building_for_script(int& row) {
 	return false;
 }
 
+// New function
 bool cMain::find_building() {
 	building_row_num = grid_buildings->GetNumberRows();
 
@@ -3008,53 +3028,87 @@ bool cMain::find_building() {
 		return false;
 	}
 
-	int amount_true = 0;
+	if (std::stoi(building_amount_of_buildings) > (grid_buildings->GetNumberRows())) {
+		return false;
+	}
 	
-	for (int i = 0; i < building_row_num; i++) {
+	for (int j = 0; j < building_row_num; j++) {
 
-		if (building_x_cord != grid_buildings->GetCellValue(i, 0) || building_y_cord != grid_buildings->GetCellValue(i, 1)) {
-			if (i == (building_row_num - 1)) {
+		if (building_x_cord != grid_buildings->GetCellValue(j, 0) || building_y_cord != grid_buildings->GetCellValue(j, 1)) {
+			if (j == (building_row_num - 1)) {
 				return false;
 			}
 
 			continue;
 		}
 
-		building = grid_buildings->GetCellValue(i, 2);
-		building_row_num = i;
+		building = grid_buildings->GetCellValue(j, 2);
+		building_row_num = j;
 		break;
 	}
 
-	if (!extra_building_checks()) {
-		return false;
-	}
-
-	amount_true += 1;	
-
-	if (std::stoi(building_amount_of_buildings) > (grid_buildings->GetNumberRows() - building_row_num)) {
-		return false;
-	}
-
-	for (int i = 1; i < std::stoi(building_amount_of_buildings); i++) {
-		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
-
-		if (building_x_cord != grid_buildings->GetCellValue(building_row_num + i, 0) || building_y_cord != grid_buildings->GetCellValue(building_row_num + i, 1)) {
-			return false;
-		}
-
-		if (!extra_building_checks()) {
-			return false;
-		}
-
-		amount_true += 1;
-	}
-
-	if (amount_true == std::stoi(building_amount_of_buildings)) {
+	if (extra_building_checks()) {
 		return true;
 	}
 
 	return false;
 }
+
+
+//bool cMain::find_building() {
+//	building_row_num = grid_buildings->GetNumberRows();
+//
+//	if (building_row_num == 0) {
+//		return false;
+//	}
+//
+//	int amount_true = 0;
+//	
+//	for (int i = 0; i < building_row_num; i++) {
+//
+//		if (building_x_cord != grid_buildings->GetCellValue(i, 0) || building_y_cord != grid_buildings->GetCellValue(i, 1)) {
+//			if (i == (building_row_num - 1)) {
+//				return false;
+//			}
+//
+//			continue;
+//		}
+//
+//		building = grid_buildings->GetCellValue(i, 2);
+//		building_row_num = i;
+//		break;
+//	}
+//
+//	if (!extra_building_checks()) {
+//		return false;
+//	}
+//
+//	amount_true += 1;	
+//
+//	if (std::stoi(building_amount_of_buildings) > (grid_buildings->GetNumberRows() - building_row_num)) {
+//		return false;
+//	}
+//
+//	for (int i = 1; i < std::stoi(building_amount_of_buildings); i++) {
+//		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+//
+//		if (building_x_cord != grid_buildings->GetCellValue(building_row_num + i, 0) || building_y_cord != grid_buildings->GetCellValue(building_row_num + i, 1)) {
+//			return false;
+//		}
+//
+//		if (!extra_building_checks()) {
+//			return false;
+//		}
+//
+//		amount_true += 1;
+//	}
+//
+//	if (amount_true == std::stoi(building_amount_of_buildings)) {
+//		return true;
+//	}
+//
+//	return false;
+//}
 
 bool cMain::extra_building_checks() {
 	std::string building_item_check = "";
@@ -3271,14 +3325,19 @@ bool cMain::check_buildings_grid() {
 		}
 
 	} else if (building_task == "Take" || building_task == "Put") {
-		if (!find_building()) {
-			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-			return false;
+		for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
+			if (!find_building()) {
+				wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				return false;
+			} 
+
+			find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 		}
 
 	} else if (building_task == "Launch") {
 		building_amount_of_buildings = "1";
 		if (!find_building()) {
+			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
