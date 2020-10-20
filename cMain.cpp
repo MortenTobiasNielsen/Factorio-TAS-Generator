@@ -2056,7 +2056,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 		} else if (task == "Mine") {
 			if (units == "All") {
-				units = 1000;
+				units = "1000";
 			}
 
 			if (find_building_for_script(i)) {

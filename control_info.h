@@ -38,6 +38,7 @@ local type
 local rev
 local duration = 0
 local ticks_mining = 0
+local idled = 0
 
 local pos_pos = false
 local pos_neg = false
@@ -608,6 +609,7 @@ script.on_event(defines.events.on_tick, function(event)
 			step = step + 1
 		end
 
+		walking = walk()
 		if walking.walking == false then
 			if idle > 0 then
 				idle = idle - 1
@@ -622,6 +624,7 @@ script.on_event(defines.events.on_tick, function(event)
 				destination = {x = steps[step][3][1], y = steps[step][3][2]}
 
 				find_walking_pattern()
+				walking = walk()
 
 				step = step + 1
 
@@ -665,9 +668,7 @@ script.on_event(defines.events.on_tick, function(event)
 					step = step + 1
 				end
 			end
-		end
-
-		walking = walk()		
+		end	
 
 		player.walking_state = walking
 	end	
