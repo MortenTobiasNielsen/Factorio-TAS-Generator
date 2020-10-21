@@ -1040,7 +1040,23 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 							k--;
 							total_rows_inner--;
 							total_rows--;
-						}
+						} else if (grid_tasks->GetCellValue(k, 0).ToStdString() == "Build") {
+							if (wxAtoi(grid_tasks->GetCellValue(k, 8)) > 1) {
+								x_cord = grid_tasks->GetCellValue(k, 1).ToStdString();
+								y_cord = grid_tasks->GetCellValue(k, 2).ToStdString();
+								direction_to_build = grid_tasks->GetCellValue(k, 6).ToStdString();
+								building_size = grid_tasks->GetCellValue(k, 7).ToStdString();
+								amount_of_buildings = grid_tasks->GetCellValue(k, 8).ToStdString();
+
+								for (int l = 1; l < std::stoi(amount_of_buildings); l++) {
+									find_coordinates(x_cord, y_cord, direction_to_build, building_size);
+									if (x_cord == building_x_cord && y_cord == building_y_cord) {
+										k = total_rows_inner;
+										break;
+									}
+								}
+							}
+						}							
 					}
 
 					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
@@ -1049,6 +1065,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 				grid_tasks->DeleteRows(i);
 				i--;
 				total_rows--;
+				building_row_num--;
 			} else if (building_task == "Rotate") {
 				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();;
 				y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();;
