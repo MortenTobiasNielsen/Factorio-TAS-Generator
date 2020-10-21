@@ -299,7 +299,7 @@ private:
 	void update_template_map();
 
 	bool check_input (std::string& item, const std::vector<std::string>& all_items);
-	bool check_take_put(const std::string& item);
+	bool check_take_put(std::string& item);
 	bool check_buildings_grid();
 
 	bool extra_building_checks();

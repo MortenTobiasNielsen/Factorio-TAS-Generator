@@ -3131,7 +3131,7 @@ bool cMain::extra_building_checks() {
 	return true;
 }
 
-bool cMain::check_take_put(const std::string& item) {
+bool cMain::check_take_put(std::string& item) {
 	std::string to_check = extract_from_into();
 	string_capitalized(to_check);
 
@@ -3149,10 +3149,8 @@ bool cMain::check_take_put(const std::string& item) {
 	}
 
 	if (to_check == "Fuel") {
-		for (auto it = fuel_list.begin(); it < fuel_list.end(); it++) {
-			if (item == *it) {
-				return true;
-			}
+		if (check_input(item, fuel_list)) {
+			return true;
 		}
 
 		wxMessageBox("The item chosen is not a valid fuel", "Please select a valid fuel");
@@ -3161,20 +3159,16 @@ bool cMain::check_take_put(const std::string& item) {
 
 	if (building == "Lab") {
 		if (to_check == "Input") {
-			for (auto it = science_packs.begin(); it < science_packs.end(); it++) {
-				if (item == *it) {
-					return true;
-				}
+			if (check_input(item, science_packs)) {
+				return true;
 			}
 
 			wxMessageBox("The item chosen is not a science pack.\nOnly science packs can be used as input for a lab", "Please choose a science pack");
 			return false;
 
 		} else if (to_check == "Modules") {
-			for (auto it = module_list.begin(); it < module_list.end(); it++) {
-				if (item == *it) {
-					return true;
-				}
+			if (check_input(item, module_list)) {
+				return true;
 			}
 
 			wxMessageBox("The item chosen is not a module", "Please choose a module");
@@ -3187,11 +3181,10 @@ bool cMain::check_take_put(const std::string& item) {
 
 	if (check_input(building, drills_list)) {
 		if (to_check == "Modules") {
-			for (auto it = module_list.begin(); it < module_list.end(); it++) {
-				if (item == *it) {
-					return true;
-				}
+			if (check_input(item, module_list)) {
+				return true;
 			}
+
 			wxMessageBox("The item chosen is not a module", "Please choose a module");
 			return false;
 		}
@@ -3206,10 +3199,8 @@ bool cMain::check_take_put(const std::string& item) {
 	}
 			
 	if (to_check == "Modules") {
-		for (auto it = module_list.begin(); it < module_list.end(); it++) {
-			if (item == *it) {
-				return true;
-			}
+		if (check_input(item, module_list)) {
+			return true;
 		}
 
 		wxMessageBox("The item chosen is not a module", "Please choose a module");
