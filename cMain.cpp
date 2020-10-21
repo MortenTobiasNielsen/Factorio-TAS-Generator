@@ -980,6 +980,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	}
 
 	int counter = 1;
+	
 	row_selections.clear();
 
 	// Find the first block of rows selected - extract the first row and the amount of rows in the block
@@ -993,6 +994,8 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 			row_selections.push_back(std::to_string(block.GetTopRow()) + "," + std::to_string(block.GetBottomRow() - block.GetTopRow() + 1));
 		}
 	}
+
+	int saved_building_row_num = building_row_num;
 
 	// If the last row of the block is also the tasks_grid's last row then the rows are just deleted
 	if ((building_row_num + building_row_count) == grid_tasks->GetNumberRows()) {
@@ -1085,6 +1088,8 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 			}
 		}
 	}
+
+	building_row_num = saved_building_row_num;
 
 	// The row after the deleted row(s) are selected if there were no other row blocks selected
 	if (counter == 1) {
@@ -2994,15 +2999,16 @@ void cMain::find_new_orientation() {
 bool cMain::find_building_for_script(int& row) {
 	for (int i = row - 1; i > -1; i--) {
 		if (grid_tasks->GetCellValue(i, 0) == "Build") {
-			if (x_cord == grid_tasks->GetCellValue(i, 1) || y_cord == grid_tasks->GetCellValue(i, 2)) {
+			building_x_cord = grid_tasks->GetCellValue(i, 1);
+			building_y_cord = grid_tasks->GetCellValue(i, 2);
+
+			if (x_cord == building_x_cord && y_cord == building_y_cord) {
 				building = grid_tasks->GetCellValue(i, 4).ToStdString();
 				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
 
 				return true;
 					
 			} else {
-				building_x_cord = grid_tasks->GetCellValue(i, 1);
-				building_y_cord = grid_tasks->GetCellValue(i, 2);
 				building_direction_to_build = grid_tasks->GetCellValue(i, 6);
 				building_building_size = grid_tasks->GetCellValue(i, 7);
 				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
