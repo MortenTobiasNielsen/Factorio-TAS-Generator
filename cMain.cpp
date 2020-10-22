@@ -11,9 +11,10 @@
 #include <locale>
 #include <codecvt>
 
-cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "EZRaiderz TAS Helper", wxPoint(30, 30), wxSize(1705, 1080)) {
+cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1705, 950)) {
 	SetIcon(icon_xpm);
-	
+	SetLabel(window_title);
+
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
 	

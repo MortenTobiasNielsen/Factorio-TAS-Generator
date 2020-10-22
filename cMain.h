@@ -176,17 +176,17 @@ private:
 
 	std::vector<std::string> row_selections;
 	
-	int row_num;
-	int row_count;
+	long row_num;
+	long row_count;
 
-	int building_row_num;
-	int building_row_count;
+	long building_row_num;
+	long building_row_count;
 
-	int group_row_num;
-	int group_row_count;
+	long group_row_num;
+	long group_row_count;
 
-	int template_row_num;
-	int template_row_count;
+	long template_row_num;
+	long template_row_count;
 
 	int row_to_move;
 
