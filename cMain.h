@@ -119,6 +119,8 @@ protected:
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
 
 private:
+	wxString window_title = "EZRaiderz TAS Helper";
+
 	Shortcuts_Menu* shortcuts = nullptr;
 	dialog_progress_bar_base* dialog_progress_bar = nullptr;
 

@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "Functions.h"
 #include "control_info.h"
+#include "icon.xpm"
 
 #include <fstream>
 #include <sstream>
@@ -10,7 +11,9 @@
 #include <locale>
 #include <codecvt>
 
-cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "Factorio Script Helper", wxPoint(30, 30), wxSize(1705, 1080)) {
+cMain::cMain() : GUI_Base(nullptr, wxID_ANY, "EZRaiderz TAS Helper", wxPoint(30, 30), wxSize(1705, 1080)) {
+	SetIcon(icon_xpm);
+	
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
 	
@@ -2017,6 +2020,10 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		}
 
 		inFile.close();
+
+		std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
+
+		SetLabel(window_title + " - " + file_name);
 
 		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 
