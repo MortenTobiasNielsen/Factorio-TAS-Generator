@@ -953,8 +953,6 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 						grid_tasks->SetCellValue(j, 2, y_cord);
 						changed_rows.push_back(j);
 
-						grid_tasks->GetCellValue(j, 1); // remember to delete
-
 						tasks_data_to_save[j] = (grid_tasks->GetCellValue(j, 0) + ";" + grid_tasks->GetCellValue(j, 1) + ";" + grid_tasks->GetCellValue(j, 2) + ";" + grid_tasks->GetCellValue(j, 3) + ";" + grid_tasks->GetCellValue(j, 4) + ";" + grid_tasks->GetCellValue(j, 5) + ";" + grid_tasks->GetCellValue(j, 6) + ";" + grid_tasks->GetCellValue(j, 7) + ";" + grid_tasks->GetCellValue(j, 8) + ";");
 					}
 				}
