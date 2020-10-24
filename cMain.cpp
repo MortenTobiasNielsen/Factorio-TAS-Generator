@@ -337,7 +337,9 @@ void cMain::reset_to_new_window() {
 	save_file_location = "";
 	generate_code_folder_location = "";
 
-	dialog_progress_bar->Hide();
+	if (dialog_progress_bar) {
+		dialog_progress_bar->Hide();
+	}
 }
 
 bool cMain::check_before_close() {
