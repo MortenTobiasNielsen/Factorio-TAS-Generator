@@ -175,18 +175,18 @@ private:
 	std::vector<std::string> seglist;
 
 	std::vector<std::string> row_selections;
-	
-	long row_num;
-	long row_count;
 
-	long building_row_num;
-	long building_row_count;
+	long long row_num;
+	long long row_count;
 
-	long group_row_num;
-	long group_row_count;
+	long long building_row_num;
+	long long building_row_count;
 
-	long template_row_num;
-	long template_row_count;
+	long long group_row_num;
+	long long group_row_count;
+
+	long long template_row_num;
+	long long template_row_count;
 
 	int row_to_move;
 
