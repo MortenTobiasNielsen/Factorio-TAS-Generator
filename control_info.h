@@ -2,8 +2,6 @@
 #include <string>
 
 std::string info = { R"info(
-	"version": "0.0.1",
-	"title": "EZRaider TAS helper",
 	"author": "DunRaider",
 	"factorio_version": "1.0",
 	"contact": "",

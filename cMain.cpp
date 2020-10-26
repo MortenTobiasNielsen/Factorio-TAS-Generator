@@ -516,7 +516,7 @@ bool cMain::delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std:
 	building_row_count = 0;
 
 	for (auto selection : row_selections) {
-		int pos = selection.find(",");
+		long long pos = selection.find(",");
 
 		row_num = std::stoi(selection.substr(0, pos)) - building_row_count;
 		row_count = std::stoi(selection.substr(pos + 1));
@@ -660,7 +660,7 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 			}
 
 		} else if (building_task == "Priority") {
-			int pos = building_build_orientation.find(",");
+			long long pos = building_build_orientation.find(",");
 
 			building_priority_in = building_build_orientation.substr(0, pos);
 			building_priority_out = building_build_orientation.substr(pos + 2);
@@ -1105,7 +1105,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 	// Otherwise the other selections are selected once more
 		grid_tasks->ClearSelection();
 		for (auto selection : row_selections) {
-			int pos = selection.find(",");
+			long long pos = selection.find(",");
 
 			row_num = std::stoi(selection.substr(0, pos)) - building_row_count;
 			row_count = std::stoi(selection.substr(pos + 1));
@@ -2189,7 +2189,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				return;
 			}
 
-			int pos = build_orientation.find(",");
+			long long pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
@@ -2242,6 +2242,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	saver.open(generate_code_folder_location + "\\info.json");
 	saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+	saver << "\n\t\"version\": \"0.0.1\",";
+	saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
 	saver << info;
 	saver.close();
 
@@ -2709,7 +2711,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 
-		int pos = build_orientation.find(",");
+		long long pos = build_orientation.find(",");
 
 		cmb_input->SetValue(build_orientation.substr(0, pos));
 		cmb_output->SetValue(build_orientation.substr(pos + 2));

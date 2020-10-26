@@ -188,7 +188,7 @@ private:
 	long long template_row_num;
 	long long template_row_count;
 
-	int row_to_move;
+	long long row_to_move;
 
 	bool mine_building_found;
 
