@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Factorio GUI V2.rc
+// Used by EZRaiderz-TAS-Helper.rc
 //
 #define IDI_ICON1                       101
 
