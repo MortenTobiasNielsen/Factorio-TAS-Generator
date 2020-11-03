@@ -149,6 +149,9 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	// Checking steel axe as a goal
 	menu_goals->GetMenuItems()[0]->Check();
+
+	// disabling Change shortcuts
+	menu_shortcuts->GetMenuItems()[0]->Enable(false);
 }
 
 
@@ -340,6 +343,8 @@ void cMain::reset_to_new_window() {
 	if (dialog_progress_bar) {
 		dialog_progress_bar->Hide();
 	}
+
+	SetLabel(window_title);
 }
 
 bool cMain::check_before_close() {
@@ -3498,6 +3503,10 @@ bool cMain::save_file(bool save_as) {
 	}
 
 	myfile.close();
+
+	std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
+
+	SetLabel(window_title + " - " + file_name);
 
 	dialog_progress_bar->set_progress(100);
 	dialog_progress_bar->set_button_enable(true);
