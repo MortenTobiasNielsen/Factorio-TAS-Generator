@@ -274,6 +274,52 @@ void row_pick(std::string task, std::string x_cord, std::string y_cord, std::str
 void tech(std::string task, std::string tech_to_research) {
 	tech_to_research = convert_string(tech_to_research);
 
+	if (tech_to_research == "efficiency-module") {
+		tech_to_research = "effectivity-module";
+	} else if (tech_to_research == "efficiency-module-2") {
+		tech_to_research = "effectivity-module-2";
+	} else if (tech_to_research == "efficiency-module-3") {
+		tech_to_research = "effectivity-module-3";
+	} else if (tech_to_research == "lab-research-speed-1") {
+		tech_to_research = "research-speed-1";
+	} else if (tech_to_research == "lab-research-speed-2") {
+		tech_to_research = "research-speed-2";
+	} else if (tech_to_research == "lab-research-speed-3") {
+		tech_to_research = "research-speed-3";
+	} else if (tech_to_research == "lab-research-speed-4") {
+		tech_to_research = "research-speed-4";
+	} else if (tech_to_research == "lab-research-speed-5") {
+		tech_to_research = "research-speed-5";
+	} else if (tech_to_research == "lab-research-speed-6") {
+		tech_to_research = "research-speed-6";
+	} else if (tech_to_research == "worker-robot-cargo-size-1") {
+		tech_to_research = "worker-robots-storage-1";
+	} else if (tech_to_research == "worker-robot-cargo-size-2") {
+		tech_to_research = "worker-robots-storage-2";
+	} else if (tech_to_research == "worker-robot-cargo-size-3") {
+		tech_to_research = "worker-robots-storage-3";
+	} else if (tech_to_research == "worker-robot-speed-1") {
+		tech_to_research = "worker-robots-speed-1";
+	} else if (tech_to_research == "worker-robot-speed-2") {
+		tech_to_research = "worker-robots-speed-2";
+	} else if (tech_to_research == "worker-robot-speed-3") {
+		tech_to_research = "worker-robots-speed-3";
+	} else if (tech_to_research == "worker-robot-speed-4") {
+		tech_to_research = "worker-robots-speed-4";
+	} else if (tech_to_research == "worker-robot-speed-5") {
+		tech_to_research = "worker-robots-speed-5";
+	} else if (tech_to_research == "worker-robot-speed-6") {
+		tech_to_research = "worker-robots-speed-6";
+	} else if (tech_to_research == "portable-solar-panel") {
+		tech_to_research = "solar-panel-equipment";
+	} else if (tech_to_research == "land-mines") {
+		tech_to_research = "land-mine";
+	} else if (tech_to_research == "nightvision-equipment") {
+		tech_to_research = "night-vision-equipment";
+	} else if (tech_to_research == "personal-battery") {
+		tech_to_research = "battery equipment";
+	}
+
 	step_list += signature(task, "1") + "\"tech\", \"" + tech_to_research + "\"}\n";
 	step += 1;
 }

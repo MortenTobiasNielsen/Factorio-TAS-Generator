@@ -1035,7 +1035,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Grid
 	grid_buildings->CreateGrid(0, 9);
-	grid_buildings->EnableEditing(true);
+	grid_buildings->EnableEditing(false);
 	grid_buildings->EnableGridLines(true);
 	grid_buildings->EnableDragGridSize(false);
 	grid_buildings->SetMargins(0, 0);
