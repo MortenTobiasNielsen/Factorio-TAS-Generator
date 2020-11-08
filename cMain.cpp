@@ -3266,10 +3266,10 @@ bool cMain::check_buildings_grid() {
 
 			mine_building_found = true;
 
-			if (row_num >= total_rows) {
+			if (row_num + 1 >= total_rows) {
 				grid_buildings->DeleteRows(building_row_num);
 			} else {
-				for (int i = row_num; i < total_rows; i++) {
+				for (int i = row_num + 1; i < total_rows; i++) {
 					if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord) {
 						if (grid_tasks->GetCellValue(i, 0).ToStdString() != "Mine" && grid_tasks->GetCellValue(i, 0).ToStdString() != "Build") {
 							if (wxMessageBox("Are you sure you want to remove this building?\nAll future tasks associated with the building will be removed to avoid issues.", "The building you are removing has tasks associated with it", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
