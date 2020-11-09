@@ -29,6 +29,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	all_recipes.insert(all_recipes.end(), centrifuge_list.begin(), centrifuge_list.end());
 	all_recipes.insert(all_recipes.end(), full_chemical_plant_recipes.begin(), full_chemical_plant_recipes.end());
 	all_recipes.insert(all_recipes.end(), oil_refinery_list.begin(), oil_refinery_list.end());
+	all_recipes.insert(all_recipes.end(), furnace_list.begin(), furnace_list.end());
 
 	for (auto s : all_recipes) {
 		recipe_choices.Add(s);
