@@ -296,7 +296,7 @@ static const std::vector<std::string> science_packs = { "Automation science pack
 
 static const std::vector<std::string> furnace_list = { "Iron plate",
 													   "Copper plate",
-													   "Steel",
+													   "Steel plate",
 													   "Stone brick" };
 
 static const std::vector<std::string> assemply_level1_list = { "Engine unit" };
