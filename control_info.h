@@ -197,26 +197,50 @@ local function build()
 		return false
 	end
 
-	if player.can_place_entity{name = item, position = target_position, direction = direction} then
-		if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
-			if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player} then
-				step = step - 1
-				player.remove_item({name = item, count = 1})
-				return true
+	if (item ~= "rail") then
+		if player.can_place_entity{name = item, position = target_position, direction = direction} then
+			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
+				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player} then
+					step = step - 1
+					player.remove_item({name = item, count = 1})
+					return true
+				end
+			else
+				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player"} then
+					player.remove_item({name = item, count = 1})
+					return true
+				end
 			end
-		else
-			if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player"} then
-				player.remove_item({name = item, count = 1})
-				return true
+	
+		else 
+			if not walking.walking then
+				debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
+	
+			return false
 		end
-
-	else 
-		if not walking.walking then
-			debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+	else
+		if player.can_place_entity{name = "straight-rail", position = target_position, direction = direction} then
+			if player.surface.can_fast_replace{name = "straight-rail", position = target_position, direction = direction, force = "player"} then
+				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", fast_replace=true, player=player} then
+					step = step - 1
+					player.remove_item({name = item, count = 1})
+					return true
+				end
+			else
+				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player"} then
+					player.remove_item({name = item, count = 1})
+					return true
+				end
+			end
+	
+		else 
+			if not walking.walking then
+				debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			end
+	
+			return false
 		end
-
-		return false
 	end
 end
 
@@ -573,7 +597,9 @@ local function doStep(steps)
 		return launch()
 	end
 end
+)control_lua1";
 
+std::string control_lua2 = R"control_lua2(
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
 
@@ -671,9 +697,7 @@ script.on_event(defines.events.on_tick, function(event)
 		player.walking_state = walking
 	end	
 end)
-)control_lua1";
 
-std::string control_lua2 = R"control_lua2(
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	if (steps[step][1] == "break" or steps[step][2] == "stop") then
