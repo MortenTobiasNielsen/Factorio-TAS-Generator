@@ -200,13 +200,13 @@ local function build()
 	if (item ~= "rail") then
 		if player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
-				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player} then
+				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
 					step = step - 1
 					player.remove_item({name = item, count = 1})
 					return true
 				end
 			else
-				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player"} then
+				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", raise_built = true} then
 					player.remove_item({name = item, count = 1})
 					return true
 				end
@@ -222,13 +222,13 @@ local function build()
 	else
 		if player.can_place_entity{name = "straight-rail", position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = "straight-rail", position = target_position, direction = direction, force = "player"} then
-				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", fast_replace=true, player=player} then
+				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
 					step = step - 1
 					player.remove_item({name = item, count = 1})
 					return true
 				end
 			else
-				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player"} then
+				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", raise_built = true} then
 					player.remove_item({name = item, count = 1})
 					return true
 				end
@@ -707,7 +707,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 	if event.entity.name == "rock-huge" then
 		event.buffer.clear()
 		player.insert {name = "coal", count = 47}
-		player.insert{ name = "stone", count = 47 }
+		player.insert {name = "stone", count = 47}
 	end
 
 	if event.entity.name == "rock-big" then
@@ -753,9 +753,9 @@ end)
 
 std::string control_GOTLAP = R"control_lua2(
 -- Triggered on item built
-script.on_event(defines.events.on_built_entity, function(event)
+script.on_event(defines.events.script_raised_built , function(event)
 
-	if (event.created_entity.name == "locomotive") then
+	if (event.entity.name == "locomotive") then
 		local seconds = player.online_time / 60
 		local minutes = math.floor(player.online_time / 60 / 60)
 		local seconds_remainder = seconds - (minutes * 60)
