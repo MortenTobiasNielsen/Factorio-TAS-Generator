@@ -2231,26 +2231,29 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	}
 
 	std::ofstream saver;
-	saver.open(generate_code_folder_location + "\\control.lua");
-	saver << control_lua1;
-	saver << control_lua2;
 
-	if (menu_goals->GetMenuItems()[0]->IsChecked()) {
-		saver << control_steel_axe << std::endl;
-	} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
-		saver << control_GOTLAP << std::endl;
-	} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
-		saver << control_any_percent << std::endl;
-	} 
+	if (!menu_script->GetMenuItems()[2]->IsChecked()) {
+		saver.open(generate_code_folder_location + "\\control.lua");
+		saver << control_lua1;
+		saver << control_lua2;
 
-	saver.close();
+		if (menu_goals->GetMenuItems()[0]->IsChecked()) {
+			saver << control_steel_axe << std::endl;
+		} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+			saver << control_GOTLAP << std::endl;
+		} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+			saver << control_any_percent << std::endl;
+		} 
 
-	saver.open(generate_code_folder_location + "\\info.json");
-	saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-	saver << "\n\t\"version\": \"0.0.1\",";
-	saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-	saver << info;
-	saver.close();
+		saver.close();
+
+		saver.open(generate_code_folder_location + "\\info.json");
+		saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+		saver << "\n\t\"version\": \"0.0.2\",";
+		saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+		saver << info;
+		saver.close();
+	}
 
 	saver.open(generate_code_folder_location + "\\steps.lua");
 
@@ -3358,7 +3361,7 @@ bool cMain::check_buildings_grid() {
 
 	} else if (building_task == "Take" || building_task == "Put") {
 		for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
-			if (!find_building()) {
+			if (from_into != "Wreck" && !find_building()) {
 				wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 				return false;
 			} 

@@ -143,6 +143,7 @@ protected:
 	virtual void OnMenuSaveAs(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuExit(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChooseLocation(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnOnlyGenerateSteps(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGenerateScript(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeShortcuts(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnCraftMenuSelected(wxCommandEvent& event) { event.Skip(); }
