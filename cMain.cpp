@@ -2190,14 +2190,14 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 			row_limit(task_number, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Priority") {
-			if (!find_building_for_script(i)) {
-				return;
-			}
-
 			long long pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
+			
+			if (!find_building_for_script(i)) {
+				return;
+			}
 
 			row_priority(task_number, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 		} else if (task == "Filter") {

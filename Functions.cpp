@@ -208,6 +208,9 @@ void priority(std::string task, std::string action, std::string x_cord, std::str
 }
 
 void row_priority(std::string task, std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
+	priority_in = convert_string(priority_in);
+	priority_out = convert_string(priority_out);
+	
 	priority(task, "1", x_cord, y_cord, priority_in, priority_out, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
