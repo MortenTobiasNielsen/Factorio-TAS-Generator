@@ -1385,9 +1385,9 @@ std::string convertWXString(wxString s) {
 
 void cMain::grid_extract_parameters(const int &row, wxGrid* grid) {
 	task = grid->GetCellValue(row, 0).ToStdString();
-	x_cord = grid->GetCellValue(row, 1).ToStdString();
-	y_cord = grid->GetCellValue(row, 2).ToStdString();
-	units = grid->GetCellValue(row, 3).ToStdString();
+	x_cord = convertWXString(grid->GetCellValue(row, 1));
+	y_cord = convertWXString(grid->GetCellValue(row, 2));
+	units = convertWXString(grid->GetCellValue(row, 3));
 	item = grid->GetCellValue(row, 4).ToStdString();
 	build_orientation = grid->GetCellValue(row, 5).ToStdString();
 	direction_to_build = grid->GetCellValue(row, 6).ToStdString();
