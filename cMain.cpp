@@ -2108,7 +2108,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		}
 	}
 
-	for (int i = 0; i < row_num; i++) {
+	for (int i = j; i < row_num; i++) {
 		grid_extract_parameters(i, grid_tasks);
 
 		task_number = std::to_string(i + 1);
