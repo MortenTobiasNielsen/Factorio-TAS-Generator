@@ -2099,6 +2099,14 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 	
+	//First passthrough the list of commands to find the last "Save Split"
+	int j = 0;
+	for (int i = 0; i < row_num; i++) {
+		grid_extract_parameters(i, grid_tasks);
+		if (task == "Save Split") {
+			j = i + 1;
+		}
+	}
 
 	for (int i = 0; i < row_num; i++) {
 		grid_extract_parameters(i, grid_tasks);
