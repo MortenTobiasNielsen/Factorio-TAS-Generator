@@ -14,6 +14,7 @@ public:
 
 	void set_button_enable(bool enabled) {
 		btn_dialog_progress_done->Enable(enabled);
+		btn_dialog_progress_done->SetFocus();
 	};
 
 	void set_text(const std::string& text) {
