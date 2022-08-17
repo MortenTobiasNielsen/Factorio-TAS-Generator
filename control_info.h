@@ -395,6 +395,11 @@ local function tech()
 	return true
 end
 
+local function pause()
+	game.tick_paused = true
+	return true
+end
+
 -- Set the gameplay speed. 1 is standard speed
 local function speed(speed)
 	game.speed = speed
@@ -615,6 +620,14 @@ script.on_event(defines.events.on_tick, function(event)
 
 		if steps[step] == nil or steps[step][1] == "break" then
 			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))		
+			debug_state = false
+			return
+		end
+
+		if (steps[step][2] == "pause") then
+			pause()
+			debug("Script paused")
+			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
 			debug_state = false
 			return
 		end

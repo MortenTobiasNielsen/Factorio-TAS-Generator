@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.9.0 Sep  9 2020)
+// C++ code generated with wxFormBuilder (version Oct 26 2018)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -39,7 +39,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class GUI_Base
 ///////////////////////////////////////////////////////////////////////////////
-class GUI_Base : public wxFrame {
+class GUI_Base : public wxFrame
+{
 private:
 
 protected:
@@ -81,12 +82,14 @@ protected:
 	wxRadioButton* rbtn_craft;
 	wxRadioButton* rbtn_walk;
 	wxRadioButton* rbtn_mine;
+	wxRadioButton* rbtn_start;
 	wxRadioButton* rbtn_build;
 	wxRadioButton* rbtn_recipe;
 	wxRadioButton* rbtn_tech;
 	wxRadioButton* rbtn_limit;
 	wxRadioButton* rbtn_idle;
 	wxRadioButton* rbtn_filter;
+	wxRadioButton* rbtn_pause;
 	wxRadioButton* rbtn_priority;
 	wxRadioButton* rbtn_rotate;
 	wxRadioButton* rbtn_pick_up;
@@ -143,8 +146,8 @@ protected:
 	virtual void OnMenuSaveAs(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuExit(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChooseLocation(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnOnlyGenerateSteps(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGenerateScript(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnOnlyGenerateSteps(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeShortcuts(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnCraftMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnWalkMenuSelected(wxCommandEvent& event) { event.Skip(); }
@@ -178,12 +181,14 @@ protected:
 	virtual void OnCraftChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnWalkChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMineChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnStartChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnBuildChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRecipeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTechChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLimitChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnIdleChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnfilterChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnPauseChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPriorityChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnRotateChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPickUpChosen(wxCommandEvent& event) { event.Skip(); }
@@ -230,7 +235,8 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 /// Class Shortcuts_Menu
 ///////////////////////////////////////////////////////////////////////////////
-class Shortcuts_Menu : public wxFrame {
+class Shortcuts_Menu : public wxFrame
+{
 private:
 
 protected:
@@ -305,7 +311,8 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 /// Class BaseForDialogProgress
 ///////////////////////////////////////////////////////////////////////////////
-class BaseForDialogProgress : public wxDialog {
+class BaseForDialogProgress : public wxDialog
+{
 private:
 
 protected:

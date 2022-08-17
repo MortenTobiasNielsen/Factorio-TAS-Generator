@@ -75,6 +75,8 @@ protected:
 	void OnIdleChosen(wxCommandEvent& event);
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
+	void OnStartChosen(wxCommandEvent& event);
+	void OnPauseChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
 
 
@@ -160,6 +162,8 @@ private:
 		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false, false, false };
 		std::vector<bool> priority = { true, true, false, false, false, false, true, true, false, true, true, true };
 		std::vector<bool> limit = { true, true, true, false, false, false, false, false, false, true, true, true };
+		std::vector<bool> Start = { false, false, true, false, false, false, false, false, false , false, false, false };
+		std::vector<bool> Pause = { false, false, false, false, false, false, false, false, false , false, false, false };
 		std::vector<bool> stop = { false, false, true, false, false, false, false, false, false , false, false, false };
 		std::vector<bool> drop = { true, true, false, true, false, false, false, false, false , true, true, true };
 		std::vector<bool> pick = { true, true, false, false, false, false, false, false, false , true, true, true };

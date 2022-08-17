@@ -331,6 +331,12 @@ void speed(std::string task, std::string speed) {
 	step_list += signature(task, "1") + "\"speed\", " + speed + "}\n";
 	step += 1;
 }
+
+void pause(std::string task) {
+	step_list += signature(task, "1") + "\"pause\"" + "}\n";
+	step += 1;
+}
+
 void stop(std::string task, std::string speed) {
 	step_list += signature(task, "1") + "\"stop\", " + speed + "}\n";
 	step += 1;

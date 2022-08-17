@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.9.0 Sep  9 2020)
+// C++ code generated with wxFormBuilder (version Oct 26 2018)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -9,7 +9,8 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
+GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
+{
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
 	m_menubar1 = new wxMenuBar(0);
@@ -452,6 +453,15 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer6->Add(bSizer12, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bSizer121;
+	bSizer121 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_start = new wxRadioButton(m_panel1, wxID_ANY, wxT("Start"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer121->Add(rbtn_start, 0, wxALL, 5);
+
+
+	bSizer6->Add(bSizer121, 1, wxEXPAND, 5);
+
 
 	bSizer18->Add(bSizer6, 1, wxEXPAND, 5);
 
@@ -512,6 +522,15 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	bSizer7->Add(bSizer65, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bSizer141;
+	bSizer141 = new wxBoxSizer(wxVERTICAL);
+
+	rbtn_pause = new wxRadioButton(m_panel1, wxID_ANY, wxT("Pause"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer141->Add(rbtn_pause, 0, wxALL, 5);
+
+
+	bSizer7->Add(bSizer141, 1, wxEXPAND, 5);
+
 
 	bSizer18->Add(bSizer7, 1, wxEXPAND, 5);
 
@@ -562,6 +581,15 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 
 	bSizer5->Add(bSizer14, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer1411;
+	bSizer1411 = new wxBoxSizer(wxVERTICAL);
+
+
+	bSizer1411->Add(100, 0, 1, wxEXPAND, 5);
+
+
+	bSizer5->Add(bSizer1411, 1, wxEXPAND, 5);
 
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer(wxHORIZONTAL);
@@ -1116,8 +1144,8 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSaveAs), this, menu_file_save_as->GetId());
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuExit), this, menu_file_exit->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChooseLocation), this, menu_script_choose_location->GetId());
-	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnOnlyGenerateSteps), this, menu_script_only_generate_steps->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnGenerateScript), this, menu_script_generate_script->GetId());
+	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnOnlyGenerateSteps), this, menu_script_only_generate_steps->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChangeShortcuts), this, menu_shortcuts_change_shortcuts->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftMenuSelected), this, shortcut_craft->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkMenuSelected), this, shortcut_walk->GetId());
@@ -1151,12 +1179,14 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	rbtn_craft->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
 	rbtn_walk->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkChosen), NULL, this);
 	rbtn_mine->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnMineChosen), NULL, this);
+	rbtn_start->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnStartChosen), NULL, this);
 	rbtn_build->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildChosen), NULL, this);
 	rbtn_recipe->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeChosen), NULL, this);
 	rbtn_tech->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTechChosen), NULL, this);
 	rbtn_limit->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
 	rbtn_idle->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnIdleChosen), NULL, this);
 	rbtn_filter->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
+	rbtn_pause->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPauseChosen), NULL, this);
 	rbtn_priority->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
 	rbtn_pick_up->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
@@ -1192,7 +1222,8 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_buildings->Connect(wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler(GUI_Base::OnBuildingsGridLeftDoubleClick), NULL, this);
 }
 
-GUI_Base::~GUI_Base() {
+GUI_Base::~GUI_Base()
+{
 	// Disconnect Events
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(GUI_Base::OnApplicationClose));
 	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
@@ -1201,12 +1232,14 @@ GUI_Base::~GUI_Base() {
 	rbtn_craft->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnCraftChosen), NULL, this);
 	rbtn_walk->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnWalkChosen), NULL, this);
 	rbtn_mine->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnMineChosen), NULL, this);
+	rbtn_start->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnStartChosen), NULL, this);
 	rbtn_build->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnBuildChosen), NULL, this);
 	rbtn_recipe->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRecipeChosen), NULL, this);
 	rbtn_tech->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTechChosen), NULL, this);
 	rbtn_limit->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLimitChosen), NULL, this);
 	rbtn_idle->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnIdleChosen), NULL, this);
 	rbtn_filter->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnfilterChosen), NULL, this);
+	rbtn_pause->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPauseChosen), NULL, this);
 	rbtn_priority->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPriorityChosen), NULL, this);
 	rbtn_rotate->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnRotateChosen), NULL, this);
 	rbtn_pick_up->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
@@ -1243,7 +1276,8 @@ GUI_Base::~GUI_Base() {
 
 }
 
-Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style) {
+Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxFrame(parent, id, title, pos, size, style)
+{
 	this->SetSizeHints(wxSize(570, 400), wxDefaultSize);
 
 	wxBoxSizer* bSizer50;
@@ -1665,10 +1699,12 @@ Shortcuts_Menu::Shortcuts_Menu(wxWindow* parent, wxWindowID id, const wxString& 
 	this->Centre(wxBOTH);
 }
 
-Shortcuts_Menu::~Shortcuts_Menu() {
+Shortcuts_Menu::~Shortcuts_Menu()
+{
 }
 
-BaseForDialogProgress::BaseForDialogProgress(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, title, pos, size, style) {
+BaseForDialogProgress::BaseForDialogProgress(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style) : wxDialog(parent, id, title, pos, size, style)
+{
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
 	wxBoxSizer* bSizer111;
@@ -1720,7 +1756,8 @@ BaseForDialogProgress::BaseForDialogProgress(wxWindow* parent, wxWindowID id, co
 	btn_dialog_progress_done->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(BaseForDialogProgress::GenerateScriptOnClick), NULL, this);
 }
 
-BaseForDialogProgress::~BaseForDialogProgress() {
+BaseForDialogProgress::~BaseForDialogProgress()
+{
 	// Disconnect Events
 	btn_dialog_progress_done->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(BaseForDialogProgress::GenerateScriptOnClick), NULL, this);
 
