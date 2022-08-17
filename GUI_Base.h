@@ -95,6 +95,7 @@ protected:
 	wxRadioButton* rbtn_pick_up;
 	wxRadioButton* rbtn_drop;
 	wxRadioButton* rbtn_launch;
+	wxRadioButton* rbtn_save;
 	wxRadioButton* rbtn_stop;
 	wxStaticLine* m_staticline4;
 	wxStaticLine* m_staticline14;
@@ -194,6 +195,7 @@ protected:
 	virtual void OnPickUpChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDropChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLaunchChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnSaveChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnStopChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
@@ -321,13 +323,14 @@ protected:
 	wxGauge* progress_bar;
 	wxButton* btn_dialog_progress_done;
 
-	// Virtual event handlers, overide them in your derived class
+	// Virtual event handlers, override them in your derived class
 	virtual void GenerateScriptOnClick(wxCommandEvent& event) { event.Skip(); }
 
 
 public:
 
 	BaseForDialogProgress(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Generating Script"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE);
+
 	~BaseForDialogProgress();
 
 };
