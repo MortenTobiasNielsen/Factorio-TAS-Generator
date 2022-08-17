@@ -56,6 +56,8 @@ void tech(std::string task, std::string tech_to_research);
 
 void speed(std::string task, std::string speed);
 
+void pause(std::string task);
+
 void stop(std::string task, std::string speed);
 
 void launch(std::string task, std::string x_cord, std::string y_cord);

@@ -296,6 +296,18 @@ void cMain::OnDropChosen(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnStartChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.Start);
+	rbtn_start->SetValue(true);
+	event.Skip();
+}
+
+void cMain::OnPauseChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.Pause);
+	rbtn_pause->SetValue(true);
+	event.Skip();
+}
+
 void cMain::OnStopChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.stop);
 	rbtn_stop->SetValue(true);
@@ -567,13 +579,22 @@ bool cMain::change_row(wxGrid* grid) {
 }
 
 void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
+	if (task == "Start") {
+		grid->SetCellBackgroundColour(row, 0, *wxGREEN);
+		return;
+	}
+	
+	if (task == "Game Speed" || task == "Pause") {
+		grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
+		return;
+	}
+
 	if (task == "Stop") {
 		grid->SetCellBackgroundColour(row, 0, *wxRED);
-	} else if (task == "Game Speed") {
-		grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
-	} else {
-		grid->SetCellBackgroundColour(row, 0, *wxWHITE);
+		return;
 	}
+	
+	grid->SetCellBackgroundColour(row, 0, *wxWHITE);
 }
 
 // ensure that the variables are actually what they are supposed to be
@@ -2124,19 +2145,35 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 	
-
+	int j = 0;
 	for (int i = 0; i < row_num; i++) {
+		grid_extract_parameters(i, grid_tasks);
+		if (task == "Start") {
+			j = i + 1;
+		}
+	}
+
+	for (int i = j; i < row_num; i++) {
 		grid_extract_parameters(i, grid_tasks);
 
 		task_number = std::to_string(i + 1);
 
+		if (i > 0 && i % 25 == 0) {
+			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(row_num) * 100.0f - 1);
+			wxYield();
+		}
+
 		if (task == "Game Speed") {
 			speed(task_number, units);
-
-		} else if (task == "Walk") {
+			continue;
+		}
+		
+		if (task == "Walk") {
 			walk(task_number, "1", x_cord, y_cord);
-
-		} else if (task == "Mine") {
+			continue;
+		}
+		
+		if (task == "Mine") {
 			if (units == "All") {
 				units = "1000";
 			}
@@ -2147,27 +2184,39 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				mining(task_number, x_cord, y_cord, units, "", "", false);
 			}
 
-		} else if (task == "Rotate") {
+			continue;
+		}
+		
+		if (task == "Rotate") {
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			rotate(task_number, x_cord, y_cord, units, item, build_orientation);
-
-		} else if (task == "Craft") {
+			continue;
+		}
+		
+		if (task == "Craft") {
 			if (units == "All") {
 				craft(task_number, "-1", item);
 			} else {
 				craft(task_number, units, item);
 			}
-			
-		} else if (task == "Tech") {
+
+			continue;
+		}
+		
+		if (task == "Tech") {
 			tech(task_number, item);
-
-		} else if (task == "Build") {
+			continue;
+		}
+		
+		if (task == "Build") {
 			row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
-
-		} else if (task == "Take") {
+			continue;
+		}
+		
+		if (task == "Take") {
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
@@ -2181,7 +2230,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				row_take(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
 
-		} else if (task == "Put") {
+			continue;
+		}
+		
+		if (task == "Put") {
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
@@ -2195,17 +2247,29 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				row_put(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			}
 
-		} else if (task == "Recipe") {
+			continue;
+		}
+		
+		if (task == "Recipe") {
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			row_recipe(task_number, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
+			continue;
+		}
 
-		} else if (task == "Stop") {
+		if (task == "Pause") {
+			pause(task_number);
+			continue;
+		}
+		
+		if (task == "Stop") {
 			stop(task_number, units);
-
-		} else if (task == "Limit") {
+			continue;
+		}
+		
+		if (task == "Limit") {
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
@@ -2214,7 +2278,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 			row_limit(task_number, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-		} else if (task == "Priority") {
+			continue;
+		}
+		
+		if (task == "Priority") {
 			long long pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
@@ -2225,7 +2292,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 			row_priority(task_number, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-		} else if (task == "Filter") {
+			continue;
+		}
+		
+		if (task == "Filter") {
 			if (!find_building_for_script(i)) {
 				return;
 			}
@@ -2234,24 +2304,32 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 				row_filter(task_number, x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			} else {
 				row_filter(task_number, x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			}			
-		} else if (task == "Drop") {
+			}
+
+			continue;
+		}
+		
+		if (task == "Drop") {
 			row_drop(task_number, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
-
-		} else if (task == "Pick up") {
-			row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
-
-		} else if (task == "Launch") {
-			launch(task_number, x_cord, y_cord);
-
-		} else if (task== "Idle") {
-			idle(task_number, units);
+			continue;
 
 		}
+		
+		if (task == "Pick up") {
+			row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
+			continue;
 
-		if (i > 0 && i % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(i)/ static_cast<float>(row_num)*100.0f - 1);
-			wxYield();
+		}
+		
+		if (task == "Launch") {
+			launch(task_number, x_cord, y_cord);
+			continue;
+
+		}
+		
+		if (task== "Idle") {
+			idle(task_number, units);
+			continue;
 		}
 	}
 
@@ -2485,7 +2563,6 @@ bool cMain::setup_for_task_group_template_grid() {
 		amount_of_buildings = not_relevant;
 
 	} else if (task == "Rotate") {
-
 		item = building;
 
 		direction_to_build = not_relevant;
@@ -2524,7 +2601,6 @@ bool cMain::setup_for_task_group_template_grid() {
 		units = not_relevant;
 
 	} else if (task == "Take" || task == "Put") {
-
 		if (!check_take_put(item)) {
 			return false;
 		}
@@ -2586,8 +2662,26 @@ bool cMain::setup_for_task_group_template_grid() {
 
 		units = not_relevant;
 		build_orientation = not_relevant;
+	} else if (task == "Start") {
+		x_cord = not_relevant;
+		y_cord = not_relevant;
+		item = not_relevant;
+		build_orientation = not_relevant;
+		direction_to_build = not_relevant;
+		building_size = not_relevant;
+		amount_of_buildings = not_relevant;
+
+	} else if (task == "Pause") {
+		x_cord = not_relevant;
+		y_cord = not_relevant;
+		units = not_relevant;
+		item = not_relevant;
+		build_orientation = not_relevant;
+		direction_to_build = not_relevant;
+		building_size = not_relevant;
+		amount_of_buildings = not_relevant;
+
 	} else if (task == "Stop") {
-		
 		x_cord = not_relevant;
 		y_cord = not_relevant;
 		item = not_relevant;
@@ -2723,6 +2817,13 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
 
+	} else if (task == "Start") {
+		txt_units->SetValue(units);
+		OnStartChosen(event);
+
+	} else if (task == "Pause") {
+		OnPauseChosen(event);
+
 	} else if (task == "Stop") {
 		txt_units->SetValue(units);
 		OnStopChosen(event);
@@ -2834,55 +2935,97 @@ std::string cMain::extract_task() {
 	if (rbtn_game_speed->GetValue()) {
 		return "Game Speed";
 
-	} else if (rbtn_walk->GetValue()) {
+	}
+	
+	if (rbtn_walk->GetValue()) {
 		return "Walk";
 
-	} else if (rbtn_mine->GetValue()) {
+	}
+	
+	if (rbtn_mine->GetValue()) {
 		return "Mine";
 
-	} else if (rbtn_rotate->GetValue()) {
+	}
+	
+	if (rbtn_rotate->GetValue()) {
 		return "Rotate";
 
-	} else if (rbtn_craft->GetValue()) {
+	}
+	
+	if (rbtn_craft->GetValue()) {
 		return "Craft";
 
-	} else if (rbtn_build->GetValue()) {
+	}
+	
+	if (rbtn_build->GetValue()) {
 		return "Build";
 
-	} else if (rbtn_take->GetValue()) {
+	}
+	
+	if (rbtn_take->GetValue()) {
 		return "Take";
 
-	} else if (rbtn_put->GetValue()) {
+	}
+	
+	if (rbtn_put->GetValue()) {
 		return "Put";
 
-	} else if (rbtn_tech->GetValue()) {
+	}
+	
+	if (rbtn_tech->GetValue()) {
 		return "Tech";
 
-	} else if (rbtn_recipe->GetValue()) {
+	}
+	
+	if (rbtn_recipe->GetValue()) {
 		return "Recipe";
 
-	} else if (rbtn_limit->GetValue()) {
+	}
+	
+	if (rbtn_limit->GetValue()) {
 		return "Limit";
 
-	} else if (rbtn_idle->GetValue()) {
+	}
+	
+	if (rbtn_idle->GetValue()) {
 		return "Idle";
 
-	} else if (rbtn_filter->GetValue()) {
+	}
+	
+	if (rbtn_filter->GetValue()) {
 		return "Filter";
 
-	} else if (rbtn_priority->GetValue()) {
+	}
+	
+	if (rbtn_priority->GetValue()) {
 		return "Priority";
 
-	} else if (rbtn_pick_up->GetValue()) {
+	}
+	
+	if (rbtn_pick_up->GetValue()) {
 		return "Pick up";
 
-	} else if (rbtn_drop->GetValue()) {
+	}
+	
+	if (rbtn_drop->GetValue()) {
 		return "Drop";
 
-	} else if (rbtn_launch->GetValue()) {
+	}
+	
+	if (rbtn_launch->GetValue()) {
 		return "Launch";
 
-	} else if (rbtn_stop->GetValue()) {
+	}
+
+	if (rbtn_start->GetValue()) {
+		return "Start";
+	}
+
+	if (rbtn_pause->GetValue()) {
+		return "Pause";
+	}
+	
+	if (rbtn_stop->GetValue()) {
 		return "Stop";
 	}
 
@@ -2900,7 +3043,7 @@ std::string cMain::extract_y_cord() {
 std::string cMain::extract_units() {
 	units = std::to_string(wxAtof(txt_units->GetValue()));
 	
-	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue()) {
+	if (rbtn_game_speed->GetValue() || rbtn_start->GetValue() || rbtn_stop->GetValue() ) {
 		if (std::stof(units) < 0.01) {
 			return "0.01";
 		}
