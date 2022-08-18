@@ -263,6 +263,11 @@ void cMain::OnLaunchChosen(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnSaveChosen(wxCommandEvent& event) {
+	setup_paramters(parameter_choices.save);
+	event.Skip();
+}
+
 void cMain::OnPriorityChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.priority);
 	event.Skip();
@@ -2327,6 +2332,11 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 		}
 		
+		if (task == "Save") {
+			save(task_number, units);
+			continue;
+		}
+
 		if (task== "Idle") {
 			idle(task_number, units);
 			continue;
@@ -2730,6 +2740,15 @@ bool cMain::setup_for_task_group_template_grid() {
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
 
+	} else if (task == "Save") {
+		x_cord = not_relevant;
+		y_cord = not_relevant;
+		item = not_relevant;
+		build_orientation = not_relevant;
+		direction_to_build = not_relevant;
+		building_size = not_relevant;
+		amount_of_buildings = not_relevant;
+
 	} else if (task == "Idle") {
 		x_cord = not_relevant;
 		y_cord = not_relevant;
@@ -2885,6 +2904,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		OnLaunchMenuSelected(event);
 		txt_x_cord->SetValue(x_cord);
 		txt_y_cord->SetValue(y_cord);
+	} else if (task == "Save") {
+		OnSaveChosen(event);
+		txt_units->SetValue(units);
 	}
 }
 
@@ -3017,6 +3039,10 @@ std::string cMain::extract_task() {
 
 	}
 
+	if (rbtn_save->GetValue()) {
+		return "Save";
+	}
+
 	if (rbtn_start->GetValue()) {
 		return "Start";
 	}
@@ -3041,6 +3067,7 @@ std::string cMain::extract_y_cord() {
 }
 
 std::string cMain::extract_units() {
+	if (task  == "Save") return txt_units->GetValue().ToStdString();
 	units = std::to_string(wxAtof(txt_units->GetValue()));
 	
 	if (rbtn_game_speed->GetValue() || rbtn_start->GetValue() || rbtn_stop->GetValue() ) {

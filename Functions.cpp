@@ -347,6 +347,11 @@ void launch(std::string task, std::string x_cord, std::string y_cord) {
 	step += 1;
 }
 
+void save(std::string task, std::string nameOfSaveGame) {
+	step_list += signature(task, "1") + "\"save\", \"" + nameOfSaveGame + "\"}\n";
+	step += 1;
+}
+
 void idle(std::string task, std::string amount) {
 	step_list += signature(task, "1") + "\"idle\", " + amount + "}\n";
 	step += 1;
