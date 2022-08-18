@@ -988,7 +988,7 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 
 		for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
 			for (int j = row_num + 1; j < total_rows; j++) {
-				if (grid_tasks->GetCellValue(j, 1) == building_x_cord && grid_tasks->GetCellValue(j, 2) == building_y_cord) {
+				if (compare_grid_cordinates(grid_tasks->GetCellValue(j, 1), building_x_cord, grid_tasks->GetCellValue(j, 2), building_y_cord)) {
 					if (grid_tasks->GetCellValue(j, 0) == "Mine") {
 						break;
 					}
@@ -1083,7 +1083,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 
 					// All of the future tasks on the tasks grid are run through
 					for (int k = (building_row_num + building_row_count); k < total_rows_inner; k++) {
-						if (grid_tasks->GetCellValue(k, 1).ToStdString() == building_x_cord && grid_tasks->GetCellValue(k, 2).ToStdString() == building_y_cord) {
+						if (compare_grid_cordinates(grid_tasks->GetCellValue(k, 1), building_x_cord, grid_tasks->GetCellValue(k, 2), building_y_cord)) {
 							if (grid_tasks->GetCellValue(k, 0).ToStdString() == "Mine" || grid_tasks->GetCellValue(k, 0).ToStdString() == "Build") {
 								break;
 							}
@@ -3206,7 +3206,7 @@ bool cMain::find_building_for_script(int& row) {
 
 		if (grid_tasks->GetCellValue(i, 0) == "Build") {
 
-			if (x_cord == building_x_cord && y_cord == building_y_cord) {
+			if (compare_grid_coordinates(x_cord, building_x_cord, y_cord, building_y_cord)) {
 				building = grid_tasks->GetCellValue(i, 4).ToStdString();
 				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
 
@@ -3217,12 +3217,11 @@ bool cMain::find_building_for_script(int& row) {
 			building_building_size = grid_tasks->GetCellValue(i, 7);
 			building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
 
-			for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
-				find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
-
-				if (x_cord == building_x_cord && y_cord == building_y_cord) {
-					building = grid_tasks->GetCellValue(i, 4).ToStdString();
-					build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
+					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+					if (compare_grid_coordinates(x_cord, building_x_cord, y_cord, building_y_cord)) {
+						building = grid_tasks->GetCellValue(i, 4).ToStdString();
+						build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
 
 					return true;
 				}
@@ -3259,8 +3258,7 @@ bool cMain::find_building() {
 	}
 	
 	for (int j = 0; j < building_row_num; j++) {
-
-		if (building_x_cord != grid_buildings->GetCellValue(j, 0) || building_y_cord != grid_buildings->GetCellValue(j, 1)) {
+		if (! compare_grid_cordinates(grid_buildings->GetCellValue(j, 0), building_x_cord, grid_buildings->GetCellValue(j, 1), building_y_cord)) {
 			if (j == (building_row_num - 1)) {
 				return false;
 			}
