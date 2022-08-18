@@ -597,6 +597,22 @@ void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
 	grid->SetCellBackgroundColour(row, 0, *wxWHITE);
 }
 
+bool cMain::compare_doubles(double a, double b) {
+	return std::abs(a - b) < EPSILON;
+}
+
+bool cMain::compare_grid_cordinates(wxString x1, std::string x2, wxString y1, std::string y2) {
+	return compare_grid_coordinates(x1.ToStdString(), x2, y1.ToStdString(), y2);
+}
+
+bool cMain::compare_grid_coordinates(std::string x1, std::string x2, std::string y1, std::string y2) {
+	return compare_grid_cordinates(std::stod(x1), std::stod(x2), std::stod(y1), std::stod(y2));
+}
+
+bool cMain::compare_grid_cordinates(double x1, double x2, double y1, double y2) {
+	return compare_doubles(x1, x2) && compare_doubles(y1, y2);
+}
+
 // ensure that the variables are actually what they are supposed to be
 void cMain::update_tasks_grid() {
 

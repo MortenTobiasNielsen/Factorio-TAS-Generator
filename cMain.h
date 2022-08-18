@@ -12,6 +12,8 @@
 #include "GUI_Base.h"
 #include "ScriptProgressBar.h"
 
+static const double EPSILON = 0.05; // precision for compare two doubles
+
 class cMain : public GUI_Base {
 public:
 	cMain();
@@ -275,6 +277,11 @@ private:
 	void move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>>& map);
 	bool change_row(wxGrid* grid);
+
+	bool compare_doubles(double a, double b);
+	bool compare_grid_cordinates(wxString x1, std::string x2, wxString y1, std::string y2);
+	bool compare_grid_coordinates(std::string x1, std::string x2, std::string y1, std::string y2);
+	bool compare_grid_cordinates(double x1, double x2, double y1, double y2);
 
 	void update_tasks_grid();
 	void update_buildings_grid();
