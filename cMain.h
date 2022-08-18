@@ -15,7 +15,7 @@
 static const double EPSILON = 0.05; // precision for compare two doubles
 
 class cMain : public GUI_Base {
-	public:
+public:
 	cMain();
 
 protected:
