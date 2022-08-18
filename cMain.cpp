@@ -1384,34 +1384,11 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
-std::string FormatString(wxString s) {
-	int i = s.size() - 1;
-	if (i < 0) {
-		return s.ToStdString();
-	}
-
-	for (i; i > 0; i--) {
-		if (s[i] == '.') {
-			i += 2;
-			break;
-		}
-
-		if (s[i] != '0') {
-			i++;
-			break;
-		}
-	}
-
-	s.erase(i, s.size());
-
-	return s.ToStdString();
-}
-
 void cMain::grid_extract_parameters(const int &row, wxGrid* grid) {
 	task = grid->GetCellValue(row, 0).ToStdString();
-	x_cord = FormatString(grid->GetCellValue(row, 1));
-	y_cord = FormatString(grid->GetCellValue(row, 2));
-	units = FormatString(grid->GetCellValue(row, 3));
+	x_cord = grid->GetCellValue(row, 1).ToStdString();
+	y_cord = grid->GetCellValue(row, 2).ToStdString();
+	units = grid->GetCellValue(row, 3).ToStdString();
 	item = grid->GetCellValue(row, 4).ToStdString();
 	build_orientation = grid->GetCellValue(row, 5).ToStdString();
 	direction_to_build = grid->GetCellValue(row, 6).ToStdString();
@@ -2760,39 +2737,67 @@ bool cMain::setup_for_task_group_template_grid() {
 	return true;
 }
 
+
+std::string FormatString(wxString s) {
+	int i = s.size() - 1;
+	if (i < 0) {
+		return s.ToStdString();
+	}
+
+	for (i; i > 0; i--) {
+		if (s[i] == '.') {
+			i += 2;
+			break;
+		}
+
+		if (s[i] != '0') {
+			i++;
+			break;
+		}
+	}
+
+	s.erase(i, s.size());
+
+	return s.ToStdString();
+}
+
 void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	grid_extract_parameters(row_num, grid);
 
+	std::string x_cord_formatted = FormatString(x_cord);
+	std::string y_cord_formatted = FormatString(y_cord);
+	std::string units_formatted = FormatString(units);
+
 	if (task == "Game Speed") {
 		OnGameSpeedMenuSelected(event);
-		txt_units->SetValue(units);
+		txt_units->SetValue(units_formatted);
 
 	} else if (task == "Walk") {
 		OnWalkMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
 
 	} else if (task == "Mine") {
 		OnMineMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
+		txt_units->SetValue(units_formatted);
 
 	} else if (task == "Rotate") {
 		OnRotateMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
+		txt_units->SetValue(units_formatted);
 
 	} else if (task == "Craft") {
 		OnCraftMenuSelected(event);
-		txt_units->SetValue(units);
+		txt_units->SetValue(units_formatted);
 		cmb_item->SetValue(item);
 
 	} else if (task == "Build") {
 		OnBuildMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
 		cmb_item->SetValue(item);
 		cmb_building_orientation->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2801,9 +2806,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	} else if (task == "Take") {
 		OnTakeMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
+		txt_units->SetValue(units_formatted);
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2812,9 +2817,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	} else if (task == "Put") {
 		OnPutMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
+		txt_units->SetValue(units_formatted);
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2827,37 +2832,37 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	} else if (task == "Recipe") {
 		OnRecipeMenuChosen(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
 
 	} else if (task == "Start") {
-		txt_units->SetValue(units);
+		txt_units->SetValue(units_formatted);
 		OnStartChosen(event);
 
 	} else if (task == "Pause") {
 		OnPauseChosen(event);
 
 	} else if (task == "Stop") {
-		txt_units->SetValue(units);
+		txt_units->SetValue(units_formatted);
 		OnStopChosen(event);
 
 	} else if (task == "Limit") {
 		OnLimitMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
+		txt_units->SetValue(units_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 
 	} else if (task == "Priority") {
 		OnPriorityMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
@@ -2869,9 +2874,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	} else if (task == "Filter") {
 		OnFilterMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
-		txt_units->SetValue(units);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
+		txt_units->SetValue(units_formatted);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
@@ -2879,16 +2884,16 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	} else if (task == "Pick up") {
 		OnPickUpMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 
 	} else if (task == "Drop") {
 		OnDropMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
@@ -2896,15 +2901,15 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	} else if (task == "Idle") {
 		OnIdleMenuSelected(event);
-		txt_units->SetValue(units);
+		txt_units->SetValue(units_formatted);
 
 	} else if (task == "Launch") {
 		OnLaunchMenuSelected(event);
-		txt_x_cord->SetValue(x_cord);
-		txt_y_cord->SetValue(y_cord);
+		txt_x_cord->SetValue(x_cord_formatted);
+		txt_y_cord->SetValue(y_cord_formatted);
 	} else if (task == "Save") {
 		OnSaveChosen(event);
-		txt_units->SetValue(units);
+		txt_units->SetValue(units_formatted);
 	}
 }
 
@@ -3212,8 +3217,8 @@ void cMain::find_new_orientation() {
 
 bool cMain::find_building_for_script(int& row) {
 	for (int i = row - 1; i > -1; i--) {
-		building_x_cord = FormatString(grid_tasks->GetCellValue(i, 1));
-		building_y_cord = FormatString(grid_tasks->GetCellValue(i, 2));
+		building_x_cord = grid_tasks->GetCellValue(i, 1);
+		building_y_cord = grid_tasks->GetCellValue(i, 2);
 
 		if (grid_tasks->GetCellValue(i, 0) == "Build") {
 
