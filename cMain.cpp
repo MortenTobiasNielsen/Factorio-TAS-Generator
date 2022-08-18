@@ -3052,21 +3052,20 @@ bool cMain::find_building_for_script(int& row) {
 				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
 
 				return true;
-					
-			} else {
-				building_direction_to_build = grid_tasks->GetCellValue(i, 6);
-				building_building_size = grid_tasks->GetCellValue(i, 7);
-				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
+			}
 
-				for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
-					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+			building_direction_to_build = grid_tasks->GetCellValue(i, 6);
+			building_building_size = grid_tasks->GetCellValue(i, 7);
+			building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
 
-					if (x_cord == building_x_cord && y_cord == building_y_cord) {
-						building = grid_tasks->GetCellValue(i, 4).ToStdString();
-						build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+			for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
+				find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 
-						return true;
-					}
+				if (x_cord == building_x_cord && y_cord == building_y_cord) {
+					building = grid_tasks->GetCellValue(i, 4).ToStdString();
+					build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+
+					return true;
 				}
 			}
 
