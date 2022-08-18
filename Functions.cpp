@@ -116,8 +116,8 @@ void row_build(std::string task, std::string x_cord, std::string y_cord, std::st
 }
 
 void take(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string building, std::string orientation) {
-	if (orientation == "wreck") {
-		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "North");
+	if (orientation == "Wreck") {
+		check_interact_distance(task, action, x_cord, y_cord, orientation, "North");
 	} else {
 		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
@@ -140,8 +140,8 @@ void row_take(std::string task, std::string x_cord, std::string y_cord, std::str
 }
 
 void put(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string into, std::string building, std::string orientation) {
-	if (orientation == "wreck") {
-		check_interact_distance(task, action, x_cord, y_cord, "Wreck", "North");
+	if (orientation == "Wreck") {
+		check_interact_distance(task, action, x_cord, y_cord, orientation, "North");
 	} else {
 		check_interact_distance(task, action, x_cord, y_cord, building, orientation);
 	}
@@ -507,8 +507,13 @@ void check_construction_distance(std::string task, std::string action, std::stri
 }
 
 void check_interact_distance(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
-	x_building_size = building_size_list.find(building_name)->second[0];
-	y_building_size = building_size_list.find(building_name)->second[1];
+	if (building_name == "Wreck") {
+		x_building_size = 1;
+		y_building_size = 1;
+	} else {
+		x_building_size = building_size_list.find(building_name)->second[0];
+		y_building_size = building_size_list.find(building_name)->second[1];
+	}
 
 	static const float buffer = 0.37f; // this should be set correctly when you get a better understanding of how it is actually calculated in the game
 	static const float max_distance = 10.0f;
