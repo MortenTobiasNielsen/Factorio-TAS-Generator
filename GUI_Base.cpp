@@ -585,8 +585,8 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer1411;
 	bSizer1411 = new wxBoxSizer(wxVERTICAL);
 
-
-	bSizer1411->Add(100, 0, 1, wxEXPAND, 5);
+	rbtn_save = new wxRadioButton(m_panel1, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0);
+	bSizer1411->Add(rbtn_save, 0, wxALL, 5);
 
 
 	bSizer5->Add(bSizer1411, 1, wxEXPAND, 5);
@@ -1192,6 +1192,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	rbtn_pick_up->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
 	rbtn_drop->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
 	rbtn_launch->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
+	rbtn_save->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnSaveChosen), NULL, this);
 	rbtn_stop->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnStopChosen), NULL, this);
 	cmb_choose_group->Connect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnGroupChosen), NULL, this);
 	btn_new_group->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnNewGroupClicked), NULL, this);
@@ -1245,6 +1246,7 @@ GUI_Base::~GUI_Base()
 	rbtn_pick_up->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpChosen), NULL, this);
 	rbtn_drop->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnDropChosen), NULL, this);
 	rbtn_launch->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchChosen), NULL, this);
+	rbtn_save->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnSaveChosen), NULL, this);
 	rbtn_stop->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnStopChosen), NULL, this);
 	cmb_choose_group->Disconnect(wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler(GUI_Base::OnGroupChosen), NULL, this);
 	btn_new_group->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(GUI_Base::OnNewGroupClicked), NULL, this);

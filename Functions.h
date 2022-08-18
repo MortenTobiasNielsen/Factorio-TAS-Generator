@@ -62,6 +62,8 @@ void stop(std::string task, std::string speed);
 
 void launch(std::string task, std::string x_cord, std::string y_cord);
 
+void save(std::string task, std::string nameOfSaveGame);
+
 void idle(std::string task, std::string amount);
 
 void rotate(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation);
