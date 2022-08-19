@@ -53,16 +53,16 @@ local function debug(msg)
 	end
 end
 
-local function save()
-	if not game.is_multiplayer() then
-		debug(string.format("Task: %s, it was not possible to save the game. This feature is only available in multiplayer games.", task[1]))
-		debug_state = false;
-		return false;
+local function save(nameOfSaveGame)
+	if game.is_multiplayer() then
+		debug(string.format("Task: %s, saving game as %s", task[1], nameOfSaveGame))
+		game.server_save(nameOfSaveGame)
+		return true
 	end
 
-	debug(string.format("Task: %s, saving game as %s", task[1], amount))
-	game.server_save(amount)
-	return true
+	debug(string.format("Task: %s, saving game as _autosave-%s", task[1], nameOfSaveGame))
+	game.auto_save(nameOfSaveGame)
+	return true;
 end
 
 -- Check that the entity can be selected and is within reach
@@ -615,9 +615,8 @@ local function doStep(steps)
 	elseif steps[2] == "save" then
 		task_category = "save"
         task = steps[1]
-		amount = steps[3]
 
-		return save()
+		return save(steps[3])
 	end
 end
 )control_lua1";
