@@ -1928,7 +1928,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				}
 
 			} else if (!groups_reached) {
-				if (seglist.size() == 9) {
+				if (seglist.size() == 9 || seglist.size() == 10) {
 					task = seglist[0];
 					x_cord = seglist[1];
 					y_cord = seglist[2];
@@ -3169,10 +3169,6 @@ std::string cMain::extract_y_cord() {
 std::string cMain::extract_units() {
 	float units = wxAtof(txt_units->GetValue());
 	
-	if (units < 0.01 && (rbtn_game_speed->GetValue() || rbtn_start->GetValue() || rbtn_stop->GetValue())) {
-		return "0.01";
-	}
-	
 	if (units < 0 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue())) {
 		return "1";
 	}
@@ -3189,6 +3185,14 @@ std::string cMain::extract_units() {
 		if (units > 5) {
 			return "5";
 		}
+	}
+
+	if (rbtn_game_speed->GetValue() || rbtn_start->GetValue() || rbtn_stop->GetValue()) {
+		if (units < 0.01) {
+			return "0.01";
+		}
+
+		return std::to_string(units);
 	}
 
 	if (units < 1) {
