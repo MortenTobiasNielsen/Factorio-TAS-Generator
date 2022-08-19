@@ -588,8 +588,8 @@ void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
 		grid->SetCellBackgroundColour(row, 0, *wxGREEN);
 		return;
 	}
-	
-	if (task == "Game Speed" || task == "Pause") {
+
+	if (task == "Game Speed" || task == "Pause" || task == "Save") {
 		grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
 		return;
 	}
@@ -598,7 +598,17 @@ void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
 		grid->SetCellBackgroundColour(row, 0, *wxRED);
 		return;
 	}
-	
+
+	if (task == "Build") {
+		grid->SetCellBackgroundColour(row, 0, *wxCYAN);
+		return;
+	}
+
+	if (task == "Craft") {
+		grid->SetCellBackgroundColour(row, 0, *wxLIGHT_GREY);
+		return;
+	}
+
 	grid->SetCellBackgroundColour(row, 0, *wxWHITE);
 }
 
