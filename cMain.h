@@ -164,7 +164,7 @@ private:
 		std::vector<bool> recipe = { true, true, false, true, false, false, false, false, false, true, true, true };
 		std::vector<bool> tech = { false, false, false, false, false, true, false, false, false, false, false, false };
 		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> save = { false, false, true, false, false, false, false, false, false, false, false, false };
+		std::vector<bool> save = { false, false, false, false, false, false, false, false, false, false, false, false };
 		std::vector<bool> priority = { true, true, false, false, false, false, true, true, false, true, true, true };
 		std::vector<bool> limit = { true, true, true, false, false, false, false, false, false, true, true, true };
 		std::vector<bool> Start = { false, false, true, false, false, false, false, false, false , false, false, false };
@@ -217,6 +217,7 @@ private:
 	std::string x_cord;
 	std::string y_cord;
 	std::string units; 
+	std::string comment;
 	std::string item;
 	std::string from_into;
 	std::string tech_to_start;
@@ -239,6 +240,7 @@ private:
 	std::string building_amount_of_buildings;
 	std::string building_priority_in;
 	std::string building_priority_out;
+	std::string building_comment;
 
 	std::string limit;
 	std::string recipe;
@@ -324,6 +326,7 @@ private:
 	std::string extract_x_cord();
 	std::string extract_y_cord();
 	std::string extract_units();
+	std::string extract_comment();
 	std::string extract_item();
 	std::string extract_from_into();
 	std::string extract_tech();
