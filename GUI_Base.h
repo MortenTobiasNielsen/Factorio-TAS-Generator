@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct 26 2018)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -56,6 +56,8 @@ protected:
 	wxTextCtrl* txt_y_cord;
 	wxStaticText* label_units;
 	wxTextCtrl* txt_units;
+	wxStaticText* label_comment;
+	wxTextCtrl* txt_comment;
 	wxStaticText* label_item;
 	wxComboBox* cmb_item;
 	wxStaticText* label_from_into;
@@ -139,7 +141,7 @@ protected:
 	wxPanel* m_panel61;
 	wxGrid* grid_buildings;
 
-	// Virtual event handlers, overide them in your derived class
+	// Virtual event handlers, override them in your derived class
 	virtual void OnApplicationClose(wxCloseEvent& event) { event.Skip(); }
 	virtual void OnMenuNew(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuOpen(wxCommandEvent& event) { event.Skip(); }
@@ -168,6 +170,9 @@ protected:
 	virtual void OnPickUpMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDropMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnLaunchMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnSaveMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnStartMenuSelected(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnPauseMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnAddMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeMenuSelected(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteMenuSelected(wxCommandEvent& event) { event.Skip(); }

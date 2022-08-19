@@ -2473,6 +2473,24 @@ void cMain::OnPickUpMenuSelected(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::OnSaveMenuSelected(wxCommandEvent& event) {
+	rbtn_save->SetValue(true);
+	OnSaveChosen(event);
+	event.Skip();
+}
+
+void cMain::OnStartMenuSelected(wxCommandEvent& event) {
+	rbtn_start->SetValue(true);
+	OnStartChosen(event);
+	event.Skip();
+}
+
+void cMain::OnPauseMenuSelected(wxCommandEvent& event) {
+	rbtn_pause->SetValue(true);
+	OnPauseChosen(event);
+	event.Skip();
+}
+
 void cMain::OnChangeMenuSelected(wxCommandEvent& event) {
 	OnChangeTaskClicked(event);
 	event.Skip();
@@ -2768,30 +2786,44 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	if (task == "Game Speed") {
 		OnGameSpeedMenuSelected(event);
 		txt_units->SetValue(units_formatted);
-
-	} else if (task == "Walk") {
+		
+		return;
+	}
+	
+	if (task == "Walk") {
 		OnWalkMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
-
-	} else if (task == "Mine") {
+		
+		return;
+	}
+	
+	if (task == "Mine") {
 		OnMineMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
 		txt_units->SetValue(units_formatted);
-
-	} else if (task == "Rotate") {
+	
+		return;
+	}
+	if (task == "Rotate") {
 		OnRotateMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
 		txt_units->SetValue(units_formatted);
-
-	} else if (task == "Craft") {
+	
+		return;
+	}
+	
+	if (task == "Craft") {
 		OnCraftMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 		cmb_item->SetValue(item);
-
-	} else if (task == "Build") {
+	
+		return;
+	}
+	
+	if (task == "Build") {
 		OnBuildMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2800,8 +2832,11 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Take") {
+	
+		return;
+	}
+	
+	if (task == "Take") {
 		OnTakeMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2811,8 +2846,11 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Put") {
+	
+		return;
+	}
+	
+	if (task == "Put") {
 		OnPutMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2822,12 +2860,18 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Tech") {
+	
+		return;
+	}
+	
+	if (task == "Tech") {
 		OnTechMenuSelected(event);
 		cmb_tech->SetValue(item);
-
-	} else if (task == "Recipe") {
+	
+		return;
+	}
+	
+	if (task == "Recipe") {
 		OnRecipeMenuChosen(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2835,19 +2879,31 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
-
-	} else if (task == "Start") {
+	
+		return;
+	}
+	
+	if (task == "Start") {
+		OnStartMenuSelected(event);
 		txt_units->SetValue(units_formatted);
-		OnStartChosen(event);
-
-	} else if (task == "Pause") {
-		OnPauseChosen(event);
-
-	} else if (task == "Stop") {
+	
+		return;
+	}
+	
+	if (task == "Pause") {
+		OnPauseMenuSelected(event);
+	
+		return;
+	}
+	
+	if (task == "Stop") {
+		OnStopMenuSelected(event);
 		txt_units->SetValue(units_formatted);
-		OnStopChosen(event);
-
-	} else if (task == "Limit") {
+	
+		return;
+	}
+	
+	if (task == "Limit") {
 		OnLimitMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2855,8 +2911,11 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Priority") {
+	
+		return;
+	}
+	
+	if (task == "Priority") {
 		OnPriorityMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2868,8 +2927,11 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 		cmb_input->SetValue(build_orientation.substr(0, pos));
 		cmb_output->SetValue(build_orientation.substr(pos + 2));
-
-	} else if (task == "Filter") {
+	
+		return;
+	}
+	
+	if (task == "Filter") {
 		OnFilterMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2878,8 +2940,11 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Pick up") {
+	
+		return;
+	}
+	
+	if (task == "Pick up") {
 		OnPickUpMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2887,7 +2952,10 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 
-	} else if (task == "Drop") {
+		return;
+	}
+	
+	if (task == "Drop") {
 		OnDropMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2895,17 +2963,27 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-
-	} else if (task == "Idle") {
+	
+		return;
+	}
+	
+	if (task == "Idle") {
 		OnIdleMenuSelected(event);
 		txt_units->SetValue(units_formatted);
-
-	} else if (task == "Launch") {
+	
+		return;
+	}
+	
+	if (task == "Launch") {
 		OnLaunchMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
-	} else if (task == "Save") {
-		OnSaveChosen(event);
+	
+		return;
+	}
+	
+	if (task == "Save") {
+		OnSaveMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 	}
 }

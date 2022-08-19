@@ -56,6 +56,9 @@ protected:
 	void OnLaunchMenuSelected(wxCommandEvent& event);
 	void OnDropMenuSelected(wxCommandEvent& event);
 	void OnPickUpMenuSelected(wxCommandEvent& event);
+	void OnSaveMenuSelected(wxCommandEvent& event);
+	void OnStartMenuSelected(wxCommandEvent& event);
+	void OnPauseMenuSelected(wxCommandEvent& event);
 
 	// Radio buttons
 	void OnMineChosen(wxCommandEvent& event);
