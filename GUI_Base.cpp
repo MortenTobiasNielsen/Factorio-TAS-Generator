@@ -728,7 +728,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer1191 = new wxBoxSizer(wxVERTICAL);
 
 
-	bSizer1191->Add(120, 0, 1, wxEXPAND, 5);
+	bSizer1191->Add(2, 0, 1, wxEXPAND, 5);
 
 
 	bSizer114->Add(bSizer1191, 0, wxEXPAND, 5);
@@ -742,7 +742,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_group = new wxGrid(m_panel3, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
 
 	// Grid
-	grid_group->CreateGrid(0, 9);
+	grid_group->CreateGrid(0, 10);
 	grid_group->EnableEditing(false);
 	grid_group->EnableGridLines(true);
 	grid_group->EnableDragGridSize(false);
@@ -758,6 +758,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_group->SetColSize(6, 70);
 	grid_group->SetColSize(7, 50);
 	grid_group->SetColSize(8, 50);
+	grid_group->SetColSize(9, 150);
 	grid_group->EnableDragColMove(false);
 	grid_group->EnableDragColSize(false);
 	grid_group->SetColLabelValue(0, wxT("Task"));
@@ -769,6 +770,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_group->SetColLabelValue(6, wxT("Direction"));
 	grid_group->SetColLabelValue(7, wxT("Size"));
 	grid_group->SetColLabelValue(8, wxT("Amount"));
+	grid_group->SetColLabelValue(9, wxT("Comment"));
 	grid_group->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
 
 	// Rows
@@ -779,7 +781,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_group->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_group->SetMinSize(wxSize(715, 2500));
+	grid_group->SetMinSize(wxSize(870, 2500));
 
 	bSizer50->Add(grid_group, 0, wxALL, 5);
 
@@ -801,6 +803,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer103;
 	bSizer103 = new wxBoxSizer(wxVERTICAL);
 
+	bSizer103->SetMinSize(wxSize(612, -1));
 	wxBoxSizer* bSizer126;
 	bSizer126 = new wxBoxSizer(wxHORIZONTAL);
 
@@ -908,7 +911,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_template = new wxGrid(m_panel6, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
 
 	// Grid
-	grid_template->CreateGrid(0, 9);
+	grid_template->CreateGrid(0, 10);
 	grid_template->EnableEditing(false);
 	grid_template->EnableGridLines(true);
 	grid_template->EnableDragGridSize(false);
@@ -924,6 +927,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_template->SetColSize(6, 70);
 	grid_template->SetColSize(7, 50);
 	grid_template->SetColSize(8, 50);
+	grid_template->SetColSize(9, 150);
 	grid_template->EnableDragColMove(false);
 	grid_template->EnableDragColSize(false);
 	grid_template->SetColLabelValue(0, wxT("Task"));
@@ -935,6 +939,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_template->SetColLabelValue(6, wxT("Direction"));
 	grid_template->SetColLabelValue(7, wxT("Size"));
 	grid_template->SetColLabelValue(8, wxT("Amount"));
+	grid_template->SetColLabelValue(9, wxT("Comment"));
 	grid_template->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
 
 	// Rows
@@ -945,7 +950,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_template->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_template->SetMinSize(wxSize(715, 2500));
+	grid_template->SetMinSize(wxSize(870, 2500));
 
 	bSizer502->Add(grid_template, 0, wxALL, 5);
 

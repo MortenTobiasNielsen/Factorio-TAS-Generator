@@ -201,9 +201,11 @@ end
 local function build()
 
 	if player.get_item_count(item) == 0 then
-		if(step > step_reached) then 
-			debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s not available", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
-			step_reached = step
+		if(step > step_reached) then
+			if walking.walking == false then
+				debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s not available", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				step_reached = step
+			end
 		end
 
 		return false

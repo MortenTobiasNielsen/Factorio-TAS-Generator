@@ -11,7 +11,7 @@
 #include <locale>
 #include <codecvt>
 
-cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1705, 950)) {
+cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
 	SetIcon(icon_xpm);
 	SetLabel(window_title);
 
@@ -1408,7 +1408,8 @@ void cMain::grid_extract_parameters(const int &row, wxGrid* grid) {
 	build_orientation = grid->GetCellValue(row, 5).ToStdString();
 	direction_to_build = grid->GetCellValue(row, 6).ToStdString();
 	building_size = grid->GetCellValue(row, 7).ToStdString();
-	amount_of_buildings = grid->GetCellValue(row, 8).ToStdString();;
+	amount_of_buildings = grid->GetCellValue(row, 8).ToStdString();
+	comment = grid->GetCellValue(row, 9).ToStdString();
 }
 
 void cMain::grid_insert_data(const int& row, wxGrid* grid) {
@@ -2815,6 +2816,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		OnWalkMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
+		txt_comment->SetValue(comment);
 		
 		return;
 	}
@@ -2824,7 +2826,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
 		txt_units->SetValue(units_formatted);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	if (task == "Rotate") {
@@ -2832,7 +2835,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
 		txt_units->SetValue(units_formatted);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2840,7 +2844,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		OnCraftMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 		cmb_item->SetValue(item);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2853,7 +2858,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2867,7 +2873,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2881,14 +2888,16 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
 	if (task == "Tech") {
 		OnTechMenuSelected(event);
 		cmb_tech->SetValue(item);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2900,27 +2909,31 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
 	if (task == "Start") {
 		OnStartMenuSelected(event);
 		txt_units->SetValue(units_formatted);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
 	if (task == "Pause") {
 		OnPauseMenuSelected(event);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
 	if (task == "Stop") {
 		OnStopMenuSelected(event);
 		txt_units->SetValue(units_formatted);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2932,7 +2945,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2948,7 +2962,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 		cmb_input->SetValue(build_orientation.substr(0, pos));
 		cmb_output->SetValue(build_orientation.substr(pos + 2));
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2961,7 +2976,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2972,6 +2988,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		txt_comment->SetValue(comment);
 
 		return;
 	}
@@ -2984,14 +3001,16 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_direction_to_build->SetValue(direction_to_build);
 		txt_building_size->SetValue(building_size);
 		txt_amount_of_buildings->SetValue(amount_of_buildings);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
 	if (task == "Idle") {
 		OnIdleMenuSelected(event);
 		txt_units->SetValue(units_formatted);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
@@ -2999,13 +3018,15 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		OnLaunchMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
-	
+		txt_comment->SetValue(comment);
+
 		return;
 	}
 	
 	if (task == "Save") {
 		OnSaveMenuSelected(event);
 		txt_units->SetValue(units_formatted);
+		txt_comment->SetValue(comment);
 	}
 }
 
