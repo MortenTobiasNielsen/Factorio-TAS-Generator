@@ -72,6 +72,8 @@ std::string end_tasks();
 
 void clear_tasks();
 
+void reset_coordinates();
+
 std::string convert_string(std::string input);
 
 void string_capitalized(std::string &string);

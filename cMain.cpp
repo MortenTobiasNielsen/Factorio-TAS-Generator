@@ -2113,6 +2113,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	}
 
 	clear_tasks();
+	reset_coordinates();
 
 	row_num = grid_tasks->GetNumberRows();
 
@@ -2124,17 +2125,13 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	dialog_progress_bar->set_button_enable(false);
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
-	
-	int j = 0;
+
 	for (int i = 0; i < row_num; i++) {
 		grid_extract_parameters(i, grid_tasks);
-		if (task == "Start") {
-			j = i + 1;
-		}
-	}
 
-	for (int i = j; i < row_num; i++) {
-		grid_extract_parameters(i, grid_tasks);
+		if (task == "Start") {
+			clear_tasks();
+		}
 
 		task_number = std::to_string(i + 1);
 
@@ -3070,34 +3067,39 @@ std::string cMain::extract_y_cord() {
 }
 
 std::string cMain::extract_units() {
-	if (task  == "Save") return txt_units->GetValue().ToStdString();
-	units = std::to_string(wxAtof(txt_units->GetValue()));
+	if (task == "Save") {
+		return txt_units->GetValue().ToStdString();
+	}
+
+	float units = wxAtof(txt_units->GetValue());
 	
-	if (rbtn_game_speed->GetValue() || rbtn_start->GetValue() || rbtn_stop->GetValue() ) {
-		if (std::stof(units) < 0.01) {
-			return "0.01";
-		}
-	} else if (rbtn_rotate->GetValue() || rbtn_idle->GetValue()) {
-		if (std::stof(units) < 1) {
+	if (units < 0.01 && (rbtn_game_speed->GetValue() || rbtn_start->GetValue() || rbtn_stop->GetValue())) {
+		return "0.01";
+	}
+	
+	if (units < 0 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue())) {
+		return "1";
+	}
+	
+	if (units < 0 && rbtn_limit->GetValue()) {
+		return "0";
+	}
+	
+	if (rbtn_filter->GetValue()) {
+		if (units < 1) {
 			return "1";
 		}
-	} else if (rbtn_limit->GetValue()) {
-		if (std::stof(units) < 0) {
-			return "0";
-		}
-	} else if (rbtn_filter->GetValue()) {
-		if (std::stof(units) < 1) {
-			return "1";
-		} else if (std::stof(units) > 5) {
+		
+		if (units > 5) {
 			return "5";
-		}
-	} else {
-		if (std::stof(units) < 1) {
-			return "All";
 		}
 	}
 
-	return units;
+	if (units < 1) {
+		return "All";
+	}
+
+	return std::to_string(units);
 }
 
 std::string cMain::extract_item() {

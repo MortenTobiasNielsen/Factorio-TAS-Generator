@@ -582,6 +582,10 @@ std::string end_tasks() {
 void clear_tasks() {
 	step = 1;
 	step_list = "local step = {}\n\n";
+}
+
+void reset_coordinates()
+{
 	player_x_cord = 0.0f;
 	player_y_cord = 0.0f;
 }
