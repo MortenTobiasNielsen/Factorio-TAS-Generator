@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct 26 2018)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -129,6 +129,18 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	shortcut_launch = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Launch")) + wxT('\t') + wxT("Shift+6"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_launch);
 
+	wxMenuItem* shortcut_Save;
+	shortcut_Save = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Save")) + wxT('\t') + wxT("Alt+Q"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_Save);
+
+	wxMenuItem* shortcut_Start;
+	shortcut_Start = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Start")) + wxT('\t') + wxT("Alt+E"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_Start);
+
+	wxMenuItem* shortcut_pause;
+	shortcut_pause = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Pause")) + wxT('\t') + wxT("Alt+R"), wxEmptyString, wxITEM_NORMAL);
+	menu_shortcuts->Append(shortcut_pause);
+
 	wxMenuItem* shortcut_add_task;
 	shortcut_add_task = new wxMenuItem(menu_shortcuts, wxID_ANY, wxString(wxT("Add Task")) + wxT('\t') + wxT("Alt+A"), wxEmptyString, wxITEM_NORMAL);
 	menu_shortcuts->Append(shortcut_add_task);
@@ -192,11 +204,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer23 = new wxBoxSizer(wxHORIZONTAL);
 
 	bSizer23->SetMinSize(wxSize(10, 10));
-	label_x_cord = new wxStaticText(m_panel1, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
+	label_x_cord = new wxStaticText(m_panel1, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
 	label_x_cord->Wrap(-1);
 	bSizer23->Add(label_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_x_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	txt_x_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), 0);
 	bSizer23->Add(txt_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -205,11 +217,11 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer28;
 	bSizer28 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_y_cord = new wxStaticText(m_panel1, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
+	label_y_cord = new wxStaticText(m_panel1, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
 	label_y_cord->Wrap(-1);
 	bSizer28->Add(label_y_cord, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	txt_y_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	txt_y_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), 0);
 	bSizer28->Add(txt_y_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
@@ -218,15 +230,28 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer36;
 	bSizer36 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_units = new wxStaticText(m_panel1, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize(45, -1), wxALIGN_RIGHT);
+	label_units = new wxStaticText(m_panel1, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
 	label_units->Wrap(-1);
 	bSizer36->Add(label_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_units = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(50, -1), 0);
+	txt_units = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), 0);
 	bSizer36->Add(txt_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
 
 	bSizer30->Add(bSizer36, 1, 0, 5);
+
+	wxBoxSizer* bSizer361;
+	bSizer361 = new wxBoxSizer(wxHORIZONTAL);
+
+	label_comment = new wxStaticText(m_panel1, wxID_ANY, wxT("Comment:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
+	label_comment->Wrap(-1);
+	bSizer361->Add(label_comment, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+	txt_comment = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), 0);
+	bSizer361->Add(txt_comment, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
+
+	bSizer30->Add(bSizer361, 1, wxEXPAND, 5);
 
 
 	bSizer37->Add(bSizer30, 0, 0, 5);
@@ -989,7 +1014,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_tasks = new wxGrid(m_panel31, wxID_ANY, wxDefaultPosition, wxSize(-1, -1), 0);
 
 	// Grid
-	grid_tasks->CreateGrid(0, 9);
+	grid_tasks->CreateGrid(0, 10);
 	grid_tasks->EnableEditing(false);
 	grid_tasks->EnableGridLines(true);
 	grid_tasks->EnableDragGridSize(false);
@@ -1005,6 +1030,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_tasks->SetColSize(6, 70);
 	grid_tasks->SetColSize(7, 50);
 	grid_tasks->SetColSize(8, 50);
+	grid_tasks->SetColSize(9, 150);
 	grid_tasks->EnableDragColMove(false);
 	grid_tasks->EnableDragColSize(false);
 	grid_tasks->SetColLabelValue(0, wxT("Task"));
@@ -1016,6 +1042,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	grid_tasks->SetColLabelValue(6, wxT("Direction"));
 	grid_tasks->SetColLabelValue(7, wxT("Size"));
 	grid_tasks->SetColLabelValue(8, wxT("Amount"));
+	grid_tasks->SetColLabelValue(9, wxT("Comment"));
 	grid_tasks->SetColLabelAlignment(wxALIGN_CENTER, wxALIGN_CENTER);
 
 	// Rows
@@ -1026,7 +1053,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	// Cell Defaults
 	grid_tasks->SetDefaultCellAlignment(wxALIGN_LEFT, wxALIGN_TOP);
-	grid_tasks->SetMinSize(wxSize(715, 2500));
+	grid_tasks->SetMinSize(wxSize(870, 2500));
 
 	bSizer501->Add(grid_tasks, 0, wxALL, 5);
 
@@ -1165,6 +1192,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPickUpMenuSelected), this, shortcut_pick_up->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDropMenuSelected), this, shortcut_drop->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnLaunchMenuSelected), this, shortcut_launch->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnSaveMenuSelected), this, shortcut_Save->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnStartMenuSelected), this, shortcut_Start->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnPauseMenuSelected), this, shortcut_pause->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnAddMenuSelected), this, shortcut_add_task->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnChangeMenuSelected), this, shortcut_change_task->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnDeleteMenuSelected), this, shortcut_delete_task->GetId());
