@@ -167,7 +167,7 @@ private:
 		std::vector<bool> save = { false, false, false, false, false, false, false, false, false, false, false, false };
 		std::vector<bool> priority = { true, true, false, false, false, false, true, true, false, true, true, true };
 		std::vector<bool> limit = { true, true, true, false, false, false, false, false, false, true, true, true };
-		std::vector<bool> Start = { false, false, true, false, false, false, false, false, false , false, false, false };
+		std::vector<bool> Start = { false, false, false, false, false, false, false, false, false , false, false, false };
 		std::vector<bool> Pause = { false, false, false, false, false, false, false, false, false , false, false, false };
 		std::vector<bool> stop = { false, false, true, false, false, false, false, false, false , false, false, false };
 		std::vector<bool> drop = { true, true, false, true, false, false, false, false, false , true, true, true };

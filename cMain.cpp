@@ -2686,6 +2686,7 @@ bool cMain::setup_for_task_group_template_grid() {
 	} else if (task == "Start") {
 		x_cord = not_relevant;
 		y_cord = not_relevant;
+		units = not_relevant;
 		item = not_relevant;
 		build_orientation = not_relevant;
 		direction_to_build = not_relevant;
@@ -2916,7 +2917,6 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == "Start") {
 		OnStartMenuSelected(event);
-		txt_units->SetValue(units_formatted);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -3208,7 +3208,7 @@ std::string cMain::extract_units() {
 		}
 	}
 
-	if (rbtn_game_speed->GetValue() || rbtn_start->GetValue() || rbtn_stop->GetValue()) {
+	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue()) {
 		if (units < 0.01) {
 			return "0.01";
 		}
