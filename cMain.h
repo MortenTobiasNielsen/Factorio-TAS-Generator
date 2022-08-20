@@ -60,6 +60,12 @@ protected:
 	void OnStartMenuSelected(wxCommandEvent& event);
 	void OnPauseMenuSelected(wxCommandEvent& event);
 
+	// Auto-close menu items
+	void OnMenuAutoCloseGenerateScriptClicked(wxCommandEvent& event);
+	void OnMenuAutoCloseOpenClicked(wxCommandEvent& event);
+	void OnMenuAutoCloseSaveClicked(wxCommandEvent& event);
+	void OnMenuAutoCloseSaveAsClicked(wxCommandEvent& event);
+
 	// Radio buttons
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
@@ -82,7 +88,6 @@ protected:
 	void OnStartChosen(wxCommandEvent& event);
 	void OnPauseChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
-
 
 	// Task
 	void OnAddTaskClicked(wxCommandEvent& event);
@@ -149,6 +154,11 @@ private:
 
 	std::string no_longer_connected = " is no longer connected with a building.\nPlease reverse the change/move or connect the task again by adding a build task in front of it.";
 	std::string no_longer_connected_heading = "Tasks are no longer aligned correctly";
+
+	bool auto_close_generate_script = true;
+	bool auto_close_open = false;
+	bool auto_close_save = true;
+	bool auto_close_save_as = false;
 
 	const struct parameter_choices_struct {
 		// x-cord, y-cord, units, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings

@@ -49,6 +49,7 @@ protected:
 	wxMenu* menu_script;
 	wxMenu* menu_shortcuts;
 	wxMenu* menu_goals;
+	wxMenu* menu_auto_close;
 	wxPanel* m_panel1;
 	wxStaticText* label_x_cord;
 	wxTextCtrl* txt_x_cord;
@@ -181,6 +182,10 @@ protected:
 	virtual void OnMenuSteelAxeClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuGOTLAPClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAnyPercentClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuAutoCloseGenerateScriptClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuAutoCloseOpenClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuAutoCloseSaveClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuAutoCloseSaveAsClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedChosen(wxCommandEvent& event) { event.Skip(); }

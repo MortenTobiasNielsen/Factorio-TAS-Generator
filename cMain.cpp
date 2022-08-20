@@ -2084,7 +2084,12 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 
 		dialog_progress_bar->set_progress(100);
-		dialog_progress_bar->set_button_enable(true);
+		if (auto_close_open) {
+			dialog_progress_bar->Close();
+		}
+		else {
+			dialog_progress_bar->set_button_enable(true);
+		}
 	}
 
 	event.Skip();
@@ -2368,7 +2373,11 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	saver.close();
 
 	dialog_progress_bar->set_progress(100);
-	dialog_progress_bar->set_button_enable(true);
+	if (auto_close_generate_script) {
+		dialog_progress_bar->Close();
+	} else {
+		dialog_progress_bar->set_button_enable(true);
+	}
 
 	event.Skip();
 }
@@ -2509,6 +2518,27 @@ void cMain::OnStartMenuSelected(wxCommandEvent& event) {
 void cMain::OnPauseMenuSelected(wxCommandEvent& event) {
 	rbtn_pause->SetValue(true);
 	OnPauseChosen(event);
+	event.Skip();
+}
+
+void cMain::OnMenuAutoCloseGenerateScriptClicked(wxCommandEvent& event) {
+	auto_close_generate_script = menu_auto_close->GetMenuItems()[0]->IsChecked();
+	event.Skip();
+}
+
+void cMain::OnMenuAutoCloseOpenClicked(wxCommandEvent& event) {
+	auto_close_open = menu_auto_close->GetMenuItems()[1]->IsChecked();
+	event.Skip();
+}
+
+void cMain::OnMenuAutoCloseSaveClicked(wxCommandEvent& event) {
+	auto_close_save = menu_auto_close->GetMenuItems()[2]->IsChecked();
+
+	event.Skip();
+}
+
+void cMain::OnMenuAutoCloseSaveAsClicked(wxCommandEvent& event) {
+	auto_close_save_as = menu_auto_close->GetMenuItems()[3]->IsChecked();
 	event.Skip();
 }
 
@@ -3838,7 +3868,21 @@ bool cMain::save_file(bool save_as) {
 	SetLabel(window_title + " - " + file_name);
 
 	dialog_progress_bar->set_progress(100);
-	dialog_progress_bar->set_button_enable(true);
+	if (save_as) {
+		if (auto_close_save_as) {
+			dialog_progress_bar->Close();
+		}
+		else {
+			dialog_progress_bar->set_button_enable(true);
+		}
+	} else {
+		if (auto_close_save) {
+			dialog_progress_bar->Close();
+		}
+		else {
+			dialog_progress_bar->set_button_enable(true);
+		}
+	}
 
 	return true;
 }

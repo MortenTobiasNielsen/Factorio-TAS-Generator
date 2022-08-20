@@ -179,6 +179,27 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 
 	m_menubar1->Append(menu_goals, wxT("Goal"));
 
+	menu_auto_close = new wxMenu();
+	wxMenuItem* auto_close_generate_script;
+	auto_close_generate_script = new wxMenuItem(menu_auto_close, wxID_ANY, wxString(wxT("Generate Script")), wxEmptyString, wxITEM_CHECK);
+	menu_auto_close->Append(auto_close_generate_script);
+	auto_close_generate_script->Check(true);
+
+	wxMenuItem* auto_close_open;
+	auto_close_open = new wxMenuItem(menu_auto_close, wxID_ANY, wxString(wxT("Open")), wxEmptyString, wxITEM_CHECK);
+	menu_auto_close->Append(auto_close_open);
+
+	wxMenuItem* auto_close_save;
+	auto_close_save = new wxMenuItem(menu_auto_close, wxID_ANY, wxString(wxT("Save")), wxEmptyString, wxITEM_CHECK);
+	menu_auto_close->Append(auto_close_save);
+	auto_close_save->Check(true);
+
+	wxMenuItem* auto_close_save_as;
+	auto_close_save_as = new wxMenuItem(menu_auto_close, wxID_ANY, wxString(wxT("Save As")), wxEmptyString, wxITEM_CHECK);
+	menu_auto_close->Append(auto_close_save_as);
+
+	m_menubar1->Append(menu_auto_close, wxT("Auto-close"));
+
 	this->SetMenuBar(m_menubar1);
 
 	wxBoxSizer* bSizer1;
@@ -1208,6 +1229,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSteelAxeClicked), this, goal_steelaxe->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuGOTLAPClicked), this, goal_GOTLAP->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAnyPercentClicked), this, goal_any_percent->GetId());
+	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseGenerateScriptClicked), this, auto_close_generate_script->GetId());
+	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseOpenClicked), this, auto_close_open->GetId());
+	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseSaveClicked), this, auto_close_save->GetId());
+	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseSaveAsClicked), this, auto_close_save_as->GetId());
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
 	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
 	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
