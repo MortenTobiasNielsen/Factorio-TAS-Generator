@@ -225,7 +225,11 @@ local function build()
 
 	if (item ~= "rail") then
 		if item_is_tile(item) then
+			if item == "stone-brick" then 
+				player.surface.set_tiles({{position = target_position, name = "stone-path"}})
+            else 
 				player.surface.set_tiles({{position = target_position, name = item}})
+			end
 			player.remove_item({name = item, count = 1})
 			return true
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
