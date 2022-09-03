@@ -763,6 +763,14 @@ script.on_event(defines.events.on_game_created_from_scenario, function()
 	remote.call("freeplay", "set_skip_intro", true)
 
 end)
+
+-- Triggered on script built
+script.on_event(defines.events.script_raised_built, function(event)
+	local entity = event.entity
+	entity.create_build_effect_smoke()
+	entity.surface.play_sound{path="entity-build/"..entity.prototype.name, position=entity.position}
+end)
+
 )control_lua2";
 
 std::string control_steel_axe = R"control_lua2(
