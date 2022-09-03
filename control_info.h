@@ -224,7 +224,11 @@ local function build()
 	end
 
 	if (item ~= "rail") then
-		if player.can_place_entity{name = item, position = target_position, direction = direction} then
+		if item_is_tile(item) then
+				player.surface.set_tiles({{position = target_position, name = item}})
+			player.remove_item({name = item, count = 1})
+			return true
+		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
 					step = step - 1
