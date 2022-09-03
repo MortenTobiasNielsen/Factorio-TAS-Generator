@@ -197,6 +197,18 @@ local function craft()
 	end
 end
 
+local function item_is_tile(item)
+	if item == "stone-brick"
+	or item == "concrete"
+    or item == "hazard-concrete"
+    or item == "refined-concrete"
+    or item == "refined-hazard-concrete"
+    or item == "landfill" then
+        return true
+    end
+    return false
+end
+
 -- Creating buildings
 local function build()
 
