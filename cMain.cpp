@@ -3612,7 +3612,7 @@ bool cMain::check_take_put(std::string& item) {
 		return true;
 	} 
 	
-	wxMessageBox("Building location does not seem to exit.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
+	wxMessageBox("Building location does not seem to exist.\nPlease use exactly the same coordinates as you used to build", "Please use the same coordinates");
 	return false;
 }
 
@@ -3689,7 +3689,7 @@ bool cMain::check_buildings_grid() {
 
 	} else if (building_task == "Recipe") {
 		if (!update_recipe()) {
-			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
@@ -3698,27 +3698,27 @@ bool cMain::check_buildings_grid() {
 
 	} else if (building_task == "Limit") {
 		if (!update_limit()) {
-			wxMessageBox("Building is not a chest or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Ensure that all are chests\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			wxMessageBox("Building is not a chest or location doesn't exist.\n1. Please use exactly the same coordinates as you used to build\n2. Check that you have not removed the building(s)\n3. Ensure that all are chests\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
 	} else if (building_task == "Priority") {
 
 		if (!update_priority()) {
-			wxMessageBox("Building is not a splitter or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			wxMessageBox("Building is not a splitter or location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
 	} else if (building_task == "Filter") {
 		if (!update_filter()) {
-			wxMessageBox("Building is not a splitter, filter inserter or location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters or filter inserters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			wxMessageBox("Building is not a splitter, filter inserter or location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Ensure that all are splitters or filter inserters\n4. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
 	} else if (building_task == "Take" || building_task == "Put") {
 		for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
 			if (from_into != "Wreck" && !find_building()) {
-				wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 				return false;
 			} 
 
@@ -3728,13 +3728,13 @@ bool cMain::check_buildings_grid() {
 	} else if (building_task == "Launch") {
 		building_amount_of_buildings = "1";
 		if (!find_building()) {
-			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
 	} else if (building_task == "Rotate") {
 		if (!Update_rotation()) {
-			wxMessageBox("Building location doesn't exit.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
 
