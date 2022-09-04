@@ -12,7 +12,7 @@ std::string info = { R"info(
 std::string control_lua1 = R"control_lua1(
 local steps = require("steps")
 local debug_state = true
-local run = true
+local run = false
 
 local step = 1
 local step_reached = 0
@@ -851,4 +851,9 @@ script.on_event(defines.events.on_rocket_launched, function(event)
 
 	debug_state = false	
 end)
+)control_lua2";
+
+std::string control_debug = R"control_lua2(
+-- Debug mode
+debug_state = true
 )control_lua2";
