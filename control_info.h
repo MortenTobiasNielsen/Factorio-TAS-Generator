@@ -775,26 +775,38 @@ script.on_event(defines.events.on_tick, function(event)
 	end	
 end)
 
+local function mining_event_replace(event, item_name, amount)
+	local count = event.buffer.get_item_count(item_name)
+	if count < amount then
+		event.buffer.insert({name=item_name, count=amount-count})
+	elseif count > amount then
+		event.buffer.remove({name=item_name, count=count-amount})
+	end --on correct amount do nothing
+end
+
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	if (steps[step][1] == "break" or steps[step][2] == "stop") then
 		return
 	end
-
+	if event.entity.name == "rock-huge" or event.entity.name == "rock-big" or event.entity.name == "sand-rock-big" then
+		debug(string.format("Player mined %s - rock contained coal: %d stone: %d",
+			event.entity.name, 
+			event.buffer.get_item_count("coal"),
+			event.buffer.get_item_count("stone")
+        ))
+	end
 	if event.entity.name == "rock-huge" then
-		event.buffer.clear()
-		player.insert {name = "coal", count = 47}
-		player.insert {name = "stone", count = 47}
+		mining_event_replace(event, "coal", 47)
+		mining_event_replace(event, "stone", 47)
 	end
 
 	if event.entity.name == "rock-big" then
-		event.buffer.clear()
-		player.insert {name = "stone", count = 20}
+		-- do nothing, big rocks are always 20 stone
 	end
 
 	if event.entity.name == "sand-rock-big" then
-		event.buffer.clear()
-		player.insert {name = "stone", count = 20}
+		mining_event_replace(event, "stone", 24)
 	end
 
 	step = step + 1
