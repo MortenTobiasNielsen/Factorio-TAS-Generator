@@ -76,12 +76,12 @@ end
 
 local function save(nameOfSaveGame)
 	if game.is_multiplayer() then
-		debug(string.format("Task: %s, saving game as %s", task[1], nameOfSaveGame))
+		msg(string.format("Task: %s, saving game as %s", task[1], nameOfSaveGame))
 		game.server_save(nameOfSaveGame)
 		return true
 	end
 
-	debug(string.format("Task: %s, saving game as _autosave-%s", task[1], nameOfSaveGame))
+	warning(string.format("Task: %s, saving game as _autosave-%s", task[1], nameOfSaveGame))
 	game.auto_save(nameOfSaveGame)
 	return true;
 end
@@ -93,7 +93,7 @@ local function check_selection_reach()
 
 	if not player_selection then
 		if not walking.walking then
-			debug(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot select entity", task[1], task[2], step, task_category))
+			warning(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot select entity", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -101,7 +101,7 @@ local function check_selection_reach()
 
 	if not player.can_reach_entity(player_selection) then
 		if not walking.walking then
-			debug(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot reach entity", task[1], task[2], step, task_category))
+			warning(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot reach entity", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -116,7 +116,7 @@ local function check_inventory()
 
 	if not target_inventory then
 		if not walking.walking then
-			debug(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot get entity inventory", task[1], task[2], step, task_category))
+			warning(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot get entity inventory", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -145,7 +145,7 @@ local function put()
 	end
 
     if amount == 0 then
-		debug(string.format("Task: %s, Action: %s, Step: %d - Put: Nothing to put", task[1], task[2], step))
+		warning(string.format("Task: %s, Action: %s, Step: %d - Put: Nothing to put", task[1], task[2], step))
 		return true
 	end
 
@@ -153,7 +153,7 @@ local function put()
 	amount = target_inventory.insert{name=item, count=amount}
 
 	if amount == 0 then
-		debug(string.format("Task: %s, Action: %s, Step: %d - Put: Entity is already full", task[1], task[2], step))
+		warning(string.format("Task: %s, Action: %s, Step: %d - Put: Entity is already full", task[1], task[2], step))
 		return true
 	end
 
@@ -181,7 +181,7 @@ local function take()
 	end
 
 	if amount == 0 then
-		debug(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
+		warning(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
 
@@ -189,7 +189,7 @@ local function take()
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
-		debug(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
+		warning(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
 
@@ -212,7 +212,7 @@ local function craft()
 		return true
     else
         if(step > step_reached) then 
-            debug(string.format("Task: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+            warning(string.format("Task: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
             step_reached = step
 		end
 		
@@ -238,7 +238,7 @@ local function build()
 	if player.get_item_count(item) == 0 then
 		if(step > step_reached) then
 			if walking.walking == false then
-				debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s not available", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s not available", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 				step_reached = step
 			end
 		end
@@ -271,7 +271,7 @@ local function build()
 	
 		else 
 			if not walking.walking then
-				debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
 	
 			return false
@@ -293,7 +293,7 @@ local function build()
 	
 		else 
 			if not walking.walking then
-				debug(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
 	
 			return false
@@ -449,6 +449,7 @@ end
 
 local function tech()
 	player.force.add_research(item)
+    msg(string.format("Add research %s", item))
 	return true
 end
 
@@ -460,6 +461,7 @@ end
 -- Set the gameplay speed. 1 is standard speed
 local function speed(speed)
 	game.speed = speed
+    msg(string.format("Changed game speed to %s", speed))
 	return true
 end
 
@@ -747,7 +749,7 @@ script.on_event(defines.events.on_tick, function(event)
 				mining = mining + 1
 				if mining > 5 then
 					if player.character_mining_progress == 0 then
-						debug(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+						warning(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 						debug_state = false
 					else
 						mining = 0
