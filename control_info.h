@@ -48,9 +48,29 @@ local neg_neg = false
 local drop_item
 local drop_position
 
+--Print message intended for viewers
+local function msg(msg) 
+    player.print(msg)
+end
+
+--Print debug message about what the tas is doing
 local function debug(msg)
 	if debug_state then
 		player.print(msg)
+        player.print(string.format(
+            "Seconds: %s, tick: %s, player position [%d, %d]",
+            game.tick / 60,
+            game.tick,
+            player.position.x,
+            player.position.y
+	))
+	end
+end
+
+--Print warning in case of errors in tas programming
+local function warning(msg)
+    if debug_state then
+		player.print(msg, {r=1, g=1}) -- print warnings in yellow
 	end
 end
 
