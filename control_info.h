@@ -197,6 +197,18 @@ local function craft()
 	end
 end
 
+local function item_is_tile(item)
+	if item == "stone-brick"
+	or item == "concrete"
+    or item == "hazard-concrete"
+    or item == "refined-concrete"
+    or item == "refined-hazard-concrete"
+    or item == "landfill" then
+        return true
+    end
+    return false
+end
+
 -- Creating buildings
 local function build()
 
@@ -212,7 +224,15 @@ local function build()
 	end
 
 	if (item ~= "rail") then
-		if player.can_place_entity{name = item, position = target_position, direction = direction} then
+		if item_is_tile(item) then
+			if item == "stone-brick" then 
+				player.surface.set_tiles({{position = target_position, name = "stone-path"}})
+            else 
+				player.surface.set_tiles({{position = target_position, name = item}})
+			end
+			player.remove_item({name = item, count = 1})
+			return true
+		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
 					step = step - 1
