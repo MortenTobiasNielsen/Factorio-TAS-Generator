@@ -129,6 +129,7 @@ local function put()
 		return true
 	end
 
+	player.play_sound{path="utility/inventory_move"}
 	amount = target_inventory.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -164,6 +165,7 @@ local function take()
 		return true
 	end
 
+	player.play_sound{path="utility/inventory_move"}
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -198,6 +200,18 @@ local function craft()
 	end
 end
 
+local function item_is_tile(item)
+	if item == "stone-brick"
+	or item == "concrete"
+    or item == "hazard-concrete"
+    or item == "refined-concrete"
+    or item == "refined-hazard-concrete"
+    or item == "landfill" then
+        return true
+    end
+    return false
+end
+
 -- Creating buildings
 local function build()
 
@@ -213,7 +227,15 @@ local function build()
 	end
 
 	if (item ~= "rail") then
-		if player.can_place_entity{name = item, position = target_position, direction = direction} then
+		if item_is_tile(item) then
+			if item == "stone-brick" then 
+				player.surface.set_tiles({{position = target_position, name = "stone-path"}})
+            else 
+				player.surface.set_tiles({{position = target_position, name = item}})
+			end
+			player.remove_item({name = item, count = 1})
+			return true
+		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
 					step = step - 1
@@ -771,6 +793,14 @@ script.on_event(defines.events.on_console_chat, function(event)
 		run = false
 	end
 end)
+
+-- Triggered on script built
+script.on_event(defines.events.script_raised_built, function(event)
+	local entity = event.entity
+	entity.create_build_effect_smoke()
+	entity.surface.play_sound{path="entity-build/"..entity.prototype.name, position=entity.position}
+end)
+
 )control_lua2";
 
 std::string control_steel_axe = R"control_lua2(
