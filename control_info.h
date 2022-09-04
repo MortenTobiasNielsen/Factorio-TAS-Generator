@@ -12,6 +12,7 @@ std::string info = { R"info(
 std::string control_lua1 = R"control_lua1(
 local steps = require("steps")
 local debug_state = true
+local run = true
 
 local step = 1
 local step_reached = 0
@@ -626,7 +627,7 @@ end
 std::string control_lua2 = R"control_lua2(
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
-
+	if not run then return end
     if not player then 
 		player = game.players[1]
 		player_position = player.position
@@ -762,6 +763,13 @@ script.on_event(defines.events.on_game_created_from_scenario, function()
 
 	remote.call("freeplay", "set_skip_intro", true)
 
+end)
+
+--release tas on writing "release" in console
+script.on_event(defines.events.on_console_chat, function(event)
+	if event.message and event.message == "release" then
+		run = false
+	end
 end)
 )control_lua2";
 
