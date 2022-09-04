@@ -128,6 +128,7 @@ local function put()
 		return true
 	end
 
+	player.play_sound{path="utility/inventory_move"}
 	amount = target_inventory.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -163,6 +164,7 @@ local function take()
 		return true
 	end
 
+	player.play_sound{path="utility/inventory_move"}
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
