@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
+// C++ code generated with wxFormBuilder (version 3.10.1-234-gd93c9fc0)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -182,6 +182,7 @@ protected:
 	virtual void OnMenuSteelAxeClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuGOTLAPClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAnyPercentClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnMenuDebugClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAutoCloseGenerateScriptClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAutoCloseOpenClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAutoCloseSaveClicked(wxCommandEvent& event) { event.Skip(); }

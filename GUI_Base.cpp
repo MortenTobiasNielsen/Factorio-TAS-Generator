@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
+// C++ code generated with wxFormBuilder (version 3.10.1-234-gd93c9fc0)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -176,6 +176,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxMenuItem* goal_any_percent;
 	goal_any_percent = new wxMenuItem(menu_goals, wxID_ANY, wxString(wxT("Any %")), wxEmptyString, wxITEM_RADIO);
 	menu_goals->Append(goal_any_percent);
+
+	wxMenuItem* goal_debug;
+	goal_debug = new wxMenuItem(menu_goals, wxID_ANY, wxString(wxT("Debug")), wxEmptyString, wxITEM_RADIO);
+	menu_goals->Append(goal_debug);
 
 	m_menubar1->Append(menu_goals, wxT("Goal"));
 
@@ -1229,6 +1233,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuSteelAxeClicked), this, goal_steelaxe->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuGOTLAPClicked), this, goal_GOTLAP->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAnyPercentClicked), this, goal_any_percent->GetId());
+	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuDebugClicked), this, goal_debug->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseGenerateScriptClicked), this, auto_close_generate_script->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseOpenClicked), this, auto_close_open->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseSaveClicked), this, auto_close_save->GetId());
