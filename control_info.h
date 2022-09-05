@@ -887,6 +887,128 @@ script.on_event(defines.events.on_rocket_launched, function(event)
 end)
 )control_lua2";
 
+std::string settings = R"settings_lua(local t = {
+  basic_materials = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"iron-plate","copper-plate","copper-cable","electronic-circuit","iron-gear-wheel","iron-ore","copper-ore","stone","coal","wood"),
+  gotlap = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"steel-plate","iron-stick","engine-unit","automation-science-pack","logistic-science-pack","rail","locomotive","rail-signal","rail-chain-signal","train-stop"),
+  basic_logistics = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"transport-belt","underground-belt","splitter","inserter","long-handed-inserter","fast-inserter","burner-inserter","filter-inserter","stack-inserter","stack-filter-inserter"),
+  basic_construction = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"burner-mining-drill","stone-furnace","electric-mining-drill","assembling-machine-1","lab","boiler","steam-engine","offshore-pump","pipe","pipe-to-ground"),
+  none = ""
+}
+
+data:extend(
+{
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-1",
+    setting_type = "runtime-global",
+    default_value = t.basic_materials,
+    allow_blank = true,
+    order = "q1",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-2",
+    setting_type = "runtime-global",
+    default_value = t.gotlap,
+    allow_blank = true,
+    order = "q2",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-3",
+    setting_type = "runtime-global",
+    default_value = t.basic_logistics,
+    allow_blank = true,
+    order = "q3",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-4",
+    setting_type = "runtime-global",
+    default_value = t.basic_construction,
+    allow_blank = true,
+    order = "q4",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-5",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q5",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-6",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q6",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-7",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q7",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-8",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q8",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-9",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q9",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-10",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q91",
+  },
+}))settings_lua";
+
+std::string locale = R"locale_cfg([mod-setting-name]
+DunRaider-quickbar-1=Hotbar 1
+DunRaider-quickbar-2=Hotbar 2
+DunRaider-quickbar-3=Hotbar 3
+DunRaider-quickbar-4=Hotbar 4
+DunRaider-quickbar-5=Hotbar 5
+DunRaider-quickbar-6=Hotbar 6
+DunRaider-quickbar-7=Hotbar 7
+DunRaider-quickbar-8=Hotbar 8
+DunRaider-quickbar-9=Hotbar 9
+DunRaider-quickbar-10=Hotbar 0
+
+
+[mod-setting-description]
+DunRaider-quickbar-1=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-2=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-3=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-4=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-5=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-6=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-7=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-8=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-9=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-10=Comma seperated list of items in the format of [item=<itemname>]
+)locale_cfg";
+
 std::string control_debug = R"control_lua2(
 -- Debug mode
 debug_state = true

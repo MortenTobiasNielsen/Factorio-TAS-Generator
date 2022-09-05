@@ -2376,6 +2376,14 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	saver.close();
 
+	saver.open(generate_code_folder_location + "\\settings.lua");
+	saver << settings;
+	saver.close();
+
+	saver.open(generate_code_folder_location + "\\locale\\en\\locale.cfg"); //it doesn't need to be named locale but the path is important
+	saver << locale;
+	saver.close();
+
 	dialog_progress_bar->set_progress(100);
 	if (auto_close_generate_script) {
 		dialog_progress_bar->Close();
