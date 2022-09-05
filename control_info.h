@@ -835,6 +835,29 @@ script.on_event(defines.events.script_raised_built, function(event)
 	entity.surface.play_sound{path="entity-build/"..entity.prototype.name, position=entity.position}
 end)
 
+--modsetting names are stored in a global array for all mods, so each setting value needs to be unique among all mods
+local settings_short = "DunRaider-quickbar-"
+local function split_string(str)
+	if str == nil then return end
+	local t = {}
+	for s in string.gmatch(str, "([^,]+)") do table.insert(t, s) end
+	return t
+end
+
+--seperate functions in case we want it to trigger on other events
+local function set_quick_bar(event)
+	local player = game.players[event.player_index]
+	for i = 1, 10 do 
+		local set = split_string(settings.global[settings_short..i].value)
+		for key,val in pairs(set) do
+			player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+		end
+	end
+end
+
+script.on_event(defines.events.on_cutscene_cancelled, function(event)
+	set_quick_bar(event)
+end)
 )control_lua2";
 
 std::string control_steel_axe = R"control_lua2(
