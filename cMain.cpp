@@ -1916,6 +1916,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 						menu_goals->GetMenuItems()[1]->Check();
 					} else if (seglist[0] == goal_any_percent_text) {
 						menu_goals->GetMenuItems()[2]->Check();
+					} else if (seglist[0] == goal_debug_text) {
+						menu_goals->GetMenuItems()[3]->Check();
 					} else {
 						reset_to_new_window();
 						wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
@@ -2354,7 +2356,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			saver << control_GOTLAP << std::endl;
 		} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
 			saver << control_any_percent << std::endl;
-		} 
+		} else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
+			saver << control_debug << std::endl;
+		}
 
 		saver.close();
 
@@ -3797,6 +3801,8 @@ bool cMain::save_file(bool save_as) {
 		myfile << goal_GOTLAP_text << std::endl;
 	} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
 		myfile << goal_any_percent_text << std::endl;
+	} else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
+		myfile << goal_debug_text << std::endl;
 	} else {
 		myfile << goal_steelaxe_text << std::endl;
 	}
