@@ -12,7 +12,7 @@ std::string info = { R"info(
 std::string control_lua1 = R"control_lua1(
 local steps = require("steps")
 local debug_state = true
-local run = false
+local run = true
 
 local step = 1
 local step_reached = 0
@@ -250,8 +250,18 @@ local function build()
 		if item_is_tile(item) then
 			if item == "stone-brick" then 
 				player.surface.set_tiles({{position = target_position, name = "stone-path"}})
-            else 
+				player.surface.play_sound{path="tile-build-small/stone-path", position=target_position}
+			-- something can be done here with item:gsub, but I couldn't get it to work - kebt getting refined-d-concrete when using item:gsub("hazard-", "")
+			-- I don't really know how to place the hazard variant of these 
+            elseif item == "hazard-concrete" then
+				player.surface.set_tiles({{position = target_position, name = "concrete"}})
+				player.surface.play_sound{path="tile-build-small/concrete", position=target_position}
+			elseif item == "refined-hazard-concrete" then
+				player.surface.set_tiles({{position = target_position, name = "refined-concrete"}})
+				player.surface.play_sound{path="tile-build-small/refined-concrete", position=target_position}
+			else
 				player.surface.set_tiles({{position = target_position, name = item}})
+				player.surface.play_sound{path="tile-build-small/"..item, position=target_position}
 			end
 			player.remove_item({name = item, count = 1})
 			return true
