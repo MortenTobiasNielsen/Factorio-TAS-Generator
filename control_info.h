@@ -149,7 +149,6 @@ local function put()
 		return true
 	end
 
-	player.play_sound{path="utility/inventory_move"}
 	amount = target_inventory.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -158,6 +157,12 @@ local function put()
 	end
 
 	player.remove_item{name=item, count=amount}
+
+	player.play_sound{path="utility/inventory_move"}
+	player.create_local_flying_text{
+		text=string.format("-%d %s (%d)", amount, item, player.get_item_count(item)), -- "-2 iron plate (5)"
+		position=target_inventory.entity_owner.position}
+
 	return true
 end
 
@@ -184,8 +189,7 @@ local function take()
 		warning(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
-
-	player.play_sound{path="utility/inventory_move"}
+	
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -194,6 +198,11 @@ local function take()
 	end
 
 	target_inventory.remove{name=item, count=amount}
+	
+	player.play_sound{path="utility/inventory_move"}
+	player.create_local_flying_text{
+		text=string.format("+%d %s (%d)", amount, item, player.get_item_count(item)), -- "+2 iron plate (5)"
+		position=target_inventory.entity_owner.position}
 
 	return true
 end
