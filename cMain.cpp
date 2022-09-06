@@ -1809,6 +1809,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		std::ifstream inFile;
+#pragma warning(suppress : 4996)
 		std::locale utf8_locale(std::locale(), new std::codecvt_utf8<wchar_t>);
 		inFile.imbue(utf8_locale);
 		inFile.open(dlg.GetPath().ToStdString());
