@@ -241,6 +241,13 @@ local function item_is_tile(item)
     return false
 end
 
+local function tile_is_in_reach()	
+	local x = player.position.x - target_position[1]
+	local y = player.position.y - target_position[2]
+	local dis = math.sqrt(x^2+y^2) --sqrt(a^2+b)^=sqrt(c^2)
+	return dis < 11 -- reach is 10 tiles
+end
+
 -- Creating buildings
 local function build()
 
@@ -257,6 +264,9 @@ local function build()
 
 	if (item ~= "rail") then
 		if item_is_tile(item) then
+			if not tile_is_in_reach() then 
+				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s not in reach", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			else
 			if item == "stone-brick" then 
 				player.surface.set_tiles({{position = target_position, name = "stone-path"}})
             else 
@@ -264,6 +274,7 @@ local function build()
 			end
 			player.remove_item({name = item, count = 1})
 			return true
+			end
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
