@@ -250,19 +250,16 @@ local function build()
 		if item_is_tile(item) then
 			if item == "stone-brick" then 
 				player.surface.set_tiles({{position = target_position, name = "stone-path"}})
-				player.surface.play_sound{path="tile-build-small/stone-path", position=target_position}
-			-- something can be done here with item:gsub, but I couldn't get it to work - kebt getting refined-d-concrete when using item:gsub("hazard-", "")
-			-- I don't really know how to place the hazard variant of these 
-            elseif item == "hazard-concrete" then
-				player.surface.set_tiles({{position = target_position, name = "concrete"}})
-				player.surface.play_sound{path="tile-build-small/concrete", position=target_position}
-			elseif item == "refined-hazard-concrete" then
-				player.surface.set_tiles({{position = target_position, name = "refined-concrete"}})
-				player.surface.play_sound{path="tile-build-small/refined-concrete", position=target_position}
 			else
 				player.surface.set_tiles({{position = target_position, name = item}})
-				player.surface.play_sound{path="tile-build-small/"..item, position=target_position}
 			end
+
+			if(item == "landfill") then
+				player.surface.play_sound{path="tile-build-small/landfill", position=target_position}
+			else
+				player.surface.play_sound{path="tile-build-small/stone-path", position=target_position}
+			end
+
 			player.remove_item({name = item, count = 1})
 			return true
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
