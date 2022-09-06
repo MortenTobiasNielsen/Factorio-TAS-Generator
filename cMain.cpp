@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <locale>
 #include <codecvt>
+#include <filesystem>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
 	SetIcon(icon_xpm);
@@ -2379,6 +2380,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	saver.open(generate_code_folder_location + "\\settings.lua");
 	saver << settings;
 	saver.close();
+
+	namespace fs = std::filesystem; // create folders if they don't exist
+	fs::create_directories(generate_code_folder_location + "\\locale\\en");
 
 	saver.open(generate_code_folder_location + "\\locale\\en\\locale.cfg"); //it doesn't need to be named locale but the path is important
 	saver << locale;
