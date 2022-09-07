@@ -149,7 +149,6 @@ local function put()
 		return true
 	end
 
-	player.play_sound{path="utility/inventory_move"}
 	amount = target_inventory.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -158,6 +157,12 @@ local function put()
 	end
 
 	player.remove_item{name=item, count=amount}
+
+	player.play_sound{path="utility/inventory_move"}
+	player.create_local_flying_text{
+		text=string.format("-%d %s (%d)", amount, item, player.get_item_count(item)), -- "-2 iron plate (5)"
+		position=target_inventory.entity_owner.position}
+
 	return true
 end
 
@@ -184,8 +189,7 @@ local function take()
 		warning(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
-
-	player.play_sound{path="utility/inventory_move"}
+	
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -194,6 +198,11 @@ local function take()
 	end
 
 	target_inventory.remove{name=item, count=amount}
+	
+	player.play_sound{path="utility/inventory_move"}
+	player.create_local_flying_text{
+		text=string.format("+%d %s (%d)", amount, item, player.get_item_count(item)), -- "+2 iron plate (5)"
+		position=target_inventory.entity_owner.position}
 
 	return true
 end
@@ -232,6 +241,13 @@ local function item_is_tile(item)
     return false
 end
 
+local function tile_is_in_reach()	
+	local x = player.position.x - target_position[1]
+	local y = player.position.y - target_position[2]
+	local dis = math.sqrt(x^2+y^2) --sqrt(a^2+b)^=sqrt(c^2)
+	return dis < 11 -- reach is 10 tiles
+end
+
 -- Creating buildings
 local function build()
 
@@ -248,6 +264,9 @@ local function build()
 
 	if (item ~= "rail") then
 		if item_is_tile(item) then
+			if not tile_is_in_reach() then 
+				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s not in reach", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			else
 			if item == "stone-brick" then 
 				player.surface.set_tiles({{position = target_position, name = "stone-path"}})
 			else
@@ -262,6 +281,7 @@ local function build()
 
 			player.remove_item({name = item, count = 1})
 			return true
+			end
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
@@ -553,7 +573,9 @@ local function launch()
 
 	return player_selection.launch_rocket()
 end
+)control_lua1";
 
+std::string control_lua2 = R"control_lua2(
 -- Routing function to perform one of the many available steps
 -- True: Indicates the calling function should advance the step. 
 -- False: Indicates the calling function should not advance step.
@@ -673,9 +695,7 @@ local function doStep(steps)
 		return save(steps[3])
 	end
 end
-)control_lua1";
 
-std::string control_lua2 = R"control_lua2(
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
 	if not run then return end
@@ -842,6 +862,29 @@ script.on_event(defines.events.script_raised_built, function(event)
 	entity.surface.play_sound{path="entity-build/"..entity.prototype.name, position=entity.position}
 end)
 
+--modsetting names are stored in a global array for all mods, so each setting value needs to be unique among all mods
+local settings_short = "DunRaider-quickbar-"
+local function split_string(str)
+	if str == nil then return end
+	local t = {}
+	for s in string.gmatch(str, "([^,]+)") do table.insert(t, s) end
+	return t
+end
+
+--seperate functions in case we want it to trigger on other events
+local function set_quick_bar(event)
+	local player = game.players[event.player_index]
+	for i = 1, 10 do 
+		local set = split_string(settings.global[settings_short..i].value)
+		for key,val in pairs(set) do
+			player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+		end
+	end
+end
+
+script.on_event(defines.events.on_cutscene_cancelled, function(event)
+	set_quick_bar(event)
+end)
 )control_lua2";
 
 std::string control_steel_axe = R"control_lua2(
@@ -893,6 +936,128 @@ script.on_event(defines.events.on_rocket_launched, function(event)
 	debug_state = false	
 end)
 )control_lua2";
+
+std::string settings = R"settings_lua(local t = {
+  basic_materials = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"iron-plate","copper-plate","copper-cable","electronic-circuit","iron-gear-wheel","iron-ore","copper-ore","stone","coal","wood"),
+  gotlap = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"steel-plate","iron-stick","engine-unit","automation-science-pack","logistic-science-pack","rail","locomotive","rail-signal","rail-chain-signal","train-stop"),
+  basic_logistics = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"transport-belt","underground-belt","splitter","inserter","long-handed-inserter","fast-inserter","burner-inserter","filter-inserter","stack-inserter","stack-filter-inserter"),
+  basic_construction = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"burner-mining-drill","stone-furnace","electric-mining-drill","assembling-machine-1","lab","boiler","steam-engine","offshore-pump","pipe","pipe-to-ground"),
+  none = ""
+}
+
+data:extend(
+{
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-1",
+    setting_type = "runtime-global",
+    default_value = t.basic_materials,
+    allow_blank = true,
+    order = "q1",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-2",
+    setting_type = "runtime-global",
+    default_value = t.gotlap,
+    allow_blank = true,
+    order = "q2",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-3",
+    setting_type = "runtime-global",
+    default_value = t.basic_logistics,
+    allow_blank = true,
+    order = "q3",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-4",
+    setting_type = "runtime-global",
+    default_value = t.basic_construction,
+    allow_blank = true,
+    order = "q4",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-5",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q5",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-6",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q6",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-7",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q7",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-8",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q8",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-9",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q9",
+  },
+  {
+    type = "string-setting",
+    name = "DunRaider-quickbar-10",
+    setting_type = "runtime-global",
+    default_value = t.none,
+    allow_blank = true,
+    order = "q91",
+  },
+}))settings_lua";
+
+std::string locale = R"locale_cfg([mod-setting-name]
+DunRaider-quickbar-1=Hotbar 1
+DunRaider-quickbar-2=Hotbar 2
+DunRaider-quickbar-3=Hotbar 3
+DunRaider-quickbar-4=Hotbar 4
+DunRaider-quickbar-5=Hotbar 5
+DunRaider-quickbar-6=Hotbar 6
+DunRaider-quickbar-7=Hotbar 7
+DunRaider-quickbar-8=Hotbar 8
+DunRaider-quickbar-9=Hotbar 9
+DunRaider-quickbar-10=Hotbar 0
+
+
+[mod-setting-description]
+DunRaider-quickbar-1=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-2=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-3=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-4=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-5=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-6=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-7=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-8=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-9=Comma seperated list of items in the format of [item=<itemname>]
+DunRaider-quickbar-10=Comma seperated list of items in the format of [item=<itemname>]
+)locale_cfg";
 
 std::string control_debug = R"control_lua2(
 -- Debug mode

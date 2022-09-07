@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-234-gd93c9fc0)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -25,8 +25,8 @@
 #include <wx/statline.h>
 #include <wx/radiobut.h>
 #include <wx/panel.h>
-#include <wx/button.h>
 #include <wx/grid.h>
+#include <wx/button.h>
 #include <wx/notebook.h>
 #include <wx/frame.h>
 #include <wx/scrolwin.h>
@@ -103,6 +103,8 @@ protected:
 	wxStaticLine* m_staticline4;
 	wxStaticLine* m_staticline14;
 	wxNotebook* m_notebook1;
+	wxPanel* m_panel61;
+	wxGrid* grid_buildings;
 	wxPanel* m_panel3;
 	wxStaticText* label_choose_group;
 	wxComboBox* cmb_choose_group;
@@ -139,8 +141,6 @@ protected:
 	wxButton* btn_move_up11;
 	wxButton* btn_move_down11;
 	wxGrid* grid_tasks;
-	wxPanel* m_panel61;
-	wxGrid* grid_buildings;
 
 	// Virtual event handlers, override them in your derived class
 	virtual void OnApplicationClose(wxCloseEvent& event) { event.Skip(); }
@@ -208,6 +208,7 @@ protected:
 	virtual void OnLaunchChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnSaveChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnStopChosen(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteGroupClicked(wxCommandEvent& event) { event.Skip(); }
@@ -234,7 +235,6 @@ protected:
 	virtual void OnMoveUpClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMoveDownClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTasksGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
-	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 
 
 public:

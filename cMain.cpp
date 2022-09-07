@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <locale>
 #include <codecvt>
+#include <filesystem>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
 	SetIcon(icon_xpm);
@@ -1808,6 +1809,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		std::ifstream inFile;
+#pragma warning(suppress : 4996)
 		std::locale utf8_locale(std::locale(), new std::codecvt_utf8<wchar_t>);
 		inFile.imbue(utf8_locale);
 		inFile.open(dlg.GetPath().ToStdString());
@@ -2374,6 +2376,17 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	saver << end_tasks();
 
+	saver.close();
+
+	saver.open(generate_code_folder_location + "\\settings.lua");
+	saver << settings;
+	saver.close();
+
+	namespace fs = std::filesystem; // create folders if they don't exist
+	fs::create_directories(generate_code_folder_location + "\\locale\\en");
+
+	saver.open(generate_code_folder_location + "\\locale\\en\\locale.cfg"); //it doesn't need to be named locale but the path is important
+	saver << locale;
 	saver.close();
 
 	dialog_progress_bar->set_progress(100);
@@ -3224,7 +3237,7 @@ std::string cMain::extract_y_cord() {
 std::string cMain::extract_units() {
 	float units = wxAtof(txt_units->GetValue());
 	
-	if (units < 0 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue())) {
+	if (units < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue())) {
 		return "1";
 	}
 	
