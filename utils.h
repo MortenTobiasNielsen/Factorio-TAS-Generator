@@ -81,9 +81,9 @@ static const std::map<std::string, std::vector<float>> building_size_list = { { 
 																			  { "Constant combinator", {1, 1} },
 																			  { "Power switch", {2, 2} },
 																			  { "Programmable speaker", {1, 1} },
-																			  { "Hazard concrete", {2, 2} },
-																			  { "Refined hazard concrete", {2, 2} },
-																			  { "Landfill", {2, 2} },
+																			  { "Hazard concrete", {1, 1} },
+																			  { "Refined hazard concrete", {1, 1} },
+																			  { "Landfill", {1, 1} },
 																			  { "Land mine", {1, 1} },
 																			  { "Wall", {1, 1} },
 																			  { "Gate", {1, 1} },
@@ -119,9 +119,9 @@ static const std::map<std::string, std::vector<float>> building_size_list = { { 
 																			  { "Express transport belt", {1, 1} },
 																			  { "Express underground belt", {1, 1} },
 																			  { "Express splitter", {1, 1} },
-																			  { "Concrete", {2, 2} },
-																			  { "Refined concrete", {2, 2} },
-																			  { "Stone brick",  {2, 2} } };
+																			  { "Concrete", {1, 1} },
+																			  { "Refined concrete", {1, 1} },
+																			  { "Stone brick",  {1, 1} } };
 
 static const std::vector<std::string> handcrafted_list = { "Accumulator",
 														   "Wooden chest",
