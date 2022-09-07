@@ -3237,7 +3237,7 @@ std::string cMain::extract_y_cord() {
 std::string cMain::extract_units() {
 	float units = wxAtof(txt_units->GetValue());
 	
-	if (units < 0 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue())) {
+	if (units < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue())) {
 		return "1";
 	}
 	

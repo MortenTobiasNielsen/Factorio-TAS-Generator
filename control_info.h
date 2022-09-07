@@ -555,7 +555,9 @@ local function launch()
 
 	return player_selection.launch_rocket()
 end
+)control_lua1";
 
+std::string control_lua2 = R"control_lua2(
 -- Routing function to perform one of the many available steps
 -- True: Indicates the calling function should advance the step. 
 -- False: Indicates the calling function should not advance step.
@@ -675,9 +677,7 @@ local function doStep(steps)
 		return save(steps[3])
 	end
 end
-)control_lua1";
 
-std::string control_lua2 = R"control_lua2(
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
 	if not run then return end
