@@ -194,6 +194,8 @@ void cMain::OnTakeChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
+	cmb_from_into->SetValue("Output"); // set default to output on take task
+
 	event.Skip();
 }
 
@@ -206,6 +208,8 @@ void cMain::OnPutChosen(wxCommandEvent& event) {
 	}
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
+
+	cmb_from_into->SetValue("Input"); // set default to input on put task
 
 	event.Skip();
 }
