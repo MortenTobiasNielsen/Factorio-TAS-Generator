@@ -2141,6 +2141,40 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					malformed_saved_file_message();
 					return;
 				}
+			} else if (!auto_put_reached) {
+				if (seglist.size() == 2) {
+					if (seglist[0] == auto_put_furnace_text) {
+						if (seglist[1] == "true") {
+							check_furnace->SetValue(true);
+						} else {
+							check_furnace->SetValue(false);
+						}
+					} else if (seglist[0] == auto_put_burner_text) {
+						if (seglist[1] == "true") {
+							check_burner->SetValue(true);
+						} else {
+							check_burner->SetValue(false);
+						}
+					} else if (seglist[0] == auto_put_lab_text) {
+						if (seglist[1] == "true") {
+							check_lab->SetValue(true);
+						} else {
+							check_lab->SetValue(false);
+						}
+					} else if (seglist[0] == auto_put_recipe_text) {
+						if (seglist[1] == "true") {
+							check_recipe->SetValue(true);
+						} else {
+							check_recipe->SetValue(false);
+						}
+					} else {
+						malformed_saved_file_message();
+						return;
+					}
+				} else {
+					malformed_saved_file_message();
+					return;
+				}
 			}
 		}
 
@@ -3942,7 +3976,13 @@ bool cMain::save_file(bool save_as) {
 	myfile << auto_close_generate_script_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[0]->IsChecked()) << std::endl;
 	myfile << auto_close_open_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[1]->IsChecked()) << std::endl;
 	myfile << auto_close_save_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[2]->IsChecked()) << std::endl;
-	myfile << auto_close_save_as_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[3]->IsChecked());
+	myfile << auto_close_save_as_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[3]->IsChecked()) << std::endl;
+
+	myfile << auto_put_indicator << std::endl;
+	myfile << auto_put_furnace_text + ";" + bool_to_string(check_furnace->IsChecked()) << std::endl;
+	myfile << auto_put_burner_text + ";" + bool_to_string(check_burner->IsChecked()) << std::endl;
+	myfile << auto_put_lab_text + ";" + bool_to_string(check_lab->IsChecked()) << std::endl;
+	myfile << auto_put_recipe_text + ";" + bool_to_string(check_recipe->IsChecked());
 
 	myfile.close();
 
