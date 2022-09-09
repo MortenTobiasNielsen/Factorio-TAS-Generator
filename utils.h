@@ -29,6 +29,64 @@ static const std::vector<std::string> splitter_list = { "Splitter",
 static const std::vector<std::string> filter_inserter_list = { "Filter inserter", 
 															   "Stack filter inserter" };
 
+static const std::map<std::string, std::vector<std::string>> testing = { { "Copper cable", {"Copper plate", "1" }},
+																		 { "Iron stick", {"Iron plate", "1" }},
+																		 { "Iron gear wheel", {"Iron plate", "2" }},
+																		 { "Electronic circuit", {"Copper cable", "3", "Iron plate", "1" }},
+																		 { "Advanced circuit", {"Copper cable", "4", "Electronic circuit", "2", "Plastic bar", "2" }},
+																		 { "Processing unit", {"Advanced circuit", "2", "Electronic circuit", "20" }},
+																		 { "Engine unit", {"Iron gear wheel", "1", "Pipe", "2", "Steel plate", "1" }},
+																		 { "Electric engine unit", {"Electronic circuit", "2", "Engine unit", "1" }},
+																		 { "Flying robot frame", {"Battery", "2", "Electronic circuit", "3", "Steel plate", "1" }},
+																		 { "Rocket control unit", {"Processing unit", "1", "Speed module", "1" }},
+																		 { "Low density structure", {"Copper plate", "20", "Plastic bar", "5", "Steel plate", "2" }},
+																		 { "Stone furnace", {"Stone", "5"}},
+																		 { "Steel furnace", {"Steel plate", "6", "Stone brick", "10" }},
+																		 { "Electric furnace", {"Advanced circuit", "5", "Steel plate", "10", "Stone brick", "10" }},
+																		 { "Burner inserter", {"Iron gear wheel", "1", "Iron plate", "1" }},
+																		 { "Inserter", {"Electronic circuit", "1", "Iron gear wheel", "1", "Iron plate", "1" }},
+																		 { "Long-handed inserter", {"Inserter", "1", "Iron gear wheel", "1", "Iron plate", "1" }},
+																		 { "Fast inserter", {"Electronic circuit", "2", "Inserter", "1", "Iron plate", "2" }},
+																		 { "Small electric pole", {"Copper cable", "2", "Wood", "1" }},
+																		 { "Pipe", {"Iron plate", "1" }},
+																		 { "Pipe to ground", {"Iron plate", "5", "Steel plate", "10" }},
+																		 { "Rail", {"Iron stick", "1", "Steel plate", "1", "Stone", "1" }},
+																		 { "Wooden chest", {"Wood", "2" }},
+																		 { "Iron chest", {"Iron plate", "8" }},
+																		 { "Steel chest", {"Steel plate", "8" }},
+																		 { "Storage tank", {"Iron plate", "20", "Steel plate", "5" }},
+																		 { "Transport belt", {"Iron gear wheel", "1", "Iron plate", "1"  }},
+																		 { "Fast transport belt", {"Iron gear wheel", "5", "Transport belt", "1"  }},
+																		 { "Underground belt", {"Iron plate", "10", "Transport belt", "5" }},
+																		 { "Fast underground belt", {"Iron gear wheel", "40", "Underground belt", "2" }},
+																		 { "Splitter", {"Electronic circuit", "5", "Iron plate", "5", "Transport belt", "4" }},
+																		 { "Fast splitter", {"Electronic circuit", "10", "Iron gear wheel", "10", "Splitter", "1" }},
+																		 { "Boiler", {"Pipe", "4", "Stone furnace", "1" }},
+																		 { "Steam engine", {"Iron gear wheel", "8", "Iron plate", "10", "Pipe", "5" }},
+																		 { "Burner mining drill", {"Iron gear wheel", "3", "Iron plate", "3", "Stone furnace", "1"}},
+																		 { "Electric mining drill", {"Electronic circuit", "3", "Iron gear wheel", "5", "Iron plate", "10" }},
+																		 { "Offshore pump", {"Electronic circuit", "2", "Iron gear wheel", "1", "Pipe", "1" }},
+																		 { "Pumpjack", {"Electronic circuit", "5", "Iron gear wheel", "10", "Pipe", "10", "Steel plate", "5" }},
+																		 { "Assembling machine 1", {"Electronic circuit", "3", "Iron gear wheel", "5", "Iron Plate", "9" }},
+																		 { "Assembling machine 2", {"Assembling machine 1", "1", "Electronic circuit", "3", "Iron gear wheel", "5", "Steel plate", "2" }},
+																		 { "Oil refinery", {"Electronic circuit", "10", "Iron gear wheel", "10", "Pipe", "10", "Steel plate", "15", "Stone brick", "10" }},
+																		 { "Chemical plant", {"Electronic circuit", "5", "Iron gear wheel", "5", "Pipe", "5", "Steel plate", "5" }},
+																		 { "Lab", {"Electronic circuit", "10", "Iron gear wheel", "10", "Transport belt", "4" }},
+																		 { "Battery", {"Iron plate", "1", "Copper plate", "1" }},
+																		 { "Productivity module", {"Advanced circuit", "5", "Electronic circuit", "5" }},
+																		 { "Productivity module 2", {"Advanced circuit", "5", "Processing unit", "5", "Productivity module", "4" }},
+																		 { "Productivity module 3", {"Advanced circuit", "5", "Processing unit", "5", "Productivity module 2", "5" }},
+																		 { "Speed module", {"Advanced circuit", "5", "Electronic circuit", "5" }},
+																		 { "Speed module 2", {"Advanced circuit", "5", "Processing unit", "5", "Speed module", "4" }},
+																		 { "Speed module 3", {"Advanced circuit", "5", "Processing unit", "5", "Speed module 2", "4" }},
+																		 { "Automation science pack", {"Copper plate", "1", "Iron gear wheel", "1" }},
+																		 { "Logistic science pack", {"Inserter", "1", "Transport belt", "1" }},
+																		 { "Chemical science pack", {"Advanced circuit", "3", "Engine unit", "2", "Sulfur", "1" }},
+																		 { "Production science pack", {"Electric furnace", "1", "Productivity module", "1", "Rail", "30" }},
+																		 { "Utility science pack", {"Flying robot frame", "1", "Low density structure", "3", "Processing unit", "2" }},
+																	   };
+
+
 static const std::map<std::string, std::vector<float>> building_size_list = { { "Accumulator", {2, 2} },
 																			  { "Wooden chest", {1, 1} },
 																			  { "Iron chest", {1, 1} },
@@ -463,7 +521,6 @@ static const std::vector<std::string> take_from = {"Input",
 												   "Chest",
 												   "Wreck" };
 
-
 static const std::vector<std::string> input_output = { "Left", 
 													   "Right", 
 													   "None"};
@@ -675,9 +732,70 @@ static const std::vector<std::string> tech_list = { "Advanced electronics",
 static const std::vector<std::string> drills_list = { "Electric mining drill", 
 													  "Pumpjack" };
 
-struct furnace_types {
-	std::string stone = "stone-furnace";
-};
+struct {
+	std::string game_speed = "Game Speed";
+	std::string walk = "Walk";
+	std::string mine = "Mine";
+	std::string rotate = "Rotate";
+	std::string craft = "Craft";
+	std::string build = "Build";
+	std::string take = "Take";
+	std::string put = "Put";
+	std::string tech = "Tech";
+	std::string recipe = "Recipe";
+	std::string start = "Start";
+	std::string pause = "Pause";
+	std::string stop = "Stop";
+	std::string limit = "Limit";
+	std::string priority = "Priority";
+	std::string filter = "Filter";
+	std::string pick_up = "Pick up";
+	std::string drop = "Drop";
+	std::string idle = "Idle";
+	std::string launch = "Launch";
+	std::string save = "Save";
+
+} struct_tasks_list;
+
+struct {
+	std::string input = "Input";
+	std::string output = "Output";
+	std::string fuel = "Fuel";
+	std::string modules = "Modules";
+	std::string chest = "Chest";
+	std::string wreck = "Wreck";
+} struct_from_into_list;
+
+struct  {
+	std::string stone = "Stone furnace";
+	std::string steel = "Steel furnace";
+} struct_auto_put_furnace_list;
+
+struct {
+	std::string burner_mining_drill = "Burner mining drill";
+	std::string burner_inserter = "Burner inserter";
+	std::string boiler = "Boiler";
+} struct_auto_put_burner_list;
+
+struct {
+	std::string wood = "Wood";
+	std::string coal = "Coal";
+	std::string solid_fuel = "Solid fuel";
+	std::string rocket_fuel = "Rocket fuel";
+	std::string nuclear_fuel = "Nuclear fuel";
+	std::string uranium_fuel_cell = "Uranium fuel cell";
+} struct_fuel_list;
+
+struct {
+	std::string lab = "Lab";
+	std::string red_science = "automation-science-pack";
+	std::string green_science = "logistic-science-pack";
+	std::string black_science = "military-science-pack";
+	std::string blue_science = "chemical-science-pack";
+	std::string purple_science = "production-science-pack";
+	std::string yellow_science = "utility-science-pack";
+	std::string white_science = "space-science-pack";
+} struct_science_list;
 
 struct drill_types {
 	std::string burner = "burner-mining-drill";
@@ -686,11 +804,6 @@ struct drill_types {
 
 struct transport_types {
 	std::string yellow_belt = "transport-belt";
-};
-
-struct fuel_types {
-	std::string wood = "wood";
-	std::string coal = "coal";
 };
 
 struct take_put_defines_list {
@@ -743,12 +856,6 @@ struct assembly_types {
 	std::string level_1 = "assembling-machine-1";
 	std::string level_2 = "assembling-machine-2";
 
-};
-
-struct science_struct {
-	std::string lab = "lab";
-	std::string red_science = "automation-science-pack";
-	std::string green_science = "logistic-science-pack";
 };
 
 struct build_distance_struct {

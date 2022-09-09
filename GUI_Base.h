@@ -24,6 +24,7 @@
 #include <wx/combobox.h>
 #include <wx/statline.h>
 #include <wx/radiobut.h>
+#include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/grid.h>
 #include <wx/button.h>
@@ -101,6 +102,12 @@ protected:
 	wxRadioButton* rbtn_save;
 	wxRadioButton* rbtn_stop;
 	wxStaticLine* m_staticline4;
+	wxStaticText* label_atuo_put;
+	wxStaticLine* m_staticline31;
+	wxCheckBox* check_furnace;
+	wxCheckBox* check_burner;
+	wxCheckBox* check_lab;
+	wxCheckBox* check_recipe;
 	wxStaticLine* m_staticline14;
 	wxNotebook* m_notebook1;
 	wxPanel* m_panel61;

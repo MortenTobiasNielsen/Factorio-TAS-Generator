@@ -660,6 +660,46 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	bSizer19->Add(bSizer18, 1, wxEXPAND, 5);
 
 
+	bSizer19->Add(50, 0, 1, wxEXPAND, 5);
+
+	wxBoxSizer* bSizer116;
+	bSizer116 = new wxBoxSizer(wxVERTICAL);
+
+	label_atuo_put = new wxStaticText(m_panel1, wxID_ANY, wxT("Auto-put"), wxDefaultPosition, wxDefaultSize, 0);
+	label_atuo_put->Wrap(-1);
+	bSizer116->Add(label_atuo_put, 0, wxALIGN_CENTER | wxALL, 5);
+
+	m_staticline31 = new wxStaticLine(m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL);
+	bSizer116->Add(m_staticline31, 0, wxEXPAND | wxALL, 5);
+
+	check_furnace = new wxCheckBox(m_panel1, wxID_ANY, wxT("Furnace"), wxDefaultPosition, wxDefaultSize, 0);
+	check_furnace->SetValue(true);
+	check_furnace->SetToolTip(wxT("Adds a task to put coal into stone and steel furnaces"));
+
+	bSizer116->Add(check_furnace, 0, wxALL, 5);
+
+	check_burner = new wxCheckBox(m_panel1, wxID_ANY, wxT("Burner"), wxDefaultPosition, wxDefaultSize, 0);
+	check_burner->SetValue(true);
+	check_burner->SetToolTip(wxT("Adds a task to put coal into Burner Mining Drills, Burner Inserters and Boilers"));
+
+	bSizer116->Add(check_burner, 0, wxALL, 5);
+
+	check_lab = new wxCheckBox(m_panel1, wxID_ANY, wxT("Lab"), wxDefaultPosition, wxDefaultSize, 0);
+	check_lab->SetValue(true);
+	check_lab->SetToolTip(wxT("Adds a task to put automation science into the Lab"));
+
+	bSizer116->Add(check_lab, 0, wxALL, 5);
+
+	check_recipe = new wxCheckBox(m_panel1, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0);
+	check_recipe->SetValue(true);
+	check_recipe->SetToolTip(wxT("Add tasks to put the items needed to craft that recipe"));
+
+	bSizer116->Add(check_recipe, 0, wxALL, 5);
+
+
+	bSizer19->Add(bSizer116, 1, wxEXPAND, 5);
+
+
 	bSizer19->Add(10000, 0, 1, wxEXPAND, 5);
 
 
