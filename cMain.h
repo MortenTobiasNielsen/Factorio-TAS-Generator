@@ -142,11 +142,23 @@ private:
 	std::string save_templates_indicator = "Templates:";
 	std::string save_file_indicator = "Save file location:";
 	std::string code_file_indicator = "Task folder location:";
+	std::string auto_close_indicator = "Auto close settings:";
+	std::string auto_put_indicator = "Auto put settings:";
 
 	std::string goal_steelaxe_text = "Steel Axe";
 	std::string goal_GOTLAP_text = "Getting On Track Like A Pro";
 	std::string goal_any_percent_text = "Any %";
 	std::string goal_debug_text = "Debug";
+
+	std::string auto_close_generate_script_text = "Generate Script";
+	std::string auto_close_open_text = "Open";
+	std::string auto_close_save_text = "Save";
+	std::string auto_close_save_as_text = "Save As";
+
+	std::string auto_put_furnace_text = "Furnace";
+	std::string auto_put_burner_text = "Burner";
+	std::string auto_put_lab_text = "Lab";
+	std::string auto_put_recipe_text = "Recipe";
 
 	std::string generate_code_folder_location = "";
 	std::string save_file_location = "";
@@ -289,7 +301,6 @@ private:
 	bool checks_before_reset_window();
 	bool check_before_close();
 
-
 	void move_row(wxGrid* grid, bool up = false);
 	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>>& map);
 	bool change_row(wxGrid* grid);
@@ -353,4 +364,7 @@ private:
 	void update_future_rotate_tasks();
 	void find_new_orientation();
 	bool find_building();
+
+	void malformed_saved_file_message();
+	inline const char* const bool_to_string(bool b);
 };
