@@ -267,9 +267,7 @@ local function build()
 			if tile_is_in_reach() then
 				if item == "stone-brick" then 
 					player.surface.set_tiles({{position = target_position, name = "stone-path"}})
-				elseif (item == "hazard-concrete") then
-					player.surface.set_tiles({{position = target_position, name = item.."-left"}})
-				elseif (item == "refined-hazard-concrete") then
+				elseif (item == "hazard-concrete") or (item == "refined-hazard-concrete") then
 					player.surface.set_tiles({{position = target_position, name = item.."-left"}})
 				else
 					player.surface.set_tiles({{position = target_position, name = item}})
