@@ -76,12 +76,12 @@ end
 
 local function save(task, nameOfSaveGame)
 	if game.is_multiplayer() then
-		msg(string.format("Task: %s, saving game as %s", task, nameOfSaveGame))
+		debug(string.format("Task: %s, saving game as %s", task, nameOfSaveGame))
 		game.server_save(nameOfSaveGame)
 		return true
 	end
 
-	msg(string.format("Task: %s, saving game as _autosave-%s", task, nameOfSaveGame))
+	debug(string.format("Task: %s, saving game as _autosave-%s", task, nameOfSaveGame))
 	game.auto_save(nameOfSaveGame)
 	return true;
 end
