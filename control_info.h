@@ -11,7 +11,7 @@ std::string info = { R"info(
 
 std::string control_lua1 = R"control_lua1(
 local steps = require("steps")
-local debug_state = true
+local debug_state = false
 local run = true
 
 local step = 1
