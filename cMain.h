@@ -359,6 +359,8 @@ private:
 	std::string extract_building_size();
 	std::string extract_amount_of_buildings();
 
+	void auto_put(std::string put_item, std::string put_units, std::string put_into);
+
 	void update_future_rotate_tasks();
 	void find_new_orientation();
 	bool find_building();

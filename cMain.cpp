@@ -916,7 +916,33 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 		if (check_buildings_grid()) {
 			if (setup_for_task_group_template_grid()) {
 
-				update_tasks_grid();	
+				update_tasks_grid();
+
+				std::string base_units = "1";
+				std::string to_check = item;
+				string_capitalized(to_check);
+
+				if (task == struct_tasks_list.build) {
+					if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel) {
+						auto_put(struct_fuel_list.coal, base_units, struct_from_into_list.fuel);
+					}
+
+					if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler) {
+						auto_put(struct_fuel_list.coal, base_units, struct_from_into_list.fuel);
+					}
+
+					if (check_lab->IsChecked() && to_check == struct_science_list.lab) {
+						auto_put(struct_science_list.red_science, base_units, struct_from_into_list.input);
+					}
+				}
+
+				if (task == struct_tasks_list.recipe && check_recipe->IsChecked() ) {
+					std::vector<std::string> recipe = recipes.find(to_check)->second;
+
+					for (int i = 0; i < recipe.size(); i += 2 ) {
+						auto_put(recipe[i], recipe[i + 1], struct_from_into_list.input);
+					}
+				}
 			}
 		} else {
 			if (row_num != grid_tasks->GetNumberRows()) {
@@ -1898,7 +1924,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				templates_reached = true;
 				save_file_reached = true;
 				task_file_reached = true;
-				generate_code_folder_reached = true;
 			
 			} else if (seglist[0] == auto_close_indicator) {
 				groups_reached = true;
@@ -2073,40 +2098,43 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			} else if (!auto_close_reached) {
 				if (seglist.size() == 2) {
 					if (seglist[0] == auto_close_generate_script_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[0]->Check();
-							auto_close_generate_script = true;
-						}
-						else {
-							menu_auto_close->GetMenuItems()[0]->Check(false);
-							auto_close_generate_script = false;
-						}
+						menu_auto_close->GetMenuItems()[0]->Check(seglist[1] == "true");
+						auto_close_generate_script = seglist[1] == "true";
+
 					} else if (seglist[0] == auto_close_open_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[1]->Check();
-							auto_close_open = true;
+						menu_auto_close->GetMenuItems()[1]->Check(seglist[1] == "true");
+						auto_close_open = seglist[1] == "true";
 
-						} else {
-							menu_auto_close->GetMenuItems()[1]->Check(false);
-							auto_close_open = false;
-
-						}
 					} else if (seglist[0] == auto_close_save_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[2]->Check();
-							auto_close_save = true;
-						} else {
-							menu_auto_close->GetMenuItems()[2]->Check(false);
-							auto_close_save = false;
-						}
+						menu_auto_close->GetMenuItems()[2]->Check(seglist[1] == "true");
+						auto_close_save = seglist[1] == "true";
+
 					} else if (seglist[0] == auto_close_save_as_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[3]->Check();
-							auto_close_save_as = true;
-						} else {
-							menu_auto_close->GetMenuItems()[3]->Check(false);
-							auto_close_save_as = false;
-						}
+						menu_auto_close->GetMenuItems()[3]->Check(seglist[1] == "true");
+						auto_close_save_as = seglist[1] == "true";
+
+					} else {
+						malformed_saved_file_message();
+						return;
+					}
+				} else {
+					malformed_saved_file_message();
+					return;
+				}
+			} else if (!auto_put_reached) {
+				if (seglist.size() == 2) {
+					if (seglist[0] == auto_put_furnace_text) {
+						check_furnace->SetValue(seglist[1] == "true");
+
+					} else if (seglist[0] == auto_put_burner_text) {
+						check_burner->SetValue(seglist[1] == "true");
+
+					} else if (seglist[0] == auto_put_lab_text) {
+						check_lab->SetValue(seglist[1] == "true");
+
+					} else if (seglist[0] == auto_put_recipe_text) {
+						check_recipe->SetValue(seglist[1] == "true");
+
 					} else {
 						malformed_saved_file_message();
 						return;
@@ -2890,6 +2918,10 @@ std::string FormatString(wxString s) {
 		return s.ToStdString();
 	}
 
+	if (i == 0) {
+		return s.ToStdString() + ".0";
+	}
+
 	for (i; i > 0; i--) {
 		if (s[i] == '.') {
 			i += 2;
@@ -2914,14 +2946,14 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	std::string y_cord_formatted = FormatString(y_cord);
 	std::string units_formatted = FormatString(units);
 
-	if (task == "Game Speed") {
+	if (task == struct_tasks_list.game_speed) {
 		OnGameSpeedMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 		
 		return;
 	}
 	
-	if (task == "Walk") {
+	if (task == struct_tasks_list.walk) {
 		OnWalkMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2930,7 +2962,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Mine") {
+	if (task == struct_tasks_list.mine) {
 		OnMineMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2939,7 +2971,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 		return;
 	}
-	if (task == "Rotate") {
+	if (task == struct_tasks_list.rotate) {
 		OnRotateMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2949,7 +2981,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Craft") {
+	if (task == struct_tasks_list.craft) {
 		OnCraftMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 		cmb_item->SetValue(item);
@@ -2958,7 +2990,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Build") {
+	if (task == struct_tasks_list.build) {
 		OnBuildMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2972,7 +3004,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Take") {
+	if (task == struct_tasks_list.take) {
 		OnTakeMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -2987,7 +3019,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Put") {
+	if (task == struct_tasks_list.put) {
 		OnPutMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3002,7 +3034,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Tech") {
+	if (task == struct_tasks_list.tech) {
 		OnTechMenuSelected(event);
 		cmb_tech->SetValue(item);
 		txt_comment->SetValue(comment);
@@ -3010,7 +3042,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Recipe") {
+	if (task == struct_tasks_list.recipe) {
 		OnRecipeMenuChosen(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3023,21 +3055,21 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Start") {
+	if (task == struct_tasks_list.start) {
 		OnStartMenuSelected(event);
 		txt_comment->SetValue(comment);
 
 		return;
 	}
 	
-	if (task == "Pause") {
+	if (task == struct_tasks_list.pause) {
 		OnPauseMenuSelected(event);
 		txt_comment->SetValue(comment);
 
 		return;
 	}
 	
-	if (task == "Stop") {
+	if (task == struct_tasks_list.stop) {
 		OnStopMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 		txt_comment->SetValue(comment);
@@ -3045,7 +3077,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Limit") {
+	if (task == struct_tasks_list.limit) {
 		OnLimitMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3058,7 +3090,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Priority") {
+	if (task == struct_tasks_list.priority) {
 		OnPriorityMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3075,7 +3107,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Filter") {
+	if (task == struct_tasks_list.filter) {
 		OnFilterMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3089,7 +3121,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Pick up") {
+	if (task == struct_tasks_list.pick_up) {
 		OnPickUpMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3101,7 +3133,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Drop") {
+	if (task == struct_tasks_list.drop) {
 		OnDropMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3114,7 +3146,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Idle") {
+	if (task == struct_tasks_list.idle) {
 		OnIdleMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 		txt_comment->SetValue(comment);
@@ -3122,7 +3154,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Launch") {
+	if (task == struct_tasks_list.launch) {
 		OnLaunchMenuSelected(event);
 		txt_x_cord->SetValue(x_cord_formatted);
 		txt_y_cord->SetValue(y_cord_formatted);
@@ -3131,7 +3163,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		return;
 	}
 	
-	if (task == "Save") {
+	if (task == struct_tasks_list.save) {
 		OnSaveMenuSelected(event);
 		txt_units->SetValue(units_formatted);
 		txt_comment->SetValue(comment);
@@ -3184,104 +3216,104 @@ void cMain::extract_parameters() {
 std::string cMain::extract_task() {
 
 	if (rbtn_game_speed->GetValue()) {
-		return "Game Speed";
+		return struct_tasks_list.game_speed;
 
 	}
 	
 	if (rbtn_walk->GetValue()) {
-		return "Walk";
+		return struct_tasks_list.walk;
 
 	}
 	
 	if (rbtn_mine->GetValue()) {
-		return "Mine";
+		return struct_tasks_list.mine;
 
 	}
 	
 	if (rbtn_rotate->GetValue()) {
-		return "Rotate";
+		return struct_tasks_list.rotate;
 
 	}
 	
 	if (rbtn_craft->GetValue()) {
-		return "Craft";
+		return struct_tasks_list.craft;
 
 	}
 	
 	if (rbtn_build->GetValue()) {
-		return "Build";
+		return struct_tasks_list.build;
 
 	}
 	
 	if (rbtn_take->GetValue()) {
-		return "Take";
+		return struct_tasks_list.take;
 
 	}
 	
 	if (rbtn_put->GetValue()) {
-		return "Put";
+		return struct_tasks_list.put;
 
 	}
 	
 	if (rbtn_tech->GetValue()) {
-		return "Tech";
+		return struct_tasks_list.tech;
 
 	}
 	
 	if (rbtn_recipe->GetValue()) {
-		return "Recipe";
+		return struct_tasks_list.recipe;
 
 	}
 	
 	if (rbtn_limit->GetValue()) {
-		return "Limit";
+		return struct_tasks_list.limit;
 
 	}
 	
 	if (rbtn_idle->GetValue()) {
-		return "Idle";
+		return struct_tasks_list.idle;
 
 	}
 	
 	if (rbtn_filter->GetValue()) {
-		return "Filter";
+		return struct_tasks_list.filter;
 
 	}
 	
 	if (rbtn_priority->GetValue()) {
-		return "Priority";
+		return struct_tasks_list.priority;
 
 	}
 	
 	if (rbtn_pick_up->GetValue()) {
-		return "Pick up";
+		return struct_tasks_list.pick_up;
 
 	}
 	
 	if (rbtn_drop->GetValue()) {
-		return "Drop";
+		return struct_tasks_list.drop;
 
 	}
 	
 	if (rbtn_launch->GetValue()) {
-		return "Launch";
+		return struct_tasks_list.launch;
 
 	}
 
 	if (rbtn_save->GetValue()) {
-		return "Save";
+		return struct_tasks_list.save;
 	}
 
 	if (rbtn_start->GetValue()) {
-		return "Start";
+		return struct_tasks_list.start;
 	}
 
 	if (rbtn_pause->GetValue()) {
-		return "Pause";
+		return struct_tasks_list.pause;
 	}
 	
 	if (rbtn_stop->GetValue()) {
-		return "Stop";
+		return struct_tasks_list.stop;
 	}
 
 	return "not found";
@@ -3346,6 +3378,18 @@ std::string cMain::extract_amount_of_buildings() {
 	} 
 
 	return std::to_string(wxAtoi(txt_amount_of_buildings->GetValue()));
+}
+
+void cMain::auto_put(std::string put_item, std::string put_units, std::string put_into)
+{
+	cmb_from_into->SetValue(put_into);
+
+	task = struct_tasks_list.put;
+	item = put_item;
+	units = put_units;
+	from_into = put_into;
+	setup_for_task_group_template_grid();
+	update_tasks_grid();
 }
 
 std::string cMain::extract_building_size() {
@@ -3901,6 +3945,12 @@ bool cMain::save_file(bool save_as) {
 	myfile << auto_close_open_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[1]->IsChecked()) << std::endl;
 	myfile << auto_close_save_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[2]->IsChecked()) << std::endl;
 	myfile << auto_close_save_as_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[3]->IsChecked());
+
+	myfile << auto_put_indicator << std::endl;
+	myfile << auto_put_furnace_text << ";" << bool_to_string(check_furnace->IsChecked()) << std::endl;
+	myfile << auto_put_burner_text << ";" << bool_to_string(check_burner->IsChecked()) << std::endl;
+	myfile << auto_put_lab_text << ";" << bool_to_string(check_lab->IsChecked()) << std::endl;
+	myfile << auto_put_recipe_text << ";" << bool_to_string(check_recipe->IsChecked());
 
 	myfile.close();
 
