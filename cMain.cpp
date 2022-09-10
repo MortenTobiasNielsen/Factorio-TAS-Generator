@@ -2099,40 +2099,21 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			} else if (!auto_close_reached) {
 				if (seglist.size() == 2) {
 					if (seglist[0] == auto_close_generate_script_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[0]->Check();
-							auto_close_generate_script = true;
-						}
-						else {
-							menu_auto_close->GetMenuItems()[0]->Check(false);
-							auto_close_generate_script = false;
-						}
+						menu_auto_close->GetMenuItems()[0]->Check(seglist[1] == "true");
+						auto_close_generate_script = seglist[1] == "true";
+
 					} else if (seglist[0] == auto_close_open_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[1]->Check();
-							auto_close_open = true;
+						menu_auto_close->GetMenuItems()[1]->Check(seglist[1] == "true");
+						auto_close_open = seglist[1] == "true";
 
-						} else {
-							menu_auto_close->GetMenuItems()[1]->Check(false);
-							auto_close_open = false;
-
-						}
 					} else if (seglist[0] == auto_close_save_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[2]->Check();
-							auto_close_save = true;
-						} else {
-							menu_auto_close->GetMenuItems()[2]->Check(false);
-							auto_close_save = false;
-						}
+						menu_auto_close->GetMenuItems()[2]->Check(seglist[1] == "true");
+						auto_close_save = seglist[1] == "true";
+
 					} else if (seglist[0] == auto_close_save_as_text) {
-						if (seglist[1] == "true") {
-							menu_auto_close->GetMenuItems()[3]->Check();
-							auto_close_save_as = true;
-						} else {
-							menu_auto_close->GetMenuItems()[3]->Check(false);
-							auto_close_save_as = false;
-						}
+						menu_auto_close->GetMenuItems()[3]->Check(seglist[1] == "true");
+						auto_close_save_as = seglist[1] == "true";
+
 					} else {
 						malformed_saved_file_message();
 						return;
@@ -2145,12 +2126,16 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				if (seglist.size() == 2) {
 					if (seglist[0] == auto_put_furnace_text) {
 						check_furnace->SetValue(seglist[1] == "true");
+
 					} else if (seglist[0] == auto_put_burner_text) {
 						check_burner->SetValue(seglist[1] == "true");
+
 					} else if (seglist[0] == auto_put_lab_text) {
 						check_lab->SetValue(seglist[1] == "true");
+
 					} else if (seglist[0] == auto_put_recipe_text) {
 						check_recipe->SetValue(seglist[1] == "true");
+
 					} else {
 						malformed_saved_file_message();
 						return;

@@ -86,7 +86,6 @@ static const std::map<std::string, std::vector<std::string>> recipes = { { "Copp
 																		 { "Utility science pack", {"Flying robot frame", "1", "Low density structure", "3", "Processing unit", "2" }},
 																	   };
 
-
 static const std::map<std::string, std::vector<float>> building_size_list = { { "Accumulator", {2, 2} },
 																			  { "Wooden chest", {1, 1} },
 																			  { "Iron chest", {1, 1} },
