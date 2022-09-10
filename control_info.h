@@ -822,13 +822,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 	if (steps[step][1] == "break" or steps[step][2] == "stop") then
 		return
 	end
-	if event.entity.name == "rock-huge" or event.entity.name == "rock-big" or event.entity.name == "sand-rock-big" then
-		debug(string.format("Player mined %s - rock contained coal: %d stone: %d",
-			event.entity.name, 
-			event.buffer.get_item_count("coal"),
-			event.buffer.get_item_count("stone")
-        ))
-	end
+
 	if event.entity.name == "rock-huge" then
 		mining_event_replace(event, "coal", 47)
 		mining_event_replace(event, "stone", 47)
