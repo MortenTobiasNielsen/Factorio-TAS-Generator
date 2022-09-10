@@ -74,14 +74,14 @@ local function warning(msg)
 	end
 end
 
-local function save(nameOfSaveGame)
+local function save(task, nameOfSaveGame)
 	if game.is_multiplayer() then
-		msg(string.format("Task: %s, saving game as %s", task[1], nameOfSaveGame))
+		debug(string.format("Task: %s, saving game as %s", task, nameOfSaveGame))
 		game.server_save(nameOfSaveGame)
 		return true
 	end
 
-	warning(string.format("Task: %s, saving game as _autosave-%s", task[1], nameOfSaveGame))
+	debug(string.format("Task: %s, saving game as _autosave-%s", task, nameOfSaveGame))
 	game.auto_save(nameOfSaveGame)
 	return true;
 end
@@ -694,11 +694,6 @@ local function doStep(steps)
 		target_position = steps[3]
 
 		return launch()
-	elseif steps[2] == "save" then
-		task_category = "save"
-        task = steps[1]
-
-		return save(steps[3])
 	end
 end
 
@@ -740,6 +735,11 @@ script.on_event(defines.events.on_tick, function(event)
 		if (steps[step][2] == "speed") then
 			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
 			speed(steps[step][3])
+			step = step + 1
+		end
+
+		if steps[step][2] == "save" then
+			save(steps[step][1][1], steps[step][3])
 			step = step + 1
 		end
 
@@ -822,13 +822,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 	if (steps[step][1] == "break" or steps[step][2] == "stop") then
 		return
 	end
-	if event.entity.name == "rock-huge" or event.entity.name == "rock-big" or event.entity.name == "sand-rock-big" then
-		debug(string.format("Player mined %s - rock contained coal: %d stone: %d",
-			event.entity.name, 
-			event.buffer.get_item_count("coal"),
-			event.buffer.get_item_count("stone")
-        ))
-	end
+
 	if event.entity.name == "rock-huge" then
 		mining_event_replace(event, "coal", 47)
 		mining_event_replace(event, "stone", 47)
