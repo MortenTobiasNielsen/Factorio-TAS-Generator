@@ -3867,7 +3867,6 @@ bool cMain::save_file(bool save_as) {
 	myfile << total_lines << std::endl;
 
 	myfile << goal_indicator << std::endl;
-
 	if (menu_goals->GetMenuItems()[0]->IsChecked()) {
 		myfile << goal_steelaxe_text << std::endl;
 	} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
@@ -3881,7 +3880,6 @@ bool cMain::save_file(bool save_as) {
 	}
 
 	myfile << tasks_indicator << std::endl;
-
 	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
 		myfile << *it << std::endl;
 
@@ -3893,12 +3891,9 @@ bool cMain::save_file(bool save_as) {
 		}
 	}
 
-	std::vector<std::string> values;
-
+	myfile << save_groups_indicator << std::endl;
 	if (group_map.size()) {
-		myfile << save_groups_indicator << std::endl;
 		for (auto element : group_map) {
-
 			for (auto value : element.second) {
 				myfile << element.first + ";" + value << std::endl;
 
@@ -3912,10 +3907,9 @@ bool cMain::save_file(bool save_as) {
 		}
 	}
 
+	myfile << save_templates_indicator << std::endl;
 	if (template_map.size()) {
-		myfile << save_templates_indicator << std::endl;
 		for (auto element : template_map) {
-
 			for (auto value : element.second) {
 				myfile << element.first + ";" + value << std::endl;
 
@@ -3929,15 +3923,12 @@ bool cMain::save_file(bool save_as) {
 		}
 	}
 
-	if (generate_code_folder_location != "") {
-		myfile << save_file_indicator << std::endl;
-		myfile << save_file_location << std::endl;
+	myfile << save_file_indicator << std::endl;
+	myfile << save_file_location << std::endl;
 
-		myfile << code_file_indicator << std::endl;
+	myfile << code_file_indicator << std::endl;
+	if (generate_code_folder_location != "") {
 		myfile << generate_code_folder_location << std::endl;
-	} else {
-		myfile << save_file_indicator << std::endl;
-		myfile << save_file_location << std::endl;
 	}
 
 	myfile << auto_close_indicator << std::endl;
