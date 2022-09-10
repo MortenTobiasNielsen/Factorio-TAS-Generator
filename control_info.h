@@ -944,14 +944,14 @@ end)
 )control_lua2";
 
 std::string settings = R"settings_lua(local t = {
-  basic_materials = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
-	"iron-plate","copper-plate","copper-cable","electronic-circuit","iron-gear-wheel","iron-ore","copper-ore","stone","coal","wood"),
-  gotlap = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
-	"steel-plate","iron-stick","engine-unit","automation-science-pack","logistic-science-pack","rail","locomotive","rail-signal","rail-chain-signal","train-stop"),
-  basic_logistics = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
-	"transport-belt","underground-belt","splitter","inserter","long-handed-inserter","fast-inserter","burner-inserter","filter-inserter","stack-inserter","stack-filter-inserter"),
-  basic_construction = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
-	"burner-mining-drill","stone-furnace","electric-mining-drill","assembling-machine-1","lab","boiler","steam-engine","offshore-pump","pipe","pipe-to-ground"),
+  quickbar_1 = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"wood","coal","stone","iron-ore","copper-ore","copper-cable","iron-gear-wheel","electronic-circuit","advanced-circuit","processing-unit"),
+  quickbar_2 = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"iron-plate","copper-plate","steel-plate","plastic-bar","automation-science-pack","logistic-science-pack","chemical-science-pack","boiler","steam-engine","offshore-pump"),
+  quickbar_3 = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"transport-belt","underground-belt","splitter","burner-inserter","inserter","long-handed-inserter","fast-inserter","small-electric-pole","pipe","pipe-to-ground"),
+  quickbar_4 = string.format("[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s],[item=%s]",
+	"stone-furnace","steel-furnace","assembling-machine-1","assembling-machine-2","lab","burner-mining-drill","electric-mining-drill","pumpjack","oil-refinery","chemical-plant"),
   none = ""
 }
 
@@ -961,7 +961,7 @@ data:extend(
     type = "string-setting",
     name = "DunRaider-quickbar-1",
     setting_type = "runtime-global",
-    default_value = t.basic_materials,
+    default_value = t.quickbar_1,
     allow_blank = true,
     order = "q1",
   },
@@ -969,7 +969,7 @@ data:extend(
     type = "string-setting",
     name = "DunRaider-quickbar-2",
     setting_type = "runtime-global",
-    default_value = t.gotlap,
+    default_value = t.quickbar_2,
     allow_blank = true,
     order = "q2",
   },
@@ -977,7 +977,7 @@ data:extend(
     type = "string-setting",
     name = "DunRaider-quickbar-3",
     setting_type = "runtime-global",
-    default_value = t.basic_logistics,
+    default_value = t.quickbar_3,
     allow_blank = true,
     order = "q3",
   },
@@ -985,7 +985,7 @@ data:extend(
     type = "string-setting",
     name = "DunRaider-quickbar-4",
     setting_type = "runtime-global",
-    default_value = t.basic_construction,
+    default_value = t.quickbar_4,
     allow_blank = true,
     order = "q4",
   },
