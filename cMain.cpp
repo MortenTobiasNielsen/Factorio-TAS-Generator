@@ -3957,16 +3957,16 @@ bool cMain::save_file(bool save_as) {
 	}
 
 	myfile << auto_close_indicator << std::endl;
-	myfile << auto_close_generate_script_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[0]->IsChecked()) << std::endl;
-	myfile << auto_close_open_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[1]->IsChecked()) << std::endl;
-	myfile << auto_close_save_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[2]->IsChecked()) << std::endl;
-	myfile << auto_close_save_as_text + ";" + bool_to_string(menu_auto_close->GetMenuItems()[3]->IsChecked()) << std::endl;
+	myfile << auto_close_generate_script_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[0]->IsChecked()) << std::endl;
+	myfile << auto_close_open_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[1]->IsChecked()) << std::endl;
+	myfile << auto_close_save_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[2]->IsChecked()) << std::endl;
+	myfile << auto_close_save_as_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[3]->IsChecked());
 
 	myfile << auto_put_indicator << std::endl;
-	myfile << auto_put_furnace_text + ";" + bool_to_string(check_furnace->IsChecked()) << std::endl;
-	myfile << auto_put_burner_text + ";" + bool_to_string(check_burner->IsChecked()) << std::endl;
-	myfile << auto_put_lab_text + ";" + bool_to_string(check_lab->IsChecked()) << std::endl;
-	myfile << auto_put_recipe_text + ";" + bool_to_string(check_recipe->IsChecked());
+	myfile << auto_put_furnace_text << ";" << bool_to_string(check_furnace->IsChecked()) << std::endl;
+	myfile << auto_put_burner_text << ";" << bool_to_string(check_burner->IsChecked()) << std::endl;
+	myfile << auto_put_lab_text << ";" << bool_to_string(check_lab->IsChecked()) << std::endl;
+	myfile << auto_put_recipe_text << ";" << bool_to_string(check_recipe->IsChecked());
 
 	myfile.close();
 
