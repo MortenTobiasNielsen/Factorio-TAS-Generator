@@ -1825,6 +1825,9 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		bool templates_reached = false;
 		bool save_file_reached = false;
 		bool task_file_reached = false;
+		bool generate_code_folder_reached = false;
+		bool auto_close_reached = false;
+		bool auto_put_reached = false;
 
 		bool groups_in_file = false;
 		bool templates_in_file = false;
@@ -1868,8 +1871,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				if (seglist[0] == total_tasks_indicator) {
 					total_tasks_reached = true;
 				} else {
-					reset_to_new_window();
-					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					malformed_saved_file_message();
 					return;
 				}
 			
@@ -1896,21 +1898,35 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				templates_reached = true;
 				save_file_reached = true;
 				task_file_reached = true;
+				generate_code_folder_reached = true;
 			
+			} else if (seglist[0] == auto_close_indicator) {
+				groups_reached = true;
+				templates_reached = true;
+				save_file_reached = true;
+				task_file_reached = true;
+				generate_code_folder_reached = true;
+
+			} else if (seglist[0] == auto_put_indicator) {
+				groups_reached = true;
+				templates_reached = true;
+				save_file_reached = true;
+				task_file_reached = true;
+				generate_code_folder_reached = true;
+				auto_close_reached = true;
+
 			} else if (!goal_reached) {
 				if (seglist.size() == 1) {
 					if (is_number(seglist[0])){
 						total_lines = std::stoi(seglist[0]);
 					} else {
-						reset_to_new_window();
-						wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+						malformed_saved_file_message();
 						return;
 					}
 
 					
 				} else {
-					reset_to_new_window();
-					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					malformed_saved_file_message();
 					return;
 				}				
 
@@ -1925,14 +1941,12 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					} else if (seglist[0] == goal_debug_text) {
 						menu_goals->GetMenuItems()[3]->Check();
 					} else {
-						reset_to_new_window();
-						wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+						malformed_saved_file_message();
 						return;
 					}
 
 				} else {
-					reset_to_new_window();
-					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					malformed_saved_file_message();
 					return;
 				}
 
@@ -1962,8 +1976,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					}
 
 				} else {
-					reset_to_new_window();
-					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					malformed_saved_file_message();
 					return;
 				}
 			} else if (!templates_reached) {
@@ -2006,8 +2019,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					}
 				
 				} else {
-					reset_to_new_window();
-					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					malformed_saved_file_message();
 					return;
 				}
 			} else if (!save_file_reached) {
@@ -2048,16 +2060,61 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					}
 
 				} else {
-					reset_to_new_window();
-					wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+					malformed_saved_file_message();
 					return;
 				}
 				
 			} else if (!task_file_reached) {
 				save_file_location = seglist[0];
 
-			} else {
+			} else if (!generate_code_folder_reached) {
 				generate_code_folder_location = seglist[0];
+
+			} else if (!auto_close_reached) {
+				if (seglist.size() == 2) {
+					if (seglist[0] == auto_close_generate_script_text) {
+						if (seglist[1] == "true") {
+							menu_auto_close->GetMenuItems()[0]->Check();
+							auto_close_generate_script = true;
+						}
+						else {
+							menu_auto_close->GetMenuItems()[0]->Check(false);
+							auto_close_generate_script = false;
+						}
+					} else if (seglist[0] == auto_close_open_text) {
+						if (seglist[1] == "true") {
+							menu_auto_close->GetMenuItems()[1]->Check();
+							auto_close_open = true;
+
+						} else {
+							menu_auto_close->GetMenuItems()[1]->Check(false);
+							auto_close_open = false;
+
+						}
+					} else if (seglist[0] == auto_close_save_text) {
+						if (seglist[1] == "true") {
+							menu_auto_close->GetMenuItems()[2]->Check();
+							auto_close_save = true;
+						} else {
+							menu_auto_close->GetMenuItems()[2]->Check(false);
+							auto_close_save = false;
+						}
+					} else if (seglist[0] == auto_close_save_as_text) {
+						if (seglist[1] == "true") {
+							menu_auto_close->GetMenuItems()[3]->Check();
+							auto_close_save_as = true;
+						} else {
+							menu_auto_close->GetMenuItems()[3]->Check(false);
+							auto_close_save_as = false;
+						}
+					} else {
+						malformed_saved_file_message();
+						return;
+					}
+				} else {
+					malformed_saved_file_message();
+					return;
+				}
 			}
 		}
 
@@ -3475,61 +3532,16 @@ bool cMain::find_building() {
 	return false;
 }
 
+void cMain::malformed_saved_file_message()
+{
+	reset_to_new_window();
+	wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+}
 
-//bool cMain::find_building() {
-//	building_row_num = grid_buildings->GetNumberRows();
-//
-//	if (building_row_num == 0) {
-//		return false;
-//	}
-//
-//	int amount_true = 0;
-//	
-//	for (int i = 0; i < building_row_num; i++) {
-//
-//		if (building_x_cord != grid_buildings->GetCellValue(i, 0) || building_y_cord != grid_buildings->GetCellValue(i, 1)) {
-//			if (i == (building_row_num - 1)) {
-//				return false;
-//			}
-//
-//			continue;
-//		}
-//
-//		building = grid_buildings->GetCellValue(i, 2);
-//		building_row_num = i;
-//		break;
-//	}
-//
-//	if (!extra_building_checks()) {
-//		return false;
-//	}
-//
-//	amount_true += 1;	
-//
-//	if (std::stoi(building_amount_of_buildings) > (grid_buildings->GetNumberRows() - building_row_num)) {
-//		return false;
-//	}
-//
-//	for (int i = 1; i < std::stoi(building_amount_of_buildings); i++) {
-//		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
-//
-//		if (building_x_cord != grid_buildings->GetCellValue(building_row_num + i, 0) || building_y_cord != grid_buildings->GetCellValue(building_row_num + i, 1)) {
-//			return false;
-//		}
-//
-//		if (!extra_building_checks()) {
-//			return false;
-//		}
-//
-//		amount_true += 1;
-//	}
-//
-//	if (amount_true == std::stoi(building_amount_of_buildings)) {
-//		return true;
-//	}
-//
-//	return false;
-//}
+inline const char* const cMain::bool_to_string(bool b)
+{
+	return b ? "true" : "false";
+}
 
 bool cMain::extra_building_checks() {
 	std::string building_item_check = "";
@@ -3878,11 +3890,17 @@ bool cMain::save_file(bool save_as) {
 		myfile << save_file_location << std::endl;
 
 		myfile << code_file_indicator << std::endl;
-		myfile << generate_code_folder_location;
+		myfile << generate_code_folder_location << std::endl;
 	} else {
 		myfile << save_file_indicator << std::endl;
-		myfile << save_file_location;
+		myfile << save_file_location << std::endl;
 	}
+
+	myfile << auto_close_indicator << std::endl;
+	myfile << auto_close_generate_script_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[0]->IsChecked()) << std::endl;
+	myfile << auto_close_open_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[1]->IsChecked()) << std::endl;
+	myfile << auto_close_save_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[2]->IsChecked()) << std::endl;
+	myfile << auto_close_save_as_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[3]->IsChecked());
 
 	myfile.close();
 
