@@ -29,7 +29,7 @@ static const std::vector<std::string> splitter_list = { "Splitter",
 static const std::vector<std::string> filter_inserter_list = { "Filter inserter", 
 															   "Stack filter inserter" };
 
-static const std::map<std::string, std::vector<std::string>> testing = { { "Copper cable", {"Copper plate", "1" }},
+static const std::map<std::string, std::vector<std::string>> recipes = { { "Copper cable", {"Copper plate", "1" }},
 																		 { "Iron stick", {"Iron plate", "1" }},
 																		 { "Iron gear wheel", {"Iron plate", "2" }},
 																		 { "Electronic circuit", {"Copper cable", "3", "Iron plate", "1" }},

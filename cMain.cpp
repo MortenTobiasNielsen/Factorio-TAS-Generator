@@ -937,7 +937,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 				}
 
 				if (task == struct_tasks_list.recipe && check_recipe->IsChecked() ) {
-					std::vector<std::string> recipe = testing.find(to_check)->second;
+					std::vector<std::string> recipe = recipes.find(to_check)->second;
 
 					for (int i = 0; i < recipe.size(); i += 2 ) {
 						auto_put(recipe[i], recipe[i + 1], struct_from_into_list.input);
@@ -2144,29 +2144,13 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			} else if (!auto_put_reached) {
 				if (seglist.size() == 2) {
 					if (seglist[0] == auto_put_furnace_text) {
-						if (seglist[1] == "true") {
-							check_furnace->SetValue(true);
-						} else {
-							check_furnace->SetValue(false);
-						}
+						check_furnace->SetValue(seglist[1] == "true");
 					} else if (seglist[0] == auto_put_burner_text) {
-						if (seglist[1] == "true") {
-							check_burner->SetValue(true);
-						} else {
-							check_burner->SetValue(false);
-						}
+						check_burner->SetValue(seglist[1] == "true");
 					} else if (seglist[0] == auto_put_lab_text) {
-						if (seglist[1] == "true") {
-							check_lab->SetValue(true);
-						} else {
-							check_lab->SetValue(false);
-						}
+						check_lab->SetValue(seglist[1] == "true");
 					} else if (seglist[0] == auto_put_recipe_text) {
-						if (seglist[1] == "true") {
-							check_recipe->SetValue(true);
-						} else {
-							check_recipe->SetValue(false);
-						}
+						check_recipe->SetValue(seglist[1] == "true");
 					} else {
 						malformed_saved_file_message();
 						return;
