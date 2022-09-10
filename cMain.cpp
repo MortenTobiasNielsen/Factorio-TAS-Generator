@@ -1924,7 +1924,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				templates_reached = true;
 				save_file_reached = true;
 				task_file_reached = true;
-				generate_code_folder_reached = true;
 			
 			} else if (seglist[0] == auto_close_indicator) {
 				groups_reached = true;
