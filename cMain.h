@@ -331,6 +331,8 @@ private:
 	bool setup_for_task_group_template_grid();
 
 	bool find_building_for_script(int& row);
+
+	bool compare_task_strings(const wxString& str1, const std::string& str2);
 	
 	void update_parameters(wxGrid* grid, wxCommandEvent& event);
 	void update_group_map();

@@ -3517,9 +3517,9 @@ void cMain::find_new_orientation() {
 
 bool cMain::find_building_for_script(int& row) {
 	for (int i = row - 1; i > -1; i--) {
-		split_task(tasks_data_to_save[i]);
+		if (compare_task_strings(grid_tasks->GetCellValue(i, 0), struct_tasks_list.build)) {
+			split_task(tasks_data_to_save[i]);
 
-		if (task_segments[0] == struct_tasks_list.build) {
 			building_x_cord = task_segments[1];
 			building_y_cord = task_segments[2];
 
@@ -3544,8 +3544,9 @@ bool cMain::find_building_for_script(int& row) {
 					return true;
 				}
 			}
+		} else if (compare_task_strings(grid_tasks->GetCellValue(i, 0), struct_tasks_list.rotate)) {
+			split_task(tasks_data_to_save[i]);
 
-		} else if (task_segments[0] == struct_tasks_list.rotate) {
 			building_x_cord = task_segments[1];
 			building_y_cord = task_segments[2];
 
@@ -3564,6 +3565,20 @@ bool cMain::find_building_for_script(int& row) {
 
 	wxMessageBox("Task: " + task_number + " have no building associated with it - please correct the error and try again", "The building does not exist");
 	return false;
+}
+
+bool cMain::compare_task_strings(const wxString& str1, const std::string& str2) {
+	if (str1.length() != str2.length()) {
+		return false;
+	}
+	
+	for (int i = 0; i < str1.length(); i++) {
+		if (str1[i] != str2[i]) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 // New function
