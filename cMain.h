@@ -104,6 +104,7 @@ protected:
 	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
 	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
 	void In_memory_extract_parameters(const std::string& task_reference);
+	void In_memory_extract_parameters_buildings(const std::string& task_reference);
 	void split_task(const std::string& task_reference);
 	void OnGroupChangeClicked(wxCommandEvent& event);
 	void OnGroupDeleteClicked(wxCommandEvent& event);
@@ -252,6 +253,8 @@ private:
 	std::string building_size;
 	std::string amount_of_buildings;
 
+	int amount_of_buildings_int;
+
 	std::string building;
 
 	// Variables specific to the buildings grid
@@ -267,6 +270,8 @@ private:
 	std::string building_priority_in;
 	std::string building_priority_out;
 	std::string building_comment;
+
+	int building_amount_of_buildings_int;
 
 	std::string limit;
 	std::string recipe;
@@ -368,7 +373,7 @@ private:
 
 	void update_future_rotate_tasks();
 	void find_new_orientation();
-	bool find_building();
+	bool find_building(int amount_of_buildings);
 
 	void malformed_saved_file_message();
 	inline const char* const bool_to_string(bool b);
