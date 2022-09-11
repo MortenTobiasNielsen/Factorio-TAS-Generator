@@ -26,8 +26,8 @@
 #include <wx/radiobut.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
-#include <wx/grid.h>
 #include <wx/button.h>
+#include <wx/grid.h>
 #include <wx/notebook.h>
 #include <wx/frame.h>
 #include <wx/scrolwin.h>
@@ -110,8 +110,6 @@ protected:
 	wxCheckBox* check_recipe;
 	wxStaticLine* m_staticline14;
 	wxNotebook* m_notebook1;
-	wxPanel* m_panel61;
-	wxGrid* grid_buildings;
 	wxPanel* m_panel3;
 	wxStaticText* label_choose_group;
 	wxComboBox* cmb_choose_group;
@@ -140,6 +138,8 @@ protected:
 	wxStaticText* label_template_y_offset;
 	wxTextCtrl* txt_template_y_offset;
 	wxGrid* grid_template;
+	wxPanel* m_panel61;
+	wxGrid* grid_buildings;
 	wxNotebook* m_notebook11;
 	wxPanel* m_panel31;
 	wxButton* btn_add_task11;
@@ -215,7 +215,6 @@ protected:
 	virtual void OnLaunchChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnSaveChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnStopChosen(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnGroupChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnNewGroupClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteGroupClicked(wxCommandEvent& event) { event.Skip(); }
@@ -236,6 +235,7 @@ protected:
 	virtual void OnTemplateAddToTasksListClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateAddFromTasksListClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTemplateGridDoubleLeftClick(wxGridEvent& event) { event.Skip(); }
+	virtual void OnBuildingsGridLeftDoubleClick(wxGridEvent& event) { event.Skip(); }
 	virtual void OnAddTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnChangeTaskClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnDeleteTaskClicked(wxCommandEvent& event) { event.Skip(); }
