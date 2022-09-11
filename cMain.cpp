@@ -875,7 +875,7 @@ void cMain::update_group_template_grid(wxGrid* grid, std::vector<std::string>& l
 		grid->SetCellValue(i, 8, seglist[8]);
 
 		if (seglist.size() > 9) {
-			grid->SetCellValue(i, 8, seglist[9]);
+			grid->SetCellValue(i, 9, seglist[9]);
 		}
 
 		background_colour_update(grid, i, seglist[0]);
