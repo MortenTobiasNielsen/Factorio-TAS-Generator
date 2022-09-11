@@ -874,6 +874,11 @@ void cMain::update_group_template_grid(wxGrid* grid, std::vector<std::string>& l
 		grid->SetCellValue(i, 7, seglist[7]);
 		grid->SetCellValue(i, 8, seglist[8]);
 
+
+		if (seglist.size() > 9) {
+			grid->SetCellValue(i, 8, seglist[9]);
+		}
+
 		background_colour_update(grid, i, seglist[0]);
 	}
 }
@@ -1497,7 +1502,7 @@ void cMain::OnGroupChangeClicked(wxCommandEvent& event) {
 		group_name = cmb_choose_group->GetValue().ToStdString();
 
 		if (!(group_map.find(group_name) == group_map.end())) {
-			group_map[group_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+			group_map[group_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 		}
 	}
 
@@ -1599,7 +1604,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event) {
 	for (int i = row_num; i < row_num + row_count; i++) {
 		grid_extract_parameters(i, grid_template);
 
-		template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+		template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 	}
 
 	template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
@@ -2022,6 +2027,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 					if (seglist.size() > 9) {
 						comment = seglist[9];
+					} else {
+						comment = "";
 					}
 
 					tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
@@ -2040,7 +2047,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			} else if (!templates_reached) {
 				groups_in_file = true;
 
-				if (seglist.size() == 10) {
+				if (seglist.size() == 10 || seglist.size() == 11) {
 
 					if (group_name == "") {
 						group_name = seglist[0];
@@ -2067,7 +2074,13 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					building_size = seglist[8];
 					amount_of_buildings = seglist[9];
 
-					group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+					if (seglist.size() > 10) {
+						comment = seglist[10];
+					} else {
+						comment = "";
+					}
+
+					group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 				
 					lines_processed++;
 
@@ -2081,7 +2094,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					return;
 				}
 			} else if (!save_file_reached) {
-				if (seglist.size() == 10) {
+				if (seglist.size() == 10 || seglist.size() == 11) {
 					templates_in_file = true;
 					
 					if (template_name == "") {
@@ -2108,7 +2121,13 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 					building_size = seglist[8];
 					amount_of_buildings = seglist[9];
 
-					template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+					if (seglist.size() > 10) {
+						comment = seglist[10];
+					} else {
+						comment = "";
+					}
+
+					template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 				
 					lines_processed++;
 
@@ -2250,6 +2269,7 @@ void cMain::populate_tasks_grid() {
 		grid_tasks->SetCellValue(i, 6, seglist[6]);
 		grid_tasks->SetCellValue(i, 7, seglist[7]);
 		grid_tasks->SetCellValue(i, 8, seglist[8]);
+		grid_tasks->SetCellValue(i, 9, seglist[9]);
 
 		background_colour_update(grid_tasks, i, seglist[0]);
 	}
@@ -3244,7 +3264,7 @@ void cMain::update_group_map() {
 	for (int i = 0; i < row_num; i++) {
 		grid_extract_parameters(i, grid_group);
 
-		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 	}
 
 	group_map[group_name] = group_list;
@@ -3257,7 +3277,7 @@ void cMain::update_template_map() {
 	for (int i = 0; i < row_num; i++) {
 		grid_extract_parameters(i, grid_template);
 
-		template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";");
+		template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 	}
 
 	template_map[template_name] = template_list;
