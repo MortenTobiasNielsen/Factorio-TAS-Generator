@@ -103,6 +103,8 @@ protected:
 	void OnDeleteGroupClicked(wxCommandEvent& event);
 	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
 	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
+	void In_memory_extract_parameters(const std::string& task_reference);
+	void split_task(const std::string& task_reference);
 	void OnGroupChangeClicked(wxCommandEvent& event);
 	void OnGroupDeleteClicked(wxCommandEvent& event);
 	void OnGroupMoveUpClicked(wxCommandEvent& event);
@@ -205,6 +207,7 @@ private:
 
 	std::string segment;
 	std::vector<std::string> seglist;
+	std::vector<std::string> task_segments;
 
 	std::vector<std::string> row_selections;
 

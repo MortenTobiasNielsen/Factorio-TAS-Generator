@@ -731,7 +731,7 @@ static const std::vector<std::string> tech_list = { "Advanced electronics",
 static const std::vector<std::string> drills_list = { "Electric mining drill", 
 													  "Pumpjack" };
 
-struct {
+static const struct {
 	std::string game_speed = "Game Speed";
 	std::string walk = "Walk";
 	std::string mine = "Mine";
@@ -756,7 +756,7 @@ struct {
 
 } struct_tasks_list;
 
-struct {
+static const struct {
 	std::string input = "Input";
 	std::string output = "Output";
 	std::string fuel = "Fuel";
@@ -765,18 +765,18 @@ struct {
 	std::string wreck = "Wreck";
 } struct_from_into_list;
 
-struct  {
+static const struct {
 	std::string stone = "Stone furnace";
 	std::string steel = "Steel furnace";
 } struct_auto_put_furnace_list;
 
-struct {
+static const struct {
 	std::string burner_mining_drill = "Burner mining drill";
 	std::string burner_inserter = "Burner inserter";
 	std::string boiler = "Boiler";
 } struct_auto_put_burner_list;
 
-struct {
+static const struct {
 	std::string wood = "Wood";
 	std::string coal = "Coal";
 	std::string solid_fuel = "Solid fuel";
@@ -785,7 +785,7 @@ struct {
 	std::string uranium_fuel_cell = "Uranium fuel cell";
 } struct_fuel_list;
 
-struct {
+static const struct {
 	std::string lab = "Lab";
 	std::string red_science = "automation-science-pack";
 	std::string green_science = "logistic-science-pack";
