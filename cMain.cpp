@@ -3517,44 +3517,48 @@ void cMain::find_new_orientation() {
 
 bool cMain::find_building_for_script(int& row) {
 	for (int i = row - 1; i > -1; i--) {
-		if (grid_tasks->GetCellValue(i, 0) == "Build") {
-			building_x_cord = grid_tasks->GetCellValue(i, 1);
-			building_y_cord = grid_tasks->GetCellValue(i, 2);
+		split_task(tasks_data_to_save[i]);
+
+		if (task_segments[0] == struct_tasks_list.build) {
+			building_x_cord = task_segments[1];
+			building_y_cord = task_segments[2];
 
 			if (x_cord == building_x_cord && y_cord == building_y_cord) {
-				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				building = task_segments[4];
+				build_orientation = task_segments[5];
 
 				return true;
-					
-			} else {
-				building_direction_to_build = grid_tasks->GetCellValue(i, 6);
-				building_building_size = grid_tasks->GetCellValue(i, 7);
-				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
+			}
 
-				for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
-					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
+			building_direction_to_build = task_segments[6];
+			building_building_size = task_segments[7];
+			building_amount_of_buildings = task_segments[8];
 
-					if (x_cord == building_x_cord && y_cord == building_y_cord) {
-						building = grid_tasks->GetCellValue(i, 4).ToStdString();
-						build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+			for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
+				find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 
-						return true;
-					}
+				if (x_cord == building_x_cord && y_cord == building_y_cord) {
+					building = task_segments[4];
+					build_orientation = task_segments[5];
+
+					return true;
 				}
 			}
 
-		} else if (grid_tasks->GetCellValue(i, 0) == "Rotate") {
-			if (x_cord == grid_tasks->GetCellValue(i, 1) && y_cord == grid_tasks->GetCellValue(i, 2)) {
-				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+		} else if (task_segments[0] == struct_tasks_list.rotate) {
+			building_x_cord = task_segments[1];
+			building_y_cord = task_segments[2];
+
+			if (x_cord == building_x_cord && y_cord == building_y_cord) {
+				building = task_segments[4];
+				build_orientation = task_segments[5];
 
 				return true;
 			}
 		}
 	}
 
-	if (task == "Mine") {
+	if (task == struct_tasks_list.mine) {
 		return false;
 	}
 
