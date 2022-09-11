@@ -1079,8 +1079,6 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 		}
 	}
 
-	int saved_building_row_num = building_row_num;
-
 	// If the last row of the block is also the tasks_grid's last row then the rows are just deleted
 	if ((building_row_num + building_row_count) == grid_tasks->GetNumberRows()) {
 		grid_tasks->DeleteRows(building_row_num, building_row_count);
@@ -1101,6 +1099,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 
 		// The rows are run through, if there are no build tasks or the user gives permission to delete the build tasks
 		int total_rows = building_row_num + building_row_count;
+		int main_lines_deleted = 0;
 		
 		for (int i = building_row_num; i < total_rows; i++) {
 			building_task = grid_tasks->GetCellValue(i, 0).ToStdString();
@@ -1117,16 +1116,19 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 					int total_rows_inner = grid_tasks->GetNumberRows();
 
 					// All of the future tasks on the tasks grid are run through
-					for (int k = (building_row_num + building_row_count); k < total_rows_inner; k++) {
+					for (int k = (building_row_num + building_row_count - main_lines_deleted); k < total_rows_inner; k++) {
 						if (grid_tasks->GetCellValue(k, 1).ToStdString() == building_x_cord && grid_tasks->GetCellValue(k, 2).ToStdString() == building_y_cord) {
 							if (grid_tasks->GetCellValue(k, 0).ToStdString() == "Mine" || grid_tasks->GetCellValue(k, 0).ToStdString() == "Build") {
 								break;
 							}
 
 							grid_tasks->DeleteRows(k);
+							it1 = tasks_data_to_save.begin();
+							it1 += k + main_lines_deleted;
+							tasks_data_to_save.erase(it1);
+
 							k--;
 							total_rows_inner--;
-							total_rows--;
 						} else if (grid_tasks->GetCellValue(k, 0).ToStdString() == "Build") {
 							if (wxAtoi(grid_tasks->GetCellValue(k, 8)) > 1) {
 								x_cord = grid_tasks->GetCellValue(k, 1).ToStdString();
@@ -1149,10 +1151,6 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 				}
 
-				grid_tasks->DeleteRows(i);
-				i--;
-				total_rows--;
-				building_row_num--;
 			} else if (building_task == "Rotate") {
 				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();;
 				y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();;
@@ -1161,19 +1159,14 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 				row_num = i;
 
 				update_future_rotate_tasks();
+			} 
 
-				grid_tasks->DeleteRows(i);
-				i--;
-				total_rows--;
-			} else {
-				grid_tasks->DeleteRows(i);
-				i--;
-				total_rows--;
-			}
+			grid_tasks->DeleteRows(i);
+			i--;
+			total_rows--;
+			main_lines_deleted++;
 		}
 	}
-
-	building_row_num = saved_building_row_num;
 
 	// The row after the deleted row(s) are selected if there were no other row blocks selected
 	if (counter == 1) {
@@ -1194,7 +1187,6 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 			}
 		}
 	}
-	
 
 	it1 = tasks_data_to_save.begin();
 	it2 = tasks_data_to_save.begin();
