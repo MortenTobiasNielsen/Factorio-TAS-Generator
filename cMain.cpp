@@ -2310,7 +2310,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-	for (int i = 0; i < tasks_data_to_save.size(); i++) {
+	size_t amount_of_tasks = tasks_data_to_save.size();
+
+	for (int i = 0; i < amount_of_tasks; i++) {
 		In_memory_extract_parameters(tasks_data_to_save[i]);
 
 		if (task == "Start") {
@@ -2320,7 +2322,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		task_number = std::to_string(i + 1);
 
 		if (i > 0 && i % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(row_num) * 100.0f - 1);
+			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(amount_of_tasks) * 100.0f - 1);
 			wxYield();
 		}
 
