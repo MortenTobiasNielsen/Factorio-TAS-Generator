@@ -333,6 +333,8 @@ private:
 
 	void setup_paramters(std::vector<bool> parameters);
 
+	void populate_tasks_grid();
+
 	bool setup_for_task_group_template_grid();
 
 	bool find_building_for_script(int& row);

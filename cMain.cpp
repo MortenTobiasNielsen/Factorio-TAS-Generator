@@ -2007,6 +2007,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 				}
 
 			} else if (!groups_reached) {
+				tasks_data_to_save.reserve(total_lines * 2);
+
 				if (seglist.size() == 9 || seglist.size() == 10) {
 					task = seglist[0];
 					x_cord = seglist[1];
@@ -2022,7 +2024,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 						comment = seglist[9];
 					}
 
-					update_tasks_grid();
+					tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 
 					lines_processed++;
 
@@ -2177,6 +2179,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 		}
 
+		populate_tasks_grid();
+
 		if (groups_in_file) {
 			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
 			cmb_choose_group->Clear();
@@ -2217,6 +2221,38 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 	}
 
 	event.Skip();
+}
+
+void cMain::populate_tasks_grid() {
+	if (grid_tasks->GetNumberRows() > 0) {
+		grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
+	}
+
+	size_t amount_of_tasks = tasks_data_to_save.size();
+
+	grid_tasks->InsertRows(0, amount_of_tasks);
+
+	for (unsigned int i = 0; i < amount_of_tasks; i++) {
+		std::stringstream data_line;
+		data_line.str(tasks_data_to_save[i]);
+		seglist = {};
+
+		while (std::getline(data_line, segment, ';')) {
+			seglist.push_back(segment);
+		}
+
+		grid_tasks->SetCellValue(i, 0, seglist[0]);
+		grid_tasks->SetCellValue(i, 1, seglist[1]);
+		grid_tasks->SetCellValue(i, 2, seglist[2]);
+		grid_tasks->SetCellValue(i, 3, seglist[3]);
+		grid_tasks->SetCellValue(i, 4, seglist[4]);
+		grid_tasks->SetCellValue(i, 5, seglist[5]);
+		grid_tasks->SetCellValue(i, 6, seglist[6]);
+		grid_tasks->SetCellValue(i, 7, seglist[7]);
+		grid_tasks->SetCellValue(i, 8, seglist[8]);
+
+		background_colour_update(grid_tasks, i, seglist[0]);
+	}
 }
 
 void cMain::OnMenuSave(wxCommandEvent& event) {
@@ -2274,7 +2310,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-	for (int i = 0; i < tasks_data_to_save.size(); i++) {
+	size_t amount_of_tasks = tasks_data_to_save.size();
+
+	for (int i = 0; i < amount_of_tasks; i++) {
 		In_memory_extract_parameters(tasks_data_to_save[i]);
 
 		if (task == "Start") {
@@ -2284,7 +2322,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		task_number = std::to_string(i + 1);
 
 		if (i > 0 && i % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(row_num) * 100.0f - 1);
+			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(amount_of_tasks) * 100.0f - 1);
 			wxYield();
 		}
 
