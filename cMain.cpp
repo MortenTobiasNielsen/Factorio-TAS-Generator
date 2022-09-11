@@ -16,6 +16,9 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	SetIcon(icon_xpm);
 	SetLabel(window_title);
 
+	task_segments.reserve(100);
+	seglist.reserve(100);
+
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
 	
@@ -1422,6 +1425,33 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
+void cMain::In_memory_extract_parameters(const std::string& task_reference) {
+	split_task(task_reference);
+
+	task = task_segments[0];
+	x_cord = task_segments[1];
+	y_cord = task_segments[2];
+	units = task_segments[3];
+	item = task_segments[4];
+	build_orientation = task_segments[5];
+	direction_to_build = task_segments[6];
+	building_size = task_segments[7];
+	amount_of_buildings = task_segments[8];
+	comment = task_segments[9];
+}
+
+void cMain::split_task(const std::string& task_reference) {
+
+	std::stringstream data_line;
+	data_line.str(task_reference);
+
+	task_segments = {};
+
+	while (std::getline(data_line, segment, ';')) {
+		task_segments.push_back(segment);
+	}
+}
+
 void cMain::grid_extract_parameters(const int &row, wxGrid* grid) {
 	task = grid->GetCellValue(row, 0).ToStdString();
 	x_cord = grid->GetCellValue(row, 1).ToStdString();
@@ -2226,8 +2256,6 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	clear_tasks();
 	reset_coordinates();
 
-	row_num = grid_tasks->GetNumberRows();
-
 	if (!dialog_progress_bar) {
 		dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
 	}
@@ -2237,8 +2265,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-	for (int i = 0; i < row_num; i++) {
-		grid_extract_parameters(i, grid_tasks);
+	for (int i = 0; i < tasks_data_to_save.size(); i++) {
+		In_memory_extract_parameters(tasks_data_to_save[i]);
 
 		if (task == "Start") {
 			clear_tasks();
@@ -3489,49 +3517,68 @@ void cMain::find_new_orientation() {
 
 bool cMain::find_building_for_script(int& row) {
 	for (int i = row - 1; i > -1; i--) {
-		building_x_cord = grid_tasks->GetCellValue(i, 1);
-		building_y_cord = grid_tasks->GetCellValue(i, 2);
+		if (compare_task_strings(grid_tasks->GetCellValue(i, 0), struct_tasks_list.build)) {
+			split_task(tasks_data_to_save[i]);
 
-		if (grid_tasks->GetCellValue(i, 0) == "Build") {
+			building_x_cord = task_segments[1];
+			building_y_cord = task_segments[2];
 
 			if (x_cord == building_x_cord && y_cord == building_y_cord) {
-				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				building = task_segments[4];
+				build_orientation = task_segments[5];
 
 				return true;
 			}
 
-			building_direction_to_build = grid_tasks->GetCellValue(i, 6);
-			building_building_size = grid_tasks->GetCellValue(i, 7);
-			building_amount_of_buildings = grid_tasks->GetCellValue(i, 8);
+			building_direction_to_build = task_segments[6];
+			building_building_size = task_segments[7];
+			building_amount_of_buildings = task_segments[8];
 
 			for (int j = 1; j < std::stoi(building_amount_of_buildings); j++) {
 				find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 
 				if (x_cord == building_x_cord && y_cord == building_y_cord) {
-					building = grid_tasks->GetCellValue(i, 4).ToStdString();
-					build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+					building = task_segments[4];
+					build_orientation = task_segments[5];
 
 					return true;
 				}
 			}
+		} else if (compare_task_strings(grid_tasks->GetCellValue(i, 0), struct_tasks_list.rotate)) {
+			split_task(tasks_data_to_save[i]);
 
-		} else if (grid_tasks->GetCellValue(i, 0) == "Rotate") {
+			building_x_cord = task_segments[1];
+			building_y_cord = task_segments[2];
+
 			if (x_cord == building_x_cord && y_cord == building_y_cord) {
-				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
+				building = task_segments[4];
+				build_orientation = task_segments[5];
 
 				return true;
 			}
 		}
 	}
 
-	if (task == "Mine") {
+	if (task == struct_tasks_list.mine) {
 		return false;
 	}
 
 	wxMessageBox("Task: " + task_number + " have no building associated with it - please correct the error and try again", "The building does not exist");
 	return false;
+}
+
+bool cMain::compare_task_strings(const wxString& str1, const std::string& str2) {
+	if (str1.length() != str2.length()) {
+		return false;
+	}
+	
+	for (int i = 0; i < str1.length(); i++) {
+		if (str1[i] != str2[i]) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 // New function

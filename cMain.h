@@ -103,6 +103,8 @@ protected:
 	void OnDeleteGroupClicked(wxCommandEvent& event);
 	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
 	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
+	void In_memory_extract_parameters(const std::string& task_reference);
+	void split_task(const std::string& task_reference);
 	void OnGroupChangeClicked(wxCommandEvent& event);
 	void OnGroupDeleteClicked(wxCommandEvent& event);
 	void OnGroupMoveUpClicked(wxCommandEvent& event);
@@ -205,6 +207,7 @@ private:
 
 	std::string segment;
 	std::vector<std::string> seglist;
+	std::vector<std::string> task_segments;
 
 	std::vector<std::string> row_selections;
 
@@ -328,6 +331,8 @@ private:
 	bool setup_for_task_group_template_grid();
 
 	bool find_building_for_script(int& row);
+
+	bool compare_task_strings(const wxString& str1, const std::string& str2);
 	
 	void update_parameters(wxGrid* grid, wxCommandEvent& event);
 	void update_group_map();
