@@ -874,7 +874,6 @@ void cMain::update_group_template_grid(wxGrid* grid, std::vector<std::string>& l
 		grid->SetCellValue(i, 7, seglist[7]);
 		grid->SetCellValue(i, 8, seglist[8]);
 
-
 		if (seglist.size() > 9) {
 			grid->SetCellValue(i, 8, seglist[9]);
 		}
