@@ -776,7 +776,8 @@ void cMain::update_buildings() {
 
 	update_buildings_grid();
 
-	for (int i = 1; i < std::stoi(building_amount_of_buildings); i++) {
+	int amount_of_buildings = std::stoi(building_amount_of_buildings);
+	for (int i = 1; i < amount_of_buildings; i++) {
 		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 		update_buildings_grid();
 	}
@@ -3595,7 +3596,7 @@ bool cMain::find_building() {
 	
 	for (int j = 0; j < building_row_num; j++) {
 
-		if (building_x_cord != grid_buildings->GetCellValue(j, 0) || building_y_cord != grid_buildings->GetCellValue(j, 1)) {
+		if (!compare_task_strings(grid_buildings->GetCellValue(j, 0), building_x_cord) || !compare_task_strings(grid_buildings->GetCellValue(j, 1), building_y_cord)) {
 			if (j == (building_row_num - 1)) {
 				return false;
 			}
