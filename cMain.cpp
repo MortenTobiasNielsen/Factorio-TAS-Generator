@@ -681,17 +681,7 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 	}
 
 	for (int i = start_row; i < end_row; i++) {
-		building_task = grid_tasks->GetCellValue(i, 0).ToStdString();
-		building_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-		building_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-		building_units = grid_tasks->GetCellValue(i, 3).ToStdString();
-		building_item = grid_tasks->GetCellValue(i, 4).ToStdString();
-		building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-		building_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
-		building_building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-		building_amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
-		building_comment = grid_tasks->GetCellValue(i, 9).ToStdString();
-
+		In_memory_extract_parameters_buildings(tasks_data_to_save[i]);
 		task_number = std::to_string(i + 1);
 
 		if (building_task == "Build" ) {
@@ -747,15 +737,15 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 			}
 
 		} else if (building_task == "Mine") {
-			building_amount_of_buildings = "1";
-			if (find_building()) {
+			if (find_building(1)) {
 				grid_buildings->DeleteRows(building_row_num);
 			}
 		} else if (building_task == "Take" || building_task == "Put") {
 			if (building_build_orientation != "Wreck") {
-				for (int j = 0; j < std::stoi(building_amount_of_buildings); j++) {
+				building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
+				for (int j = 0; j < building_amount_of_buildings_int; j++) {
 
-					if (!find_building()) {
+					if (!find_building(building_amount_of_buildings_int)) {
 						wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 						return;
 					}
@@ -776,15 +766,17 @@ void cMain::update_buildings() {
 
 	update_buildings_grid();
 
-	for (int i = 1; i < std::stoi(building_amount_of_buildings); i++) {
+	int amount_of_buildings = std::stoi(building_amount_of_buildings);
+	for (int i = 1; i < amount_of_buildings; i++) {
 		find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 		update_buildings_grid();
 	}
 }
 
 bool cMain::update_recipe() {
-	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
-		if (find_building()) {
+	building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
+	for (int i = 0; i < building_amount_of_buildings_int; i++) {
+		if (find_building(building_amount_of_buildings_int)) {
 			grid_buildings->SetCellValue(building_row_num, 5, building_item);
 		} else {
 			return false;
@@ -797,8 +789,9 @@ bool cMain::update_recipe() {
 }
 
 bool cMain::update_limit() {
+	building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
 	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
-		if (find_building()) {
+		if (find_building(building_amount_of_buildings_int)) {
 			grid_buildings->SetCellValue(building_row_num, 4, building_units);
 		} else {
 			return false;
@@ -810,8 +803,9 @@ bool cMain::update_limit() {
 }
 
 bool cMain::update_priority() {
-	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
-		if (find_building()) {
+	building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
+	for (int i = 0; i < building_amount_of_buildings_int; i++) {
+		if (find_building(building_amount_of_buildings_int)) {
 			grid_buildings->SetCellValue(building_row_num, 6, building_priority_in);
 			grid_buildings->SetCellValue(building_row_num, 7, building_priority_out);
 		} else {
@@ -825,8 +819,9 @@ bool cMain::update_priority() {
 }
 
 bool cMain::update_filter() {
-	for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
-		if (find_building()) {
+	building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
+	for (int i = 0; i < building_amount_of_buildings_int; i++) {
+		if (find_building(building_amount_of_buildings_int)) {
 			grid_buildings->SetCellValue(building_row_num, 8, building_item);
 		} else {
 			return false;
@@ -839,8 +834,7 @@ bool cMain::update_filter() {
 }
 
 bool cMain::Update_rotation() {
-	building_amount_of_buildings = "1";
-	if (find_building()) {
+	if (find_building(1)) {
 		building_build_orientation = grid_buildings->GetCellValue(building_row_num, 5);
 
 		find_new_orientation();
@@ -1438,6 +1432,21 @@ void cMain::In_memory_extract_parameters(const std::string& task_reference) {
 	building_size = task_segments[7];
 	amount_of_buildings = task_segments[8];
 	comment = task_segments[9];
+}
+
+void cMain::In_memory_extract_parameters_buildings(const std::string& task_reference) {
+	split_task(task_reference);
+
+	building_task = task_segments[0];
+	building_x_cord = task_segments[1];
+	building_y_cord = task_segments[2];
+	building_units = task_segments[3];
+	building_item = task_segments[4];
+	building_build_orientation = task_segments[5];
+	building_direction_to_build = task_segments[6];
+	building_building_size = task_segments[7];
+	building_amount_of_buildings = task_segments[8];
+	building_comment = task_segments[9];
 }
 
 void cMain::split_task(const std::string& task_reference) {
@@ -3582,20 +3591,20 @@ bool cMain::compare_task_strings(const wxString& str1, const std::string& str2) 
 }
 
 // New function
-bool cMain::find_building() {
+bool cMain::find_building(int amount_of_buildings) {
 	building_row_num = grid_buildings->GetNumberRows();
 
 	if (building_row_num == 0) {
 		return false;
 	}
 
-	if (std::stoi(building_amount_of_buildings) > (grid_buildings->GetNumberRows())) {
+	if (amount_of_buildings > building_row_num) {
 		return false;
 	}
 	
 	for (int j = 0; j < building_row_num; j++) {
 
-		if (building_x_cord != grid_buildings->GetCellValue(j, 0) || building_y_cord != grid_buildings->GetCellValue(j, 1)) {
+		if (!compare_task_strings(grid_buildings->GetCellValue(j, 0), building_x_cord) || !compare_task_strings(grid_buildings->GetCellValue(j, 1), building_y_cord)) {
 			if (j == (building_row_num - 1)) {
 				return false;
 			}
@@ -3735,8 +3744,7 @@ bool cMain::check_take_put(std::string& item) {
 bool cMain::check_buildings_grid() {
 	
 	if (building_task == "Mine")  {
-		building_amount_of_buildings = "1";
-		if (find_building()) {
+		if (find_building(1)) {
 			int total_rows = grid_tasks->GetNumberRows();
 
 			mine_building_found = true;
@@ -3832,8 +3840,9 @@ bool cMain::check_buildings_grid() {
 		}
 
 	} else if (building_task == "Take" || building_task == "Put") {
-		for (int i = 0; i < std::stoi(building_amount_of_buildings); i++) {
-			if (from_into != "Wreck" && !find_building()) {
+		building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
+		for (int i = 0; i < building_amount_of_buildings_int; i++) {
+			if (from_into != "Wreck" && !find_building(building_amount_of_buildings_int)) {
 				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 				return false;
 			} 
@@ -3842,8 +3851,7 @@ bool cMain::check_buildings_grid() {
 		}
 
 	} else if (building_task == "Launch") {
-		building_amount_of_buildings = "1";
-		if (!find_building()) {
+		if (!find_building(1)) {
 			wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
 			return false;
 		}
