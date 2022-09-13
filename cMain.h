@@ -133,6 +133,8 @@ protected:
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
 
 private:
+	std::string software_version = "0.0.5";
+
 	wxString window_title = "EZRaiderz TAS Helper";
 
 	Shortcuts_Menu* shortcuts = nullptr;

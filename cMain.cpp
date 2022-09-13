@@ -2541,7 +2541,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 		saver.open(generate_code_folder_location + "\\info.json");
 		saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-		saver << "\n\t\"version\": \"0.0.2\",";
+		saver << "\n\t\"version\": \"" << software_version << "\",";
 		saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
 		saver << info;
 		saver.close();
