@@ -13,6 +13,13 @@ local t = {
 data:extend(
 {
   {
+    type = "bool-setting",
+    name = "DunRaider-cheat-rock",
+    setting_type = "startup",
+    default_value = true,
+    order = "s1",
+  },
+  {
     type = "string-setting",
     name = "DunRaider-quickbar-1",
     setting_type = "runtime-global",
