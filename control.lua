@@ -1,9 +1,8 @@
-require("goal")
 local util = require("util")
 local crash_site = require("crash-site")
 
 local steps = require("steps")
-local debug_state = false
+local debug_state = require("goal")
 local run = true
 
 local step = 1
