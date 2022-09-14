@@ -2530,60 +2530,48 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	{
 		std::ofstream saver;
 
-		namespace fs = std::filesystem; // create folders if they don't exist
+	if (!menu_script->GetMenuItems()[2]->IsChecked()) {
+		namespace fs = std::filesystem;
+		//copy lua files to tas mod if they are newer
+		fs::copy_file("control.lua", generate_code_folder_location + "\\control.lua", fs::copy_options::update_existing);
+		fs::copy_file("settings.lua", generate_code_folder_location + "\\settings.lua", fs::copy_options::update_existing);
+		//add locale directory
 		fs::create_directories(generate_code_folder_location + "\\locale\\en");
+		fs::copy_file("locale.cfg", generate_code_folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);
 
-		saver.open(generate_code_folder_location + "\\locale\\en\\locale.cfg"); //it doesn't need to be named locale but the path is important
-
-		saver << locale;
-		saver.close();
-
-		if (!menu_script->GetMenuItems()[2]->IsChecked()) {
-			saver.open(generate_code_folder_location + "\\control.lua");
-			saver << control_lua1;
-			saver << control_lua2;
-
-			if (menu_goals->GetMenuItems()[0]->IsChecked()) {
-				saver << control_steel_axe << std::endl;
-			} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
-				saver << control_GOTLAP << std::endl;
-			} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
-				saver << control_any_percent << std::endl;
-			} else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
-				saver << control_debug << std::endl;
-			}
-
-			saver.close();
-
-			saver.open(generate_code_folder_location + "\\info.json");
-			saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-			saver << "\n\t\"version\": \"" << software_version << "\",";
-			saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-			saver << info;
-			saver.close();
+		//Determine goal file
+		std::string goal;
+		if (menu_goals->GetMenuItems()[0]->IsChecked()) {
+			goal = "goal_steelaxe.lua";
+		}
+		else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+			goal = "goal_gotlap.lua";
+	}
+		else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+			goal = "goal_any_percent.lua";
+		}
+		else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
+			goal = "goal_debug.lua";
 		}
 
-		saver.open(generate_code_folder_location + "\\steps.lua");
+		//always copy goal file
+		fs::copy_file(goal, generate_code_folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
+	}
+
+	//generate info file
+	saver.open(generate_code_folder_location + "\\info.json");
+	saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+	saver << "\n\t\"version\": \"" << software_version << "\",";
+	saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+	saver << info;
+	saver.close();
+
+	//generate step file
+	saver.open(generate_code_folder_location + "\\steps.lua");
 
 		saver << end_tasks();
 
-		saver.close();
-
-		saver.open(generate_code_folder_location + "\\settings.lua");
-		saver << settings;
-		saver.close();
-	}
-	catch (const std::exception&)
-	{
-		wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-		if (dlg.ShowModal() == wxID_OK) {
-			generate_code_folder_location = dlg.GetPath().ToStdString();
-		}
-		else {
-			return;
-		}
-	}
+	saver.close();
 
 	dialog_progress_bar->set_progress(100);
 	if (auto_close_generate_script) {
