@@ -805,7 +805,7 @@ local function mining_event_replace(event, item_name, amount)
 	end --on correct amount do nothing
 end
 
-script.on_event(defines.events.on_player_mined_entity, function(event)
+local function cheaty_rocks(event)
 
 	if (steps[step][1] == "break" or steps[step][2] == "stop") then
 		return
@@ -827,6 +827,9 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 	step = step + 1
 	mining = 0
 	ticks_mining = 0
+end
+
+		script.on_event(defines.events.on_player_mined_entity, cheaty_rocks)
 end)
 
 -- Skips the freeplay intro
