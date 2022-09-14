@@ -39,6 +39,23 @@ local neg_neg = false
 local drop_item
 local drop_position
 
+--recreate crash site
+local on_player_created = function(event)
+	if remote.interfaces["freeplay"] == nil then return end
+
+	local player = game.get_player(event.player_index)
+	local surface = player.surface
+	local crashed_ship_items = remote.call("freeplay", "get_ship_items")
+	local crashed_debris_items = remote.call("freeplay", "get_debris_items")
+	util.insert_safe(player, global.created_items)
+
+    surface.daytime = 0.7
+    crash_site.create_crash_site(surface, {-5,-6}, util.copy(crashed_ship_items), util.copy(crashed_debris_items))
+    util.remove_safe(player, crashed_ship_items)
+    util.remove_safe(player, crashed_debris_items)
+    player.get_main_inventory().sort_and_merge()
+end
+
 --Print message intended for viewers
 local function msg(msg) 
     player.print(msg)
@@ -872,6 +889,20 @@ local function set_quick_bar(event)
 	end
 end
 
-script.on_event(defines.events.on_cutscene_cancelled, function(event)
+script.on_event(defines.events.on_player_joined_game, function(event)
 	set_quick_bar(event)
+end)
+
+script.on_event(defines.events.on_player_created, function(event)
+	set_quick_bar(event)
+	on_player_created(event)
+end)
+
+
+script.on_init(function()
+    local freeplay = remote.interfaces["freeplay"]
+    if freeplay then
+		if freeplay["set_skip_intro"] then remote.call("freeplay", "set_skip_intro", true) end -- Disable freeplay popup-message
+        if freeplay["set_disable_crashsite"] then remote.call("freeplay", "set_disable_crashsite", true) end --Disable crashsite
+    end
 end)
