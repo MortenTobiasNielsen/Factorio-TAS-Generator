@@ -829,7 +829,10 @@ local function cheaty_rocks(event)
 	ticks_mining = 0
 end
 
+script.on_init(function()
+	if settings.startup["DunRaider-cheat-rock"].value then
 		script.on_event(defines.events.on_player_mined_entity, cheaty_rocks)
+	end
 end)
 
 -- Skips the freeplay intro
