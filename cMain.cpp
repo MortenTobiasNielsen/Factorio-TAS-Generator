@@ -2337,11 +2337,6 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	size_t amount_of_tasks = tasks_data_to_save.size();
 
 	for (int i = 0; i < amount_of_tasks; i++) {
-		
-		if (i > 2937) {
-			int test = 1;
-		}
-
 		In_memory_extract_parameters(tasks_data_to_save[i]);
 
 		if (task == "Start") {
