@@ -2525,40 +2525,45 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		}
 	}
 
-	// If the file is send to another person the folder location won't exist and should be set to something else. 
-	try
-	{
-		std::ofstream saver;
+	// If the file is send to another person the folder location won't exist and should be set to something else.
+	namespace fs = std::filesystem;
+	if (!fs::exists(generate_code_folder_location)) {
+		wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+
+		if (dlg.ShowModal() == wxID_OK) {
+			generate_code_folder_location = dlg.GetPath().ToStdString();
+		}
+		else {
+			return;
+		}
+	}
 
 	if (!menu_script->GetMenuItems()[2]->IsChecked()) {
-		namespace fs = std::filesystem;
-		//copy lua files to tas mod if they are newer
-		fs::copy_file("control.lua", generate_code_folder_location + "\\control.lua", fs::copy_options::update_existing);
-		fs::copy_file("settings.lua", generate_code_folder_location + "\\settings.lua", fs::copy_options::update_existing);
+		
 		//add locale directory
 		fs::create_directories(generate_code_folder_location + "\\locale\\en");
 		fs::copy_file("locale.cfg", generate_code_folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);
 
+		//copy lua files to tas mod if they are newer
+		fs::copy_file("control.lua", generate_code_folder_location + "\\control.lua", fs::copy_options::update_existing);
+		fs::copy_file("settings.lua", generate_code_folder_location + "\\settings.lua", fs::copy_options::update_existing);
+
 		//Determine goal file
-		std::string goal;
+		std::string goal = "goal_debug.lua";
 		if (menu_goals->GetMenuItems()[0]->IsChecked()) {
 			goal = "goal_steelaxe.lua";
-		}
-		else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+		} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
 			goal = "goal_gotlap.lua";
-	}
-		else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+		} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
 			goal = "goal_any_percent.lua";
-		}
-		else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
-			goal = "goal_debug.lua";
-		}
+		} 
 
 		//always copy goal file
 		fs::copy_file(goal, generate_code_folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
 	}
 
 	//generate info file
+	std::ofstream saver;
 	saver.open(generate_code_folder_location + "\\info.json");
 	saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
 	saver << "\n\t\"version\": \"" << software_version << "\",";
@@ -2569,7 +2574,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	//generate step file
 	saver.open(generate_code_folder_location + "\\steps.lua");
 
-		saver << end_tasks();
+	saver << end_tasks();
 
 	saver.close();
 
