@@ -2030,6 +2030,11 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 						comment = "";
 					}
 
+					// Needed to fix a misalignment between previous version and the actual name in game.
+					if (item == "Long handed inserter") {
+						item = "Long-handed inserter";
+					}
+
 					tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 
 					lines_processed++;
@@ -2332,6 +2337,11 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 	size_t amount_of_tasks = tasks_data_to_save.size();
 
 	for (int i = 0; i < amount_of_tasks; i++) {
+		
+		if (i > 2937) {
+			int test = 1;
+		}
+
 		In_memory_extract_parameters(tasks_data_to_save[i]);
 
 		if (task == "Start") {
@@ -2520,49 +2530,65 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		}
 	}
 
-	std::ofstream saver;
+	// If the file is send to another person the folder location won't exist and should be set to something else. 
+	try
+	{
+		std::ofstream saver;
 
-	if (!menu_script->GetMenuItems()[2]->IsChecked()) {
-		saver.open(generate_code_folder_location + "\\control.lua");
-		saver << control_lua1;
-		saver << control_lua2;
+		namespace fs = std::filesystem; // create folders if they don't exist
+		fs::create_directories(generate_code_folder_location + "\\locale\\en");
 
-		if (menu_goals->GetMenuItems()[0]->IsChecked()) {
-			saver << control_steel_axe << std::endl;
-		} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
-			saver << control_GOTLAP << std::endl;
-		} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
-			saver << control_any_percent << std::endl;
-		} else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
-			saver << control_debug << std::endl;
+		saver.open(generate_code_folder_location + "\\locale\\en\\locale.cfg"); //it doesn't need to be named locale but the path is important
+
+		saver << locale;
+		saver.close();
+
+		if (!menu_script->GetMenuItems()[2]->IsChecked()) {
+			saver.open(generate_code_folder_location + "\\control.lua");
+			saver << control_lua1;
+			saver << control_lua2;
+
+			if (menu_goals->GetMenuItems()[0]->IsChecked()) {
+				saver << control_steel_axe << std::endl;
+			} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+				saver << control_GOTLAP << std::endl;
+			} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+				saver << control_any_percent << std::endl;
+			} else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
+				saver << control_debug << std::endl;
+			}
+
+			saver.close();
+
+			saver.open(generate_code_folder_location + "\\info.json");
+			saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+			saver << "\n\t\"version\": \"" << software_version << "\",";
+			saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
+			saver << info;
+			saver.close();
 		}
 
+		saver.open(generate_code_folder_location + "\\steps.lua");
+
+		saver << end_tasks();
+
 		saver.close();
 
-		saver.open(generate_code_folder_location + "\\info.json");
-		saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-		saver << "\n\t\"version\": \"" << software_version << "\",";
-		saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-		saver << info;
+		saver.open(generate_code_folder_location + "\\settings.lua");
+		saver << settings;
 		saver.close();
 	}
+	catch (const std::exception&)
+	{
+		wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
-	saver.open(generate_code_folder_location + "\\steps.lua");
-
-	saver << end_tasks();
-
-	saver.close();
-
-	saver.open(generate_code_folder_location + "\\settings.lua");
-	saver << settings;
-	saver.close();
-
-	namespace fs = std::filesystem; // create folders if they don't exist
-	fs::create_directories(generate_code_folder_location + "\\locale\\en");
-
-	saver.open(generate_code_folder_location + "\\locale\\en\\locale.cfg"); //it doesn't need to be named locale but the path is important
-	saver << locale;
-	saver.close();
+		if (dlg.ShowModal() == wxID_OK) {
+			generate_code_folder_location = dlg.GetPath().ToStdString();
+		}
+		else {
+			return;
+		}
+	}
 
 	dialog_progress_bar->set_progress(100);
 	if (auto_close_generate_script) {
