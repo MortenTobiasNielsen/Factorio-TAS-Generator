@@ -29,6 +29,7 @@ local rev
 local duration = 0
 local ticks_mining = 0
 local idled = 0
+local font_size = 0.15 --best guess estimate of fontsize for flying text
 
 local pos_pos = false
 local pos_neg = false
@@ -92,6 +93,10 @@ local function save(task, nameOfSaveGame)
 	debug(string.format("Task: %s, saving game as _autosave-%s", task, nameOfSaveGame))
 	game.auto_save(nameOfSaveGame)
 	return true;
+end
+
+local function format_name(str)
+	return str:gsub("^%l", string.upper):gsub("-", " ") --uppercase first letter and replace dashes with spaces
 end
 
 -- Check that the entity can be selected and is within reach
@@ -166,10 +171,12 @@ local function put()
 
 	player.remove_item{name=item, count=amount}
 
+	local text = string.format("-%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"-2 Iron plate (5)"
+	local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
 	player.play_sound{path="utility/inventory_move"}
 	player.create_local_flying_text{
-		text=string.format("-%d %s (%d)", amount, item, player.get_item_count(item)), -- "-2 iron plate (5)"
-		position=target_inventory.entity_owner.position}
+		text=text, 
+		position=pos}
 
 	return true
 end
@@ -207,10 +214,12 @@ local function take()
 
 	target_inventory.remove{name=item, count=amount}
 	
+	local text = string.format("+%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"+2 Iron plate (5)"
+	local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
 	player.play_sound{path="utility/inventory_move"}
 	player.create_local_flying_text{
-		text=string.format("+%d %s (%d)", amount, item, player.get_item_count(item)), -- "+2 iron plate (5)"
-		position=target_inventory.entity_owner.position}
+		text=text,
+		position=pos}
 
 	return true
 end
