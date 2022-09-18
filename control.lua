@@ -467,17 +467,18 @@ local function find_walking_pattern()
 end
 
 local function rotate()
-
+	local r = false
 	if not check_selection_reach() then
 		return false;
 	end
 
 	if rev then
-		player_selection.rotate({reverse = true})
-		return true
+		r = player_selection.rotate({reverse = true})
+	else 
+		r = player_selection.rotate({reverse = false})
 	end 
 
-	player_selection.rotate({reverse = false})
+	if r then player.play_sound{path="utility/rotated_small"} end
 	
 	return true
 end
