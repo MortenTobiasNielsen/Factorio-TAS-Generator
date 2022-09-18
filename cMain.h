@@ -9,8 +9,15 @@
 #include <fstream>
 #include <sstream>
 
+#include <iomanip>
+#include <locale>
+#include <codecvt>
+#include <filesystem>
+
+
 #include "GUI_Base.h"
 #include "ScriptProgressBar.h"
+#include "icon.xpm"
 
 class cMain : public GUI_Base {
 public:
