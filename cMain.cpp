@@ -2341,8 +2341,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	for (int i = 0; i < amount_of_tasks; i++) {
 		In_memory_extract_parameters(tasks_data_to_save[i]);
-
-		if (task == "Start") {
+		auto t = map_task_name[task];
+		if (t == e_start) {
 			clear_tasks();
 		}
 
@@ -2353,113 +2353,65 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			wxYield();
 		}
 
-		if (task == "Game Speed") {
-			speed(task_number, units);
-			continue;
-		}
-		
-		if (task == "Walk") {
-			walk(task_number, "1", x_cord, y_cord);
-			continue;
-		}
-		
-		if (task == "Mine") {
+		switch (t) {
+		case e_game_speed: speed(task_number, units); break;
+		case e_walk: walk(task_number, "1", x_cord, y_cord); break;
+		case e_mine: 
 			if (units == "All") {
 				units = "1000";
 			}
 
 			if (find_building_for_script(i)) {
 				mining(task_number, x_cord, y_cord, units, building, build_orientation, true);
-			} else {
+			}
+			else {
 				mining(task_number, x_cord, y_cord, units, "", "", false);
 			}
+			break;
 
-			continue;
-		}
-		
-		if (task == "Rotate") {
+		case e_rotate:
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			rotate(task_number, x_cord, y_cord, units, item, build_orientation);
-			continue;
-		}
+			break;
 		
-		if (task == "Craft") {
-			if (units == "All") {
-				craft(task_number, "-1", item);
-			} else {
-				craft(task_number, units, item);
-			}
-
-			continue;
-		}
-		
-		if (task == "Tech") {
-			tech(task_number, item);
-			continue;
-		}
-		
-		if (task == "Build") {
-			row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
-			continue;
-		}
-		
-		if (task == "Take") {
+		case e_craft: craft(task_number, units == "All" ? "-1" : units, item); break;
+		case e_tech: tech(task_number, item); break;
+		case e_build: row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size); break;
+		case e_take: 
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
 			if (from_into == "Not Found") {
 				return;
 			}
+			row_take(task_number, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 
-			if (units == "All") {
-				row_take(task_number, x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			} else {
-				row_take(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			}
+			break;
 
-			continue;
-		}
-		
-		if (task == "Put") {
+		case e_put:
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
 			if (from_into == "Not Found") {
 				return;
 			}
+			row_put(task_number, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			break;
 
-			if (units == "All") {
-				row_put(task_number, x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			} else {
-				row_put(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			}
-
-			continue;
-		}
-		
-		if (task == "Recipe") {
+		case e_recipe:
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			row_recipe(task_number, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
-			continue;
-		}
+			break;
 
-		if (task == "Pause") {
-			pause(task_number);
-			continue;
-		}
-		
-		if (task == "Stop") {
-			stop(task_number, units);
-			continue;
-		}
-		
-		if (task == "Limit") {
+		case e_pause: pause(task_number); break;
+		case e_stop: stop(task_number, units); break;
+		case e_limit: 
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
@@ -2468,66 +2420,38 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 			row_limit(task_number, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			continue;
-		}
+			break;
 		
-		if (task == "Priority") {
+		case e_priority:
+		{
 			long long pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
+		}
 			
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			row_priority(task_number, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			continue;
-		}
+			break;
 		
-		if (task == "Filter") {
+		case e_filter: 
 			if (!find_building_for_script(i)) {
 				return;
 			}
+			row_filter(task_number, x_cord, y_cord, item, units, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			break;
 
-			if (check_input(building, splitter_list)) {
-				row_filter(task_number, x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			} else {
-				row_filter(task_number, x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+		case e_drop: row_drop(task_number, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size); break;
+		case e_pick_up: row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size); break;
+		case e_launch: launch(task_number, x_cord, y_cord); break;
+		case e_save: save(task_number, comment); break;
+		case e_idle: idle(task_number, units); break;
 			}
-
-			continue;
 		}
 		
-		if (task == "Drop") {
-			row_drop(task_number, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
-			continue;
-
-		}
-		
-		if (task == "Pick up") {
-			row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
-			continue;
-
-		}
-		
-		if (task == "Launch") {
-			launch(task_number, x_cord, y_cord);
-			continue;
-
-		}
-		
-		if (task == "Save") {
-			save(task_number, comment);
-			continue;
-		}
-
-		if (task== "Idle") {
-			idle(task_number, units);
-			continue;
-		}
-	}
-
 	// If the file is send to another person the folder location won't exist and should be set to something else.
 	namespace fs = std::filesystem;
 	if (!fs::exists(generate_code_folder_location)) {
