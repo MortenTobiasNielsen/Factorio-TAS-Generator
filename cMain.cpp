@@ -585,32 +585,27 @@ bool cMain::change_row(wxGrid* grid) {
 }
 
 void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
-	if (task == "Start") {
+	switch (map_task_name[task]) {
+		case e_start:
 		grid->SetCellBackgroundColour(row, 0, *wxGREEN);
 		return;
-	}
-
-	if (task == "Game Speed" || task == "Pause" || task == "Save") {
-		grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
-		return;
-	}
-
-	if (task == "Stop") {
+		case e_stop:
 		grid->SetCellBackgroundColour(row, 0, *wxRED);
 		return;
-	}
-
-	if (task == "Build") {
+		case e_build:
 		grid->SetCellBackgroundColour(row, 0, *wxCYAN);
 		return;
-	}
-
-	if (task == "Craft") {
+		case e_craft:
 		grid->SetCellBackgroundColour(row, 0, *wxLIGHT_GREY);
 		return;
-	}
-
+		case e_game_speed:
+		case e_pause:
+		case e_save:
+			grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
+			return;
+		default:
 	grid->SetCellBackgroundColour(row, 0, *wxWHITE);
+}
 }
 
 // ensure that the variables are actually what they are supposed to be
