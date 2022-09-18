@@ -897,7 +897,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	extract_parameters();
 	mine_building_found = false;
 
-	if (task == "Mine" || task == "Recipe" || task == "Build" || task == "Limit" || task == "Priority" || task == "Filter" || task == "Rotate" || task == "Put" || task == "Take" || task == "Launch") {
+	auto t = map_task_name[task];
+	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch) {
 		if (row_num != grid_tasks->GetNumberRows()) {
 			update_buildings_grid_from_scratch(0, row_num);
 		}
@@ -980,7 +981,8 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	// setup buildingsgrid and ensure the building exists
-	if (task == "Mine" || task == "Recipe" || task == "Build" || task == "Limit" || task == "Priority" || task == "Filter" || task == "Rotate" || task == "Put" || task == "Take" || task == "Launch") {
+	auto t = map_task_name[task];
+	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch) {
 		if (row_num != grid_tasks->GetNumberRows()) {
 			update_buildings_grid_from_scratch(0, row_num);
 		}
