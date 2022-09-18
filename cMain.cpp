@@ -672,41 +672,47 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 		In_memory_extract_parameters_buildings(tasks_data_to_save[i]);
 		task_number = std::to_string(i + 1);
 
-		if (building_task == "Build" ) {
+		switch (map_task_name[building_task]) {
+		case e_build:
 			update_buildings();
+			break;
 
-		} else if (building_task == "Recipe") {
+		case e_recipe: 
 			if (!update_recipe()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
+			break;
 			
-
-		} else if (building_task == "Limit") {
+		case e_limit:
 			if (!update_limit()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
+			break;
 
-		} else if (building_task == "Priority") {
+		case e_priority:
+			{
 			long long pos = building_build_orientation.find(",");
 
 			building_priority_in = building_build_orientation.substr(0, pos);
 			building_priority_out = building_build_orientation.substr(pos + 2);
+			}
 
 			if (!update_priority()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
+			break;
 
-		} else if (building_task == "Filter") {
+		case e_filter:
 			if (!update_filter()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
+			break;
 
-		} else if (building_task == "Rotate") {
-
+		case e_rotate:
 			if (grid_buildings->GetNumberRows() == 0) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
@@ -723,12 +729,16 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 					return;
 				}
 			}
+			break;
 
-		} else if (building_task == "Mine") {
+		case e_mine:
 			if (find_building(1)) {
 				grid_buildings->DeleteRows(building_row_num);
 			}
-		} else if (building_task == "Take" || building_task == "Put") {
+			break;
+
+		case e_put: // fallthrough
+		case e_take:
 			if (building_build_orientation != "Wreck") {
 				building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
 				for (int j = 0; j < building_amount_of_buildings_int; j++) {
@@ -741,6 +751,9 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 				}
 			}
+			break;
+
+		default: break;
 		}
 	}
 }
