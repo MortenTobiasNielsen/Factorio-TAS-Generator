@@ -40,10 +40,12 @@ local neg_neg = false
 local drop_item
 local drop_position
 
+local tas_step_change = script.generate_event_name()
+
 --recreate crash site
 local on_player_created = function(event)
 	if remote.interfaces["freeplay"] == nil then return end
-
+	
 	local player = game.get_player(event.player_index)
 	local surface = player.surface
 	local crashed_ship_items = remote.call("freeplay", "get_ship_items")
@@ -81,6 +83,16 @@ local function warning(msg)
     if debug_state then
 		player.print(msg, {r=1, g=1}) -- print warnings in yellow
 	end
+end
+
+---@param by number
+local function change_step(by)
+	step = step + by
+	script.raise_event(tas_step_change, {
+		change_step_by = by,
+		step = step,
+		tick = game.tick,
+	})
 end
 
 local function save(task, nameOfSaveGame)
@@ -175,7 +187,7 @@ local function put()
 	local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
 	player.play_sound{path="utility/inventory_move"}
 	player.create_local_flying_text{
-		text=text, 
+		text=text,
 		position=pos}
 
 	return true
@@ -308,7 +320,7 @@ local function build()
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
-					step = step - 1
+					change_step(-1)
 					player.remove_item({name = item, count = 1})
 					return true
 				end
@@ -330,7 +342,7 @@ local function build()
 		if player.can_place_entity{name = "straight-rail", position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = "straight-rail", position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
-					step = step - 1
+					change_step(-1)
 					player.remove_item({name = item, count = 1})
 					return true
 				end
@@ -476,10 +488,10 @@ local function rotate()
 		r = player_selection.rotate({reverse = true})
 	else 
 		r = player_selection.rotate({reverse = false})
-	end 
+	end
 
 	if r then player.play_sound{path="utility/rotated_small"} end
-	
+
 	return true
 end
 
@@ -752,12 +764,12 @@ script.on_event(defines.events.on_tick, function(event)
 		if (steps[step][2] == "speed") then
 			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
 			speed(steps[step][3])
-			step = step + 1
+			change_step(1)
 		end
 
 		if steps[step][2] == "save" then
 			save(steps[step][1][1], steps[step][3])
-			step = step + 1
+			change_step(1)
 		end
 
 		walking = walk()
@@ -777,7 +789,7 @@ script.on_event(defines.events.on_tick, function(event)
 				find_walking_pattern()
 				walking = walk()
 
-				step = step + 1
+				change_step(1)
 
 			elseif steps[step][2] == "mine" then
 				
@@ -791,7 +803,7 @@ script.on_event(defines.events.on_tick, function(event)
 
 				if ticks_mining >= duration then
 					player.mining_state = {mining = false, position = steps[step][3]}
-					step = step + 1
+					change_step(1)
 					mining = 0
 					ticks_mining = 0
 				end
@@ -808,7 +820,7 @@ script.on_event(defines.events.on_tick, function(event)
 				
 			elseif doStep(steps[step]) then
 				-- Do step while standing still
-				step = step + 1
+				change_step(1)
 
 			end
 		else
@@ -816,7 +828,7 @@ script.on_event(defines.events.on_tick, function(event)
 				if doStep(steps[step]) then
 					
 					-- Do step while walking
-					step = step + 1
+					change_step(1)
 				end
 			end
 		end	
@@ -853,7 +865,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 		mining_event_replace(event, "stone", 24)
 	end
 
-	step = step + 1
+	change_step(1)
 	mining = 0
 	ticks_mining = 0
 end)
@@ -902,6 +914,23 @@ end
 script.on_event(defines.events.on_player_joined_game, function(event)
 	set_quick_bar(event)
 end)
+
+local tas_interface =
+{
+get_current_task = function()
+	return step
+end,
+get_task_list = function()
+	return steps
+end,
+get_tas_step_change_id = function ()
+	return tas_step_change
+end,
+}
+
+if not remote.interfaces["DunRaider-TAS"] then
+	remote.add_interface("DunRaider-TAS", tas_interface)
+end
 
 script.on_event(defines.events.on_player_created, function(event)
 	set_quick_bar(event)
