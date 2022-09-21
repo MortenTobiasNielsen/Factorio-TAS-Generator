@@ -1,16 +1,9 @@
+#pragma once
 #include "cMain.h"
 #include "GUI_Base.h"
 #include "utils.h"
 #include "Functions.h"
 #include "control_info.h"
-#include "icon.xpm"
-
-#include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <locale>
-#include <codecvt>
-#include <filesystem>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
 	SetIcon(icon_xpm);
@@ -592,32 +585,27 @@ bool cMain::change_row(wxGrid* grid) {
 }
 
 void cMain::background_colour_update(wxGrid* grid, int row, std::string task) {
-	if (task == "Start") {
-		grid->SetCellBackgroundColour(row, 0, *wxGREEN);
-		return;
+	switch (map_task_name[task]) {
+		case e_start:
+			grid->SetCellBackgroundColour(row, 0, *wxGREEN);
+			return;
+		case e_stop:
+			grid->SetCellBackgroundColour(row, 0, *wxRED);
+			return;
+		case e_build:
+			grid->SetCellBackgroundColour(row, 0, *wxCYAN);
+			return;
+		case e_craft:
+			grid->SetCellBackgroundColour(row, 0, *wxLIGHT_GREY);
+			return;
+		case e_game_speed:
+		case e_pause:
+		case e_save:
+			grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
+			return;
+		default:
+			grid->SetCellBackgroundColour(row, 0, *wxWHITE);
 	}
-
-	if (task == "Game Speed" || task == "Pause" || task == "Save") {
-		grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
-		return;
-	}
-
-	if (task == "Stop") {
-		grid->SetCellBackgroundColour(row, 0, *wxRED);
-		return;
-	}
-
-	if (task == "Build") {
-		grid->SetCellBackgroundColour(row, 0, *wxCYAN);
-		return;
-	}
-
-	if (task == "Craft") {
-		grid->SetCellBackgroundColour(row, 0, *wxLIGHT_GREY);
-		return;
-	}
-
-	grid->SetCellBackgroundColour(row, 0, *wxWHITE);
 }
 
 // ensure that the variables are actually what they are supposed to be
@@ -684,41 +672,47 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 		In_memory_extract_parameters_buildings(tasks_data_to_save[i]);
 		task_number = std::to_string(i + 1);
 
-		if (building_task == "Build" ) {
-			update_buildings();
+		switch (map_task_name[building_task]) {
+		case e_build:
+			update_buildings(); 
+			break;
 
-		} else if (building_task == "Recipe") {
+		case e_recipe: 
 			if (!update_recipe()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
-			
+			break;
 
-		} else if (building_task == "Limit") {
+		case e_limit:
 			if (!update_limit()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
+			break;
 
-		} else if (building_task == "Priority") {
-			long long pos = building_build_orientation.find(",");
+		case e_priority:
+			{
+				long long pos = building_build_orientation.find(",");
 
-			building_priority_in = building_build_orientation.substr(0, pos);
-			building_priority_out = building_build_orientation.substr(pos + 2);
+				building_priority_in = building_build_orientation.substr(0, pos);
+				building_priority_out = building_build_orientation.substr(pos + 2);
+			}
 
 			if (!update_priority()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
+			break;
 
-		} else if (building_task == "Filter") {
+		case e_filter:
 			if (!update_filter()) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
 			}
+			break;
 
-		} else if (building_task == "Rotate") {
-
+		case e_rotate:
 			if (grid_buildings->GetNumberRows() == 0) {
 				wxMessageBox("Task: " + task_number + no_longer_connected, no_longer_connected_heading);
 				return;
@@ -735,12 +729,16 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 					return;
 				}
 			}
+			break;
 
-		} else if (building_task == "Mine") {
+		case e_mine:
 			if (find_building(1)) {
 				grid_buildings->DeleteRows(building_row_num);
 			}
-		} else if (building_task == "Take" || building_task == "Put") {
+			break;
+
+		case e_put: // fallthrough
+		case e_take:
 			if (building_build_orientation != "Wreck") {
 				building_amount_of_buildings_int = std::stoi(building_amount_of_buildings);
 				for (int j = 0; j < building_amount_of_buildings_int; j++) {
@@ -753,6 +751,9 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row) {
 					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 				}
 			}
+			break;
+
+		default: break;
 		}
 	}
 }
@@ -896,7 +897,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 	extract_parameters();
 	mine_building_found = false;
 
-	if (task == "Mine" || task == "Recipe" || task == "Build" || task == "Limit" || task == "Priority" || task == "Filter" || task == "Rotate" || task == "Put" || task == "Take" || task == "Launch") {
+	auto t = map_task_name[task];
+	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch) {
 		if (row_num != grid_tasks->GetNumberRows()) {
 			update_buildings_grid_from_scratch(0, row_num);
 		}
@@ -979,7 +981,8 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event) {
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	// setup buildingsgrid and ensure the building exists
-	if (task == "Mine" || task == "Recipe" || task == "Build" || task == "Limit" || task == "Priority" || task == "Filter" || task == "Rotate" || task == "Put" || task == "Take" || task == "Launch") {
+	auto t = map_task_name[task];
+	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch) {
 		if (row_num != grid_tasks->GetNumberRows()) {
 			update_buildings_grid_from_scratch(0, row_num);
 		}
@@ -2338,8 +2341,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 
 	for (int i = 0; i < amount_of_tasks; i++) {
 		In_memory_extract_parameters(tasks_data_to_save[i]);
-
-		if (task == "Start") {
+		auto t = map_task_name[task];
+		if (t == e_start) {
 			clear_tasks();
 		}
 
@@ -2350,113 +2353,65 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			wxYield();
 		}
 
-		if (task == "Game Speed") {
-			speed(task_number, units);
-			continue;
-		}
-		
-		if (task == "Walk") {
-			walk(task_number, "1", x_cord, y_cord);
-			continue;
-		}
-		
-		if (task == "Mine") {
+		switch (t) {
+		case e_game_speed: speed(task_number, units); break;
+		case e_walk: walk(task_number, "1", x_cord, y_cord); break;
+		case e_mine: 
 			if (units == "All") {
 				units = "1000";
 			}
 
 			if (find_building_for_script(i)) {
 				mining(task_number, x_cord, y_cord, units, building, build_orientation, true);
-			} else {
+			}
+			else {
 				mining(task_number, x_cord, y_cord, units, "", "", false);
 			}
+			break;
 
-			continue;
-		}
-		
-		if (task == "Rotate") {
+		case e_rotate:
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			rotate(task_number, x_cord, y_cord, units, item, build_orientation);
-			continue;
-		}
-		
-		if (task == "Craft") {
-			if (units == "All") {
-				craft(task_number, "-1", item);
-			} else {
-				craft(task_number, units, item);
-			}
+			break;
 
-			continue;
-		}
-		
-		if (task == "Tech") {
-			tech(task_number, item);
-			continue;
-		}
-		
-		if (task == "Build") {
-			row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
-			continue;
-		}
-		
-		if (task == "Take") {
+		case e_craft: craft(task_number, units == "All" ? "-1" : units, item); break;
+		case e_tech: tech(task_number, item); break;
+		case e_build: row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size); break;
+		case e_take: 
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
 			if (from_into == "Not Found") {
 				return;
 			}
+			row_take(task_number, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			
+			break;
 
-			if (units == "All") {
-				row_take(task_number, x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			} else {
-				row_take(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			}
-
-			continue;
-		}
-		
-		if (task == "Put") {
+		case e_put:
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
 			if (from_into == "Not Found") {
 				return;
 			}
+			row_put(task_number, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			break;
 
-			if (units == "All") {
-				row_put(task_number, x_cord, y_cord, "-1", item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			} else {
-				row_put(task_number, x_cord, y_cord, units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			}
-
-			continue;
-		}
-		
-		if (task == "Recipe") {
+		case e_recipe:
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			row_recipe(task_number, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
-			continue;
-		}
+			break;
 
-		if (task == "Pause") {
-			pause(task_number);
-			continue;
-		}
-		
-		if (task == "Stop") {
-			stop(task_number, units);
-			continue;
-		}
-		
-		if (task == "Limit") {
+		case e_pause: pause(task_number); break;
+		case e_stop: stop(task_number, units); break;
+		case e_limit: 
 			from_into = convert_string(build_orientation);
 			from_into = extract_define(i);
 
@@ -2465,63 +2420,35 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 			}
 
 			row_limit(task_number, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			continue;
-		}
-		
-		if (task == "Priority") {
+			break;
+
+		case e_priority:
+		{
 			long long pos = build_orientation.find(",");
 
 			priority_in = build_orientation.substr(0, pos);
 			priority_out = build_orientation.substr(pos + 2);
-			
+		}
+
 			if (!find_building_for_script(i)) {
 				return;
 			}
 
 			row_priority(task_number, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			continue;
-		}
-		
-		if (task == "Filter") {
+			break;
+
+		case e_filter: 
 			if (!find_building_for_script(i)) {
 				return;
 			}
+			row_filter(task_number, x_cord, y_cord, item, units, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			break;
 
-			if (check_input(building, splitter_list)) {
-				row_filter(task_number, x_cord, y_cord, item, units, "splitter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			} else {
-				row_filter(task_number, x_cord, y_cord, item, units, "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			}
-
-			continue;
-		}
-		
-		if (task == "Drop") {
-			row_drop(task_number, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
-			continue;
-
-		}
-		
-		if (task == "Pick up") {
-			row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
-			continue;
-
-		}
-		
-		if (task == "Launch") {
-			launch(task_number, x_cord, y_cord);
-			continue;
-
-		}
-		
-		if (task == "Save") {
-			save(task_number, comment);
-			continue;
-		}
-
-		if (task== "Idle") {
-			idle(task_number, units);
-			continue;
+		case e_drop: row_drop(task_number, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size); break;
+		case e_pick_up: row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size); break;
+		case e_launch: launch(task_number, x_cord, y_cord); break;
+		case e_save: save(task_number, comment); break;
+		case e_idle: idle(task_number, units); break;
 		}
 	}
 
@@ -2789,8 +2716,9 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 }
 
 bool cMain::setup_for_task_group_template_grid() {
-
-	if (task == "Game Speed") {
+	auto t = map_task_name[task];
+	switch (t) {
+	case e_game_speed:
 		x_cord = not_relevant;
 		y_cord = not_relevant;
 		item = not_relevant;
@@ -2798,19 +2726,22 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Walk") {
+	case e_walk:
 		units = not_relevant;
 		item = not_relevant;
 		build_orientation = not_relevant;
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Mine") {
+	case e_mine:
 		if (mine_building_found) {
 			item = building;
-		} else {
+		}
+		else {
 			item = not_relevant;
 		}
 
@@ -2818,15 +2749,17 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Rotate") {
+	case e_rotate:
 		item = building;
 
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
-	
-	} else if (task == "Craft") {
+		break;
+
+	case e_craft:
 		if (!check_input(item, handcrafted_list)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
@@ -2838,8 +2771,9 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
-		
-	} else if (task == "Build") {
+		break;
+
+	case e_build:
 		if (!check_input(item, all_buildings)) {
 			wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 			return false;
@@ -2854,10 +2788,12 @@ bool cMain::setup_for_task_group_template_grid() {
 			wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 			return false;
 		}
-		
-		units = not_relevant;
 
-	} else if (task == "Take" || task == "Put") {
+		units = not_relevant;
+		break;
+
+	case e_take: //fallthrough
+	case e_put:
 		if (!check_take_put(item)) {
 			return false;
 		}
@@ -2868,8 +2804,9 @@ bool cMain::setup_for_task_group_template_grid() {
 		}
 
 		build_orientation = from_into;
+		break;
 
-	} else if (task == "Tech") {
+	case e_tech:
 		if (!check_input(tech_to_start, tech_list)) {
 			wxMessageBox("The tech is not valid - please try again", "Please use the tech dropdown menu");
 			return false;
@@ -2884,34 +2821,41 @@ bool cMain::setup_for_task_group_template_grid() {
 		amount_of_buildings = not_relevant;
 
 		item = tech_to_start;
-	} else if (task == "Recipe") {
+		break;
+
+	case e_recipe:
 		if (building == "Assembling machine 1") {
 			if (!check_input(item, part_assembly_recipes)) {
 				wxMessageBox("The item chosen is not a valid recipe for an assembling machine 1", "Item chosen is not valid");
 				return false;
 			}
-		} else if (building == "Assembling machine 2" || building == "Assembling machine 3") {
+		}
+		else if (building == "Assembling machine 2" || building == "Assembling machine 3") {
 			if (!check_input(item, full_assembly_recipes)) {
 				wxMessageBox("The item chosen is not a valid recipe for an assembling machine", "Item chosen is not valid");
 				return false;
 			}
-		} else if (building == "Oil refinery") {
+		}
+		else if (building == "Oil refinery") {
 			if (!check_input(item, oil_refinery_list)) {
 				wxMessageBox("The item chosen is not a valid recipe for an oil refinery", "Item chosen is not valid");
 				return false;
 			}
-		} else if (building == "Chemical plant") {
+		}
+		else if (building == "Chemical plant") {
 			if (!check_input(item, full_chemical_plant_recipes)) {
 				wxMessageBox("The item chosen is not a valid recipe for a chemical plant", "Item chosen is not valid");
 				return false;
 			}
-		} else if (building == "Centrifuge") {
+		}
+		else if (building == "Centrifuge") {
 			if (!check_input(item, centrifuge_list)) {
 				wxMessageBox("The item chosen is not a valid recipe for a centrifuge", "Item chosen is not valid");
 				return false;
 			}
-		} else if (building == "Stone furnace" || building == "Steel furnace" || building == "Electric furnace") {
-			if (!check_input(item, furnace_list)) { 
+		}
+		else if (building == "Stone furnace" || building == "Steel furnace" || building == "Electric furnace") {
+			if (!check_input(item, furnace_list)) {
 				wxMessageBox("The item chosen is not a valid recipe for a furnace", "Item chosen is not valid");
 				return false;
 			}
@@ -2919,7 +2863,9 @@ bool cMain::setup_for_task_group_template_grid() {
 
 		units = not_relevant;
 		build_orientation = not_relevant;
-	} else if (task == "Start") {
+		break;
+
+	case e_start:
 		x_cord = not_relevant;
 		y_cord = not_relevant;
 		units = not_relevant;
@@ -2928,8 +2874,9 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Pause") {
+	case e_pause:
 		x_cord = not_relevant;
 		y_cord = not_relevant;
 		units = not_relevant;
@@ -2938,8 +2885,9 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Stop") {
+	case e_stop:
 		x_cord = not_relevant;
 		y_cord = not_relevant;
 		item = not_relevant;
@@ -2947,12 +2895,14 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Limit") {
+	case e_limit:
 		item = not_relevant;
 		build_orientation = "Chest";
+		break;
 
-	} else if (task == "Priority") {
+	case e_priority:
 		item = not_relevant;
 		units = not_relevant;
 
@@ -2967,28 +2917,33 @@ bool cMain::setup_for_task_group_template_grid() {
 		}
 
 		build_orientation = priority_in + ", " + priority_out;
+		break;
 
-	} else if (task == "Filter") {
-		build_orientation = not_relevant;
-
-	} else if (task == "Drop") {
-		units = not_relevant;
-		build_orientation = not_relevant;
-
-	} else if (task == "Pick up") {
+	case e_pick_up:
 		units = not_relevant;
 		item = not_relevant;
 		build_orientation = not_relevant;
+		break;
 
-	} else if (task == "Launch") {
+	case e_drop:
+		units = not_relevant;
+		build_orientation = not_relevant;
+		break;
+
+	case e_filter:
+		build_orientation = not_relevant;
+		break;
+
+	case e_launch:
 		units = not_relevant;
 		item = not_relevant;
 		build_orientation = not_relevant;
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Save") {
+	case e_save:
 		x_cord = not_relevant;
 		y_cord = not_relevant;
 		units = not_relevant;
@@ -2997,8 +2952,9 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 
-	} else if (task == "Idle") {
+	case e_idle:
 		x_cord = not_relevant;
 		y_cord = not_relevant;
 		item = not_relevant;
@@ -3006,8 +2962,9 @@ bool cMain::setup_for_task_group_template_grid() {
 		direction_to_build = not_relevant;
 		building_size = not_relevant;
 		amount_of_buildings = not_relevant;
+		break;
 	}
-	
+
 	return true;
 }
 
