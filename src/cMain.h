@@ -17,7 +17,7 @@
 
 #include "GUI_Base.h"
 #include "ScriptProgressBar.h"
-#include "icon.xpm"
+#include "../icon.xpm"
 
 using string = std::string;
 
