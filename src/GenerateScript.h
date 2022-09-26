@@ -19,8 +19,13 @@ private:
 	static std::string step_list;
 	static float player_x_cord;
 	static float player_y_cord;
+	static float target_x_cord;
+	static float target_y_cord;
+	static float x_building_size;
+	static float y_building_size;
+
 	static std::string current_step;
-	static std::string total_steps;
+	static int total_steps;
 	static std::string segment;
 	static std::vector<std::string> step_segments;
 

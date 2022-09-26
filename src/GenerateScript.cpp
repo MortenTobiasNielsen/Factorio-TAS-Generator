@@ -14,17 +14,21 @@ void GenerateScript::reset()
 	clear_tasks();
 	player_x_cord = 0.0f;
 	player_y_cord = 0.0f;
+	target_x_cord = 0.0f;
+	target_y_cord = 0.0f;
+	x_building_size = 0.0f;
+	y_building_size = 0.0f;
 	step_segments.reserve(100);
 }
 
 void GenerateScript::clear_tasks()
 {
-	step = 1;
+	total_steps = 1;
 	step_list = "local step = {}\n\n";
 }
 
 std::string GenerateScript::end_tasks() {
-	return step_list + "step[" + std::to_string(step) + "] = {\"break\"}\n\n" + "return step";
+	return step_list + "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n" + "return step";
 }
 
 std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string folder_location, bool auto_close, bool only_generate_script, std::string goal)
@@ -354,7 +358,7 @@ std::string GenerateScript::convert_string(std::string input) {
 }
 
 std::string GenerateScript::signature(std::string task, std::string action) {
-	return "step[" + std::to_string(step) + "] = {{" + task + "," + action + "}, ";
+	return "step[" + std::to_string(total_steps) + "] = {{" + task + "," + action + "}, ";
 }
 
 std::string GenerateScript::check_item_name(std::string item) {
