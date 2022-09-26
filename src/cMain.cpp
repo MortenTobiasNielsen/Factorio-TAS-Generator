@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "Functions.h"
 #include "control_info.h"
+#include "GenerateScript.h"
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
 	SetIcon(icon_xpm);

@@ -17,6 +17,11 @@ const static int build_interact_distance = 10;
 const static build_distance_struct build_distance;
 const static mining_distance_struct mining_distance;
 
+bool compare_task_strings(const wxString& str1, const std::string& str2);
+
+std::string extract_define(std::string building, std::string from_into);
+bool check_input(std::string& item, const std::vector<std::string>& all_items);
+
 std::string signature(std::string task, std::string action);
 
 void walk(std::string task, std::string action, std::string x_cord, std::string y_cord);
