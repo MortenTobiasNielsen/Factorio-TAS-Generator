@@ -2316,203 +2316,20 @@ void cMain::OnChooseLocation(wxCommandEvent& event) {
 }
 
 void cMain::OnGenerateScript(wxCommandEvent& event) {
-	if (generate_code_folder_location == "") {
-		wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-		if (dlg.ShowModal() == wxID_OK) {
-			generate_code_folder_location = dlg.GetPath().ToStdString();
-		} else {
-			return;
-		}
+	std::string goal = "goal_debug.lua";
+	if (menu_goals->GetMenuItems()[0]->IsChecked()) {
+		goal = "goal_steelaxe.lua";
+	}
+	else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+		goal = "goal_gotlap.lua";
+	}
+	else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+		goal = "goal_any_percent.lua";
 	}
 
-	clear_tasks();
-	reset_coordinates();
-
-	if (!dialog_progress_bar) {
-		dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
-	}
-
-	dialog_progress_bar->set_text("Generating Script");
-	dialog_progress_bar->set_button_enable(false);
-	dialog_progress_bar->set_progress(0);
-	dialog_progress_bar->Show();
-
-	size_t amount_of_tasks = tasks_data_to_save.size();
-
-	for (int i = 0; i < amount_of_tasks; i++) {
-		In_memory_extract_parameters(tasks_data_to_save[i]);
-		auto t = map_task_name[task];
-		if (t == e_start) {
-			clear_tasks();
-		}
-
-		task_number = std::to_string(i + 1);
-
-		if (i > 0 && i % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(amount_of_tasks) * 100.0f - 1);
-			wxYield();
-		}
-
-		switch (t) {
-		case e_game_speed: speed(task_number, units); break;
-		case e_walk: walk(task_number, "1", x_cord, y_cord); break;
-		case e_mine: 
-			if (units == "All") {
-				units = "1000";
-			}
-
-			if (find_building_for_script(i)) {
-				mining(task_number, x_cord, y_cord, units, building, build_orientation, true);
-			}
-			else {
-				mining(task_number, x_cord, y_cord, units, "", "", false);
-			}
-			break;
-
-		case e_rotate:
-			if (!find_building_for_script(i)) {
-				return;
-			}
-
-			rotate(task_number, x_cord, y_cord, units, item, build_orientation);
-			break;
-
-		case e_craft: craft(task_number, units == "All" ? "-1" : units, item); break;
-		case e_tech: tech(task_number, item); break;
-		case e_build: row_build(task_number, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size); break;
-		case e_take: 
-			from_into = convert_string(build_orientation);
-			from_into = extract_define(i);
-
-			if (from_into == "Not Found") {
-				return;
-			}
-			row_take(task_number, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			
-			break;
-
-		case e_put:
-			from_into = convert_string(build_orientation);
-			from_into = extract_define(i);
-
-			if (from_into == "Not Found") {
-				return;
-			}
-			row_put(task_number, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			break;
-
-		case e_recipe:
-			if (!find_building_for_script(i)) {
-				return;
-			}
-
-			row_recipe(task_number, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
-			break;
-
-		case e_pause: pause(task_number); break;
-		case e_stop: stop(task_number, units); break;
-		case e_limit: 
-			from_into = convert_string(build_orientation);
-			from_into = extract_define(i);
-
-			if (from_into == "Not Found") {
-				return;
-			}
-
-			row_limit(task_number, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			break;
-
-		case e_priority:
-		{
-			long long pos = build_orientation.find(",");
-
-			priority_in = build_orientation.substr(0, pos);
-			priority_out = build_orientation.substr(pos + 2);
-		}
-
-			if (!find_building_for_script(i)) {
-				return;
-			}
-
-			row_priority(task_number, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			break;
-
-		case e_filter: 
-			if (!find_building_for_script(i)) {
-				return;
-			}
-			row_filter(task_number, x_cord, y_cord, item, units, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
-			break;
-
-		case e_drop: row_drop(task_number, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size); break;
-		case e_pick_up: row_pick(task_number, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size); break;
-		case e_launch: launch(task_number, x_cord, y_cord); break;
-		case e_save: save(task_number, comment); break;
-		case e_idle: idle(task_number, units); break;
-		}
-	}
-
-	// If the file is send to another person the folder location won't exist and should be set to something else.
-	namespace fs = std::filesystem;
-	if (!fs::exists(generate_code_folder_location)) {
-		wxDirDialog dlg(NULL, "Choose location to generate script", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
-		if (dlg.ShowModal() == wxID_OK) {
-			generate_code_folder_location = dlg.GetPath().ToStdString();
-		}
-		else {
-			return;
-		}
-	}
-
-	if (!menu_script->GetMenuItems()[2]->IsChecked()) {
-		
-		//add locale directory
-		fs::create_directories(generate_code_folder_location + "\\locale\\en");
-		fs::copy_file("locale.cfg", generate_code_folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);
-
-		//copy lua files to tas mod if they are newer
-		fs::copy_file("control.lua", generate_code_folder_location + "\\control.lua", fs::copy_options::update_existing);
-		fs::copy_file("settings.lua", generate_code_folder_location + "\\settings.lua", fs::copy_options::update_existing);
-
-		//Determine goal file
-		std::string goal = "goal_debug.lua";
-		if (menu_goals->GetMenuItems()[0]->IsChecked()) {
-			goal = "goal_steelaxe.lua";
-		} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
-			goal = "goal_gotlap.lua";
-		} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
-			goal = "goal_any_percent.lua";
-		} 
-
-		//always copy goal file
-		fs::copy_file(goal, generate_code_folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
-	}
-
-	//generate info file
-	std::ofstream saver;
-	saver.open(generate_code_folder_location + "\\info.json");
-	saver << "\{\n\t\"name\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-	saver << "\n\t\"version\": \"" << software_version << "\",";
-	saver << "\n\t\"title\": \"" + generate_code_folder_location.substr(generate_code_folder_location.rfind("\\") + 1) + "\",";
-	saver << info;
-	saver.close();
-
-	//generate step file
-	saver.open(generate_code_folder_location + "\\steps.lua");
-
-	saver << end_tasks();
-
-	saver.close();
-
-	dialog_progress_bar->set_progress(100);
-	if (auto_close_generate_script) {
-		dialog_progress_bar->Close();
-	} else {
-		dialog_progress_bar->set_button_enable(true);
-	}
-
+	GenerateScript generate_script;
+	generate_code_folder_location = generate_script.generate(this, grid_tasks, dialog_progress_bar, tasks_data_to_save, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
+	
 	event.Skip();
 }
 
@@ -3485,39 +3302,39 @@ std::string cMain::extract_priority_out() {
 std::string cMain::extract_define(int start_row) {
 
 	if (from_into == "wreck") {
-		return take_put_list.chest;
+		return struct_take_put_list.chest;
 	}
 
 	if (find_building_for_script(start_row)) {
 		if (from_into == "chest") {
-			return take_put_list.chest;
+			return struct_take_put_list.chest;
 		}
 
 		if (from_into == "fuel") {
-			return take_put_list.fuel;
+			return struct_take_put_list.fuel;
 		}
 
 		if (building == "Lab") {
 			if (from_into == "input") {
-				return take_put_list.lab_input;
+				return struct_take_put_list.lab_input;
 			} else if (from_into == "modules") {
-				return take_put_list.lab_modules;
+				return struct_take_put_list.lab_modules;
 			}
 		}
 
 		if (check_input(building, drills_list)) {
-			return take_put_list.drill_modules;
+			return struct_take_put_list.drill_modules;
 		}
 
 		if (from_into == "input") {
-			return take_put_list.assembly_input;
+			return struct_take_put_list.assembly_input;
 		}
 
 		if (from_into == "modules") {
-			return take_put_list.assembly_modules;
+			return struct_take_put_list.assembly_modules;
 		}
 		if (from_into == "output") {
-			return take_put_list.assembly_output;
+			return struct_take_put_list.assembly_output;
 		}
 	}
 

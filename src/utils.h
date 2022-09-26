@@ -853,7 +853,7 @@ struct transport_types {
 	std::string yellow_belt = "transport-belt";
 };
 
-struct take_put_defines_list {
+static const struct {
 	std::string chest = "defines.inventory.chest";
 	std::string lab_input = "defines.inventory.lab_input";
 	std::string lab_modules = "defines.inventory.lab_modules";
@@ -862,9 +862,7 @@ struct take_put_defines_list {
 	std::string assembly_input = "defines.inventory.assembling_machine_input";
 	std::string assembly_output = "defines.inventory.assembling_machine_output";
 	std::string assembly_modules = "defines.inventory.assembling_machine_modules";
-};
-
-const static take_put_defines_list take_put_list;
+} struct_take_put_list;
 
 struct plate_types {
 	std::string iron = "iron-plate";
@@ -936,13 +934,13 @@ struct build_direction_struct {
 
 static const build_direction_struct build_directions;
 
-struct row_direction_struct {
-	std::string north = "north";
-	std::string south = "south";
-	std::string east = "east";
-	std::string west = "west";
+struct {
+	std::string north = "North";
+	std::string south = "South";
+	std::string east = "East";
+	std::string west = "West";
 
-};
+} struct_direction_list;
 
 struct inserter_types {
 	std::string yellow = "inserter";
