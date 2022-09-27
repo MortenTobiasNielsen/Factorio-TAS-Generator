@@ -33,7 +33,7 @@ std::string GenerateScript::end_tasks() {
 	return step_list + "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n" + "return step";
 }
 
-std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string folder_location, bool auto_close, bool only_generate_script, std::string goal)
+void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string& folder_location, bool auto_close, bool only_generate_script, std::string goal)
 {
 	reset();
 
@@ -44,7 +44,7 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 			folder_location = dlg.GetPath().ToStdString();
 		}
 		else {
-			return folder_location;
+			return;
 		}
 	}
 
@@ -97,7 +97,7 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 
 		case step_rotate:
 			if (!find_building(i, grid, steps)) {
-				return folder_location;
+				return;
 			}
 
 			rotate(current_step, x_cord, y_cord, units, item, build_orientation);
@@ -118,11 +118,14 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 		case step_take:
 			from_into = convert_string(build_orientation);
 
-			find_building(i, grid, steps);
+			if (from_into != struct_from_into_list.wreck) {
+				find_building(i, grid, steps);
+			}
+
 			from_into = extract_define(from_into, building);
 
 			if (from_into == "Not Found") {
-				return folder_location;
+				return;
 			}
 			
 			row_take(current_step, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
@@ -131,18 +134,21 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 		case step_put:
 			from_into = convert_string(build_orientation);
 
-			find_building(i, grid, steps);
+			if (from_into != struct_from_into_list.wreck) {
+				find_building(i, grid, steps);
+			}
+
 			from_into = extract_define(from_into, building);
 
 			if (from_into == "Not Found") {
-				return folder_location;
+				return;
 			}
 			row_put(current_step, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			break;
 
 		case step_recipe:
 			if (!find_building(i, grid, steps)) {
-				return folder_location;
+				return;
 			}
 
 			row_recipe(current_step, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
@@ -159,11 +165,14 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 		case step_limit:
 			from_into = convert_string(build_orientation);
 
-			find_building(i, grid, steps);
+			if (from_into != struct_from_into_list.wreck) {
+				find_building(i, grid, steps);
+			}
+
 			from_into = extract_define(from_into, building);
 
 			if (from_into == "Not Found") {
-				return folder_location;
+				return;
 			}
 
 			row_limit(current_step, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
@@ -178,7 +187,7 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 		}
 
 		if (!find_building(i, grid, steps)) {
-			return folder_location;
+			return;
 		}
 
 		row_priority(current_step, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
@@ -186,7 +195,7 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 
 		case step_filter:
 			if (!find_building(i, grid, steps)) {
-				return folder_location;
+				return;
 			}
 			row_filter(current_step, x_cord, y_cord, item, units, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			break;
@@ -222,7 +231,7 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 			folder_location = dlg.GetPath().ToStdString();
 		}
 		else {
-			return folder_location;
+			return;
 		}
 	}
 
@@ -263,8 +272,6 @@ std::string GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_prog
 	else {
 		dialog_progress_bar->set_button_enable(true);
 	}
-
-	return folder_location;
 }
 
 void GenerateScript::extract_parameters(const std::string& task_reference)
@@ -283,25 +290,25 @@ void GenerateScript::extract_parameters(const std::string& task_reference)
 	comment = step_segments[9];
 }
 
-std::string GenerateScript::extract_define(std::string building, std::string from_into)
+std::string GenerateScript::extract_define(std::string from_into, std::string building)
 {
-	if (from_into == "wreck") {
+	if (from_into == struct_from_into_list.wreck) {
 		return struct_take_put_list.chest;
 	}
 
-	if (from_into == "chest") {
+	if (from_into == struct_from_into_list.chest) {
 		return struct_take_put_list.chest;
 	}
 
-	if (from_into == "fuel") {
+	if (from_into == struct_from_into_list.fuel) {
 		return struct_take_put_list.fuel;
 	}
 
-	if (building == "Lab") {
-		if (from_into == "input") {
+	if (building == struct_science_list.lab) {
+		if (from_into == struct_from_into_list.input) {
 			return struct_take_put_list.lab_input;
 		}
-		else if (from_into == "modules") {
+		else if (from_into == struct_from_into_list.modules) {
 			return struct_take_put_list.lab_modules;
 		}
 	}
@@ -310,14 +317,14 @@ std::string GenerateScript::extract_define(std::string building, std::string fro
 		return struct_take_put_list.drill_modules;
 	}
 
-	if (from_into == "input") {
+	if (from_into == struct_from_into_list.input) {
 		return struct_take_put_list.assembly_input;
 	}
 
-	if (from_into == "modules") {
+	if (from_into == struct_from_into_list.modules) {
 		return struct_take_put_list.assembly_modules;
 	}
-	if (from_into == "output") {
+	if (from_into == struct_from_into_list.output) {
 		return struct_take_put_list.assembly_output;
 	}
 
@@ -400,8 +407,8 @@ std::string GenerateScript::convert_string(std::string input) {
 	return input;
 }
 
-std::string GenerateScript::signature(std::string task, std::string action) {
-	return "step[" + std::to_string(total_steps) + "] = {{" + task + "," + action + "}, ";
+std::string GenerateScript::signature(std::string step, std::string action) {
+	return "step[" + std::to_string(total_steps) + "] = {{" + step + "," + action + "}, ";
 }
 
 std::string GenerateScript::check_item_name(std::string item) {
@@ -475,7 +482,7 @@ std::string GenerateScript::check_item_name(std::string item) {
 	return "Not a known item";
 }
 
-void GenerateScript::check_mining_distance(std::string task, std::string action, std::string x_cord, std::string y_cord) {
+void GenerateScript::check_mining_distance(std::string step, std::string action, std::string x_cord, std::string y_cord) {
 	static const float buffer = 0.50f; // this should be set correctly when you get a better understanding of how it is actually calculated in the game
 	static const float max_distance = 2.7f;
 
@@ -487,7 +494,7 @@ void GenerateScript::check_mining_distance(std::string task, std::string action,
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
-		walk(task, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]));
+		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]));
 	}
 }
 
@@ -826,7 +833,7 @@ void GenerateScript::build(std::string step, std::string action, std::string x_c
 		return;
 	}
 
-	step_list += signature(task, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + "}\n";
+	step_list += signature(step, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + "}\n";
 	total_steps += 1;
 };
 

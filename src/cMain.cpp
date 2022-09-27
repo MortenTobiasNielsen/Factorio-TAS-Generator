@@ -2327,9 +2327,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		goal = "goal_any_percent.lua";
 	}
 
-	//GenerateScript generate_script;
-	//generate_code_folder_location = generate_script.generate(this, grid_tasks, dialog_progress_bar, tasks_data_to_save, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
-	//
+	GenerateScript generate_script;
+	generate_script.generate(this, grid_tasks, dialog_progress_bar, tasks_data_to_save, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
+	
 	event.Skip();
 }
 

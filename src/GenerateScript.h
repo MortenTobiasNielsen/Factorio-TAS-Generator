@@ -15,7 +15,7 @@
 class GenerateScript {
 public:
 	GenerateScript();
-	std::string generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string folder_location, bool auto_close, bool only_generate_script, std::string goal_chosen);
+	void generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string& folder_location, bool auto_close, bool only_generate_script, std::string goal_chosen);
 
 private:
 	std::string software_version;
@@ -110,7 +110,7 @@ private:
 	void reset();
 	void clear_tasks();
 	void extract_parameters(const std::string& task_reference);
-	std::string extract_define(std::string building, std::string from_into);
+	std::string extract_define(std::string from_into, std::string building);
 	void split_task(const std::string& task_reference);
 	bool find_building(int& row, wxGrid* grid, std::vector<std::string>& steps);
 

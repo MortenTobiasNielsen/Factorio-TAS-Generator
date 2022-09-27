@@ -757,12 +757,12 @@ static const struct {
 } struct_tasks_list;
 
 static const struct {
-	std::string input = "Input";
-	std::string output = "Output";
-	std::string fuel = "Fuel";
-	std::string modules = "Modules";
-	std::string chest = "Chest";
-	std::string wreck = "Wreck";
+	std::string input = "input";
+	std::string output = "output";
+	std::string fuel = "fuel";
+	std::string modules = "modules";
+	std::string chest = "chest";
+	std::string wreck = "wreck";
 } struct_from_into_list;
 
 static const struct {
