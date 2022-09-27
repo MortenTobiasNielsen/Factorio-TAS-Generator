@@ -4,54 +4,6 @@
 #include <vector>
 #include <map>
 
-enum step_name { 
-	step_start = 1, 
-	step_stop, 
-	step_build, 
-	step_craft, 
-	step_game_speed, 
-	step_pause, 
-	step_save, 
-	step_recipe, 
-	step_limit, 
-	step_filter, 
-	step_rotate, 
-	step_priority, 
-	step_put, 
-	step_take, 
-	step_mine, 
-	step_launch, 
-	step_walk, 
-	step_tech, 
-	step_drop, 
-	step_pick_up, 
-	step_idle };
-
-std::map<std::string, step_name> map_step_names = { 
-	{"Start", step_start}, 
-	{"Stop", step_stop}, 
-	{"Build", step_build}, 
-	{"Craft", step_craft}, 
-	{"Game Speed", step_game_speed}, 
-	{"Pause", step_pause}, 
-	{"Save", step_save},
-	{"Recipe", step_recipe}, 
-	{"Limit", step_limit}, 
-	{"Filter", step_filter}, 
-	{"Rotate", step_rotate}, 
-	{"Priority", step_priority}, 
-	{"Put", step_put}, 
-	{"Take", step_take}, 
-	{"Mine", step_mine}, 
-	{"Launch", step_launch},
-	{"Walk", step_walk}, 
-	{"Tech", step_tech}, 
-	{"Drop", step_drop}, 
-	{"Pick up", step_pick_up}, 
-	{"Idle", step_idle} 
-};
-
-
 // it is important to go though all of the lists When changes to the game is implemented to ensure that the lists are still accurate
 
 static const std::vector<std::string> fuel_list = { "Wood", 

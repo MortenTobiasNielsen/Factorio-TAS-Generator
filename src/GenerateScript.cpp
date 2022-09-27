@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GenerateScript.h"
 #include "utils.h"
 #include "Functions.h"
@@ -279,6 +281,47 @@ void GenerateScript::extract_parameters(const std::string& task_reference)
 	building_size = step_segments[7];
 	amount_of_buildings = step_segments[8];
 	comment = step_segments[9];
+}
+
+std::string GenerateScript::extract_define(std::string building, std::string from_into)
+{
+	if (from_into == "wreck") {
+		return struct_take_put_list.chest;
+	}
+
+	if (from_into == "chest") {
+		return struct_take_put_list.chest;
+	}
+
+	if (from_into == "fuel") {
+		return struct_take_put_list.fuel;
+	}
+
+	if (building == "Lab") {
+		if (from_into == "input") {
+			return struct_take_put_list.lab_input;
+		}
+		else if (from_into == "modules") {
+			return struct_take_put_list.lab_modules;
+		}
+	}
+
+	if (check_input(building, drills_list)) {
+		return struct_take_put_list.drill_modules;
+	}
+
+	if (from_into == "input") {
+		return struct_take_put_list.assembly_input;
+	}
+
+	if (from_into == "modules") {
+		return struct_take_put_list.assembly_modules;
+	}
+	if (from_into == "output") {
+		return struct_take_put_list.assembly_output;
+	}
+
+	return "Not Found";
 }
 
 void GenerateScript::split_task(const std::string& task_reference)

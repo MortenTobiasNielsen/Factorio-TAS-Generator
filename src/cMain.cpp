@@ -1,9 +1,9 @@
 #pragma once
+
 #include "cMain.h"
 #include "GUI_Base.h"
 #include "utils.h"
 #include "Functions.h"
-#include "control_info.h"
 #include "GenerateScript.h"
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
@@ -2327,9 +2327,9 @@ void cMain::OnGenerateScript(wxCommandEvent& event) {
 		goal = "goal_any_percent.lua";
 	}
 
-	GenerateScript generate_script;
-	generate_code_folder_location = generate_script.generate(this, grid_tasks, dialog_progress_bar, tasks_data_to_save, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
-	
+	//GenerateScript generate_script;
+	//generate_code_folder_location = generate_script.generate(this, grid_tasks, dialog_progress_bar, tasks_data_to_save, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
+	//
 	event.Skip();
 }
 
@@ -3297,48 +3297,6 @@ std::string cMain::extract_priority_in() {
 
 std::string cMain::extract_priority_out() {
 	return cmb_output->GetValue().ToStdString();
-}
-
-std::string cMain::extract_define(int start_row) {
-
-	if (from_into == "wreck") {
-		return struct_take_put_list.chest;
-	}
-
-	if (find_building_for_script(start_row)) {
-		if (from_into == "chest") {
-			return struct_take_put_list.chest;
-		}
-
-		if (from_into == "fuel") {
-			return struct_take_put_list.fuel;
-		}
-
-		if (building == "Lab") {
-			if (from_into == "input") {
-				return struct_take_put_list.lab_input;
-			} else if (from_into == "modules") {
-				return struct_take_put_list.lab_modules;
-			}
-		}
-
-		if (check_input(building, drills_list)) {
-			return struct_take_put_list.drill_modules;
-		}
-
-		if (from_into == "input") {
-			return struct_take_put_list.assembly_input;
-		}
-
-		if (from_into == "modules") {
-			return struct_take_put_list.assembly_modules;
-		}
-		if (from_into == "output") {
-			return struct_take_put_list.assembly_output;
-		}
-	}
-
-	return "Not Found";
 }
 
 void cMain::update_future_rotate_tasks() {

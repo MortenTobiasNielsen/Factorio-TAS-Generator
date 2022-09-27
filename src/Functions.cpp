@@ -1,5 +1,6 @@
+#pragma once
+
 #include "Functions.h"
-#include "utils.h"
 
 bool compare_task_strings(const wxString& str1, const std::string& str2)
 {
@@ -14,47 +15,6 @@ bool compare_task_strings(const wxString& str1, const std::string& str2)
 	}
 
 	return true;
-}
-
-std::string extract_define(std::string building, std::string from_into)
-{
-	if (from_into == "wreck") {
-		return struct_take_put_list.chest;
-	}
-
-	if (from_into == "chest") {
-		return struct_take_put_list.chest;
-	}
-
-	if (from_into == "fuel") {
-		return struct_take_put_list.fuel;
-	}
-
-	if (building == "Lab") {
-		if (from_into == "input") {
-			return struct_take_put_list.lab_input;
-		}
-		else if (from_into == "modules") {
-			return struct_take_put_list.lab_modules;
-		}
-	}
-
-	if (check_input(building, drills_list)) {
-		return struct_take_put_list.drill_modules;
-	}
-
-	if (from_into == "input") {
-		return struct_take_put_list.assembly_input;
-	}
-
-	if (from_into == "modules") {
-		return struct_take_put_list.assembly_modules;
-	}
-	if (from_into == "output") {
-		return struct_take_put_list.assembly_output;
-	}
-
-	return "Not Found";
 }
 
 bool check_input(std::string& item, const std::vector<std::string>& all_items)

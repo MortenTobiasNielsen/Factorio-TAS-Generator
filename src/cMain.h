@@ -369,8 +369,6 @@ private:
 
 	bool save_file(bool save_as);
 
-	std::string extract_define(int start_row);
-
 	void extract_parameters();
 	std::string extract_task();
 	std::string extract_x_cord();

@@ -1,10 +1,14 @@
 #pragma once
 
+#include <wx/wx.h>
+#include <wx/statline.h>
+#include <wx/grid.h>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+#include <map>
 
 #include "ScriptProgressBar.h"
 
@@ -14,50 +18,99 @@ public:
 	std::string generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string folder_location, bool auto_close, bool only_generate_script, std::string goal_chosen);
 
 private:
-	static std::string software_version;
+	std::string software_version;
 
-	static std::string step_list;
-	static float player_x_cord;
-	static float player_y_cord;
-	static float target_x_cord;
-	static float target_y_cord;
-	static float x_building_size;
-	static float y_building_size;
+	std::string step_list;
+	float player_x_cord;
+	float player_y_cord;
+	float target_x_cord;
+	float target_y_cord;
+	float x_building_size;
+	float y_building_size;
 
-	static std::string current_step;
-	static int total_steps;
-	static std::string segment;
-	static std::vector<std::string> step_segments;
+	std::string current_step;
+	int total_steps;
+	std::string segment;
+	std::vector<std::string> step_segments;
 
-	static std::string task;
-	static std::string x_cord;
-	static std::string y_cord;
-	static std::string units;
-	static std::string item;
-	static std::string build_orientation;
-	static std::string direction_to_build;
-	static std::string building_size;
-	static std::string amount_of_buildings;
-	static std::string comment;
-	static std::string from_into;
-	static std::string priority_in;
-	static std::string priority_out;
+	std::string task;
+	std::string x_cord;
+	std::string y_cord;
+	std::string units;
+	std::string item;
+	std::string build_orientation;
+	std::string direction_to_build;
+	std::string building_size;
+	std::string amount_of_buildings;
+	std::string comment;
+	std::string from_into;
+	std::string priority_in;
+	std::string priority_out;
 
-	static std::string building;
-	static std::string building_x_cord;
-	static std::string building_y_cord;
-	static std::string building_units;
-	static std::string building_build_orientation;
-	static std::string building_direction_to_build;
-	static std::string building_building_size;
-	static std::string building_amount_of_buildings;
-	static std::string building_priority_in;
-	static std::string building_priority_out;
-	static std::string building_comment;
+	std::string building;
+	std::string building_x_cord;
+	std::string building_y_cord;
+	std::string building_units;
+	std::string building_build_orientation;
+	std::string building_direction_to_build;
+	std::string building_building_size;
+	std::string building_amount_of_buildings;
+	std::string building_priority_in;
+	std::string building_priority_out;
+	std::string building_comment;
+
+	enum step_name {
+		step_start = 1,
+		step_stop,
+		step_build,
+		step_craft,
+		step_game_speed,
+		step_pause,
+		step_save,
+		step_recipe,
+		step_limit,
+		step_filter,
+		step_rotate,
+		step_priority,
+		step_put,
+		step_take,
+		step_mine,
+		step_launch,
+		step_walk,
+		step_tech,
+		step_drop,
+		step_pick_up,
+		step_idle
+	};
+
+	std::map<std::string, step_name> map_step_names = {
+		{"Start", step_start},
+		{"Stop", step_stop},
+		{"Build", step_build},
+		{"Craft", step_craft},
+		{"Game Speed", step_game_speed},
+		{"Pause", step_pause},
+		{"Save", step_save},
+		{"Recipe", step_recipe},
+		{"Limit", step_limit},
+		{"Filter", step_filter},
+		{"Rotate", step_rotate},
+		{"Priority", step_priority},
+		{"Put", step_put},
+		{"Take", step_take},
+		{"Mine", step_mine},
+		{"Launch", step_launch},
+		{"Walk", step_walk},
+		{"Tech", step_tech},
+		{"Drop", step_drop},
+		{"Pick up", step_pick_up},
+		{"Idle", step_idle}
+	};
 
 	void reset();
 	void clear_tasks();
 	void extract_parameters(const std::string& task_reference);
+	std::string extract_define(std::string building, std::string from_into);
 	void split_task(const std::string& task_reference);
 	bool find_building(int& row, wxGrid* grid, std::vector<std::string>& steps);
 

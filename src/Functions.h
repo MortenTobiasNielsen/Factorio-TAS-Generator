@@ -1,15 +1,10 @@
 #pragma once
 
-#include <string>
-#include <iostream>
-#include <algorithm>
+#include <wx/wx.h>
 #include <vector>
 #include <string>
-#include <wx/wx.h>
 
 bool compare_task_strings(const wxString& str1, const std::string& str2);
-
-std::string extract_define(std::string building, std::string from_into);
 
 bool check_input(std::string& item, const std::vector<std::string>& all_items);
 
