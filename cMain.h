@@ -147,7 +147,7 @@ private:
 		{"Recipe", e_recipe}, {"Limit", e_limit}, {"Filter", e_filter}, {"Rotate", e_rotate}, {"Priority", e_priority}, {"Put", e_put}, {"Take", e_take}, {"Mine", e_mine}, {"Launch", e_launch},
 		{"Walk", e_walk}, {"Tech", e_tech}, {"Drop", e_drop}, {"Pick up", e_pick_up}, {"Idle", e_idle} };
 
-	std::string software_version = "0.0.5";
+	std::string software_version = "0.0.6";
 
 	wxString window_title = "EZRaiderz TAS Helper";
 
