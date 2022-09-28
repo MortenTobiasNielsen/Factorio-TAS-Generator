@@ -26,6 +26,11 @@ static const std::string auto_put_burner_text = "Burner";
 static const std::string auto_put_lab_text = "Lab";
 static const std::string auto_put_recipe_text = "Recipe";
 
+static const std::string goal_steelaxe_text = "Steel Axe";
+static const std::string goal_GOTLAP_text = "Getting On Track Like A Pro";
+static const std::string goal_any_percent_text = "Any %";
+static const std::string goal_debug_text = "Debug";
+
 
 static const std::vector<std::string> fuel_list = { "Wood", 
 													"Coal", 

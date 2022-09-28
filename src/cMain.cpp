@@ -1873,11 +1873,27 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 	wxFileDialog dlg(this, "Open saved file", "", "", ".txt files (*.txt) | *.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		std::ifstream inFile;
-#pragma warning(suppress : 4996)
+		std::ifstream file;
 		std::locale utf8_locale(std::locale(), new std::codecvt_utf8<wchar_t>);
-		inFile.imbue(utf8_locale);
-		inFile.open(dlg.GetPath().ToStdString());
+		file.imbue(utf8_locale);
+		file.open(dlg.GetPath().ToStdString());
+
+		if (!file) {
+			wxMessageBox("It was not possible to open the file", "A file error occurred");
+			return;
+		}
+
+		if (checks_before_reset_window()) {
+			if (wxMessageBox("Are you sure you want to open this file?\nAll in the current window will be cleared.", "Ensure that you have saved what you need before clicking yes", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
+				reset_to_new_window();
+			}
+			else {
+				return;
+			}
+		}
+
+
+
 		
 		bool total_tasks_reached = false;
 		bool goal_reached = false;
@@ -1896,18 +1912,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		int total_lines = 0;
 		int lines_processed = 0;
 
-		if (!inFile) {
-			wxMessageBox("It was not possible to open the file", "A file error occurred");
-			return;
-		}
-
-		if (checks_before_reset_window()) {
-			if (wxMessageBox("Are you sure you want to open this file?\nAll in the current window will be cleared.", "Ensure that you have saved what you need before clicking yes", wxICON_QUESTION | wxYES_NO, this) == wxYES) {
-				reset_to_new_window();
-			} else { 
-				return;
-			}
-		}
+		
 
 		if (!dialog_progress_bar) {
 			dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
@@ -1918,7 +1923,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		dialog_progress_bar->set_progress(0);
 		dialog_progress_bar->Show();
 
-		while (std::getline(inFile, open_data_string)) {
+		while (std::getline(file, open_data_string)) {
 			std::stringstream data_line;
 			data_line.str(open_data_string);
 
@@ -2226,7 +2231,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 		}
 
-		inFile.close();
+		file.close();
 
 		std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
 
