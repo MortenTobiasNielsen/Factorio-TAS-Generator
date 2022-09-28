@@ -5,6 +5,8 @@
 #include "utils.h"
 #include "Functions.h"
 #include "GenerateScript.h"
+#include "SaveTas.h"
+#include "OpenTas.h"
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
 	SetIcon(icon_xpm);
@@ -371,20 +373,14 @@ bool cMain::check_before_close() {
 		int answer = wxMessageBox("Do you want to save your changes?", "Ensure that you have saved what you need", wxICON_QUESTION | wxYES_NO | wxCANCEL, this);
 
 		if (answer == wxYES) {
-			if (save_file(false)) {
-				return true;
-			} else {
-				return false;
-			}
+			return save_file(false);
 
 		} else if (answer == wxNO) {
 			return true;
 		}
-	} else {
-		return true;
-	}
+	} 
 
-	return false;
+	return true;
 }
 
 void cMain::move_row(wxGrid* grid, bool up) {
@@ -1933,7 +1929,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 
 			if (!total_tasks_reached){
-				if (seglist[0] == total_tasks_indicator) {
+				if (seglist[0] == total_steps_indicator) {
 					total_tasks_reached = true;
 				} else {
 					malformed_saved_file_message();
@@ -1943,7 +1939,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			} else if (seglist[0] == goal_indicator) {
 				goal_reached = true;
 
-			} else if (seglist[0] == tasks_indicator) {
+			} else if (seglist[0] == steps_indicator) {
 				tasks_reached = true;
 
 			} else if (seglist[0] == save_groups_indicator) {
@@ -3434,11 +3430,6 @@ void cMain::malformed_saved_file_message()
 	wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 }
 
-inline const char* const cMain::bool_to_string(bool b)
-{
-	return b ? "true" : "false";
-}
-
 bool cMain::extra_building_checks() {
 	std::string building_item_check = "";
 
@@ -3679,143 +3670,60 @@ bool cMain::check_buildings_grid() {
 
 bool cMain::save_file(bool save_as) {
 
-	if (save_as) {
+	if (save_file_location == "" || save_as) {
 		wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (dlg.ShowModal() == wxID_OK) {
 			save_file_location = dlg.GetPath().ToStdString();
-		} else {
+		}
+		else {
 			return false;
 		}
-	} else {
-		if (save_file_location == "") {
-			wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-			if (dlg.ShowModal() == wxID_OK) {
-				save_file_location = dlg.GetPath().ToStdString();
-			} else {
-				return false;
-			}
-		}
 	}
 
-	int total_lines = tasks_data_to_save.size() + group_map.size() + template_map.size();
-	int lines_processed = 0; 
+	std::vector<bool> auto_list{
+		menu_auto_close->GetMenuItems()[0]->IsChecked(),
+		menu_auto_close->GetMenuItems()[1]->IsChecked(),
+		menu_auto_close->GetMenuItems()[2]->IsChecked(),
+		menu_auto_close->GetMenuItems()[3]->IsChecked(),
+		check_furnace->IsChecked(),
+		check_burner->IsChecked(),
+		check_lab->IsChecked(),
+		check_recipe->IsChecked(),
+		auto_close_save_as,
+		auto_close_save,
+	};
 
-	if (!dialog_progress_bar) {
-		dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
-	}
-
-	dialog_progress_bar->set_text("Saving file");
-	dialog_progress_bar->set_button_enable(false);
-	dialog_progress_bar->set_progress(0);
-	dialog_progress_bar->Show();
-
-	std::ofstream myfile;
-	myfile.open(save_file_location);
-
-	myfile << total_tasks_indicator << std::endl;
-	myfile << total_lines << std::endl;
-
-	myfile << goal_indicator << std::endl;
+	std::string goal;
 	if (menu_goals->GetMenuItems()[0]->IsChecked()) {
-		myfile << goal_steelaxe_text << std::endl;
-	} else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
-		myfile << goal_GOTLAP_text << std::endl;
-	} else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
-		myfile << goal_any_percent_text << std::endl;
-	} else if (menu_goals->GetMenuItems()[3]->IsChecked()) {
-		myfile << goal_debug_text << std::endl;
-	} else {
-		myfile << goal_steelaxe_text << std::endl;
+		goal = goal_steelaxe_text;
+	}
+	else if (menu_goals->GetMenuItems()[1]->IsChecked()) {
+		goal = goal_GOTLAP_text;
+	}
+	else if (menu_goals->GetMenuItems()[2]->IsChecked()) {
+		goal = goal_any_percent_text;
+	}
+	else {
+		goal = goal_debug_text;
 	}
 
-	myfile << tasks_indicator << std::endl;
-	for (auto it = tasks_data_to_save.begin(); it < tasks_data_to_save.end(); it++) {
-		myfile << *it << std::endl;
-
-		lines_processed++;
-
-		if (lines_processed > 0 && lines_processed % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
-			wxYield();
-		}
-	}
-
-	myfile << save_groups_indicator << std::endl;
-	if (group_map.size()) {
-		for (auto element : group_map) {
-			for (auto value : element.second) {
-				myfile << element.first + ";" + value << std::endl;
-
-				lines_processed++;
-
-				if (lines_processed > 0 && lines_processed % 25 == 0) {
-					dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
-					wxYield();
-				}
-			}
-		}
-	}
-
-	myfile << save_templates_indicator << std::endl;
-	if (template_map.size()) {
-		for (auto element : template_map) {
-			for (auto value : element.second) {
-				myfile << element.first + ";" + value << std::endl;
-
-				lines_processed++;
-
-				if (lines_processed > 0 && lines_processed % 25 == 0) {
-					dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
-					wxYield();
-				}
-			}
-		}
-	}
-
-	myfile << save_file_indicator << std::endl;
-	myfile << save_file_location << std::endl;
-
-	myfile << code_file_indicator << std::endl;
-	if (generate_code_folder_location != "") {
-		myfile << generate_code_folder_location << std::endl;
-	}
-
-	myfile << auto_close_indicator << std::endl;
-	myfile << auto_close_generate_script_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[0]->IsChecked()) << std::endl;
-	myfile << auto_close_open_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[1]->IsChecked()) << std::endl;
-	myfile << auto_close_save_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[2]->IsChecked()) << std::endl;
-	myfile << auto_close_save_as_text << ";" << bool_to_string(menu_auto_close->GetMenuItems()[3]->IsChecked()) << std::endl;
-
-	myfile << auto_put_indicator << std::endl;
-	myfile << auto_put_furnace_text << ";" << bool_to_string(check_furnace->IsChecked()) << std::endl;
-	myfile << auto_put_burner_text << ";" << bool_to_string(check_burner->IsChecked()) << std::endl;
-	myfile << auto_put_lab_text << ";" << bool_to_string(check_lab->IsChecked()) << std::endl;
-	myfile << auto_put_recipe_text << ";" << bool_to_string(check_recipe->IsChecked());
-
-	myfile.close();
+	SaveTas save;
+	save.Save(
+		this,
+		dialog_progress_bar,
+		save_as,
+		auto_list,
+		tasks_data_to_save,
+		group_map,
+		template_map,
+		save_file_location,
+		generate_code_folder_location,
+		goal);
 
 	std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
 
 	SetLabel(window_title + " - " + file_name);
-
-	dialog_progress_bar->set_progress(100);
-	if (save_as) {
-		if (auto_close_save_as) {
-			dialog_progress_bar->Close();
-		}
-		else {
-			dialog_progress_bar->set_button_enable(true);
-		}
-	} else {
-		if (auto_close_save) {
-			dialog_progress_bar->Close();
-		}
-		else {
-			dialog_progress_bar->set_button_enable(true);
-		}
-	}
 
 	return true;
 }

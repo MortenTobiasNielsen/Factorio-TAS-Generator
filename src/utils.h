@@ -6,6 +6,27 @@
 
 // it is important to go though all of the lists When changes to the game is implemented to ensure that the lists are still accurate
 
+static const std::string total_steps_indicator = "Total lines:";
+static const std::string goal_indicator = "Goal:";
+static const std::string steps_indicator = "Steps:";
+static const std::string save_groups_indicator = "Groups:";
+static const std::string save_templates_indicator = "Templates:";
+static const std::string save_file_indicator = "Save file location:";
+static const std::string code_file_indicator = "Step folder location:";
+static const std::string auto_close_indicator = "Auto close settings:";
+static const std::string auto_put_indicator = "Auto put settings:";
+
+static const std::string auto_close_generate_script_text = "Generate Script";
+static const std::string auto_close_open_text = "Open";
+static const std::string auto_close_save_text = "Save";
+static const std::string auto_close_save_as_text = "Save As";
+
+static const std::string auto_put_furnace_text = "Furnace";
+static const std::string auto_put_burner_text = "Burner";
+static const std::string auto_put_lab_text = "Lab";
+static const std::string auto_put_recipe_text = "Recipe";
+
+
 static const std::vector<std::string> fuel_list = { "Wood", 
 													"Coal", 
 													"Solid fuel", 
