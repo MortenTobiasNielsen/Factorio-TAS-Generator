@@ -9,6 +9,7 @@
 #include <map>
 
 #include "ScriptProgressBar.h"
+#include "utils.h"
 
 class SaveTas
 {
@@ -28,4 +29,3 @@ public:
 private:
 	inline const char* const bool_to_string(bool b);
 };
-
