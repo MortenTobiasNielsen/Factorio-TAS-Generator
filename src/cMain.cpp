@@ -1874,6 +1874,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 	if (dlg.ShowModal() == wxID_OK) {
 		std::ifstream file;
+#pragma warning(suppress : 4996)
 		std::locale utf8_locale(std::locale(), new std::codecvt_utf8<wchar_t>);
 		file.imbue(utf8_locale);
 		file.open(dlg.GetPath().ToStdString());
@@ -1892,7 +1893,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 		}
 
-
+		OpenTas open;
+		open.Open(this, dialog_progress_bar, file);
 
 		
 		bool total_tasks_reached = false;
