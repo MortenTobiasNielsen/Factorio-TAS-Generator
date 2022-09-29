@@ -228,6 +228,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizerX->Add( label_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	txt_x_cord = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
+	txt_x_cord->SetToolTip( wxT("Positive numbers are further East and negative numbers are further West") );
+
 	bSizerX->Add( txt_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
@@ -269,6 +271,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizerY->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	txt_y_cord = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
+	txt_y_cord->SetToolTip( wxT("Positive numbers are further South and negative numbers are further North") );
+
 	bSizerY->Add( txt_y_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
@@ -970,7 +974,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	template_panel->SetSizer( bSizer5612 );
 	template_panel->Layout();
 	bSizer5612->Fit( template_panel );
-	m_auinotebook1->AddPage( template_panel, wxT("Templates"), false, wxNullBitmap );
+	m_auinotebook1->AddPage( template_panel, wxT("Templates"), true, wxNullBitmap );
 	building_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer56111;
 	bSizer56111 = new wxBoxSizer( wxVERTICAL );
@@ -1161,7 +1165,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->SetSizer( bSizer5611 );
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
-	m_auinotebook1->AddPage( step_panel, wxT("Steps"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
 	SegmentsPanel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer117;
 	bSizer117 = new wxBoxSizer( wxVERTICAL );
