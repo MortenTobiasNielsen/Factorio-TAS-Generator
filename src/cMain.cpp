@@ -152,6 +152,8 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	// disabling Change shortcuts
 	menu_shortcuts->GetMenuItems()[0]->Enable(false);
+
+	
 }
 
 
@@ -1218,12 +1220,37 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 	event.Skip();
 }
 
+// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
+void cMain::OnMoveUpFiveClicked(wxCommandEvent& event) {
+	for(int i = 0; i < 5; i++){ 
+		move_row(grid_tasks, true); 
+	}
+
+	event.Skip();
+}
+
+// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
+void cMain::OnMoveDownFiveClicked(wxCommandEvent& event) {
+	for (int i = 0; i < 5; i++) {
+		move_row(grid_tasks, false);
+	}
+
+	event.Skip();
+}
+
 void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event) {
 	row_num = event.GetRow();
 
 	update_parameters(grid_tasks, event);
 
 	event.Skip();
+}
+
+void cMain::AddSegmentClicked(wxCommandEvent& event) {
+
+	grid_segments->AppendRows(1, true);
+	auto panel = new wxPanel(m_auinotebook1); 
+	m_auinotebook1->AddPage(panel, "hej", true, wxNullBitmap);
 }
 
 void cMain::OnNewGroupClicked(wxCommandEvent& event) {
@@ -2294,8 +2321,8 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 	cmb_output->Enable(parameters[7]);
 	cmb_building_orientation->Enable(parameters[8]);
 	cmb_direction_to_build->Enable(parameters[9]);
-	txt_amount_of_buildings->Enable(parameters[10]);
-	txt_building_size->Enable(parameters[11]);
+	spin_building_size->Enable(parameters[11]);
+	spin_building_amount->Enable(parameters[10]);
 }
 
 bool cMain::setup_for_task_group_template_grid() {
@@ -2633,8 +2660,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_item->SetValue(item);
 		cmb_building_orientation->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2648,8 +2675,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2663,8 +2690,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2683,8 +2710,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		spin_y_cord->SetValue(y_cord);
 		spin_units->SetValue(units);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		cmb_item->SetValue(item);
 		txt_comment->SetValue(comment);
 
@@ -2720,8 +2747,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		spin_y_cord->SetValue(y_cord);
 		spin_units->SetValue(units);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2732,8 +2759,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		spin_x_cord->SetValue(x_cord);
 		spin_y_cord->SetValue(y_cord);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 
 		long long pos = build_orientation.find(",");
 
@@ -2751,8 +2778,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		spin_units->SetValue(units);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2763,8 +2790,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		spin_x_cord->SetValue(x_cord);
 		spin_y_cord->SetValue(y_cord);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2776,8 +2803,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 		spin_y_cord->SetValue(y_cord);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
-		txt_building_size->SetValue(building_size);
-		txt_amount_of_buildings->SetValue(amount_of_buildings);
+		spin_building_size->SetValue(building_size);
+		spin_building_amount->SetValue(amount_of_buildings);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -3010,11 +3037,11 @@ std::string cMain::extract_item() {
 }
 
 std::string cMain::extract_amount_of_buildings() {
-	if (wxAtoi(txt_amount_of_buildings->GetValue()) < 1) {
+	if (spin_building_amount->GetValue() < 1) {
 		return "1";
 	} 
 
-	return std::to_string(wxAtoi(txt_amount_of_buildings->GetValue()));
+	return std::to_string(spin_building_amount->GetValue());
 }
 
 void cMain::auto_put(std::string put_item, std::string put_units, std::string put_into)
@@ -3030,11 +3057,11 @@ void cMain::auto_put(std::string put_item, std::string put_units, std::string pu
 }
 
 std::string cMain::extract_building_size() {
-	if (wxAtoi(txt_building_size->GetValue()) < 1) {
+	if (spin_building_size->GetValue() < 1) {
 		return "1";
 	} 
 
-	return std::to_string(wxAtoi(txt_building_size->GetValue()));
+	return std::to_string(spin_building_size->GetValue());
 }
 
 std::string cMain::extract_from_into() {

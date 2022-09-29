@@ -103,7 +103,9 @@ protected:
 	void OnChangeTaskClicked(wxCommandEvent& event);
 	void OnDeleteTaskClicked(wxCommandEvent& event);
 	void OnMoveUpClicked(wxCommandEvent& event);
-	void OnMoveDownClicked(wxCommandEvent& event); 
+	void OnMoveDownClicked(wxCommandEvent& event);
+	void OnMoveUpFiveClicked(wxCommandEvent& event);
+	void OnMoveDownFiveClicked(wxCommandEvent& event);
 
 	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
 
