@@ -7,6 +7,7 @@
 #include "GenerateScript.h"
 #include "SaveTas.h"
 #include "OpenTas.h"
+#include <wx/aui/auibook.h>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
 	SetIcon(icon_xpm);
@@ -149,11 +150,13 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	// Checking steel axe as a goal
 	menu_goals->GetMenuItems()[0]->Check();
-
+	
 	// disabling Change shortcuts
 	menu_shortcuts->GetMenuItems()[0]->Enable(false);
-
 	
+	// split steps into seperate panel
+	wxAuiNotebook * a = (wxAuiNotebook*)step_panel->GetParent();
+	a->Split(3, wxRight);
 }
 
 
