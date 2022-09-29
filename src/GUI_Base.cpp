@@ -974,7 +974,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	template_panel->SetSizer( bSizer5612 );
 	template_panel->Layout();
 	bSizer5612->Fit( template_panel );
-	m_auinotebook1->AddPage( template_panel, wxT("Templates"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( template_panel, wxT("Templates"), false, wxNullBitmap );
 	building_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer56111;
 	bSizer56111 = new wxBoxSizer( wxVERTICAL );
@@ -982,11 +982,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer122;
 	bSizer122 = new wxBoxSizer( wxVERTICAL );
 
-	building_search_ctrl = new wxSearchCtrl( building_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	building_search_ctrl = new wxSearchCtrl( building_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	#ifndef __WXMAC__
 	building_search_ctrl->ShowSearchButton( true );
 	#endif
-	building_search_ctrl->ShowCancelButton( false );
+	building_search_ctrl->ShowCancelButton( true );
 	bSizer122->Add( building_search_ctrl, 0, wxALL, 5 );
 
 
@@ -1046,7 +1046,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	building_panel->SetSizer( bSizer56111 );
 	building_panel->Layout();
 	bSizer56111->Fit( building_panel );
-	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), false, wxNullBitmap );
+	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), true, wxNullBitmap );
 	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
@@ -1071,11 +1071,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_delete_task11 = new wxButton( step_panel, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer113->Add( btn_delete_task11, 0, wxALL, 5 );
 
-	task_search_ctrl = new wxSearchCtrl( step_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	task_search_ctrl = new wxSearchCtrl( step_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	#ifndef __WXMAC__
 	task_search_ctrl->ShowSearchButton( true );
 	#endif
-	task_search_ctrl->ShowCancelButton( false );
+	task_search_ctrl->ShowCancelButton( true );
 	bSizer113->Add( task_search_ctrl, 0, wxALL, 5 );
 
 
@@ -1326,12 +1326,16 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_template_add_to_tasks_list1->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddToTasksListClicked ), NULL, this );
 	btn_template_add_from_tasks_list1->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddFromTasksListClicked ), NULL, this );
 	grid_template->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTemplateGridDoubleLeftClick ), NULL, this );
+	building_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnCancelButton ), NULL, this );
+	building_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnSearchButton ), NULL, this );
 	building_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::BuildingSearchOnText ), NULL, this );
 	building_search_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::BuildingSearchOnTextEnter ), NULL, this );
 	grid_buildings->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnBuildingsGridLeftDoubleClick ), NULL, this );
 	btn_add_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddTaskClicked ), NULL, this );
 	btn_change_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeTaskClicked ), NULL, this );
 	btn_delete_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTaskClicked ), NULL, this );
+	task_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnCancelButton ), NULL, this );
+	task_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::TaskSeachOnTextEnter ), NULL, this );
 	btn_move_up_5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
@@ -1388,12 +1392,16 @@ GUI_Base::~GUI_Base()
 	btn_template_add_to_tasks_list1->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddToTasksListClicked ), NULL, this );
 	btn_template_add_from_tasks_list1->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddFromTasksListClicked ), NULL, this );
 	grid_template->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTemplateGridDoubleLeftClick ), NULL, this );
+	building_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnCancelButton ), NULL, this );
+	building_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnSearchButton ), NULL, this );
 	building_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::BuildingSearchOnText ), NULL, this );
 	building_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::BuildingSearchOnTextEnter ), NULL, this );
 	grid_buildings->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnBuildingsGridLeftDoubleClick ), NULL, this );
 	btn_add_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddTaskClicked ), NULL, this );
 	btn_change_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeTaskClicked ), NULL, this );
 	btn_delete_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTaskClicked ), NULL, this );
+	task_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnCancelButton ), NULL, this );
+	task_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::TaskSeachOnTextEnter ), NULL, this );
 	btn_move_up_5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );

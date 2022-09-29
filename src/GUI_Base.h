@@ -244,12 +244,16 @@ class GUI_Base : public wxFrame
 		virtual void OnTemplateAddToTasksListClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateAddFromTasksListClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
+		virtual void BuildingSearchOnCancelButton( wxCommandEvent& event ) { event.Skip(); }
+		virtual void BuildingSearchOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void BuildingSearchOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void BuildingSearchOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnBuildingsGridLeftDoubleClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnAddTaskClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnChangeTaskClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTaskClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void TaskSeachOnCancelButton( wxCommandEvent& event ) { event.Skip(); }
+		virtual void TaskSeachOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpFiveClicked( wxCommandEvent& event ) { event.Skip(); }

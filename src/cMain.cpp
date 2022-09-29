@@ -159,6 +159,99 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	a->Split(3, wxRight);
 }
 
+void cMain::TaskSeachOnText(wxCommandEvent& event) {
+	auto str = event.GetString();
+	auto rows = grid_tasks->GetSelectedRows();
+	for (auto id : rows) {
+		auto cell = grid_tasks->GetCellValue(id, 0).ToStdString();
+		if (cell.starts_with(str)) {
+			grid_tasks->SelectRow(id);
+			grid_tasks->ScrollLines(id - rows[0]);
+			event.Skip();
+			return;
+		}
+		else continue;
+	}
+	TaskSeachOnSearchButton(event);
+	event.Skip();
+}
+void cMain::TaskSeachOnTextEnter(wxCommandEvent& event) {
+	TaskSeachOnText(event);//seems not to fire
+}
+void cMain::TaskSeachOnSearchButton(wxCommandEvent& event) {
+	auto str = event.GetString();
+	auto rows = grid_tasks->GetNumberRows();
+	if (str.empty() || rows < 1) {
+		event.Skip();
+		return;
+	}
+	int start;
+	auto sel = grid_tasks->GetSelectedRows();
+	if (sel.empty()) start = 0;
+	else start = grid_tasks->GetSelectedRows().back() + 1;
+
+	for (int i = start; i < rows; i++) {
+		auto cell = grid_tasks->GetCellValue(i, 0).ToStdString();
+		if (cell.starts_with(str)) {
+			grid_tasks->SelectRow(i);
+			grid_tasks->ScrollLines(i-start);
+			event.Skip();
+			return;
+		}
+		else continue;
+	}
+	event.Skip();
+}
+void cMain::TaskSeachOnCancelButton(wxCommandEvent& event) {
+	event.Skip();// do nothing, it will clear the search box
+}
+void cMain::BuildingSearchOnText(wxCommandEvent& event) {
+	auto str = event.GetString();
+	auto rows = grid_tasks->GetSelectedRows();
+	for (auto id : rows) {
+		auto cell = grid_tasks->GetCellValue(id, 0).ToStdString();
+		if (cell.starts_with(str)) {
+			grid_tasks->SelectRow(id);
+			grid_tasks->ScrollLines(id - rows[0]);
+			event.Skip();
+			return;
+		}
+		else continue;
+	}
+	BuildingSearchOnSearchButton(event);
+	event.Skip();
+}
+void cMain::BuildingSearchOnTextEnter(wxCommandEvent& event) {
+	BuildingSearchOnText(event);//seems not to fire
+}
+void cMain::BuildingSearchOnSearchButton(wxCommandEvent& event) {
+	auto str = event.GetString();
+	auto rows = grid_buildings->GetNumberRows();
+	if (str.empty() || rows < 1) {
+		event.Skip();
+		return;
+	}
+	int start;
+	auto sel = grid_buildings->GetSelectedRows();
+	if (sel.empty()) start = 0;
+	else start = grid_buildings->GetSelectedRows().back() + 1;
+
+	for (int i = start; i < rows; i++) {
+		auto cell = grid_buildings->GetCellValue(i, 0).ToStdString();
+		if (cell.starts_with(str)) {
+			grid_buildings->SelectRow(i);
+			grid_buildings->ScrollLines(i - start);
+			event.Skip();
+			return;
+		}
+		else continue;
+	}
+	event.Skip();
+}
+void cMain::BuildingSearchOnCancelButton(wxCommandEvent& event) {
+	event.Skip();// do nothing, it will clear the search box
+}
+
 
 void cMain::OnWalkChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.walk);
