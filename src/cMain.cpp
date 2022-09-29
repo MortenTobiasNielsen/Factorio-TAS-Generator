@@ -1894,340 +1894,88 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		}
 
 		OpenTas open;
-		open.Open(this, dialog_progress_bar, file);
+		open_file_return_data result = open.Open(this, dialog_progress_bar, file);
 
-		
-		bool total_tasks_reached = false;
-		bool goal_reached = false;
-		bool tasks_reached = false;
-		bool groups_reached = false;
-		bool templates_reached = false;
-		bool save_file_reached = false;
-		bool task_file_reached = false;
-		bool generate_code_folder_reached = false;
-		bool auto_close_reached = false;
-		bool auto_put_reached = false;
-
-		bool groups_in_file = false;
-		bool templates_in_file = false;
-
-		int total_lines = 0;
-		int lines_processed = 0;
-
-		
-
-		if (!dialog_progress_bar) {
-			dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
+		if (!result.success) {
+			malformed_saved_file_message();
+			return;
 		}
 
-		dialog_progress_bar->set_text("Opening file");
-		dialog_progress_bar->set_button_enable(false);
-		dialog_progress_bar->set_progress(0);
-		dialog_progress_bar->Show();
+		tasks_data_to_save = result.steps;
+		group_map = result.group_map;
+		template_map = result.template_map;
+		save_file_location = result.save_file_location;
+		generate_code_folder_location = result.generate_code_folder_location;
 
-		while (std::getline(file, open_data_string)) {
-			std::stringstream data_line;
-			data_line.str(open_data_string);
-
-			seglist = {};
-
-			while (std::getline(data_line, segment, ';')) {
-				seglist.push_back(segment);
-			}
-
-			if (!total_tasks_reached){
-				if (seglist[0] == total_steps_indicator) {
-					total_tasks_reached = true;
-				} else {
-					malformed_saved_file_message();
-					return;
-				}
-			
-			} else if (seglist[0] == goal_indicator) {
-				goal_reached = true;
-
-			} else if (seglist[0] == steps_indicator) {
-				tasks_reached = true;
-
-			} else if (seglist[0] == save_groups_indicator) {
-				groups_reached = true;
-
-			} else if (seglist[0] == save_templates_indicator) {
-				groups_reached = true;
-				templates_reached = true;
-
-			} else if (seglist[0] == save_file_indicator) {
-				groups_reached = true;
-				templates_reached = true;
-				save_file_reached = true;
-			
-			} else if (seglist[0] == code_file_indicator) {
-				groups_reached = true;
-				templates_reached = true;
-				save_file_reached = true;
-				task_file_reached = true;
-			
-			} else if (seglist[0] == auto_close_indicator) {
-				groups_reached = true;
-				templates_reached = true;
-				save_file_reached = true;
-				task_file_reached = true;
-				generate_code_folder_reached = true;
-
-			} else if (seglist[0] == auto_put_indicator) {
-				groups_reached = true;
-				templates_reached = true;
-				save_file_reached = true;
-				task_file_reached = true;
-				generate_code_folder_reached = true;
-				auto_close_reached = true;
-
-			} else if (!goal_reached) {
-				if (seglist.size() == 1) {
-					if (is_number(seglist[0])){
-						total_lines = std::stoi(seglist[0]);
-					} else {
-						malformed_saved_file_message();
-						return;
-					}
-
-					
-				} else {
-					malformed_saved_file_message();
-					return;
-				}				
-
-			} else if (!tasks_reached) {
-				if (seglist.size() == 1) {
-					if (seglist[0] == goal_steelaxe_text) {
-						menu_goals->GetMenuItems()[0]->Check();
-					} else if (seglist[0] == goal_GOTLAP_text) {
-						menu_goals->GetMenuItems()[1]->Check();
-					} else if (seglist[0] == goal_any_percent_text) {
-						menu_goals->GetMenuItems()[2]->Check();
-					} else if (seglist[0] == goal_debug_text) {
-						menu_goals->GetMenuItems()[3]->Check();
-					} else {
-						malformed_saved_file_message();
-						return;
-					}
-
-				} else {
-					malformed_saved_file_message();
-					return;
-				}
-
-			} else if (!groups_reached) {
-				tasks_data_to_save.reserve(total_lines * 2);
-
-				if (seglist.size() == 9 || seglist.size() == 10) {
-					task = seglist[0];
-					x_cord = seglist[1];
-					y_cord = seglist[2];
-					units = seglist[3];
-					item = seglist[4];
-					build_orientation = seglist[5];
-					direction_to_build = seglist[6];
-					building_size = seglist[7];
-					amount_of_buildings = seglist[8];
-
-					if (seglist.size() > 9) {
-						comment = seglist[9];
-					} else {
-						comment = "";
-					}
-
-					// Needed to fix a misalignment between previous version and the actual name in game.
-					if (item == "Long handed inserter") {
-						item = "Long-handed inserter";
-					}
-
-					tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-
-					lines_processed++;
-
-					if (lines_processed > 0 && lines_processed % 25 == 0) {
-						dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
-						wxYield();
-					}
-
-				} else {
-					malformed_saved_file_message();
-					return;
-				}
-			} else if (!templates_reached) {
-				groups_in_file = true;
-
-				if (seglist.size() == 10 || seglist.size() == 11) {
-
-					if (group_name == "") {
-						group_name = seglist[0];
-						cmb_choose_group->SetValue(seglist[0]);
-						group_choices.Add(group_name);
-
-						group_list = {};
-
-					} else if (group_name != seglist[0]) {
-						group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
-
-						group_name = seglist[0];
-						group_choices.Add(group_name);
-						group_list = {};
-					}
-
-					task = seglist[1];
-					x_cord = seglist[2];
-					y_cord = seglist[3];
-					units = seglist[4];
-					item = seglist[5];
-					build_orientation = seglist[6];
-					direction_to_build = seglist[7];
-					building_size = seglist[8];
-					amount_of_buildings = seglist[9];
-
-					if (seglist.size() > 10) {
-						comment = seglist[10];
-					} else {
-						comment = "";
-					}
-
-					group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-				
-					lines_processed++;
-
-					if (lines_processed > 0 && lines_processed % 25 == 0) {
-						dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
-						wxYield();
-					}
-				
-				} else {
-					malformed_saved_file_message();
-					return;
-				}
-			} else if (!save_file_reached) {
-				if (seglist.size() == 10 || seglist.size() == 11) {
-					templates_in_file = true;
-					
-					if (template_name == "") {
-						template_name = seglist[0];
-						cmb_choose_template->SetValue(seglist[0]);
-						template_choices.Add(template_name);
-						template_list = {};
-
-					} else if (template_name != seglist[0]) {
-						template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
-
-						template_name = seglist[0];
-						template_choices.Add(template_name);
-						template_list = {};
-					}
-
-					task = seglist[1];
-					x_cord = seglist[2];
-					y_cord = seglist[3];
-					units = seglist[4];
-					item = seglist[5];
-					build_orientation = seglist[6];
-					direction_to_build = seglist[7];
-					building_size = seglist[8];
-					amount_of_buildings = seglist[9];
-
-					if (seglist.size() > 10) {
-						comment = seglist[10];
-					} else {
-						comment = "";
-					}
-
-					template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + units + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-				
-					lines_processed++;
-
-					if (lines_processed > 0 && lines_processed % 25 == 0) {
-						dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
-						wxYield();
-					}
-
-				} else {
-					malformed_saved_file_message();
-					return;
-				}
-				
-			} else if (!task_file_reached) {
-				save_file_location = seglist[0];
-
-			} else if (!generate_code_folder_reached) {
-				generate_code_folder_location = seglist[0];
-
-			} else if (!auto_close_reached) {
-				if (seglist.size() == 2) {
-					if (seglist[0] == auto_close_generate_script_text) {
-						menu_auto_close->GetMenuItems()[0]->Check(seglist[1] == "true");
-						auto_close_generate_script = seglist[1] == "true";
-
-					} else if (seglist[0] == auto_close_open_text) {
-						menu_auto_close->GetMenuItems()[1]->Check(seglist[1] == "true");
-						auto_close_open = seglist[1] == "true";
-
-					} else if (seglist[0] == auto_close_save_text) {
-						menu_auto_close->GetMenuItems()[2]->Check(seglist[1] == "true");
-						auto_close_save = seglist[1] == "true";
-
-					} else if (seglist[0] == auto_close_save_as_text) {
-						menu_auto_close->GetMenuItems()[3]->Check(seglist[1] == "true");
-						auto_close_save_as = seglist[1] == "true";
-
-					} else {
-						malformed_saved_file_message();
-						return;
-					}
-				} else {
-					malformed_saved_file_message();
-					return;
-				}
-			} else if (!auto_put_reached) {
-				if (seglist.size() == 2) {
-					if (seglist[0] == auto_put_furnace_text) {
-						check_furnace->SetValue(seglist[1] == "true");
-
-					} else if (seglist[0] == auto_put_burner_text) {
-						check_burner->SetValue(seglist[1] == "true");
-
-					} else if (seglist[0] == auto_put_lab_text) {
-						check_lab->SetValue(seglist[1] == "true");
-
-					} else if (seglist[0] == auto_put_recipe_text) {
-						check_recipe->SetValue(seglist[1] == "true");
-
-					} else {
-						malformed_saved_file_message();
-						return;
-					}
-				} else {
-					malformed_saved_file_message();
-					return;
-				}
-			}
+		if (result.goal == goal_steelaxe_text) {
+			menu_goals->GetMenuItems()[0]->Check();
 		}
+		else if (result.goal == goal_GOTLAP_text) {
+			menu_goals->GetMenuItems()[1]->Check();
+		}
+		else if (result.goal == goal_any_percent_text) {
+			menu_goals->GetMenuItems()[2]->Check();
+		}
+		else if (result.goal == goal_debug_text) {
+			menu_goals->GetMenuItems()[3]->Check();
+		}
+		else {
+			malformed_saved_file_message();
+			return;
+		}
+
+		menu_auto_close->GetMenuItems()[0]->Check(result.auto_close_generate_script);
+		auto_close_generate_script = result.auto_close_generate_script;
+
+		menu_auto_close->GetMenuItems()[1]->Check(result.auto_close_open);
+		auto_close_open = result.auto_close_open;
+
+		menu_auto_close->GetMenuItems()[2]->Check(result.auto_close_save);
+		auto_close_save = result.auto_close_save;
+
+		menu_auto_close->GetMenuItems()[3]->Check(result.auto_close_save_as);
+		auto_close_save_as = result.auto_close_save_as;
+
+		check_furnace->SetValue(result.auto_put_furnace);
+		check_burner->SetValue(result.auto_put_burner);
+		check_lab->SetValue(result.auto_put_lab);
+		check_recipe->SetValue(result.auto_put_recipe);
 
 		populate_tasks_grid();
 
-		if (groups_in_file) {
-			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+		dialog_progress_bar->set_progress(100.0f - 5);
+		wxYield();
+
+		if (result.group_map.size()) {
+			std::vector<std::string> keys = get_keys(result.group_map);
+
+			for (int i = 0; i < keys.size(); i++) {
+				group_choices.Add(keys[i]);
+			}
+
 			cmb_choose_group->Clear();
-			cmb_choose_group->Append(group_choices);
 
 			if (group_choices.size()) {
+				cmb_choose_group->Append(group_choices);
 				cmb_choose_group->SetValue(*group_choices.begin());
 				OnGroupChosen(event);
 			}
 		}
-		
-		if (templates_in_file) {
-			template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+
+		dialog_progress_bar->set_progress(100.0f - 3);
+		wxYield();
+
+		if (result.template_map.size()) {
+			std::vector<std::string> keys = get_keys(result.group_map);
+
+			for (int i = 0; i < keys.size(); i++) {
+				template_choices.Add(keys[i]);
+			}
+
 			cmb_choose_template->Clear();
-			cmb_choose_template->Append(template_choices);
-			
+
 			if (template_choices.size()) {
+				cmb_choose_template->Append(template_choices);
 				cmb_choose_template->SetValue(*template_choices.begin());
 				OnTemplateChosen(event);
 			}

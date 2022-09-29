@@ -1,16 +1,23 @@
 #pragma once
 
 #include "OpenTas.h"
-#include "Functions.h"
-#include "utils.h"
+
 
 void OpenTas::reset() {
 	seglist.reserve(100);
+
 	group_name = "";
+	group_list = {};
+
 	template_name = "";
+	template_list = {};
+
+	return_data = {};
+
+	return_data.success = false;
 }
 
-bool OpenTas::Open(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
+open_file_return_data OpenTas::Open(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
 {
 	reset();
 
@@ -23,14 +30,19 @@ bool OpenTas::Open(wxWindow* parent, dialog_progress_bar_base* dialog_progress_b
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-
-
-	if (!extract_total_steps(file) || 
-		!extract_goal(file) ||
-		!extract_steps(file, dialog_progress_bar) ||
-		!extract_groups(file, dialog_progress_bar)) {
-		return false;
+	if (extract_total_steps(file) && 
+		extract_goal(file) &&
+		extract_steps(file, dialog_progress_bar) &&
+		extract_groups(file, dialog_progress_bar) &&
+		extract_templates(file, dialog_progress_bar) &&
+		extract_save_location(file) &&
+		extract_script_location(file) &&
+		extract_auto_close(file) &&
+		extract_auto_put(file)) {
+		return_data.success = true;
 	}
+
+	return return_data;
 }
 
 bool OpenTas::extract_total_steps(std::ifstream& file) {
@@ -44,7 +56,7 @@ bool OpenTas::extract_total_steps(std::ifstream& file) {
 	} 
 
 	total_lines = std::stoi(seglist[0]);
-
+	
 	return true;
 }
 
@@ -57,7 +69,7 @@ bool OpenTas::extract_goal(std::ifstream& file) {
 		return false;
 	}
 
-	goal = seglist[0];
+	return_data.goal = seglist[0];
 
 	return true;
 }
@@ -68,7 +80,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 		return false;
 	}
 
-	steps.reserve(total_lines);
+	return_data.steps.reserve(total_lines);
 
 	while (update_segment(file)) {
 		if (seglist.size() != 10) {
@@ -79,12 +91,12 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 			return false;
 		}
 
-		steps.push_back(seglist[0] + ";" + seglist[1] + ";" + seglist[2] + ";" + seglist[3] + ";" + seglist[4] + ";" + seglist[5] + ";" + seglist[6] + ";" + seglist[7] + ";" + seglist[8] + ";" + seglist[9] + ";");
+		return_data.steps.push_back(seglist[0] + ";" + seglist[1] + ";" + seglist[2] + ";" + seglist[3] + ";" + seglist[4] + ";" + seglist[5] + ";" + seglist[6] + ";" + seglist[7] + ";" + seglist[8] + ";" + seglist[9] + ";");
 
 		lines_processed++;
 
 		if (lines_processed > 0 && lines_processed % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 15);
 			wxYield();
 		}
 	}
@@ -97,6 +109,7 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 	while (update_segment(file)) {
 		if (seglist.size() != 11) {
 			if (seglist.size() == 1 && seglist[0] == save_templates_indicator) {
+				return_data.group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
 				return true;
 			}
 
@@ -109,7 +122,7 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 
 		}
 		else if (group_name != seglist[0]) {
-			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+			return_data.group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
 
 			group_name = seglist[0];
 			group_list = {};
@@ -120,7 +133,7 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 		lines_processed++;
 
 		if (lines_processed > 0 && lines_processed % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 12);
 			wxYield();
 		}
 	}
@@ -133,6 +146,7 @@ bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* d
 	while (update_segment(file)) {
 		if (seglist.size() != 11) {
 			if (seglist.size() == 1 && seglist[0] == save_file_indicator) {
+				return_data.template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
 				return true;
 			}
 
@@ -144,7 +158,7 @@ bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* d
 			template_list = {};
 		}
 		else if (template_name != seglist[0]) {
-			template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+			return_data.template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
 
 			template_name = seglist[0];
 			template_list = {};
@@ -155,7 +169,7 @@ bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* d
 		lines_processed++;
 
 		if (lines_processed > 0 && lines_processed % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 5);
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 10);
 			wxYield();
 		}
 	}
@@ -168,7 +182,7 @@ bool OpenTas::extract_save_location(std::ifstream& file) {
 		return false;
 	}
 
-	save_file_location = seglist[0];
+	return_data.save_file_location = seglist[0];
 }
 
 bool OpenTas::extract_script_location(std::ifstream& file) {
@@ -180,7 +194,7 @@ bool OpenTas::extract_script_location(std::ifstream& file) {
 		return false;
 	}
 
-	generate_code_folder_location = seglist[0];
+	return_data.generate_code_folder_location = seglist[0];
 }
 
 bool OpenTas::extract_auto_close(std::ifstream& file) {
@@ -192,25 +206,25 @@ bool OpenTas::extract_auto_close(std::ifstream& file) {
 		return false;
 	}
 
-	auto_close_generate_script = seglist[1] == "true";
+	return_data.auto_close_generate_script = seglist[1] == "true";
 
 	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_open_text) {
 		return false;
 	}
 
-	auto_close_open = seglist[1] == "true";
+	return_data.auto_close_open = seglist[1] == "true";
 
 	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_save_text) {
 		return false;
 	}
 
-	auto_close_save = seglist[1] == "true";
+	return_data.auto_close_save = seglist[1] == "true";
 
 	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_save_text) {
 		return false;
 	}
 
-	auto_close_save_as = seglist[1] == "true";
+	return_data.auto_close_save_as = seglist[1] == "true";
 
 	return true;
 }
@@ -224,25 +238,25 @@ bool OpenTas::extract_auto_put(std::ifstream& file) {
 		return false;
 	}
 
-	auto_put_furnace = seglist[1] == "true";
+	return_data.auto_put_furnace = seglist[1] == "true";
 
 	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_put_burner_text) {
 		return false;
 	}
 
-	auto_put_burner = seglist[1] == "true";
+	return_data.auto_put_burner = seglist[1] == "true";
 
 	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_put_lab_text) {
 		return false;
 	}
 
-	auto_put_lab = seglist[1] == "true";
+	return_data.auto_put_lab = seglist[1] == "true";
 
 	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_put_recipe_text) {
 		return false;
 	}
 
-	auto_put_recipe = seglist[1] == "true";
+	return_data.auto_put_recipe = seglist[1] == "true";
 	
 	return true;
 }

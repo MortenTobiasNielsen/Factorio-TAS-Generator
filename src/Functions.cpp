@@ -74,3 +74,13 @@ bool is_number(const std::string& str) {
 
 	return true;
 }
+
+std::vector<std::string> get_keys(std::map<std::string, std::vector<std::string>> map)
+{
+	std::vector<std::string> keys;
+	for (std::map<std::string, std::vector<std::string>>::iterator it = map.begin(); it != map.end(); ++it) {
+		keys.push_back(it->first);
+	}
+
+	return keys;
+}

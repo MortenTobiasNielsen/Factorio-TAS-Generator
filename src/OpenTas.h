@@ -9,39 +9,26 @@
 #include <fstream>
 #include <sstream>
 
+#include "Functions.h"
+#include "utils.h"
 #include "ScriptProgressBar.h"
 
 class OpenTas
 {
 public:
-	bool Open(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file);
+	open_file_return_data Open(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file);
 
 private:
-	std::string goal;
+	open_file_return_data return_data;
+
 	std::string segment;
 	std::vector<std::string> seglist;
-	std::vector<std::string> steps;
 
 	std::string group_name;
 	std::vector<std::string> group_list;
-	std::map<std::string, std::vector<std::string>> group_map;
 
 	std::string template_name;
 	std::vector<std::string> template_list;
-	std::map<std::string, std::vector<std::string>> template_map;
-
-	std::string save_file_location = "";
-	std::string generate_code_folder_location = "";
-
-	bool auto_close_generate_script;
-	bool auto_close_open;
-	bool auto_close_save;
-	bool auto_close_save_as;
-
-	bool auto_put_furnace;
-	bool auto_put_burner;
-	bool auto_put_lab;
-	bool auto_put_recipe;
 
 	int total_lines = 0;
 	int lines_processed = 0;
