@@ -154,8 +154,6 @@ private:
 	Shortcuts_Menu* shortcuts = nullptr;
 	dialog_progress_bar_base* dialog_progress_bar = nullptr;
 
-	
-
 	std::string generate_code_folder_location = "";
 	std::string save_file_location = "";
 

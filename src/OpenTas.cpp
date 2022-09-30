@@ -79,12 +79,8 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 	return_data.steps.reserve(total_lines);
 
 	while (update_segment(file)) {
-		if (seglist.size() != 10) {
-			if (seglist.size() == 1 && seglist[0] == save_groups_indicator) {
-				return true;
-			}
-
-			return false;
+		if (seglist.size() != Step_segment_size) {
+			return seglist.size() == 1 && seglist[0] == save_groups_indicator;
 		}
 
 		return_data.steps.push_back(seglist[0] + ";" + seglist[1] + ";" + seglist[2] + ";" + seglist[3] + ";" + seglist[4] + ";" + seglist[5] + ";" + seglist[6] + ";" + seglist[7] + ";" + seglist[8] + ";" + seglist[9] + ";");
@@ -103,7 +99,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar)
 {
 	while (update_segment(file)) {
-		if (seglist.size() != 11) {
+		if (seglist.size() != Group_segment_size) {
 			if (seglist.size() == 1 && seglist[0] == save_templates_indicator) {
 				return_data.group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
 				return true;
@@ -140,7 +136,7 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar) {
 
 	while (update_segment(file)) {
-		if (seglist.size() != 11) {
+		if (seglist.size() != Template_segment_size) {
 			if (seglist.size() == 1 && seglist[0] == save_file_indicator) {
 				return_data.template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
 				return true;
