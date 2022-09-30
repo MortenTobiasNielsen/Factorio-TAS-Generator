@@ -16,7 +16,7 @@
 class OpenTas
 {
 public:
-	open_file_return_data Open(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file);
+	open_file_return_data Open(dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file);
 
 private:
 	open_file_return_data return_data;

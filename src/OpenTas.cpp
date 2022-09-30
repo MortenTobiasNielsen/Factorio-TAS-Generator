@@ -17,14 +17,10 @@ void OpenTas::reset() {
 	return_data.success = false;
 }
 
-open_file_return_data OpenTas::Open(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
+open_file_return_data OpenTas::Open(dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
 {
 	reset();
-
-	if (!dialog_progress_bar) {
-		dialog_progress_bar = new dialog_progress_bar_base(parent, wxID_ANY, "Processing request");
-	}
-
+	
 	dialog_progress_bar->set_text("Opening file");
 	dialog_progress_bar->set_button_enable(false);
 	dialog_progress_bar->set_progress(0);
@@ -96,7 +92,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 		lines_processed++;
 
 		if (lines_processed > 0 && lines_processed % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 15);
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 50);
 			wxYield();
 		}
 	}
@@ -133,7 +129,7 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 		lines_processed++;
 
 		if (lines_processed > 0 && lines_processed % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 12);
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 47);
 			wxYield();
 		}
 	}
@@ -169,7 +165,7 @@ bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* d
 		lines_processed++;
 
 		if (lines_processed > 0 && lines_processed % 25 == 0) {
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 10);
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 45);
 			wxYield();
 		}
 	}
@@ -183,10 +179,11 @@ bool OpenTas::extract_save_location(std::ifstream& file) {
 	}
 
 	return_data.save_file_location = seglist[0];
+	return true;
 }
 
 bool OpenTas::extract_script_location(std::ifstream& file) {
-	if (!update_segment(file) || seglist[0] != code_file_indicator) {
+	if (!update_segment(file) || seglist[0] != code_file_indicator && seglist[0] != "Task folder location:") {
 		return false;
 	}
 	
@@ -195,6 +192,7 @@ bool OpenTas::extract_script_location(std::ifstream& file) {
 	}
 
 	return_data.generate_code_folder_location = seglist[0];
+	return true;
 }
 
 bool OpenTas::extract_auto_close(std::ifstream& file) {
@@ -220,7 +218,7 @@ bool OpenTas::extract_auto_close(std::ifstream& file) {
 
 	return_data.auto_close_save = seglist[1] == "true";
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_save_text) {
+	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_save_as_text) {
 		return false;
 	}
 

@@ -1893,8 +1893,12 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 		}
 
+		if (!dialog_progress_bar) {
+			dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
+		}
+
 		OpenTas open;
-		open_file_return_data result = open.Open(this, dialog_progress_bar, file);
+		open_file_return_data result = open.Open(dialog_progress_bar, file);
 
 		if (!result.success) {
 			malformed_saved_file_message();
@@ -1943,7 +1947,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 
 		populate_tasks_grid();
 
-		dialog_progress_bar->set_progress(100.0f - 5);
+		dialog_progress_bar->set_progress(100.0f - 35);
 		wxYield();
 
 		if (result.group_map.size()) {
@@ -1962,7 +1966,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 			}
 		}
 
-		dialog_progress_bar->set_progress(100.0f - 3);
+		dialog_progress_bar->set_progress(100.0f - 25);
 		wxYield();
 
 		if (result.template_map.size()) {
@@ -1982,6 +1986,9 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		}
 
 		file.close();
+
+		dialog_progress_bar->set_progress(100.0f - 20);
+		wxYield();
 
 		std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
 
@@ -2010,7 +2017,7 @@ void cMain::populate_tasks_grid() {
 
 	grid_tasks->InsertRows(0, amount_of_tasks);
 
-	for (unsigned int i = 0; i < amount_of_tasks; i++) {
+	for (int i = 0; i < amount_of_tasks; i++) {
 		std::stringstream data_line;
 		data_line.str(tasks_data_to_save[i]);
 		seglist = {};
@@ -3183,6 +3190,7 @@ void cMain::malformed_saved_file_message()
 {
 	reset_to_new_window();
 	wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+	dialog_progress_bar->set_button_enable(true);
 }
 
 bool cMain::extra_building_checks() {

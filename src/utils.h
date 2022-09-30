@@ -32,7 +32,7 @@ static const std::string goal_any_percent_text = "Any %";
 static const std::string goal_debug_text = "Debug";
 
 struct open_file_return_data {
-	bool success;
+	bool success = false;
 	std::string goal;
 	std::vector<std::string> steps;
 	std::map<std::string, std::vector<std::string>> group_map;
@@ -40,15 +40,15 @@ struct open_file_return_data {
 	std::string save_file_location;
 	std::string generate_code_folder_location;
 
-	bool auto_close_generate_script;
-	bool auto_close_open;
-	bool auto_close_save;
-	bool auto_close_save_as;
+	bool auto_close_generate_script = false;
+	bool auto_close_open = false;
+	bool auto_close_save = false;
+	bool auto_close_save_as = false;
 
-	bool auto_put_furnace;
-	bool auto_put_burner;
-	bool auto_put_lab;
-	bool auto_put_recipe;
+	bool auto_put_furnace = false;
+	bool auto_put_burner = false;
+	bool auto_put_lab = false;
+	bool auto_put_recipe = false;
 };
 
 static const std::vector<std::string> fuel_list = { "Wood", 
