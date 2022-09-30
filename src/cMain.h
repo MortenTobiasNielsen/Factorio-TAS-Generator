@@ -154,11 +154,6 @@ private:
 	Shortcuts_Menu* shortcuts = nullptr;
 	dialog_progress_bar_base* dialog_progress_bar = nullptr;
 
-	std::string goal_steelaxe_text = "Steel Axe";
-	std::string goal_GOTLAP_text = "Getting On Track Like A Pro";
-	std::string goal_any_percent_text = "Any %";
-	std::string goal_debug_text = "Debug";
-
 	std::string generate_code_folder_location = "";
 	std::string save_file_location = "";
 
