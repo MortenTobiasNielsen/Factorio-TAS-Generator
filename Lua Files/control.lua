@@ -375,11 +375,9 @@ local function walk_pos_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			return {walking = false, direction = defines.direction.north}	
+			return {walking = false, direction = walking.direction}	
 		end
 	end
-
-	return {walking = false, direction = defines.direction.north}	
 end
 
 local function walk_pos_neg()
@@ -393,11 +391,9 @@ local function walk_pos_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			return {walking = false, direction = defines.direction.north}	
+			return {walking = false, direction = walking.direction}	
 		end
 	end
-
-	return {walking = false, direction = defines.direction.north}	
 end
 
 local function walk_neg_pos()
@@ -411,11 +407,9 @@ local function walk_neg_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			return {walking = false, direction = defines.direction.north}	
+			return {walking = false, direction = walking.direction}	
 		end
 	end
-
-	return {walking = false, direction = defines.direction.north}	
 end
 
 local function walk_neg_neg()
@@ -429,11 +423,9 @@ local function walk_neg_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			return {walking = false, direction = defines.direction.north}	
+			return {walking = false, direction = walking.direction}	
 		end
 	end
-
-	return {walking = false, direction = defines.direction.north}	 
 end
 
 local function walk()
@@ -447,35 +439,38 @@ local function walk()
 		return walk_neg_neg()
 	end
 
-	return {walking = false, direction = defines.direction.north}	 
+	return {walking = false, direction = walking.direction}	
 end
 
-local function find_walking_pattern() 
-	if (player_position.x - destination.x >= 0) then
-		if (player_position.y - destination.y >= 0) then
+local function find_walking_pattern()
+	pos_pos = false
+	pos_neg = false
+	neg_pos = false
+	neg_neg = false
+
+	if (player_position.x - destination.x > 0) then
+		if (player_position.y - destination.y > 0) then
 			pos_pos = true
-			pos_neg = false
-			neg_pos = false
-			neg_neg = false
 		elseif (player_position.y - destination.y < 0) then
 			pos_neg = true
-			pos_pos = false
-			neg_pos = false
-			neg_neg = false
 		end
 	else
-		if (player_position.y - destination.y >= 0) then
+		if (player_position.y - destination.y > 0) then
 			neg_pos = true
-			pos_pos = false
-			pos_neg = false
-			neg_neg = false
 		elseif (player_position.y - destination.y < 0) then
 			neg_neg = true
-			pos_pos = false
-			pos_neg = false
-			neg_pos = false
 		end
 	end
+end
+
+local function update_player_position()
+	player_position.x = tonumber(string.format("%.2f", player.position.x))
+	player_position.y = tonumber(string.format("%.2f", player.position.y))
+end
+
+local function update_destination_position(x, y)
+	destination.x = tonumber(string.format("%.2f", x))
+	destination.y = tonumber(string.format("%.2f", y))
 end
 
 local function rotate()
@@ -731,13 +726,13 @@ script.on_event(defines.events.on_tick, function(event)
     if not player then 
 		player = game.players[1]
 		player.surface.always_day=true
-		player_position = player.position
-		destination = {x = player_position.x, y = player_position.y}
+		update_player_position()
+		update_destination_position(player_position.x, player_position.y)
 		player.force.research_queue_enabled = true
 		walking = {walking = false, direction = defines.direction.north}
 
 	elseif player.character ~= nil then
-		player_position = player.position
+		update_player_position()
 
 		if steps[step] == nil or steps[step][1] == "break" then
 			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))		
@@ -784,7 +779,7 @@ script.on_event(defines.events.on_tick, function(event)
 					idled = 0
 				end
 			elseif steps[step][2] == "walk" then
-				destination = {x = steps[step][3][1], y = steps[step][3][2]}
+				update_destination_position(steps[step][3][1], steps[step][3][2])
 
 				find_walking_pattern()
 				walking = walk()
@@ -826,7 +821,6 @@ script.on_event(defines.events.on_tick, function(event)
 		else
 			if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
 				if doStep(steps[step]) then
-					
 					-- Do step while walking
 					change_step(1)
 				end
