@@ -725,7 +725,9 @@ script.on_event(defines.events.on_tick, function(event)
 	if not run then return end
     if not player then 
 		player = game.players[1]
-		player.surface.always_day=true
+		player.surface.always_day = true
+		player_position = player.position
+		destination = { x = player.position.x, y = player.position.y }
 		update_player_position()
 		update_destination_position(player_position.x, player_position.y)
 		player.force.research_queue_enabled = true
