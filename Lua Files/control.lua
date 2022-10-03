@@ -464,13 +464,13 @@ local function find_walking_pattern()
 end
 
 local function update_player_position()
-	player_position.x = tonumber(string.format("%.2f", player.position.x))
-	player_position.y = tonumber(string.format("%.2f", player.position.y))
+	player_position.x = tonumber(string.format("%.1f", player.position.x))
+	player_position.y = tonumber(string.format("%.1f", player.position.y))
 end
 
 local function update_destination_position(x, y)
-	destination.x = tonumber(string.format("%.2f", x))
-	destination.y = tonumber(string.format("%.2f", y))
+	destination.x = tonumber(string.format("%.1f", x))
+	destination.y = tonumber(string.format("%.1f", y))
 end
 
 local function rotate()
