@@ -18,7 +18,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
-	
+
 	full_assembly_recipes.insert(full_assembly_recipes.end(), part_assembly_recipes.begin(), part_assembly_recipes.end());
 	full_assembly_recipes.insert(full_assembly_recipes.end(), assemply_level2_list.begin(), assemply_level2_list.end());
 	full_assembly_recipes.insert(full_assembly_recipes.end(), assemply_level2_extra_list.begin(), assemply_level2_extra_list.end());
@@ -66,7 +66,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	for (auto s : build_orientations) {
 		building_orientation_choices.Add(s);
 	}
-	
+
 	for (auto s : input_output) {
 		input_output_choices.Add(s);
 	}
@@ -150,13 +150,13 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	// Checking steel axe as a goal
 	menu_goals->GetMenuItems()[0]->Check();
-	
+
 	// disabling Change shortcuts
 	menu_shortcuts->GetMenuItems()[0]->Enable(false);
-	
+
 	// split steps into seperate panel
-	wxAuiNotebook * a = (wxAuiNotebook*)step_panel->GetParent();
-	a->Split(3, wxRight);
+	wxAuiNotebook* a = (wxAuiNotebook*)step_panel->GetParent();
+	a->Split(3, wxRIGHT);
 }
 
 void cMain::TaskSeachOnText(wxCommandEvent& event) {
