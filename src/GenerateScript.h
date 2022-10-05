@@ -169,8 +169,8 @@ private:
 	void filter(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string building, std::string orientation);
 	void row_filter(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string direction_to_build, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
 
-	void drop(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item);
-	void row_drop(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building_size);
+	void drop(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building);
+	void row_drop(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building, std::string building_size);
 
 	void pick(std::string task, std::string action, std::string x_cord, std::string y_cord);
 	void row_pick(std::string task, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size);

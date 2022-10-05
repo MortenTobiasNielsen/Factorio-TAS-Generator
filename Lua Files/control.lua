@@ -448,14 +448,14 @@ local function find_walking_pattern()
 	neg_pos = false
 	neg_neg = false
 
-	if (player_position.x - destination.x > 0) then
-		if (player_position.y - destination.y > 0) then
+	if (player_position.x - destination.x >= 0) then
+		if (player_position.y - destination.y >= 0) then
 			pos_pos = true
 		elseif (player_position.y - destination.y < 0) then
 			pos_neg = true
 		end
 	else
-		if (player_position.y - destination.y > 0) then
+		if (player_position.y - destination.y >= 0) then
 			neg_pos = true
 		elseif (player_position.y - destination.y < 0) then
 			neg_neg = true

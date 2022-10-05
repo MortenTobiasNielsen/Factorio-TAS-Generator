@@ -201,7 +201,10 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_drop: 
-			row_drop(current_step, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size);
+			if (!find_building(i, grid, steps)) {
+				return;
+			}
+			row_drop(current_step, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size, building);
 			break;
 
 		case step_pick_up: 
@@ -974,8 +977,8 @@ void GenerateScript::row_filter(std::string step, std::string x_cord, std::strin
 	}
 }
 
-void GenerateScript::drop(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string item) {
-	check_interact_distance(step, action, x_cord, y_cord, "Drop", "North");
+void GenerateScript::drop(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building) {
+	check_interact_distance(step, action, x_cord, y_cord, building, "North");
 
 	convert_string(item);
 
@@ -983,13 +986,13 @@ void GenerateScript::drop(std::string step, std::string action, std::string x_co
 	total_steps += 1;
 }
 
-void GenerateScript::row_drop(std::string step, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building_size) {
-	drop(step, "1", x_cord, y_cord, item);
+void GenerateScript::row_drop(std::string step, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building_size, std::string building) {
+	drop(step, "1", x_cord, y_cord, item, building);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		drop(step, std::to_string(i + 1), x_cord, y_cord, item);
+		drop(step, std::to_string(i + 1), x_cord, y_cord, item, building);
 	}
 }
 
