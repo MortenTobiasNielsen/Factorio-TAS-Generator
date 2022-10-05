@@ -259,8 +259,10 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	label_units->Wrap(-1);
 	bSizer36->Add(label_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_units = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), 0);
-	bSizer36->Add(txt_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	spin_units = new wxSpinCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 100000, 0);
+	spin_units->SetToolTip(wxT("Game Speed and Stop is divided by 100"));
+
+	bSizer36->Add(spin_units, 0, wxALL, 5);
 
 
 	bSizer30->Add(bSizer36, 1, 0, 5);

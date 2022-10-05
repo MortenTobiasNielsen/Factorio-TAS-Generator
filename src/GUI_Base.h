@@ -21,6 +21,7 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/sizer.h>
+#include <wx/spinctrl.h>
 #include <wx/combobox.h>
 #include <wx/statline.h>
 #include <wx/radiobut.h>
@@ -57,7 +58,7 @@ protected:
 	wxStaticText* label_y_cord;
 	wxTextCtrl* txt_y_cord;
 	wxStaticText* label_units;
-	wxTextCtrl* txt_units;
+	wxSpinCtrl* spin_units;
 	wxStaticText* label_comment;
 	wxTextCtrl* txt_comment;
 	wxStaticText* label_item;

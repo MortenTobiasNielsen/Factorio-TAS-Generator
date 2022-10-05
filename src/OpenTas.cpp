@@ -101,7 +101,10 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 	while (update_segment(file)) {
 		if (seglist.size() != Group_segment_size) {
 			if (seglist.size() == 1 && seglist[0] == save_templates_indicator) {
-				return_data.group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+				if (group_name != "") {
+					return_data.group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+				}
+
 				return true;
 			}
 
@@ -138,7 +141,10 @@ bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* d
 	while (update_segment(file)) {
 		if (seglist.size() != Template_segment_size) {
 			if (seglist.size() == 1 && seglist[0] == save_file_indicator) {
-				return_data.template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+				if (template_name != "") {
+					return_data.template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+				}
+
 				return true;
 			}
 
