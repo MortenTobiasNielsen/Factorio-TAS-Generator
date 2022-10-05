@@ -233,8 +233,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	label_x_cord->Wrap(-1);
 	bSizer23->Add(label_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	txt_x_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), 0);
-	bSizer23->Add(txt_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	spin_x_cord = new wxSpinCtrlDouble(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 0.1);
+	spin_x_cord->SetDigits(1);
+	bSizer23->Add(spin_x_cord, 0, wxALL, 5);
 
 
 	bSizer30->Add(bSizer23, 1, 0, 5);
@@ -246,8 +247,9 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	label_y_cord->Wrap(-1);
 	bSizer28->Add(label_y_cord, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	txt_y_cord = new wxTextCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), 0);
-	bSizer28->Add(txt_y_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+	spin_y_cord = new wxSpinCtrlDouble(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 0.1);
+	spin_y_cord->SetDigits(1);
+	bSizer28->Add(spin_y_cord, 0, wxALL, 5);
 
 
 	bSizer30->Add(bSizer28, 1, 0, 5);
