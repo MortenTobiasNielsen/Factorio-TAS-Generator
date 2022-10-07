@@ -58,7 +58,7 @@ class GUI_Base : public wxFrame
 		wxStaticText* label_y_cord;
 		wxSpinCtrlDouble* spin_y_cord;
 		wxStaticText* label_units;
-		wxTextCtrl* txt_units;
+		wxSpinCtrl* spin_units;
 		wxStaticText* label_comment;
 		wxTextCtrl* txt_comment;
 		wxStaticText* label_item;

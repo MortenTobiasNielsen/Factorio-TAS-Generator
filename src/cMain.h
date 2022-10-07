@@ -178,7 +178,7 @@ private:
 		std::vector<bool> take = { true, true, true, true, true, false, false, false, false, true, true, true };
 		std::vector<bool> put = { true, true, true, true, true, false, false, false, false, true, true, true };
 		std::vector<bool> filter = { true, true, true, true, false, false, false, false, false, true, true, true };
-		std::vector<bool> recipe = { true, true, false, true, false, false, false, false, false, true, true, true };
+		std::vector<bool> recipe = { true, true, true, true, false, false, false, false, false, true, true, true };
 		std::vector<bool> tech = { false, false, false, false, false, true, false, false, false, false, false, false };
 		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false, false, false };
 		std::vector<bool> save = { false, false, false, false, false, false, false, false, false, false, false, false };
