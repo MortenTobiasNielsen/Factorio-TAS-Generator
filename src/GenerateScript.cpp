@@ -521,25 +521,29 @@ void GenerateScript::check_interact_distance(std::string step, std::string actio
 		y_building_size = building_size_list.find(building_name)->second[1];
 	}
 
-	static const float buffer = 0.37f; // this should be set correctly when you get a better understanding of how it is actually calculated in the game
-	static const float max_distance = 10.0f;
-	float min_x_edge;
-	float max_x_edge;
+	static const float buffer = 0.0f; // TODO remove
+	static const float max_distance = 10.0f; //Default build distance
 
-	float min_y_edge;
-	float max_y_edge;
+	float x_target = floor(std::stof(x_cord));
+	if ((int)ceil(x_building_size) % 2 == 1) x_target += 0.5; //if a building is an uneven number of tiles wide, it will be placed at a half tile
+
+	float y_target = floor(std::stof(y_cord));
+	if ((int)ceil(y_building_size) % 2 == 1) y_target += 0.5; //if a building is an uneven number of tiles tall, it will be placed at a half tile
+
+	float min_x_edge = x_target, max_x_edge = x_target;
+	float min_y_edge = y_target, max_y_edge = y_target;
 
 	if (orientation == "North" || orientation == "South") {
-		min_x_edge = std::stof(x_cord) - (x_building_size / 2);
-		max_x_edge = std::stof(x_cord) + (x_building_size / 2);
-		min_y_edge = std::stof(y_cord) - (y_building_size / 2);
-		max_y_edge = std::stof(y_cord) + (y_building_size / 2);
+		min_x_edge -= (x_building_size / 2);
+		max_x_edge += (x_building_size / 2);
+		min_y_edge -= (y_building_size / 2);
+		max_y_edge += (y_building_size / 2);
 	}
 	else {
-		min_x_edge = std::stof(x_cord) - (y_building_size / 2);
-		max_x_edge = std::stof(x_cord) + (y_building_size / 2);
-		min_y_edge = std::stof(y_cord) - (x_building_size / 2);
-		max_y_edge = std::stof(y_cord) + (x_building_size / 2);
+		min_x_edge -= (y_building_size / 2);
+		max_x_edge += (y_building_size / 2);
+		min_y_edge -= (x_building_size / 2);
+		max_y_edge += (x_building_size / 2);
 	}
 
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
