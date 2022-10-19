@@ -157,7 +157,7 @@ static const std::map<std::string, std::vector<float>> building_size_list = {
 { "Express loader" , {0.796875f, 1.796875f} },
 { "Burner inserter" , {0.296875f, 0.296875f} },
 { "Inserter" , {0.296875f, 0.296875f} },
-{ "Long handed inserter" , {0.296875f, 0.296875f} },
+{ "Long-handed inserter" , {0.296875f, 0.296875f} },
 { "Fast inserter" , {0.296875f, 0.296875f} },
 { "Filter inserter" , {0.296875f, 0.296875f} },
 { "Stack inserter" , {0.296875f, 0.296875f} },
