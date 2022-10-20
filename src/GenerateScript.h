@@ -36,7 +36,7 @@ private:
 	std::string task;
 	std::string x_cord;
 	std::string y_cord;
-	std::string units;
+	std::string amount;
 	std::string item;
 	std::string build_orientation;
 	std::string direction_to_build;
@@ -168,8 +168,8 @@ private:
 	void priority(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string building, std::string orientation);
 	void row_priority(std::string task, std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
 
-	void filter(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string building, std::string orientation);
-	void row_filter(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string direction_to_build, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
+	void filter(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string type, std::string building, std::string orientation);
+	void row_filter(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string type, std::string direction_to_build, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
 
 	void drop(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building);
 	void row_drop(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building, std::string building_size);

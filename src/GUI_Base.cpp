@@ -253,11 +253,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer58;
 	bSizer58 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_building_orientation = new wxStaticText( m_panel21, wxID_ANY, wxT("Building Orientation:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_building_orientation = new wxStaticText( m_panel21, wxID_ANY, wxT("Building orientation:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_building_orientation->Wrap( -1 );
 	bSizer58->Add( label_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	cmb_building_orientation = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
+	cmb_building_orientation->SetToolTip( wxT("The orientation of the building. Inserters are reversed.") );
+
 	bSizer58->Add( cmb_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
@@ -297,11 +299,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer59;
 	bSizer59 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_direction_to_build = new wxStaticText( m_panel21, wxID_ANY, wxT("Direction:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_direction_to_build = new wxStaticText( m_panel21, wxID_ANY, wxT("Build direction:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_direction_to_build->Wrap( -1 );
 	bSizer59->Add( label_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	cmb_direction_to_build = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
+	cmb_direction_to_build->SetToolTip( wxT("The direction to place the next building") );
+
 	bSizer59->Add( cmb_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
@@ -310,12 +314,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer36;
 	bSizer36 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_units = new wxStaticText( m_panel21, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
-	label_units->Wrap( -1 );
-	bSizer36->Add( label_units, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	label_amount = new wxStaticText( m_panel21, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_amount->Wrap( -1 );
+	bSizer36->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	txt_units = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
-	bSizer36->Add( txt_units, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	txt_amount = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
+	bSizer36->Add( txt_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	fgSizer2->Add( bSizer36, 1, 0, 5 );
@@ -339,7 +343,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer51;
 	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_building_size = new wxStaticText( m_panel21, wxID_ANY, wxT("Building Size:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_building_size = new wxStaticText( m_panel21, wxID_ANY, wxT("Building size:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_building_size->Wrap( -1 );
 	bSizer51->Add( label_building_size, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -1166,75 +1170,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
 	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
-	SegmentsPanel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer117;
-	bSizer117 = new wxBoxSizer( wxVERTICAL );
-
-	wxBoxSizer* bSizer123;
-	bSizer123 = new wxBoxSizer( wxHORIZONTAL );
-
-	wxFlexGridSizer* fgSizer5;
-	fgSizer5 = new wxFlexGridSizer( 1, 2, 0, 0 );
-	fgSizer5->SetFlexibleDirection( wxHORIZONTAL );
-	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-	btn_add_segment = new wxButton( SegmentsPanel, wxID_ANY, wxT("New segment"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( btn_add_segment, 0, wxALL, 5 );
-
-	btn_remove_segment = new wxButton( SegmentsPanel, wxID_ANY, wxT("Remove segment"), wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( btn_remove_segment, 0, wxALL, 5 );
-
-
-	bSizer123->Add( fgSizer5, 1, 0, 5 );
-
-
-	bSizer117->Add( bSizer123, 1, 0, 5 );
-
-	wxBoxSizer* bSizer120;
-	bSizer120 = new wxBoxSizer( wxHORIZONTAL );
-
-	grid_segments = new wxGrid( SegmentsPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-
-	// Grid
-	grid_segments->CreateGrid( 0, 4 );
-	grid_segments->EnableEditing( true );
-	grid_segments->EnableGridLines( true );
-	grid_segments->EnableDragGridSize( false );
-	grid_segments->SetMargins( 0, 0 );
-
-	// Columns
-	grid_segments->SetColSize( 0, 100 );
-	grid_segments->SetColSize( 1, 100 );
-	grid_segments->SetColSize( 2, 131 );
-	grid_segments->SetColSize( 3, 152 );
-	grid_segments->EnableDragColMove( true );
-	grid_segments->EnableDragColSize( true );
-	grid_segments->SetColLabelValue( 0, wxT("placeholder") );
-	grid_segments->SetColLabelValue( 1, wxT("Segment name") );
-	grid_segments->SetColLabelValue( 2, wxT("Segment start") );
-	grid_segments->SetColLabelValue( 3, wxT("Segment stop") );
-	grid_segments->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
-
-	// Rows
-	grid_segments->EnableDragRowSize( true );
-	grid_segments->SetRowLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
-
-	// Label Appearance
-
-	// Cell Defaults
-	grid_segments->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
-	grid_segments->SetMinSize( wxSize( 600,2500 ) );
-
-	bSizer120->Add( grid_segments, 0, wxALL, 5 );
-
-
-	bSizer117->Add( bSizer120, 1, wxEXPAND, 5 );
-
-
-	SegmentsPanel->SetSizer( bSizer117 );
-	SegmentsPanel->Layout();
-	bSizer117->Fit( SegmentsPanel );
-	m_auinotebook1->AddPage( SegmentsPanel, wxT("Segments"), false, wxNullBitmap );
 
 
 	m_mgr.Update();
@@ -1343,8 +1278,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_move_down11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
 	btn_move_down_5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_tasks->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTasksGridDoubleLeftClick ), NULL, this );
-	btn_add_segment->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::AddSegmentClicked ), NULL, this );
-	btn_remove_segment->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::RemoveSegmentClicked ), NULL, this );
 }
 
 GUI_Base::~GUI_Base()
@@ -1409,8 +1342,6 @@ GUI_Base::~GUI_Base()
 	btn_move_down11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
 	btn_move_down_5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_tasks->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTasksGridDoubleLeftClick ), NULL, this );
-	btn_add_segment->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::AddSegmentClicked ), NULL, this );
-	btn_remove_segment->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::RemoveSegmentClicked ), NULL, this );
 
 	m_mgr.UnInit();
 

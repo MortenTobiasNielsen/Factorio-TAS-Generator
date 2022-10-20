@@ -85,7 +85,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 
 		switch (t) {
 		case step_game_speed: 
-			speed(current_step, units); 
+			speed(current_step, amount); 
 			break;
 
 		case step_walk: 
@@ -93,15 +93,15 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_mine:
-			if (units == "All") {
-				units = "1000";
+			if (amount == "All") {
+				amount = "1000";
 			}
 
 			if (find_building(i, grid, steps)) {
-				mining(current_step, x_cord, y_cord, units, building, build_orientation, true);
+				mining(current_step, x_cord, y_cord, amount, building, build_orientation, true);
 			}
 			else {
-				mining(current_step, x_cord, y_cord, units, "", "", false);
+				mining(current_step, x_cord, y_cord, amount, "", "", false);
 			}
 			break;
 
@@ -110,11 +110,11 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 				return;
 			}
 
-			rotate(current_step, x_cord, y_cord, units, item, build_orientation);
+			rotate(current_step, x_cord, y_cord, amount, item, build_orientation);
 			break;
 
 		case step_craft: 
-			craft(current_step, units == "All" ? "-1" : units, item);
+			craft(current_step, amount == "All" ? "-1" : amount, item);
 			break;
 
 		case step_tech: 
@@ -138,7 +138,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 				return;
 			}
 			
-			row_take(current_step, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_take(current_step, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			break;
 
 		case step_put:
@@ -153,7 +153,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			if (from_into == "Not Found") {
 				return;
 			}
-			row_put(current_step, x_cord, y_cord, units == "All" ? "-1" : units, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_put(current_step, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			break;
 
 		case step_recipe:
@@ -169,7 +169,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_stop: 
-			stop(current_step, units); 
+			stop(current_step, amount); 
 			break;
 
 		case step_limit:
@@ -185,7 +185,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 				return;
 			}
 
-			row_limit(current_step, x_cord, y_cord, units, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_limit(current_step, x_cord, y_cord, amount, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			break;
 
 		case step_priority:
@@ -207,7 +207,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			if (!find_building(i, grid, steps)) {
 				return;
 			}
-			row_filter(current_step, x_cord, y_cord, item, units, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_filter(current_step, x_cord, y_cord, item, amount, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			break;
 
 		case step_drop: 
@@ -230,7 +230,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_idle: 
-			idle(current_step, units); 
+			idle(current_step, amount); 
 			break;
 		}
 	}
@@ -294,7 +294,7 @@ void GenerateScript::extract_parameters(const std::string& task_reference)
 	task = step_segments[0];
 	x_cord = step_segments[1];
 	y_cord = step_segments[2];
-	units = step_segments[3];
+	amount = step_segments[3];
 	item = step_segments[4];
 	build_orientation = step_segments[5];
 	direction_to_build = step_segments[6];
@@ -994,22 +994,22 @@ void GenerateScript::row_priority(std::string step, std::string x_cord, std::str
 	}
 }
 
-void GenerateScript::filter(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string building, std::string orientation) {
+void GenerateScript::filter(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string type, std::string building, std::string orientation) {
 	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + units + ",  \"" + type + "\"}\n";
+	step_list += signature(step, action) + "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ",  \"" + type + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_filter(std::string step, std::string x_cord, std::string y_cord, std::string item, std::string units, std::string type, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
-	filter(step, "1", x_cord, y_cord, item, units, type, building, orientation);
+void GenerateScript::row_filter(std::string step, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string type, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation) {
+	filter(step, "1", x_cord, y_cord, item, amount, type, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		filter(step, std::to_string(i + 1), x_cord, y_cord, item, units, type, building, orientation);
+		filter(step, std::to_string(i + 1), x_cord, y_cord, item, amount, type, building, orientation);
 	}
 }
 

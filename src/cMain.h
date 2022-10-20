@@ -183,7 +183,7 @@ private:
 	bool auto_close_save_as = false;
 
 	const struct parameter_choices_struct {
-		// x-cord, y-cord, units, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
+		// x-cord, y-cord, amount, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
 		std::vector<bool> game_speed = { false, false, true, false, false, false, false, false, false , false, false, false};
 		std::vector<bool> mining = { true, true, true, false, false, false, false, false, false, false, false, false };
 		std::vector<bool> rotate = { true, true, true, false, false, false, false, false, false, false, false, false };
@@ -249,7 +249,7 @@ private:
 	std::string task;
 	std::string x_cord;
 	std::string y_cord;
-	std::string units; 
+	std::string amount; 
 	std::string comment;
 	std::string item;
 	std::string from_into;
@@ -363,7 +363,7 @@ private:
 	std::string extract_task();
 	std::string extract_x_cord();
 	std::string extract_y_cord();
-	std::string extract_units();
+	std::string extract_amount();
 	std::string extract_comment();
 	std::string extract_item();
 	std::string extract_from_into();
@@ -375,7 +375,7 @@ private:
 	std::string extract_building_size();
 	std::string extract_amount_of_buildings();
 
-	void auto_put(std::string put_item, std::string put_units, std::string put_into);
+	void auto_put(std::string put_item, std::string put_amount, std::string put_into);
 
 	void update_future_rotate_tasks();
 	void find_new_orientation();

@@ -69,8 +69,8 @@ class GUI_Base : public wxFrame
 		wxComboBox* cmb_from_into;
 		wxStaticText* label_direction_to_build;
 		wxComboBox* cmb_direction_to_build;
-		wxStaticText* label_units;
-		wxTextCtrl* txt_units;
+		wxStaticText* label_amount;
+		wxTextCtrl* txt_amount;
 		wxStaticText* label_tech;
 		wxComboBox* cmb_tech;
 		wxStaticText* label_building_size;
@@ -153,10 +153,6 @@ class GUI_Base : public wxFrame
 		wxButton* btn_move_down11;
 		wxButton* btn_move_down_5;
 		wxGrid* grid_tasks;
-		wxPanel* SegmentsPanel;
-		wxButton* btn_add_segment;
-		wxButton* btn_remove_segment;
-		wxGrid* grid_segments;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnApplicationClose( wxCloseEvent& event ) { event.Skip(); }
@@ -261,8 +257,6 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownFiveClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTasksGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
-		virtual void AddSegmentClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void RemoveSegmentClicked( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
