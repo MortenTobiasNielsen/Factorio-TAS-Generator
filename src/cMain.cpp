@@ -104,26 +104,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	cmb_from_into->SetValue(*take_from.begin());
 	cmb_from_into->AutoComplete(take_from_choices);
 
-	cmb_tech->Clear();
-	for (auto it = tech_list.begin(); it < tech_list.end(); it++) {
-		cmb_tech->Append(*it);
-	}
-	cmb_tech->SetValue(*tech_list.begin());
-	cmb_tech->AutoComplete(tech_choices);
 
-	cmb_input->Clear();
-	for (auto it = input_output.begin(); it < input_output.end(); it++) {
-		cmb_input->Append(*it);
-	}
-	cmb_input->SetValue(*input_output.begin());
-	cmb_input->AutoComplete(input_output_choices);
-
-	cmb_output->Clear();
-	for (auto it = input_output.begin(); it < input_output.end(); it++) {
-		cmb_output->Append(*it);
-	}
-	cmb_output->SetValue(*input_output.begin());
-	cmb_output->AutoComplete(input_output_choices);
 
 	// set tasks grid formatting
 	grid_tasks->SetColFormatFloat(1, 4, 1);
@@ -278,6 +259,8 @@ void cMain::OnBuildChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_buildings.begin());
 	cmb_item->AutoComplete(building_choices);
 
+	label_item->SetLabelText("Item:");
+
 	event.Skip();
 }
 
@@ -292,6 +275,9 @@ void cMain::OnTakeChosen(wxCommandEvent& event) {
 	cmb_item->AutoComplete(item_choices);
 
 	cmb_from_into->SetValue("Output"); // set default to output on take task
+
+	label_item->SetLabelText("Item:");
+	label_from_into->SetLabelText("From:");
 
 	event.Skip();
 }
@@ -308,6 +294,9 @@ void cMain::OnPutChosen(wxCommandEvent& event) {
 
 	cmb_from_into->SetValue("Input"); // set default to input on put task
 
+	label_item->SetLabelText("Item:");
+	label_from_into->SetLabelText("Into:");
+
 	event.Skip();
 }
 
@@ -320,6 +309,8 @@ void cMain::OnCraftChosen(wxCommandEvent& event) {
 	}
 	cmb_item->SetValue(*handcrafted_list.begin());
 	cmb_item->AutoComplete(handcrafted_choices);
+
+	label_item->SetLabelText("Item:");
 
 	event.Skip();
 }
@@ -339,6 +330,8 @@ void cMain::OnfilterChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
+	label_item->SetLabelText("Item:");
+
 	event.Skip();
 }
 
@@ -352,11 +345,23 @@ void cMain::OnRecipeChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_recipes.begin());
 	cmb_item->AutoComplete(recipe_choices);
 
+	label_item->SetLabelText("Recipe:");
+
 	event.Skip();
 }
 
 void cMain::OnTechChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.tech);
+
+	cmb_item->Clear();
+	for (auto it = tech_list.begin(); it < tech_list.end(); it++) {
+		cmb_item->Append(*it);
+	}
+	cmb_item->SetValue(*tech_list.begin());
+	cmb_item->AutoComplete(tech_choices);
+
+	label_item->SetLabelText("Technology:");
+
 	event.Skip();
 }
 
@@ -399,6 +404,8 @@ void cMain::OnDropChosen(wxCommandEvent& event) {
 	}
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
+
+	label_item->SetLabelText("Item:");
 
 	event.Skip();
 }
@@ -1938,14 +1945,14 @@ void cMain::OnTemplateGridDoubleLeftClick(wxGridEvent& event) {
 
 void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 	row_num = event.GetRow();
-
-	spin_x_cord->SetValue(grid_buildings->GetCellValue(row_num, 0).ToStdString());
-	spin_y_cord->SetValue(grid_buildings->GetCellValue(row_num, 1).ToStdString());
+	
+	m_spin_x->SetValue(grid_buildings->GetCellValue(row_num, 0).ToStdString());
+	m_spin_y->SetValue(grid_buildings->GetCellValue(row_num, 1).ToStdString());
 	cmb_item->SetValue(grid_buildings->GetCellValue(row_num, 2).ToStdString());
 	cmb_building_orientation->SetValue(grid_buildings->GetCellValue(row_num, 3).ToStdString());
-	spin_units->SetValue(grid_buildings->GetCellValue(row_num, 4).ToStdString());
-	cmb_input->SetValue(grid_buildings->GetCellValue(row_num, 6).ToStdString());
-	cmb_output->SetValue(grid_buildings->GetCellValue(row_num, 7).ToStdString());
+	m_spin_amount->SetValue(grid_buildings->GetCellValue(row_num, 4).ToStdString());
+	radio_input->Select(1);//grid_buildings->GetCellValue(row_num, 6).ToStdString());
+	radio_output->Select(1);//grid_buildings->GetCellValue(row_num, 7).ToStdString());
 
 	event.Skip();
 }
@@ -2401,14 +2408,13 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event) {
 }
 
 void cMain::setup_paramters(std::vector<bool> parameters) {
-	spin_x_cord->Enable(parameters[0]);
-	spin_y_cord->Enable(parameters[1]);
-	spin_units->Enable(parameters[2]);
+	m_spin_x->Enable(parameters[0]);
+	m_spin_y->Enable(parameters[1]);
+	m_spin_amount->Enable(parameters[2]);
 	cmb_item->Enable(parameters[3]);
 	cmb_from_into->Enable(parameters[4]);
-	cmb_tech->Enable(parameters[5]);
-	cmb_input->Enable(parameters[6]);
-	cmb_output->Enable(parameters[7]);
+	radio_input->Enable(parameters[6]);
+	radio_output->Enable(parameters[7]);
 	cmb_building_orientation->Enable(parameters[8]);
 	cmb_direction_to_build->Enable(parameters[9]);
 	spin_building_size->Enable(parameters[11]);
@@ -2709,26 +2715,26 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.walk) {
 		OnWalkMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
 		txt_comment->SetValue(comment);
 
 		return;
 	}
 	if (task == struct_tasks_list.mine) {
 		OnMineMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
-		spin_units->SetValue(units);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_amount->SetValue(amount_formatted);
 		txt_comment->SetValue(comment);
 
 		return;
 	}
 	if (task == struct_tasks_list.rotate) {
 		OnRotateMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
-		spin_units->SetValue(units);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_amount->SetValue(amount_formatted);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2736,7 +2742,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.craft) {
 		OnCraftMenuSelected(event);
-		spin_units->SetValue(units);
+		m_spin_amount->SetValue(amount_formatted);
 		cmb_item->SetValue(item);
 		txt_comment->SetValue(comment);
 
@@ -2745,8 +2751,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.build) {
 		OnBuildMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
 		cmb_item->SetValue(item);
 		cmb_building_orientation->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2759,9 +2765,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.take) {
 		OnTakeMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
-		spin_units->SetValue(units);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_amount->SetValue(amount_formatted);
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2774,9 +2780,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.put) {
 		OnPutMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
-		spin_units->SetValue(units);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_amount->SetValue(amount_formatted);
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2789,16 +2795,15 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.tech) {
 		OnTechMenuSelected(event);
-		cmb_tech->SetValue(item);
+		cmb_item->SetValue(item);
 		txt_comment->SetValue(comment);
 
 		return;
 	}
 	if (task == struct_tasks_list.recipe) {
 		OnRecipeMenuChosen(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
-		spin_units->SetValue(units);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
@@ -2824,8 +2829,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.stop) {
 		OnStopMenuSelected(event);
-		float speed = stof(units) * 100.0;
-		spin_units->SetValue(speed);
+		m_spin_amount->SetValue(amount_formatted);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2833,9 +2837,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.limit) {
 		OnLimitMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
-		spin_units->SetValue(units);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_amount->SetValue(amount_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
@@ -2846,16 +2850,16 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.priority) {
 		OnPriorityMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
 
 		long long pos = build_orientation.find(",");
+		radio_input->Select(map_input_output[build_orientation.substr(0, pos)]);
+		radio_output->Select(map_input_output[build_orientation.substr(pos + 2)]);
 
-		cmb_input->SetValue(build_orientation.substr(0, pos));
-		cmb_output->SetValue(build_orientation.substr(pos + 2));
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2863,9 +2867,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.filter) {
 		OnFilterMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
-		spin_units->SetValue(units);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_amount->SetValue(amount_formatted);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
@@ -2877,8 +2881,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.pick_up) {
 		OnPickUpMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
@@ -2889,8 +2893,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.drop) {
 		OnDropMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
@@ -2902,7 +2906,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.idle) {
 		OnIdleMenuSelected(event);
-		spin_units->SetValue(units);
+		m_spin_amount->SetValue(amount_formatted);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2910,8 +2914,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.launch) {
 		OnLaunchMenuSelected(event);
-		spin_x_cord->SetValue(x_cord);
-		spin_y_cord->SetValue(y_cord);
+		m_spin_x->SetValue(x_cord_formatted);
+		m_spin_y->SetValue(y_cord_formatted);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -3073,11 +3077,11 @@ std::string cMain::extract_task() {
 }
 
 std::string cMain::extract_x_cord() {
-	return std::to_string(spin_x_cord->GetValue());
+	return std::to_string(m_spin_x->GetValue());
 }
 
 std::string cMain::extract_y_cord() {
-	return std::to_string(spin_y_cord->GetValue());
+	return std::to_string(m_spin_y->GetValue());
 }
 
 std::string cMain::extract_units() {
@@ -3167,15 +3171,15 @@ std::string cMain::extract_building_orientation() {
 }
 
 std::string cMain::extract_tech() {
-	return cmb_tech->GetValue().ToStdString();
+	return cmb_item->GetValue().ToStdString();
 }
 
 std::string cMain::extract_priority_in() {
-	return cmb_input->GetValue().ToStdString();
+	return input_output[radio_input->GetSelection()];
 }
 
 std::string cMain::extract_priority_out() {
-	return cmb_output->GetValue().ToStdString();
+	return input_output[radio_output->GetSelection()];
 }
 
 void cMain::update_future_rotate_tasks() {

@@ -19,12 +19,12 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/valtext.h>
+#include <wx/spinctrl.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/combobox.h>
-#include <wx/spinctrl.h>
+#include <wx/radiobox.h>
+#include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 #include <wx/checkbox.h>
@@ -58,31 +58,29 @@ class GUI_Base : public wxFrame
 		wxMenu* menu_auto_close;
 		wxPanel* m_panel21;
 		wxStaticText* label_x_cord;
-		wxTextCtrl* txt_x_cord;
+		wxSpinCtrlDouble* m_spin_x;
 		wxStaticText* label_item;
 		wxComboBox* cmb_item;
 		wxStaticText* label_building_orientation;
 		wxComboBox* cmb_building_orientation;
 		wxStaticText* label_y_cord;
-		wxTextCtrl* txt_y_cord;
+		wxSpinCtrlDouble* m_spin_y;
 		wxStaticText* label_from_into;
 		wxComboBox* cmb_from_into;
 		wxStaticText* label_direction_to_build;
 		wxComboBox* cmb_direction_to_build;
 		wxStaticText* label_amount;
-		wxTextCtrl* txt_amount;
-		wxStaticText* label_tech;
-		wxComboBox* cmb_tech;
+		wxSpinCtrl* m_spin_amount;
+		wxStaticText* label_input;
+		wxRadioBox* radio_input;
 		wxStaticText* label_building_size;
 		wxSpinCtrl* spin_building_size;
 		wxStaticText* label_comment;
 		wxTextCtrl* txt_comment;
-		wxStaticText* label_input;
-		wxComboBox* cmb_input;
+		wxStaticText* label_output;
+		wxRadioBox* radio_output;
 		wxStaticText* label_amount_of_buildings;
 		wxSpinCtrl* spin_building_amount;
-		wxStaticText* label_output;
-		wxComboBox* cmb_output;
 		wxPanel* m_panel22;
 		wxRadioButton* rbtn_take;
 		wxRadioButton* rbtn_put;

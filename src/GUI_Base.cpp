@@ -209,13 +209,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->SetMenuBar( m_menubar1 );
 
 	m_panel21 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel21, wxAuiPaneInfo() .Name( wxT("TaskDetailPanel") ).Top() .Caption( wxT("Step detail") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 1010,252 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 650,165 ) ).MinSize( wxSize( 650,130 ) ).Layer( 1 ) );
+	m_mgr.AddPane( m_panel21, wxAuiPaneInfo() .Name( wxT("TaskDetailPanel") ).Top() .Caption( wxT("Step detail") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 1010,159 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 650,155 ) ).MinSize( wxSize( 650,120 ) ).Layer( 1 ) );
 
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxHORIZONTAL );
 
 	wxFlexGridSizer* fgSizer2;
-	fgSizer2 = new wxFlexGridSizer( 5, 3, 0, 0 );
+	fgSizer2 = new wxFlexGridSizer( 4, 3, 0, 0 );
 	fgSizer2->SetFlexibleDirection( wxBOTH );
 	fgSizer2->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 
@@ -227,10 +227,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_x_cord->Wrap( -1 );
 	bSizerX->Add( label_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	txt_x_cord = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
-	txt_x_cord->SetToolTip( wxT("Positive numbers are further East and negative numbers are further West") );
+	m_spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	m_spin_x->SetDigits( 3 );
+	m_spin_x->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
-	bSizerX->Add( txt_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizerX->Add( m_spin_x, 0, wxALL, 5 );
 
 
 	fgSizer2->Add( bSizerX, 1, 0, 5 );
@@ -272,10 +273,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_y_cord->Wrap( -1 );
 	bSizerY->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	txt_y_cord = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
-	txt_y_cord->SetToolTip( wxT("Positive numbers are further South and negative numbers are further North") );
-
-	bSizerY->Add( txt_y_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	m_spin_y->SetDigits( 3 );
+	bSizerY->Add( m_spin_y, 0, wxALL, 5 );
 
 
 	fgSizer2->Add( bSizerY, 1, 0, 5 );
@@ -318,27 +318,30 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_amount->Wrap( -1 );
 	bSizer36->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	txt_amount = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
-	bSizer36->Add( txt_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, -1, 1000000, 1 );
+	bSizer36->Add( m_spin_amount, 0, wxALL, 5 );
 
 
 	fgSizer2->Add( bSizer36, 1, 0, 5 );
 
-	wxBoxSizer* bSizer34;
-	bSizer34 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizer47;
+	bSizer47 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_tech = new wxStaticText( m_panel21, wxID_ANY, wxT("Tech:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
-	label_tech->Wrap( -1 );
-	bSizer34->Add( label_tech, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	label_input = new wxStaticText( m_panel21, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_input->Wrap( -1 );
+	bSizer47->Add( label_input, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	cmb_tech = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
-	cmb_tech->SetSelection( 0 );
-	cmb_tech->SetMinSize( wxSize( 150,-1 ) );
+	wxString radio_inputChoices[] = { wxT("Left"), wxT("None"), wxT("Right") };
+	int radio_inputNChoices = sizeof( radio_inputChoices ) / sizeof( wxString );
+	radio_input = new wxRadioBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_inputNChoices, radio_inputChoices, 3, wxRA_SPECIFY_COLS );
+	radio_input->SetSelection( 1 );
+	radio_input->SetFont( wxFont( 6, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	radio_input->SetMinSize( wxSize( 150,-1 ) );
 
-	bSizer34->Add( cmb_tech, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizer47->Add( radio_input, 0, wxLEFT|wxRIGHT, 5 );
 
 
-	fgSizer2->Add( bSizer34, 1, 0, 5 );
+	fgSizer2->Add( bSizer47, 1, 0, 5 );
 
 	wxBoxSizer* bSizer51;
 	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
@@ -369,21 +372,24 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	fgSizer2->Add( bSizer361, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer47;
-	bSizer47 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizer471;
+	bSizer471 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_input = new wxStaticText( m_panel21, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
-	label_input->Wrap( -1 );
-	bSizer47->Add( label_input, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	label_output = new wxStaticText( m_panel21, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_output->Wrap( -1 );
+	bSizer471->Add( label_output, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	cmb_input = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
-	cmb_input->SetSelection( 0 );
-	cmb_input->SetMinSize( wxSize( 150,-1 ) );
+	wxString radio_outputChoices[] = { wxT("Left"), wxT("None"), wxT("Right") };
+	int radio_outputNChoices = sizeof( radio_outputChoices ) / sizeof( wxString );
+	radio_output = new wxRadioBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_outputNChoices, radio_outputChoices, 3, wxRA_SPECIFY_COLS );
+	radio_output->SetSelection( 1 );
+	radio_output->SetFont( wxFont( 6, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	radio_output->SetMinSize( wxSize( 150,-1 ) );
 
-	bSizer47->Add( cmb_input, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	bSizer471->Add( radio_output, 0, wxLEFT|wxRIGHT, 5 );
 
 
-	fgSizer2->Add( bSizer47, 1, 0, 5 );
+	fgSizer2->Add( bSizer471, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer52;
 	bSizer52 = new wxBoxSizer( wxHORIZONTAL );
@@ -401,28 +407,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	fgSizer2->Add( bSizer52, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer1161;
-	bSizer1161 = new wxBoxSizer( wxVERTICAL );
-
-
-	fgSizer2->Add( bSizer1161, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer471;
-	bSizer471 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_output = new wxStaticText( m_panel21, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
-	label_output->Wrap( -1 );
-	bSizer471->Add( label_output, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	cmb_output = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
-	cmb_output->SetSelection( 0 );
-	cmb_output->SetMinSize( wxSize( 150,-1 ) );
-
-	bSizer471->Add( cmb_output, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	fgSizer2->Add( bSizer471, 1, wxEXPAND, 5 );
-
 
 	bSizer19->Add( fgSizer2, 1, wxEXPAND, 5 );
 
@@ -431,7 +415,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel21->Layout();
 	bSizer19->Fit( m_panel21 );
 	m_panel22 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel22, wxAuiPaneInfo() .Name( wxT("TaskTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,250 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,165 ) ).MinSize( wxSize( 620,130 ) ).Layer( 1 ) );
+	m_mgr.AddPane( m_panel22, wxAuiPaneInfo() .Name( wxT("TaskTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,165 ) ).MinSize( wxSize( 620,120 ) ).Layer( 1 ) );
 
 	wxBoxSizer* bSizer18;
 	bSizer18 = new wxBoxSizer( wxVERTICAL );
@@ -638,7 +622,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel22->Layout();
 	bSizer18->Fit( m_panel22 );
 	m_panel23 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel23, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,250 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,165 ) ).MinSize( wxSize( 100,130 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
+	m_mgr.AddPane( m_panel23, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,165 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
 
 	wxBoxSizer* bSizer116;
 	bSizer116 = new wxBoxSizer( wxVERTICAL );
