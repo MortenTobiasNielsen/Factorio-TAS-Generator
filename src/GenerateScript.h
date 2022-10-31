@@ -59,6 +59,8 @@ private:
 	std::string building_priority_out;
 	std::string building_comment;
 
+	std::string last_walking_comment;
+
 	enum step_name {
 		step_start = 1,
 		step_stop,
@@ -126,7 +128,7 @@ private:
 	double find_min_distance(float& new_x_cord, float& new_y_cord);
 	std::vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, const float& max_distance);
 
-	void walk(std::string task, std::string action, std::string x_cord, std::string y_cord);
+	void walk(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string comment);
 
 	void mining(std::string task, std::string x_cord, std::string y_cord, std::string duration, std::string building_name, std::string orientation, bool is_building);
 

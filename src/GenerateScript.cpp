@@ -59,7 +59,17 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 
 	size_t amount_of_tasks = steps.size();
 
-	for (int i = 0; i < amount_of_tasks; i++) {
+	size_t start_step = 0;
+
+	for (int i = amount_of_tasks - 1; i > 0; i--) {
+		extract_parameters(steps[i]);
+		if (task == "Start") {
+			start_step = i + 1;
+			break;
+		}
+	}
+
+	for (int i = start_step; i < amount_of_tasks; i++) {
 		extract_parameters(steps[i]);
 		auto t = map_step_names[task];
 		if (t == step_start) {
@@ -79,7 +89,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_walk: 
-			walk(current_step, "1", x_cord, y_cord); 
+			walk(current_step, "1", x_cord, y_cord, comment); 
 			break;
 
 		case step_mine:
@@ -497,7 +507,7 @@ void GenerateScript::check_mining_distance(std::string step, std::string action,
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
-		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]));
+		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
 	}
 }
 
@@ -535,7 +545,7 @@ void GenerateScript::check_interact_distance(std::string step, std::string actio
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1]) {
-		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]));
+		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
 	}
 }
 
@@ -667,9 +677,17 @@ std::vector<float> GenerateScript::find_walk_location(float& min_x_edge, float& 
 	return { new_x_cord, new_y_cord };
 }
 
-void GenerateScript::walk(std::string step, std::string action, std::string x_cord, std::string y_cord)
+void GenerateScript::walk(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string comment)
 {
-	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}}\n";
+	if (comment == "old" || comment == "Old") {
+		last_walking_comment = convert_string(comment);
+	} else if (comment == "new" || comment == "New") {
+		last_walking_comment = "";
+	} else if (comment != "") {
+		last_walking_comment = comment;
+	}
+
+	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\"}\n";
 	player_x_cord = std::stof(x_cord);
 	player_y_cord = std::stof(y_cord);
 	total_steps += 1;
@@ -997,7 +1015,7 @@ void GenerateScript::row_drop(std::string step, std::string x_cord, std::string 
 }
 
 void GenerateScript::pick(std::string step, std::string action, std::string x_cord, std::string y_cord) {
-	walk(step, action, x_cord, y_cord);
+	walk(step, action, x_cord, y_cord, last_walking_comment);
 	step_list += signature(step, action) + "\"pick\", {" + x_cord + ", " + y_cord + "}}\n";
 	total_steps += 1;
 }

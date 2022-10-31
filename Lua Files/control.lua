@@ -35,7 +35,7 @@ local pos_pos = false
 local pos_neg = false
 local neg_pos = false
 local neg_neg = false
-
+local use_old_walking_pattern = false;
 
 local drop_item
 local drop_position
@@ -367,7 +367,6 @@ local function walk_pos_pos()
 	if player_position.x > destination.x then
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northwest}
-			
 		else
 			return {walking = true, direction = defines.direction.west}
 		end
@@ -375,7 +374,11 @@ local function walk_pos_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			return {walking = false, direction = walking.direction}	
+			if use_old_walking_pattern then
+				return {walking = false, direction = defines.direction.north}
+			else
+				return {walking = false, direction = walking.direction}
+			end
 		end
 	end
 end
@@ -391,7 +394,11 @@ local function walk_pos_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			return {walking = false, direction = walking.direction}	
+			if use_old_walking_pattern then
+				return {walking = false, direction = defines.direction.north}
+			else
+				return {walking = false, direction = walking.direction}
+			end
 		end
 	end
 end
@@ -407,7 +414,11 @@ local function walk_neg_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			return {walking = false, direction = walking.direction}	
+			if use_old_walking_pattern then
+				return {walking = false, direction = defines.direction.north}
+			else
+				return {walking = false, direction = walking.direction}
+			end
 		end
 	end
 end
@@ -423,7 +434,11 @@ local function walk_neg_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			return {walking = false, direction = walking.direction}	
+			if use_old_walking_pattern then
+				return {walking = false, direction = defines.direction.north}
+			else
+				return {walking = false, direction = walking.direction}
+			end
 		end
 	end
 end
@@ -439,36 +454,78 @@ local function walk()
 		return walk_neg_neg()
 	end
 
-	return {walking = false, direction = walking.direction}	
+	if use_old_walking_pattern then
+		return {walking = false, direction = defines.direction.north}
+	else
+		return {walking = false, direction = walking.direction}
+	end
 end
 
 local function find_walking_pattern()
-	pos_pos = false
-	pos_neg = false
-	neg_pos = false
-	neg_neg = false
-
-	if (player_position.x - destination.x >= 0) then
-		if (player_position.y - destination.y >= 0) then
-			pos_pos = true
-		elseif (player_position.y - destination.y < 0) then
-			pos_neg = true
+	if use_old_walking_pattern then
+		if (player_position.x - destination.x >= 0) then
+			if (player_position.y - destination.y >= 0) then
+				pos_pos = true
+				pos_neg = false
+				neg_pos = false
+				neg_neg = false
+			elseif (player_position.y - destination.y < 0) then
+				pos_neg = true
+				pos_pos = false
+				neg_pos = false
+				neg_neg = false
+			end
+		else
+			if (player_position.y - destination.y >= 0) then
+				neg_pos = true
+				pos_pos = false
+				pos_neg = false
+				neg_neg = false
+			elseif (player_position.y - destination.y < 0) then
+				neg_neg = true
+				pos_pos = false
+				pos_neg = false
+				neg_pos = false
+			end
 		end
 	else
-		if (player_position.y - destination.y >= 0) then
-			neg_pos = true
-		elseif (player_position.y - destination.y < 0) then
-			neg_neg = true
+		pos_pos = false
+		pos_neg = false
+		neg_pos = false
+		neg_neg = false
+
+		if (player_position.x - destination.x >= 0) then
+			if (player_position.y - destination.y >= 0) then
+				pos_pos = true
+			elseif (player_position.y - destination.y < 0) then
+				pos_neg = true
+			end
+		else
+			if (player_position.y - destination.y >= 0) then
+				neg_pos = true
+			elseif (player_position.y - destination.y < 0) then
+				neg_neg = true
+			end
 		end
 	end
 end
 
 local function update_player_position()
+	if use_old_walking_pattern then
+		player_position = player.position
+		return
+	end
+
 	player_position.x = tonumber(string.format("%.1f", player.position.x))
 	player_position.y = tonumber(string.format("%.1f", player.position.y))
 end
 
 local function update_destination_position(x, y)
+	if use_old_walking_pattern then
+		destination = { x = x, y = y }
+		return
+	end
+
 	destination.x = tonumber(string.format("%.1f", x))
 	destination.y = tonumber(string.format("%.1f", y))
 end
@@ -767,6 +824,10 @@ script.on_event(defines.events.on_tick, function(event)
 		if steps[step][2] == "save" then
 			save(steps[step][1][1], steps[step][3])
 			change_step(1)
+		end
+
+		if(steps[step][2] == "walk") then
+			use_old_walking_pattern = steps[step][4] == "old"
 		end
 
 		walking = walk()

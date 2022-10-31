@@ -932,7 +932,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 					}
 
 					if (check_lab->IsChecked() && to_check == struct_science_list.lab) {
-						auto_put(struct_science_list.red_science, base_units, struct_from_into_list.input);
+						auto_put("Automation science pack", base_units, struct_from_into_list.input);
 					}
 				}
 
@@ -1972,7 +1972,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event) {
 		wxYield();
 
 		if (result.template_map.size()) {
-			std::vector<std::string> keys = get_keys(result.group_map);
+			std::vector<std::string> keys = get_keys(result.template_map);
 
 			for (int i = 0; i < keys.size(); i++) {
 				template_choices.Add(keys[i]);
