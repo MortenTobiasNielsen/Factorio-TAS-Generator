@@ -233,7 +233,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	label_x_cord->Wrap(-1);
 	bSizer23->Add(label_x_cord, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	spin_x_cord = new wxSpinCtrlDouble(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 0.1);
+	spin_x_cord = new wxSpinCtrlDouble(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxALIGN_RIGHT | wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 0.1);
 	spin_x_cord->SetDigits(1);
 	bSizer23->Add(spin_x_cord, 0, wxALL, 5);
 
@@ -247,7 +247,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	label_y_cord->Wrap(-1);
 	bSizer28->Add(label_y_cord, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-	spin_y_cord = new wxSpinCtrlDouble(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 0.1);
+	spin_y_cord = new wxSpinCtrlDouble(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxALIGN_RIGHT | wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 0.1);
 	spin_y_cord->SetDigits(1);
 	bSizer28->Add(spin_y_cord, 0, wxALL, 5);
 
@@ -257,14 +257,14 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	wxBoxSizer* bSizer36;
 	bSizer36 = new wxBoxSizer(wxHORIZONTAL);
 
-	label_units = new wxStaticText(m_panel1, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
+	label_units = new wxStaticText(m_panel1, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxSize(60, -1), wxALIGN_RIGHT);
 	label_units->Wrap(-1);
 	bSizer36->Add(label_units, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
-	spin_units = new wxSpinCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxSP_ARROW_KEYS, 0, 100000, 0);
-	spin_units->SetToolTip(wxT("Game Speed and Stop is divided by 100"));
+	spin_amount = new wxSpinCtrl(m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(100, -1), wxALIGN_RIGHT | wxSP_ARROW_KEYS, 0, 100000, 0);
+	spin_amount->SetToolTip(wxT("Game Speed and Stop is divided by 100"));
 
-	bSizer36->Add(spin_units, 0, wxALL, 5);
+	bSizer36->Add(spin_amount, 0, wxALL, 5);
 
 
 	bSizer30->Add(bSizer36, 1, 0, 5);
@@ -1282,6 +1282,7 @@ GUI_Base::GUI_Base(wxWindow* parent, wxWindowID id, const wxString& title, const
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseOpenClicked), this, auto_close_open->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseSaveClicked), this, auto_close_save->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(GUI_Base::OnMenuAutoCloseSaveAsClicked), this, auto_close_save_as->GetId());
+	spin_amount->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(GUI_Base::OnAmountChanged), NULL, this);
 	rbtn_take->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
 	rbtn_put->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
 	rbtn_game_speed->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
@@ -1336,6 +1337,7 @@ GUI_Base::~GUI_Base()
 {
 	// Disconnect Events
 	this->Disconnect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(GUI_Base::OnApplicationClose));
+	spin_amount->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(GUI_Base::OnAmountChanged), NULL, this);
 	rbtn_take->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnTakeChosen), NULL, this);
 	rbtn_put->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnPutChosen), NULL, this);
 	rbtn_game_speed->Disconnect(wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler(GUI_Base::OnGameSpeedChosen), NULL, this);
