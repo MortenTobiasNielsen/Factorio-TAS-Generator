@@ -195,6 +195,7 @@ class GUI_Base : public wxFrame
 		virtual void OnMenuAutoCloseOpenClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAutoCloseSaveClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAutoCloseSaveAsClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUnitsChanged( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTakeChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPutChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGameSpeedChosen( wxCommandEvent& event ) { event.Skip(); }

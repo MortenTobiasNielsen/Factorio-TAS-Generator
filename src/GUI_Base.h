@@ -58,7 +58,7 @@ protected:
 	wxStaticText* label_y_cord;
 	wxSpinCtrlDouble* spin_y_cord;
 	wxStaticText* label_units;
-	wxSpinCtrl* spin_amount;
+	wxSpinCtrl* spin_units;
 	wxStaticText* label_comment;
 	wxTextCtrl* txt_comment;
 	wxStaticText* label_item;
@@ -195,7 +195,7 @@ protected:
 	virtual void OnMenuAutoCloseOpenClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAutoCloseSaveClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAutoCloseSaveAsClicked(wxCommandEvent& event) { event.Skip(); }
-	virtual void OnAmountChanged(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnUnitsChanged(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedChosen(wxCommandEvent& event) { event.Skip(); }

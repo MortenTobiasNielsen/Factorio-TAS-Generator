@@ -142,7 +142,7 @@ protected:
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
 
 	// Input
-	void OnAmountChanged(wxCommandEvent& event);
+	void OnUnitsChanged(wxCommandEvent& event);
 
 private:
 	enum task_name { e_start = 1, e_stop, e_build, e_craft, e_game_speed, e_pause, e_save, e_recipe, e_limit, e_filter, e_rotate, e_priority, e_put, e_take, e_mine, e_launch, e_walk, e_tech, e_drop, e_pick_up, e_idle};
