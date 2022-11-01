@@ -6,9 +6,12 @@
 
 // it is important to go though all of the lists When changes to the game is implemented to ensure that the lists are still accurate
 
-static const int Step_segment_size = 10;
-static const int Group_segment_size = 11;
-static const int Template_segment_size = 11;
+static const int step_segment_size = 10;
+static const int step_segment_size_without_comment = 9;
+static const int group_segment_size = 11;
+static const int group_segment_size_without_comment = 10;
+static const int template_segment_size = 11;
+static const int template_segment_size_without_comment = 10;
 
 static const std::string total_steps_indicator = "Total lines:";
 static const std::string goal_indicator = "Goal:";

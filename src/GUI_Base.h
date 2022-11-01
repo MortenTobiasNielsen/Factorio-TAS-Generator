@@ -19,8 +19,9 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/stattext.h>
-#include <wx/textctrl.h>
+#include <wx/spinctrl.h>
 #include <wx/sizer.h>
+#include <wx/textctrl.h>
 #include <wx/combobox.h>
 #include <wx/statline.h>
 #include <wx/radiobut.h>
@@ -53,11 +54,11 @@ protected:
 	wxMenu* menu_auto_close;
 	wxPanel* m_panel1;
 	wxStaticText* label_x_cord;
-	wxTextCtrl* txt_x_cord;
+	wxSpinCtrlDouble* spin_x_cord;
 	wxStaticText* label_y_cord;
-	wxTextCtrl* txt_y_cord;
+	wxSpinCtrlDouble* spin_y_cord;
 	wxStaticText* label_units;
-	wxTextCtrl* txt_units;
+	wxSpinCtrl* spin_units;
 	wxStaticText* label_comment;
 	wxTextCtrl* txt_comment;
 	wxStaticText* label_item;
@@ -194,6 +195,7 @@ protected:
 	virtual void OnMenuAutoCloseOpenClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAutoCloseSaveClicked(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnMenuAutoCloseSaveAsClicked(wxCommandEvent& event) { event.Skip(); }
+	virtual void OnUnitsChanged(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnTakeChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnPutChosen(wxCommandEvent& event) { event.Skip(); }
 	virtual void OnGameSpeedChosen(wxCommandEvent& event) { event.Skip(); }
@@ -352,4 +354,3 @@ public:
 	~BaseForDialogProgress();
 
 };
-

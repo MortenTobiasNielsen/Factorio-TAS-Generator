@@ -81,12 +81,10 @@ bool SaveTas::Save(
 	}
 
 	myfile << save_file_indicator << std::endl;
-	myfile << folder_location << std::endl;
+	myfile << folder_location << ";" << std::endl;
 
 	myfile << code_file_indicator << std::endl;
-	if (folder_location_generate != "") {
-		myfile << folder_location_generate << std::endl;
-	}
+	myfile << folder_location_generate << ";" << std::endl;
 
 	myfile << auto_close_indicator << std::endl;
 	myfile << auto_close_generate_script_text << ";" << bool_to_string(auto_list[0]) << std::endl;
