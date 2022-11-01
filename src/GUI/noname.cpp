@@ -257,7 +257,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer36;
 	bSizer36 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_units = new wxStaticText( m_panel1, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_units = new wxStaticText( m_panel1, wxID_ANY, wxT("Units:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_units->Wrap( -1 );
 	bSizer36->Add( label_units, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
