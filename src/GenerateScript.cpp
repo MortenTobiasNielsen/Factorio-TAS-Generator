@@ -512,16 +512,24 @@ void GenerateScript::check_mining_distance(std::string step, std::string action,
 }
 
 void GenerateScript::check_interact_distance(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
+	//if comment is "old" then use old map and buffer = 0.37 until a comment of new
+	if (comment == "old" || comment == "Old") {// TODO remove
+		building_size_map_p = &old_building_size_list; 
+	}
+	else if (comment == "new" || comment == "New") {
+		building_size_map_p = &building_size_list;
+	}		
+
 	if (building_name == "Wreck") {
 		x_building_size = 1;
 		y_building_size = 1;
 	}
 	else {
-		x_building_size = building_size_list.find(building_name)->second[0];
-		y_building_size = building_size_list.find(building_name)->second[1];
+		x_building_size = building_size_map_p->find(building_name)->second[0];
+		y_building_size = building_size_map_p->find(building_name)->second[1];
 	}
 
-	static const float buffer = 0.0f; // TODO remove
+	static const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.0f; // TODO remove
 	static const float max_distance = 10.0f; //Default build distance
 
 	float x_target = floor(std::stof(x_cord));
