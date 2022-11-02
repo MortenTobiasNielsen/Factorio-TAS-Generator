@@ -532,11 +532,16 @@ void GenerateScript::check_interact_distance(std::string step, std::string actio
 	static const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.0f; // TODO remove
 	static const float max_distance = 10.0f; //Default build distance
 
+	float x_target = std::stof(x_cord);
+	float y_target = std::stof(y_cord);
+
+	/* Input corrections removed
 	float x_target = floor(std::stof(x_cord));
 	if ((int)ceil(x_building_size) % 2 == 1) x_target += 0.5; //if a building is an uneven number of tiles wide, it will be placed at a half tile
 
 	float y_target = floor(std::stof(y_cord));
 	if ((int)ceil(y_building_size) % 2 == 1) y_target += 0.5; //if a building is an uneven number of tiles tall, it will be placed at a half tile
+	*/
 
 	float min_x_edge = x_target, max_x_edge = x_target;
 	float min_y_edge = y_target, max_y_edge = y_target;
