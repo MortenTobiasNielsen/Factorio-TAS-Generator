@@ -513,10 +513,10 @@ void GenerateScript::check_mining_distance(std::string step, std::string action,
 
 void GenerateScript::check_interact_distance(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
 	//if comment is "old" then use old map and buffer = 0.37 until a comment of new
-	if (comment == "old" || comment == "Old") {// TODO remove
+	if (comment == "old" || comment == "Old" || comment == "old build" || comment == "Old build") {// TODO remove
 		building_size_map_p = &old_building_size_list; 
 	}
-	else if (comment == "new" || comment == "New") {
+	else if (comment == "new" || comment == "New" || comment == "new build" || comment == "New build") {
 		building_size_map_p = &building_size_list;
 	}		
 
@@ -528,8 +528,7 @@ void GenerateScript::check_interact_distance(std::string step, std::string actio
 		x_building_size = building_size_map_p->find(building_name)->second[0];
 		y_building_size = building_size_map_p->find(building_name)->second[1];
 	}
-
-	static const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.0f; // TODO remove
+	const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.0f; // TODO remove - can't be static
 	static const float max_distance = 10.0f; //Default build distance
 
 	float x_target = std::stof(x_cord);
@@ -543,8 +542,10 @@ void GenerateScript::check_interact_distance(std::string step, std::string actio
 	if ((int)ceil(y_building_size) % 2 == 1) y_target += 0.5; //if a building is an uneven number of tiles tall, it will be placed at a half tile
 	*/
 
-	float min_x_edge = x_target, max_x_edge = x_target;
-	float min_y_edge = y_target, max_y_edge = y_target;
+	float min_x_edge = x_target;
+	float max_x_edge = x_target;
+	float min_y_edge = y_target;
+	float max_y_edge = y_target;
 
 	if (orientation == "North" || orientation == "South") {
 		min_x_edge -= (x_building_size / 2);
