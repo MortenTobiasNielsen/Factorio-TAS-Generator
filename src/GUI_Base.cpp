@@ -394,7 +394,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer52;
 	bSizer52 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_amount_of_buildings = new wxStaticText( m_panel21, wxID_ANY, wxT("Amount of Buildings:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_amount_of_buildings = new wxStaticText( m_panel21, wxID_ANY, wxT("Number of Buildings:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_amount_of_buildings->Wrap( -1 );
 	bSizer52->Add( label_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -765,12 +765,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_group->SetColLabelValue( 0, wxT("Task") );
 	grid_group->SetColLabelValue( 1, wxT("X-cord") );
 	grid_group->SetColLabelValue( 2, wxT("Y-cord") );
-	grid_group->SetColLabelValue( 3, wxT("Units") );
+	grid_group->SetColLabelValue( 3, wxT("Amount") );
 	grid_group->SetColLabelValue( 4, wxT("Item") );
 	grid_group->SetColLabelValue( 5, wxT("Orientation") );
 	grid_group->SetColLabelValue( 6, wxT("Direction") );
 	grid_group->SetColLabelValue( 7, wxT("Size") );
-	grid_group->SetColLabelValue( 8, wxT("Amount") );
+	grid_group->SetColLabelValue( 8, wxT("Number") );
 	grid_group->SetColLabelValue( 9, wxT("Comment") );
 	grid_group->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
@@ -934,12 +934,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template->SetColLabelValue( 0, wxT("Task") );
 	grid_template->SetColLabelValue( 1, wxT("X-cord") );
 	grid_template->SetColLabelValue( 2, wxT("Y-cord") );
-	grid_template->SetColLabelValue( 3, wxT("Units") );
+	grid_template->SetColLabelValue( 3, wxT("Amount") );
 	grid_template->SetColLabelValue( 4, wxT("Item") );
 	grid_template->SetColLabelValue( 5, wxT("Orientation") );
 	grid_template->SetColLabelValue( 6, wxT("Direction") );
 	grid_template->SetColLabelValue( 7, wxT("Size") );
-	grid_template->SetColLabelValue( 8, wxT("Amount") );
+	grid_template->SetColLabelValue( 8, wxT("Number") );
 	grid_template->SetColLabelValue( 9, wxT("Comment") );
 	grid_template->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
@@ -1118,12 +1118,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_tasks->SetColLabelValue( 0, wxT("Task") );
 	grid_tasks->SetColLabelValue( 1, wxT("X-cord") );
 	grid_tasks->SetColLabelValue( 2, wxT("Y-cord") );
-	grid_tasks->SetColLabelValue( 3, wxT("Units") );
+	grid_tasks->SetColLabelValue( 3, wxT("Amount") );
 	grid_tasks->SetColLabelValue( 4, wxT("Item") );
 	grid_tasks->SetColLabelValue( 5, wxT("Orientation") );
 	grid_tasks->SetColLabelValue( 6, wxT("Direction") );
 	grid_tasks->SetColLabelValue( 7, wxT("Size") );
-	grid_tasks->SetColLabelValue( 8, wxT("Amount") );
+	grid_tasks->SetColLabelValue( 8, wxT("Number") );
 	grid_tasks->SetColLabelValue( 9, wxT("Comment") );
 	grid_tasks->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 

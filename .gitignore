@@ -341,3 +341,4 @@ healthchecksdb
 /noname.cpp
 /noname.h
 /.vscode
+/CppProperties.json
