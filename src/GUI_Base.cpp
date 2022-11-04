@@ -744,7 +744,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Grid
 	grid_group->CreateGrid( 0, 10 );
-	grid_group->EnableEditing( true );
+	grid_group->EnableEditing( false );
 	grid_group->EnableGridLines( true );
 	grid_group->EnableDragGridSize( false );
 	grid_group->SetMargins( 0, 0 );
@@ -760,7 +760,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_group->SetColSize( 7, 50 );
 	grid_group->SetColSize( 8, 50 );
 	grid_group->SetColSize( 9, 150 );
-	grid_group->EnableDragColMove( true );
+	grid_group->EnableDragColMove( false );
 	grid_group->EnableDragColSize( true );
 	grid_group->SetColLabelValue( 0, wxT("Task") );
 	grid_group->SetColLabelValue( 1, wxT("X-cord") );
@@ -913,7 +913,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Grid
 	grid_template->CreateGrid( 0, 10 );
-	grid_template->EnableEditing( true );
+	grid_template->EnableEditing( false );
 	grid_template->EnableGridLines( true );
 	grid_template->EnableDragGridSize( false );
 	grid_template->SetMargins( 0, 0 );
@@ -929,7 +929,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template->SetColSize( 7, 50 );
 	grid_template->SetColSize( 8, 50 );
 	grid_template->SetColSize( 9, 150 );
-	grid_template->EnableDragColMove( true );
+	grid_template->EnableDragColMove( false );
 	grid_template->EnableDragColSize( true );
 	grid_template->SetColLabelValue( 0, wxT("Task") );
 	grid_template->SetColLabelValue( 1, wxT("X-cord") );
@@ -1001,8 +1001,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_buildings->SetColSize( 5, 150 );
 	grid_buildings->SetColSize( 6, 50 );
 	grid_buildings->SetColSize( 7, 50 );
-	grid_buildings->SetColSize( 8, 150 );
-	grid_buildings->EnableDragColMove( true );
+	grid_buildings->SetColSize( 8, 100 );
+	grid_buildings->EnableDragColMove( false );
 	grid_buildings->EnableDragColSize( true );
 	grid_buildings->SetColLabelValue( 0, wxT("X-cord") );
 	grid_buildings->SetColLabelValue( 1, wxT("Y-cord") );
@@ -1073,19 +1073,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer1141 = new wxBoxSizer( wxHORIZONTAL );
 
 
-	bSizer1141->Add( 100, 0, 1, wxEXPAND, 5 );
-
-	btn_move_up_5 = new wxButton( step_panel, wxID_ANY, wxT("Move 5 Up"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1141->Add( btn_move_up_5, 0, wxALL, 5 );
+	bSizer1141->Add( 250, 0, 1, wxEXPAND, 5 );
 
 	btn_move_up11 = new wxButton( step_panel, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer1141->Add( btn_move_up11, 0, wxALL, 5 );
 
 	btn_move_down11 = new wxButton( step_panel, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer1141->Add( btn_move_down11, 0, wxALL, 5 );
-
-	btn_move_down_5 = new wxButton( step_panel, wxID_ANY, wxT("Move 5 down"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1141->Add( btn_move_down_5, 0, wxALL, 5 );
 
 
 	fgSizer1->Add( bSizer1141, 1, wxEXPAND, 5 );
@@ -1103,7 +1097,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Grid
 	grid_tasks->CreateGrid( 0, 10 );
-	grid_tasks->EnableEditing( true );
+	grid_tasks->EnableEditing( false );
 	grid_tasks->EnableGridLines( true );
 	grid_tasks->EnableDragGridSize( false );
 	grid_tasks->SetMargins( 0, 0 );
@@ -1119,7 +1113,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_tasks->SetColSize( 7, 50 );
 	grid_tasks->SetColSize( 8, 50 );
 	grid_tasks->SetColSize( 9, 150 );
-	grid_tasks->EnableDragColMove( true );
+	grid_tasks->EnableDragColMove( false );
 	grid_tasks->EnableDragColSize( true );
 	grid_tasks->SetColLabelValue( 0, wxT("Task") );
 	grid_tasks->SetColLabelValue( 1, wxT("X-cord") );
@@ -1257,10 +1251,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	task_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::TaskSeachOnTextEnter ), NULL, this );
-	btn_move_up_5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_up11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpClicked ), NULL, this );
+	btn_move_up11->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
-	btn_move_down_5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
+	btn_move_down11->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_tasks->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTasksGridDoubleLeftClick ), NULL, this );
 }
 
@@ -1321,10 +1315,10 @@ GUI_Base::~GUI_Base()
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::TaskSeachOnTextEnter ), NULL, this );
-	btn_move_up_5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_up11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpClicked ), NULL, this );
+	btn_move_up11->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
-	btn_move_down_5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
+	btn_move_down11->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_tasks->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTasksGridDoubleLeftClick ), NULL, this );
 
 	m_mgr.UnInit();

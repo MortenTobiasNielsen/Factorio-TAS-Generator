@@ -1044,7 +1044,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event) {
 				if (task == struct_tasks_list.recipe && check_recipe->IsChecked() ) {
 					std::vector<std::string> recipe = recipes.find(to_check)->second;
 
-					int multiplier = stoi(units);
+					int multiplier = std::stoi(amount);
 					for (int i = 0; i < recipe.size(); i += 2 ) {
 						std::string units_to_put = std::to_string(stoi(recipe[i + 1]) * multiplier);
 						auto_put(recipe[i], units_to_put, struct_from_into_list.input);
@@ -1324,20 +1324,20 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event) {
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
-void cMain::OnMoveUpFiveClicked(wxCommandEvent& event) {
-	for(int i = 0; i < 5; i++){ 
-		move_row(grid_tasks, true); 
+void cMain::OnMoveUpFiveClicked(wxMouseEvent& event) {
+	for (int i = 0; i < 5; i++) {
+		move_row(grid_tasks, true);
 	}
 
 	event.Skip();
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
-void cMain::OnMoveDownFiveClicked(wxCommandEvent& event) {
-	for (int i = 0; i < 5; i++) {
+void cMain::OnMoveDownFiveClicked(wxMouseEvent& event) {
+	for (int i = 0; i < 5; i++){
 		move_row(grid_tasks, false);
 	}
-
+	
 	event.Skip();
 }
 
@@ -1959,7 +1959,7 @@ void cMain::OnBuildingsGridLeftDoubleClick(wxGridEvent& event) {
 
 void cMain::OnUnitsChanged(wxCommandEvent& event)
 {
-	spin_units->SetValue(event.GetInt());
+	m_spin_amount->SetValue(event.GetInt());
 }
 
 void cMain::OnApplicationClose(wxCloseEvent& event) {
@@ -2706,8 +2706,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.game_speed) {
 		OnGameSpeedMenuSelected(event);
-		float speed = stof(units) * 100.0;
-		spin_units->SetValue(speed);
+		float speed = std::stof(amount) * 100.0;
+		m_spin_amount->SetValue(speed);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2715,26 +2715,26 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.walk) {
 		OnWalkMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
 		txt_comment->SetValue(comment);
 
 		return;
 	}
 	if (task == struct_tasks_list.mine) {
 		OnMineMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
+		m_spin_amount->SetValue(amount);
 		txt_comment->SetValue(comment);
 
 		return;
 	}
 	if (task == struct_tasks_list.rotate) {
 		OnRotateMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
+		m_spin_amount->SetValue(amount);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2742,7 +2742,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.craft) {
 		OnCraftMenuSelected(event);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_amount->SetValue(amount);
 		cmb_item->SetValue(item);
 		txt_comment->SetValue(comment);
 
@@ -2751,8 +2751,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.build) {
 		OnBuildMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
 		cmb_item->SetValue(item);
 		cmb_building_orientation->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2765,9 +2765,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.take) {
 		OnTakeMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
+		m_spin_amount->SetValue(amount);
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2780,9 +2780,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.put) {
 		OnPutMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
+		m_spin_amount->SetValue(amount);
 		cmb_item->SetValue(item);
 		cmb_from_into->SetValue(build_orientation);
 		cmb_direction_to_build->SetValue(direction_to_build);
@@ -2802,8 +2802,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	}
 	if (task == struct_tasks_list.recipe) {
 		OnRecipeMenuChosen(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
@@ -2829,7 +2829,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.stop) {
 		OnStopMenuSelected(event);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_amount->SetValue(amount);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2837,9 +2837,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.limit) {
 		OnLimitMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
+		m_spin_amount->SetValue(amount);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
@@ -2850,8 +2850,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.priority) {
 		OnPriorityMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
@@ -2867,9 +2867,9 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 
 	if (task == struct_tasks_list.filter) {
 		OnFilterMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
+		m_spin_amount->SetValue(amount);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
@@ -2881,8 +2881,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.pick_up) {
 		OnPickUpMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
 		spin_building_amount->SetValue(amount_of_buildings);
@@ -2893,8 +2893,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.drop) {
 		OnDropMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
 		cmb_item->SetValue(item);
 		cmb_direction_to_build->SetValue(direction_to_build);
 		spin_building_size->SetValue(building_size);
@@ -2906,7 +2906,7 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.idle) {
 		OnIdleMenuSelected(event);
-		m_spin_amount->SetValue(amount_formatted);
+		m_spin_amount->SetValue(amount);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -2914,8 +2914,8 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event) {
 	
 	if (task == struct_tasks_list.launch) {
 		OnLaunchMenuSelected(event);
-		m_spin_x->SetValue(x_cord_formatted);
-		m_spin_y->SetValue(y_cord_formatted);
+		m_spin_x->SetValue(x_cord);
+		m_spin_y->SetValue(y_cord);
 		txt_comment->SetValue(comment);
 
 		return;
@@ -3084,10 +3084,10 @@ std::string cMain::extract_y_cord() {
 	return std::to_string(m_spin_y->GetValue());
 }
 
-std::string cMain::extract_units() {
-	int units = spin_units->GetValue();
+std::string cMain::extract_amount() {
+	int amount = m_spin_amount->GetValue();
 	
-	if (units < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_recipe->GetValue())) {
+	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_recipe->GetValue())) {
 		return "1";
 	}
 	
@@ -3106,7 +3106,7 @@ std::string cMain::extract_units() {
 	}
 
 	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue()) {
-		float speed = static_cast<float>(units) / 100.0;
+		float speed = static_cast<float>(amount) / 100.0;
 		if (speed < 0.01) {
 			return "0.01";
 		}

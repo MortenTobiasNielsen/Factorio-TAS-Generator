@@ -21,7 +21,6 @@
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
 #include <wx/sizer.h>
-#include <wx/textctrl.h>
 #include <wx/combobox.h>
 #include <wx/radiobox.h>
 #include <wx/textctrl.h>
@@ -146,10 +145,8 @@ class GUI_Base : public wxFrame
 		wxButton* btn_change_task11;
 		wxButton* btn_delete_task11;
 		wxSearchCtrl* task_search_ctrl;
-		wxButton* btn_move_up_5;
 		wxButton* btn_move_up11;
 		wxButton* btn_move_down11;
-		wxButton* btn_move_down_5;
 		wxGrid* grid_tasks;
 
 		// Virtual event handlers, override them in your derived class
@@ -250,10 +247,10 @@ class GUI_Base : public wxFrame
 		virtual void TaskSeachOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMoveUpFiveClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMoveUpFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMoveDownFiveClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnTasksGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 
 
@@ -366,3 +363,4 @@ class BaseForDialogProgress : public wxDialog
 		~BaseForDialogProgress();
 
 };
+
