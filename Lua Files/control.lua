@@ -319,8 +319,10 @@ local function build()
 
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
+				local save_step = step
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
-					change_step(-1)
+					save_step = save_step - step
+					change_step(save_step)
 					player.remove_item({name = item, count = 1})
 					return true
 				end
@@ -341,8 +343,10 @@ local function build()
 	else
 		if player.can_place_entity{name = "straight-rail", position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = "straight-rail", position = target_position, direction = direction, force = "player"} then
+				local save_step = step
 				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
-					change_step(-1)
+					save_step = save_step - step
+					change_step(save_step)
 					player.remove_item({name = item, count = 1})
 					return true
 				end
