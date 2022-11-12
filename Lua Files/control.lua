@@ -319,10 +319,7 @@ local function build()
 
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
-				local save_step = step
 				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
-					save_step = save_step - step
-					change_step(save_step)
 					player.remove_item({name = item, count = 1})
 					return true
 				end
@@ -343,10 +340,7 @@ local function build()
 	else
 		if player.can_place_entity{name = "straight-rail", position = target_position, direction = direction} then
 			if player.surface.can_fast_replace{name = "straight-rail", position = target_position, direction = direction, force = "player"} then
-				local save_step = step
 				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
-					save_step = save_step - step
-					change_step(save_step)
 					player.remove_item({name = item, count = 1})
 					return true
 				end
@@ -926,7 +920,11 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 		mining_event_replace(event, "stone", 24)
 	end
 
-	change_step(1)
+	--change step when tas is running and the current step is mining step
+	if run and steps[step] and steps[step][2] and steps[step][2] == "mine" then
+		change_step(1)
+	end
+
 	mining = 0
 	ticks_mining = 0
 end)
