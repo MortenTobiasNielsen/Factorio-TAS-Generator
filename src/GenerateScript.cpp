@@ -512,34 +512,52 @@ void GenerateScript::check_mining_distance(std::string step, std::string action,
 }
 
 void GenerateScript::check_interact_distance(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string building_name, std::string orientation) {
+	//if comment is "old" then use old map and buffer = 0.37 until a comment of new
+	if (comment == "old" || comment == "Old" || comment == "old build" || comment == "Old build") {// TODO remove
+		building_size_map_p = &old_building_size_list; 
+	}
+	else if (comment == "new" || comment == "New" || comment == "new build" || comment == "New build") {
+		building_size_map_p = &building_size_list;
+	}		
+
 	if (building_name == "Wreck") {
 		x_building_size = 1;
 		y_building_size = 1;
 	}
 	else {
-		x_building_size = building_size_list.find(building_name)->second[0];
-		y_building_size = building_size_list.find(building_name)->second[1];
+		x_building_size = building_size_map_p->find(building_name)->second[0];
+		y_building_size = building_size_map_p->find(building_name)->second[1];
 	}
+	const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.0f; // TODO remove - can't be static
+	static const float max_distance = 10.0f; //Default build distance
 
-	static const float buffer = 0.37f; // this should be set correctly when you get a better understanding of how it is actually calculated in the game
-	static const float max_distance = 10.0f;
-	float min_x_edge;
-	float max_x_edge;
+	float x_target = std::stof(x_cord);
+	float y_target = std::stof(y_cord);
 
-	float min_y_edge;
-	float max_y_edge;
+	/* Input corrections removed
+	float x_target = floor(std::stof(x_cord));
+	if ((int)ceil(x_building_size) % 2 == 1) x_target += 0.5; //if a building is an uneven number of tiles wide, it will be placed at a half tile
+
+	float y_target = floor(std::stof(y_cord));
+	if ((int)ceil(y_building_size) % 2 == 1) y_target += 0.5; //if a building is an uneven number of tiles tall, it will be placed at a half tile
+	*/
+
+	float min_x_edge = x_target;
+	float max_x_edge = x_target;
+	float min_y_edge = y_target;
+	float max_y_edge = y_target;
 
 	if (orientation == "North" || orientation == "South") {
-		min_x_edge = std::stof(x_cord) - (x_building_size / 2);
-		max_x_edge = std::stof(x_cord) + (x_building_size / 2);
-		min_y_edge = std::stof(y_cord) - (y_building_size / 2);
-		max_y_edge = std::stof(y_cord) + (y_building_size / 2);
+		min_x_edge -= (x_building_size / 2);
+		max_x_edge += (x_building_size / 2);
+		min_y_edge -= (y_building_size / 2);
+		max_y_edge += (y_building_size / 2);
 	}
 	else {
-		min_x_edge = std::stof(x_cord) - (y_building_size / 2);
-		max_x_edge = std::stof(x_cord) + (y_building_size / 2);
-		min_y_edge = std::stof(y_cord) - (x_building_size / 2);
-		max_y_edge = std::stof(y_cord) + (x_building_size / 2);
+		min_x_edge -= (y_building_size / 2);
+		max_x_edge += (y_building_size / 2);
+		min_y_edge -= (x_building_size / 2);
+		max_y_edge += (x_building_size / 2);
 	}
 
 	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
