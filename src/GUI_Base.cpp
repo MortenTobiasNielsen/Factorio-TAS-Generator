@@ -209,7 +209,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->SetMenuBar( m_menubar1 );
 
 	m_panel21 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel21, wxAuiPaneInfo() .Name( wxT("TaskDetailPanel") ).Top() .Caption( wxT("Step detail") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 1010,159 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 650,155 ) ).MinSize( wxSize( 650,120 ) ).Layer( 1 ) );
+	m_mgr.AddPane( m_panel21, wxAuiPaneInfo() .Name( wxT("TaskDetailPanel") ).Top() .Caption( wxT("Step detail") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 1010,155 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 650,140 ) ).MinSize( wxSize( 650,120 ) ).Layer( 1 ) );
 
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxHORIZONTAL );
@@ -227,8 +227,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_x_cord->Wrap( -1 );
 	bSizerX->Add( label_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
-	m_spin_x->SetDigits( 3 );
+	m_spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	m_spin_x->SetDigits( 1 );
 	m_spin_x->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	bSizerX->Add( m_spin_x, 0, wxALL, 5 );
@@ -273,8 +273,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_y_cord->Wrap( -1 );
 	bSizerY->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
-	m_spin_y->SetDigits( 3 );
+	m_spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	m_spin_y->SetDigits( 1 );
 	bSizerY->Add( m_spin_y, 0, wxALL, 5 );
 
 
@@ -283,7 +283,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_from_into = new wxStaticText( m_panel21, wxID_ANY, wxT("From/Into:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_from_into = new wxStaticText( m_panel21, wxID_ANY, wxT("From:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_from_into->Wrap( -1 );
 	bSizer31->Add( label_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -318,7 +318,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_amount->Wrap( -1 );
 	bSizer36->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, -1, 1000000, 1 );
+	m_spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 1000000, 1 );
 	bSizer36->Add( m_spin_amount, 0, wxALL, 5 );
 
 
@@ -350,7 +350,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_building_size->Wrap( -1 );
 	bSizer51->Add( label_building_size, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	spin_building_size = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, 1, 10, 1 );
+	spin_building_size = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 10, 1 );
 	spin_building_size->SetToolTip( wxT("Number of tiles the building is wide. Used for placing multiple buildings in a row.") );
 	spin_building_size->SetMinSize( wxSize( 80,-1 ) );
 
@@ -394,11 +394,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer52;
 	bSizer52 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_amount_of_buildings = new wxStaticText( m_panel21, wxID_ANY, wxT("Number of Buildings:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_amount_of_buildings = new wxStaticText( m_panel21, wxID_ANY, wxT("Amount of Buildings:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_amount_of_buildings->Wrap( -1 );
 	bSizer52->Add( label_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	spin_building_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL|wxSP_ARROW_KEYS, 1, 24, 1 );
+	spin_building_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 250, 1 );
 	spin_building_amount->SetToolTip( wxT("The number of buildings to place in a row") );
 	spin_building_amount->SetMinSize( wxSize( 80,-1 ) );
 
@@ -415,7 +415,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel21->Layout();
 	bSizer19->Fit( m_panel21 );
 	m_panel22 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel22, wxAuiPaneInfo() .Name( wxT("TaskTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,165 ) ).MinSize( wxSize( 620,120 ) ).Layer( 1 ) );
+	m_mgr.AddPane( m_panel22, wxAuiPaneInfo() .Name( wxT("TaskTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,140 ) ).MinSize( wxSize( 620,120 ) ).Layer( 1 ) );
 
 	wxBoxSizer* bSizer18;
 	bSizer18 = new wxBoxSizer( wxVERTICAL );
@@ -622,7 +622,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel22->Layout();
 	bSizer18->Fit( m_panel22 );
 	m_panel23 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel23, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,165 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
+	m_mgr.AddPane( m_panel23, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,140 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
 
 	wxBoxSizer* bSizer116;
 	bSizer116 = new wxBoxSizer( wxVERTICAL );
@@ -735,7 +735,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer114->Add( bSizer119, 0, 0, 5 );
 
 
-	bSizer561->Add( bSizer114, 1, 0, 5 );
+	bSizer561->Add( bSizer114, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer50;
 	bSizer50 = new wxBoxSizer( wxVERTICAL );
@@ -765,12 +765,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_group->SetColLabelValue( 0, wxT("Task") );
 	grid_group->SetColLabelValue( 1, wxT("X-cord") );
 	grid_group->SetColLabelValue( 2, wxT("Y-cord") );
-	grid_group->SetColLabelValue( 3, wxT("Amount") );
+	grid_group->SetColLabelValue( 3, wxT("Units") );
 	grid_group->SetColLabelValue( 4, wxT("Item") );
 	grid_group->SetColLabelValue( 5, wxT("Orientation") );
 	grid_group->SetColLabelValue( 6, wxT("Direction") );
 	grid_group->SetColLabelValue( 7, wxT("Size") );
-	grid_group->SetColLabelValue( 8, wxT("Number") );
+	grid_group->SetColLabelValue( 8, wxT("Amount") );
 	grid_group->SetColLabelValue( 9, wxT("Comment") );
 	grid_group->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
@@ -784,10 +784,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_group->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
 	grid_group->SetMinSize( wxSize( 850,1500 ) );
 
-	bSizer50->Add( grid_group, 0, wxALL, 5 );
+	bSizer50->Add( grid_group, 1, wxALL|wxEXPAND, 5 );
 
 
-	bSizer561->Add( bSizer50, 1, 0, 5 );
+	bSizer561->Add( bSizer50, 1, wxEXPAND, 5 );
 
 
 	group_panel->SetSizer( bSizer561 );
@@ -904,7 +904,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer102->Add( bSizer104, 0, 0, 5 );
 
 
-	bSizer5612->Add( bSizer102, 1, 0, 5 );
+	bSizer5612->Add( bSizer102, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer502;
 	bSizer502 = new wxBoxSizer( wxVERTICAL );
@@ -934,12 +934,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template->SetColLabelValue( 0, wxT("Task") );
 	grid_template->SetColLabelValue( 1, wxT("X-cord") );
 	grid_template->SetColLabelValue( 2, wxT("Y-cord") );
-	grid_template->SetColLabelValue( 3, wxT("Amount") );
+	grid_template->SetColLabelValue( 3, wxT("Units") );
 	grid_template->SetColLabelValue( 4, wxT("Item") );
 	grid_template->SetColLabelValue( 5, wxT("Orientation") );
 	grid_template->SetColLabelValue( 6, wxT("Direction") );
 	grid_template->SetColLabelValue( 7, wxT("Size") );
-	grid_template->SetColLabelValue( 8, wxT("Number") );
+	grid_template->SetColLabelValue( 8, wxT("Amount") );
 	grid_template->SetColLabelValue( 9, wxT("Comment") );
 	grid_template->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
@@ -953,10 +953,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
 	grid_template->SetMinSize( wxSize( 850,2500 ) );
 
-	bSizer502->Add( grid_template, 0, wxALL, 5 );
+	bSizer502->Add( grid_template, 0, wxALL|wxEXPAND, 5 );
 
 
-	bSizer5612->Add( bSizer502, 1, 0, 5 );
+	bSizer5612->Add( bSizer502, 1, wxEXPAND, 5 );
 
 
 	template_panel->SetSizer( bSizer5612 );
@@ -966,6 +966,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	building_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer56111;
 	bSizer56111 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer56111->Add( 0, 33, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer122;
 	bSizer122 = new wxBoxSizer( wxVERTICAL );
@@ -1025,10 +1028,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_buildings->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
 	grid_buildings->SetMinSize( wxSize( 850,2500 ) );
 
-	bSizer5011->Add( grid_buildings, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizer5011->Add( grid_buildings, 0, wxALL|wxEXPAND, 5 );
 
 
-	bSizer56111->Add( bSizer5011, 1, 0, 5 );
+	bSizer56111->Add( bSizer5011, 1, wxEXPAND, 5 );
 
 
 	building_panel->SetSizer( bSizer56111 );
@@ -1038,6 +1041,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer5611->Add( 0, 33, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer1001;
 	bSizer1001 = new wxBoxSizer( wxHORIZONTAL );
@@ -1088,7 +1094,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer1001->Add( fgSizer1, 1, wxEXPAND, 5 );
 
 
-	bSizer5611->Add( bSizer1001, 0, 0, 5 );
+	bSizer5611->Add( bSizer1001, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer501;
 	bSizer501 = new wxBoxSizer( wxVERTICAL );
@@ -1118,12 +1124,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_tasks->SetColLabelValue( 0, wxT("Task") );
 	grid_tasks->SetColLabelValue( 1, wxT("X-cord") );
 	grid_tasks->SetColLabelValue( 2, wxT("Y-cord") );
-	grid_tasks->SetColLabelValue( 3, wxT("Amount") );
+	grid_tasks->SetColLabelValue( 3, wxT("Units") );
 	grid_tasks->SetColLabelValue( 4, wxT("Item") );
 	grid_tasks->SetColLabelValue( 5, wxT("Orientation") );
 	grid_tasks->SetColLabelValue( 6, wxT("Direction") );
 	grid_tasks->SetColLabelValue( 7, wxT("Size") );
-	grid_tasks->SetColLabelValue( 8, wxT("Number") );
+	grid_tasks->SetColLabelValue( 8, wxT("Amount") );
 	grid_tasks->SetColLabelValue( 9, wxT("Comment") );
 	grid_tasks->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
@@ -1138,10 +1144,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_tasks->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
 	grid_tasks->SetMinSize( wxSize( 870,2500 ) );
 
-	bSizer501->Add( grid_tasks, 0, wxALL, 5 );
+	bSizer501->Add( grid_tasks, 0, wxALL|wxEXPAND, 5 );
 
 
-	bSizer5611->Add( bSizer501, 1, 0, 5 );
+	bSizer5611->Add( bSizer501, 1, wxEXPAND, 5 );
 
 
 	step_panel->SetSizer( bSizer5611 );
