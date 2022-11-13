@@ -104,8 +104,6 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	cmb_from_into->SetValue(*take_from.begin());
 	cmb_from_into->AutoComplete(take_from_choices);
 
-
-
 	// set tasks grid formatting
 	grid_tasks->SetColFormatFloat(1, 4, 1);
 	grid_tasks->SetColFormatFloat(2, 4, 1);
@@ -156,9 +154,11 @@ void cMain::TaskSeachOnText(wxCommandEvent& event) {
 	TaskSeachOnSearchButton(event);
 	event.Skip();
 }
+
 void cMain::TaskSeachOnTextEnter(wxCommandEvent& event) {
 	TaskSeachOnText(event);//seems not to fire
 }
+
 void cMain::TaskSeachOnSearchButton(wxCommandEvent& event) {
 	auto str = event.GetString();
 	auto rows = grid_tasks->GetNumberRows();
@@ -183,9 +183,11 @@ void cMain::TaskSeachOnSearchButton(wxCommandEvent& event) {
 	}
 	event.Skip();
 }
+
 void cMain::TaskSeachOnCancelButton(wxCommandEvent& event) {
 	event.Skip();// do nothing, it will clear the search box
 }
+
 void cMain::BuildingSearchOnText(wxCommandEvent& event) {
 	auto str = event.GetString();
 	auto rows = grid_tasks->GetSelectedRows();
@@ -202,9 +204,11 @@ void cMain::BuildingSearchOnText(wxCommandEvent& event) {
 	BuildingSearchOnSearchButton(event);
 	event.Skip();
 }
+
 void cMain::BuildingSearchOnTextEnter(wxCommandEvent& event) {
 	BuildingSearchOnText(event);//seems not to fire
 }
+
 void cMain::BuildingSearchOnSearchButton(wxCommandEvent& event) {
 	auto str = event.GetString();
 	auto rows = grid_buildings->GetNumberRows();
@@ -229,10 +233,10 @@ void cMain::BuildingSearchOnSearchButton(wxCommandEvent& event) {
 	}
 	event.Skip();
 }
+
 void cMain::BuildingSearchOnCancelButton(wxCommandEvent& event) {
 	event.Skip();// do nothing, it will clear the search box
 }
-
 
 void cMain::OnWalkChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.walk);
