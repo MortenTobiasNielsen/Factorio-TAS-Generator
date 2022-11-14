@@ -17,7 +17,7 @@ void cMain::OnBuildChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_buildings.begin());
 	cmb_item->AutoComplete(building_choices);
 
-	label_item->SetLabelText("Item:");
+	label_item->SetLabelText(TypePanel::item);
 
 	event.Skip();
 }
@@ -32,10 +32,10 @@ void cMain::OnTakeChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
-	cmb_from_into->SetValue("Output"); // set default to output on take task
+	cmb_from_into->SetValue(TypePanel::output); // set default to output on take task
 
-	label_item->SetLabelText("Item:");
-	label_from_into->SetLabelText("From:");
+	label_item->SetLabelText(TypePanel::item);
+	label_from_into->SetLabelText(TypePanel::from);
 
 	event.Skip();
 }
@@ -50,10 +50,10 @@ void cMain::OnPutChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
-	cmb_from_into->SetValue("Input"); // set default to input on put task
+	cmb_from_into->SetValue(TypePanel::input); // set default to input on put task
 
-	label_item->SetLabelText("Item:");
-	label_from_into->SetLabelText("Into:");
+	label_item->SetLabelText(TypePanel::item);
+	label_from_into->SetLabelText(TypePanel::into);
 
 	event.Skip();
 }
@@ -68,7 +68,7 @@ void cMain::OnCraftChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*handcrafted_list.begin());
 	cmb_item->AutoComplete(handcrafted_choices);
 
-	label_item->SetLabelText("Item:");
+	label_item->SetLabelText(TypePanel::item);
 
 	event.Skip();
 }
@@ -88,7 +88,7 @@ void cMain::OnfilterChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
-	label_item->SetLabelText("Item:");
+	label_item->SetLabelText(TypePanel::item);
 
 	event.Skip();
 }
@@ -103,7 +103,7 @@ void cMain::OnRecipeChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_recipes.begin());
 	cmb_item->AutoComplete(recipe_choices);
 
-	label_item->SetLabelText("Recipe:");
+	label_item->SetLabelText(TypePanel::recipe);
 
 	event.Skip();
 }
@@ -118,7 +118,7 @@ void cMain::OnTechChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*tech_list.begin());
 	cmb_item->AutoComplete(tech_choices);
 
-	label_item->SetLabelText("Technology:");
+	label_item->SetLabelText(TypePanel::tech);
 
 	event.Skip();
 }
@@ -163,26 +163,23 @@ void cMain::OnDropChosen(wxCommandEvent& event) {
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
-	label_item->SetLabelText("Item:");
+	label_item->SetLabelText(TypePanel::item);
 
 	event.Skip();
 }
 
 void cMain::OnStartChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.Start);
-	rbtn_start->SetValue(true);
 	event.Skip();
 }
 
 void cMain::OnPauseChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.Pause);
-	rbtn_pause->SetValue(true);
 	event.Skip();
 }
 
 void cMain::OnStopChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.stop);
-	rbtn_stop->SetValue(true);
 	event.Skip();
 }
 
