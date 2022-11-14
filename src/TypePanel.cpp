@@ -5,6 +5,58 @@
 
 /**/
 
+void TypePanel::SwitchTask(TASK_TYPE::task_type type)
+{
+	cMain* parent = ((cMain*)this->GetParent());
+	switch (type)
+	{
+	case TASK_TYPE::Take: parent->rbtn_take->SetValue(true);
+		break;
+	case TASK_TYPE::Put: parent->rbtn_put->SetValue(true);
+		break;
+	case TASK_TYPE::Game_Speed: parent->rbtn_game_speed->SetValue(true);
+		break;
+	case TASK_TYPE::Craft: parent->rbtn_craft->SetValue(true);
+		break;
+	case TASK_TYPE::Walk: parent->rbtn_walk->SetValue(true);
+		break;
+	case TASK_TYPE::Mine: parent->rbtn_mine->SetValue(true);
+		break;
+	case TASK_TYPE::Start: parent->rbtn_start->SetValue(true);
+		break;
+	case TASK_TYPE::Build: parent->rbtn_build->SetValue(true);
+		break;
+	case TASK_TYPE::Recipe: parent->rbtn_recipe->SetValue(true);
+		break;
+	case TASK_TYPE::Tech: parent->rbtn_tech->SetValue(true);
+		break;
+	case TASK_TYPE::Limit: parent->rbtn_limit->SetValue(true);
+		break;
+	case TASK_TYPE::Idle: parent->rbtn_idle->SetValue(true);
+		break;
+	case TASK_TYPE::Filter: parent->rbtn_filter->SetValue(true);
+		break;
+	case TASK_TYPE::Pause: parent->rbtn_pause->SetValue(true);
+		break;
+	case TASK_TYPE::Priority: parent->rbtn_priority->SetValue(true);
+		break;
+	case TASK_TYPE::Rotate: parent->rbtn_rotate->SetValue(true);
+		break;
+	case TASK_TYPE::Pick_Up: parent->rbtn_pick_up->SetValue(true);
+		break;
+	case TASK_TYPE::Drop: parent->rbtn_drop->SetValue(true);
+		break;
+	case TASK_TYPE::Launch: parent->rbtn_launch->SetValue(true);
+		break;
+	case TASK_TYPE::Save: parent->rbtn_save->SetValue(true);
+		break;
+	case TASK_TYPE::Stop: parent->rbtn_stop->SetValue(true);
+		break;
+	default:
+		// ERROR: You have done something wrong
+		break;
+	}
+}
 
 #pragma region cMain
 void cMain::setup_paramters(std::vector<bool> parameters) {
@@ -20,7 +72,9 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 	spin_building_size->Enable(parameters[11]);
 	spin_building_amount->Enable(parameters[10]);
 }
+#pragma endregion
 
+#pragma region cMain eventhandlers
 void cMain::OnBuildChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.build);
 
@@ -209,6 +263,138 @@ void cMain::OnMineChosen(wxCommandEvent& event) {
 
 void cMain::OnGameSpeedChosen(wxCommandEvent& event) {
 	setup_paramters(parameter_choices.game_speed);
+	event.Skip();
+}
+#pragma endregion
+
+#pragma region cMain Menu eventhandlers
+void cMain::OnWalkMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Walk);
+	OnWalkChosen(event);
+
+	//// IMPORTANT -- This can be used to change the shortcuts of menuitems
+	//wxAcceleratorEntry* plusAccel = new wxAcceleratorEntry(wxACCEL_CTRL, 50, wxID_ZOOM_IN);
+	//menu_shortcuts->FindChildItem(10001)->SetAccel(plusAccel); // 10001 is the id of the menu item and can be set to what ever you want
+	event.Skip();
+}
+
+void cMain::OnMineMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Mine);
+	OnMineChosen(event);
+	event.Skip();
+}
+
+void cMain::OnGameSpeedMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Game_Speed);
+	OnGameSpeedChosen(event);
+	event.Skip();
+}
+
+void cMain::OnBuildMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Build);
+	OnBuildChosen(event);
+	event.Skip();
+}
+
+void cMain::OnTakeMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Take);
+	OnTakeChosen(event);
+	event.Skip();
+}
+
+void cMain::OnPutMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Put);
+	OnPutChosen(event);
+	event.Skip();
+}
+
+void cMain::OnCraftMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Craft);
+	OnCraftChosen(event);
+	event.Skip();
+}
+
+void cMain::OnRecipeMenuChosen(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Recipe);
+	OnRecipeChosen(event);
+	event.Skip();
+}
+
+void cMain::OnRotateMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Rotate);
+	OnRotateChosen(event);
+	event.Skip();
+}
+
+void cMain::OnTechMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Tech);
+	OnTechChosen(event);
+	event.Skip();
+}
+
+void cMain::OnPriorityMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Priority);
+	OnPriorityChosen(event);
+	event.Skip();
+}
+
+void cMain::OnLimitMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Limit);
+	OnLimitChosen(event);
+	event.Skip();
+}
+
+void cMain::OnFilterMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Filter);
+	OnfilterChosen(event);
+	event.Skip();
+}
+
+void cMain::OnStopMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Stop);
+	OnStopChosen(event);
+	event.Skip();
+}
+
+void cMain::OnIdleMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Idle);
+	OnIdleChosen(event);
+	event.Skip();
+}
+
+void cMain::OnLaunchMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Launch);
+	OnLaunchChosen(event);
+	event.Skip();
+}
+
+void cMain::OnDropMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Drop);
+	OnDropChosen(event);
+	event.Skip();
+}
+
+void cMain::OnPickUpMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Pick_Up);
+	OnPickUpChosen(event);
+	event.Skip();
+}
+
+void cMain::OnSaveMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Save);
+	OnSaveChosen(event);
+	event.Skip();
+}
+
+void cMain::OnStartMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Start);
+	OnStartChosen(event);
+	event.Skip();
+}
+
+void cMain::OnPauseMenuSelected(wxCommandEvent& event) {
+	type_panel->SwitchTask(TypePanel::TASK_TYPE::Pause);
+	OnPauseChosen(event);
 	event.Skip();
 }
 #pragma endregion
