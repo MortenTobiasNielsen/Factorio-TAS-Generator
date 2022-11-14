@@ -78,108 +78,75 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 	spin_building_amount->Enable(parameters[10]);
 }
 
-string cMain::extract_task() {
-
-	if (rbtn_game_speed->GetValue()) {
-		return struct_tasks_list.game_speed;
-
-	}
-
-	if (rbtn_walk->GetValue()) {
-		return struct_tasks_list.walk;
-
-	}
-
-	if (rbtn_mine->GetValue()) {
-		return struct_tasks_list.mine;
-
-	}
-
-	if (rbtn_rotate->GetValue()) {
-		return struct_tasks_list.rotate;
-
-	}
-
-	if (rbtn_craft->GetValue()) {
-		return struct_tasks_list.craft;
-
-	}
-
-	if (rbtn_build->GetValue()) {
-		return struct_tasks_list.build;
-
-	}
-
-	if (rbtn_take->GetValue()) {
+// Finds the current radio button that is choosen, 
+// determines which task type that is and returns the task name
+string cMain::extract_task() 
+{
+	//row 1
+	if (rbtn_take->GetValue())
 		return struct_tasks_list.take;
 
-	}
-
-	if (rbtn_put->GetValue()) {
+	if (rbtn_put->GetValue())
 		return struct_tasks_list.put;
 
-	}
+	if (rbtn_game_speed->GetValue())
+		return struct_tasks_list.game_speed;
 
-	if (rbtn_tech->GetValue()) {
-		return struct_tasks_list.tech;
+	if (rbtn_craft->GetValue())
+		return struct_tasks_list.craft;
 
-	}
+	if (rbtn_walk->GetValue())
+		return struct_tasks_list.walk;
 
-	if (rbtn_recipe->GetValue()) {
+	if (rbtn_mine->GetValue())
+		return struct_tasks_list.mine;
+
+	if (rbtn_start->GetValue())
+		return struct_tasks_list.start;
+
+	//row 2
+	if (rbtn_build->GetValue())
+		return struct_tasks_list.build;
+
+	if (rbtn_recipe->GetValue())
 		return struct_tasks_list.recipe;
 
-	}
+	if (rbtn_tech->GetValue())
+		return struct_tasks_list.tech;
 
-	if (rbtn_limit->GetValue()) {
+	if (rbtn_limit->GetValue())
 		return struct_tasks_list.limit;
 
-	}
-
-	if (rbtn_idle->GetValue()) {
+	if (rbtn_idle->GetValue())
 		return struct_tasks_list.idle;
 
-	}
-
-	if (rbtn_filter->GetValue()) {
+	if (rbtn_filter->GetValue())
 		return struct_tasks_list.filter;
 
-	}
+	if (rbtn_pause->GetValue())
+		return struct_tasks_list.pause;
 
-	if (rbtn_priority->GetValue()) {
+	//row 3
+	if (rbtn_priority->GetValue())
 		return struct_tasks_list.priority;
 
-	}
+	if (rbtn_rotate->GetValue())
+		return struct_tasks_list.rotate;
 
-	if (rbtn_pick_up->GetValue()) {
+	if (rbtn_pick_up->GetValue())
 		return struct_tasks_list.pick_up;
 
-	}
-
-	if (rbtn_drop->GetValue()) {
+	if (rbtn_drop->GetValue())
 		return struct_tasks_list.drop;
 
-	}
-
-	if (rbtn_launch->GetValue()) {
+	if (rbtn_launch->GetValue())
 		return struct_tasks_list.launch;
 
-	}
-
-	if (rbtn_save->GetValue()) {
+	if (rbtn_save->GetValue())
 		return struct_tasks_list.save;
-	}
 
-	if (rbtn_start->GetValue()) {
-		return struct_tasks_list.start;
-	}
-
-	if (rbtn_pause->GetValue()) {
-		return struct_tasks_list.pause;
-	}
-
-	if (rbtn_stop->GetValue()) {
+	if (rbtn_stop->GetValue())
 		return struct_tasks_list.stop;
-	}
 
 	return "not found";
 }
