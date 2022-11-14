@@ -2223,20 +2223,6 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event) {
 	event.Skip();
 }
 
-void cMain::setup_paramters(std::vector<bool> parameters) {
-	spin_x->Enable(parameters[0]);
-	spin_y->Enable(parameters[1]);
-	spin_amount->Enable(parameters[2]);
-	cmb_item->Enable(parameters[3]);
-	cmb_from_into->Enable(parameters[4]);
-	radio_input->Enable(parameters[6]);
-	radio_output->Enable(parameters[7]);
-	cmb_building_orientation->Enable(parameters[8]);
-	cmb_direction_to_build->Enable(parameters[9]);
-	spin_building_size->Enable(parameters[11]);
-	spin_building_amount->Enable(parameters[10]);
-}
-
 bool cMain::setup_for_task_group_template_grid() {
 	auto t = map_task_name[task];
 	switch (t) {
