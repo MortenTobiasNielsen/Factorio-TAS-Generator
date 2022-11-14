@@ -3,7 +3,12 @@
 #include "cMain.h"
 #include "utils.h"
 
-/**/
+using std::string;
+
+/* 
+Type panel is the second panel at the top, with a radio button for each tasktype
+This file extends cMain.h to reduce the size of cMain.cpp
+*/
 
 void TypePanel::SwitchTask(TASK_TYPE::task_type type)
 {
@@ -73,7 +78,7 @@ void cMain::setup_paramters(std::vector<bool> parameters) {
 	spin_building_amount->Enable(parameters[10]);
 }
 
-std::string cMain::extract_task() {
+string cMain::extract_task() {
 
 	if (rbtn_game_speed->GetValue()) {
 		return struct_tasks_list.game_speed;
