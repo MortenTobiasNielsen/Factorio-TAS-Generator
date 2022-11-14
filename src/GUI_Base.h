@@ -9,6 +9,7 @@
 
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
+#include "TypePanel.h"
 #include <wx/string.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
@@ -80,7 +81,7 @@ class GUI_Base : public wxFrame
 		wxRadioBox* radio_output;
 		wxStaticText* label_amount_of_buildings;
 		wxSpinCtrl* spin_building_amount;
-		wxPanel* m_panel22;
+		TypePanel* type_panel;
 		wxRadioButton* rbtn_take;
 		wxRadioButton* rbtn_put;
 		wxRadioButton* rbtn_game_speed;
