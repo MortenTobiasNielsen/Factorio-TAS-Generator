@@ -227,11 +227,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_x_cord->Wrap( -1 );
 	bSizerX->Add( label_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
-	m_spin_x->SetDigits( 1 );
-	m_spin_x->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+	spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	spin_x->SetDigits( 1 );
+	spin_x->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
-	bSizerX->Add( m_spin_x, 0, wxALL, 5 );
+	bSizerX->Add( spin_x, 0, wxALL, 5 );
 
 
 	fgSizer2->Add( bSizerX, 1, 0, 5 );
@@ -273,9 +273,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_y_cord->Wrap( -1 );
 	bSizerY->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
-	m_spin_y->SetDigits( 1 );
-	bSizerY->Add( m_spin_y, 0, wxALL, 5 );
+	spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	spin_y->SetDigits( 1 );
+	bSizerY->Add( spin_y, 0, wxALL, 5 );
 
 
 	fgSizer2->Add( bSizerY, 1, 0, 5 );
@@ -318,8 +318,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_amount->Wrap( -1 );
 	bSizer36->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 1000000, 1 );
-	bSizer36->Add( m_spin_amount, 0, wxALL, 5 );
+	spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 1000000, 1 );
+	bSizer36->Add( spin_amount, 0, wxALL, 5 );
 
 
 	fgSizer2->Add( bSizer36, 1, 0, 5 );
@@ -1037,7 +1037,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	building_panel->SetSizer( bSizer56111 );
 	building_panel->Layout();
 	bSizer56111->Fit( building_panel );
-	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), false, wxNullBitmap );
 	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
@@ -1082,9 +1082,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer1141->Add( 250, 0, 1, wxEXPAND, 5 );
 
 	btn_move_up11 = new wxButton( step_panel, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_move_up11->SetToolTip( wxT("Right-click to move 5 but be patient") );
+
 	bSizer1141->Add( btn_move_up11, 0, wxALL, 5 );
 
 	btn_move_down11 = new wxButton( step_panel, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_move_down11->SetToolTip( wxT("Right-click to move 5 but be patient") );
+
 	bSizer1141->Add( btn_move_down11, 0, wxALL, 5 );
 
 
@@ -1153,7 +1157,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->SetSizer( bSizer5611 );
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
-	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
+	m_auinotebook1->AddPage( step_panel, wxT("Steps"), true, wxNullBitmap );
 
 
 	m_mgr.Update();
