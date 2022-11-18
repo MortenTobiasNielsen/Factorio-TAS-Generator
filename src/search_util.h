@@ -63,7 +63,7 @@ namespace search{
 		}
 
 		//column header for task grids
-		static inline const vector<wxString> taskcolumns = { "task", "x-cord", "y-cord", "item" , "orientation", "direction", "size", "amount", "comment" };
+		static inline const vector<wxString> taskcolumns = { "task", "x-cord", "y-cord", "units", "item" , "orientation", "direction", "size", "amount", "comment" };
 		//column header for building grid
 		static inline const vector<wxString> buildingcolumns = { "x-cord", "y-cord", "building", "orientation", "limit", "recipe", "prio in", "prio out", "filter" };
 
@@ -79,9 +79,10 @@ namespace search{
 			vector<int> c; //casd
 			if (column == "any") {
 				c.reserve(5);
+				double throwaway = 0;
 				if (isTaskGrid)
 				{
-					if (text.IsNumber()) {
+					if (text.ToDouble(&throwaway)) {
 						c.push_back(1);
 						c.push_back(2);
 						c.push_back(3);
@@ -98,7 +99,7 @@ namespace search{
 				}
 				else
 				{
-					if (text.IsNumber()) {
+					if (text.ToDouble(&throwaway)) {
 						c.push_back(0);
 						c.push_back(1);
 						c.push_back(4);
@@ -114,7 +115,7 @@ namespace search{
 				}
 			}
 			else {
-				for (int i = 0; i < column.Length(); i++) column[i] = std::tolower(column[i]); // convert costume column to lower case
+				for (int i = 0; i < column.Length(); i++) column[i] = std::tolower(column[i]); // convert custom column to lower case
 				vector<wxString> columns = isTaskGrid ? taskcolumns : buildingcolumns; 
 				for (int i = 0; i < 10; i++) {
 					if (columns[i].starts_with(column)) {
@@ -207,7 +208,7 @@ namespace search{
 				int a = 0, c;
 				for (auto [columns, term] : searchTerms) {
 					for (c = 0; c < columns.size(); c++) { //any column contains term
-						if (grid->GetCellValue(i, c).starts_with(term)) {
+						if (grid->GetCellValue(i, columns[c]).starts_with(term)) {
 							a++;
 							break;
 						}
@@ -217,7 +218,7 @@ namespace search{
 				if (a == searchTerms.size()) // if found row
 				{
 					grid->SelectRow(i);
-					grid->GoToCell(i, c);
+					grid->GoToCell(i, 0);
 					return true;
 				}
 			}
