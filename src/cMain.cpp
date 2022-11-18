@@ -493,10 +493,6 @@ bool cMain::check_before_close() {
 }
 
 void cMain::move_row(wxGrid* grid, bool up) {
-	if (!grid->IsSelection() || !grid->GetSelectedRows().begin()) {
-		wxMessageBox("Please select row(s) to move", "Select row(s)");
-	}
-
 	for (const auto& block : grid->GetSelectedRowBlocks()) {
 		row_num = block.GetTopRow();
 		row_count = block.GetBottomRow() - row_num + 1;
@@ -557,8 +553,6 @@ void cMain::move_row(wxGrid* grid, bool up) {
 			tasks_data_to_save.insert(it2, data);
 		}
 	}
-
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 }
 
 void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>>& map) {
@@ -1315,33 +1309,45 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event) {
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveUpClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select row(s) to move", "Select row(s)");
+	}
 	move_row(grid_tasks, true);
-
+	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveDownClicked(wxCommandEvent& event) {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select row(s) to move", "Select row(s)");
+	}
 	move_row(grid_tasks, false);
-
+	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveUpFiveClicked(wxMouseEvent& event) {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select row(s) to move", "Select row(s)");
+	}
 	for (int i = 0; i < 5; i++) {
 		move_row(grid_tasks, true);
 	}
-
+	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnMoveDownFiveClicked(wxMouseEvent& event) {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin()) {
+		wxMessageBox("Please select row(s) to move", "Select row(s)");
+	}
 	for (int i = 0; i < 5; i++){
 		move_row(grid_tasks, false);
 	}
-	
+	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
