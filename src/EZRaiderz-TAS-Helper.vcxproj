@@ -181,6 +181,7 @@
     <ClInclude Include="SaveTas.h" />
     <ClInclude Include="ScriptProgressBar.h" />
     <ClInclude Include="TypePanel.h" />
+    <ClInclude Include="search_util.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
