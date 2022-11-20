@@ -277,6 +277,65 @@ local function tile_is_in_reach()
 	return dis <= 10.25 -- It seems like 10.25 aligns best with the current walking algorithm
 end
 
+---comment Places an entity, possibly fast replacing. Then handless 
+---@return boolean true if an entity is created.
+local function create_entity_replace()
+
+	local fast_replace_type_lookup = {
+		["underground-belt"] = {"transport-belt", "fast-transport-belt", "express-transport-belt"},
+		["fast-underground-belt"] = {"transport-belt", "fast-transport-belt", "express-transport-belt"},
+		["express-underground-belt"] = {"transport-belt", "fast-transport-belt", "express-transport-belt"},
+		["pipe-to-ground"] = {"pipe"}
+		}
+
+	local created_entity = player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true}
+	if created_entity and fast_replace_type_lookup[created_entity.name] ~= nil and created_entity.neighbours  then --connected entities eg underground belt https://lua-api.factorio.com/latest/LuaEntity.html#LuaEntity.neighbours
+		local replace_type = fast_replace_type_lookup[created_entity.name]
+
+		local neighbour_position = nil
+		if (#created_entity.neighbours == 0) then 
+			neighbour_position = created_entity.neighbours.position
+		else
+			for _,neighbour in pairs(created_entity.neighbours[1]) do
+				if (created_entity.name == neighbour.name) then
+					neighbour_position = neighbour.position
+				end
+			end
+		end
+		if (not neighbour_position) then
+			player.remove_item({name = item, count = 1})
+			return true
+		end
+
+		local entities_between = player.surface.find_entities_filtered{area = {created_entity.position, neighbour_position}, name = replace_type}
+		local entities_between_length = math.abs(created_entity.position.x - neighbour_position.x + created_entity.position.y - neighbour_position.y) - 1
+		local can_replace_all = entities_between_length == #entities_between
+
+		--chech that all entities betweeen are in the same direction
+		if can_replace_all and not created_entity.name == "pipe-to-ground" then --ignore direction for pipes
+			for __, e in pairs(entities_between) do
+				if e.direction ~= created_entity.direction then
+					can_replace_all = false
+					break
+				end
+			end
+		end
+		--mine all entities inbetween
+		if can_replace_all then
+			for __, e in pairs(entities_between) do
+				e.mine{player.character.get_main_inventory(), true, true, false}
+			end
+		end
+		--spend the item placed
+		player.remove_item({name = item, count = 1})
+		return true
+	end
+
+	--no special fast replace handling
+	player.remove_item({name = item, count = 1})
+	return created_entity ~= nil
+end
+
 -- Creating buildings
 local function build()
 
@@ -318,18 +377,7 @@ local function build()
 			return false
 
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
-			if player.surface.can_fast_replace{name = item, position = target_position, direction = direction, force = "player"} then
-				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
-					player.remove_item({name = item, count = 1})
-					return true
-				end
-			else
-				if player.surface.create_entity{name = item, position = target_position, direction = direction, force="player", raise_built = true} then
-					player.remove_item({name = item, count = 1})
-					return true
-				end
-			end
-	
+			return create_entity_replace()
 		else 
 			if not walking.walking then
 				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
