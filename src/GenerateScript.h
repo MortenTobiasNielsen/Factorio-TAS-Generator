@@ -115,6 +115,30 @@ private:
 		{"Idle", step_idle}
 	};
 
+	const map<string, string> map_translation{
+		{"Passive provider chest", "logistic-chest-passive-provider"},
+		{"Active provider chest", "logistic-chest-active-provider"},
+		{"Storage chest", "logistic-chest-storage"},
+		{"Buffer chest", "logistic-chest-buffer"},
+		{"Requester chest", "logistic-chest-requester"},
+		{"Wall", "stone-wall"},
+		{"Discharge defense", "discharge-defense-equipment"},
+		{"Exoskeleton", "exoskeleton-equipment"},
+		{"Personal roboport", "personal-roboport-equipment"},
+		{"Personal roboport MK2", "personal-roboport-mk2-equipment"},
+		{"Night vision", "night-vision-equipment"},
+		{"Personal battery", "battery-equipment"},
+		{"Personal battery MK2", "battery-mk2-equipment"},
+		{"Portable solar panel", "solar-panel-equipment"},
+		{"Personal laser defence", "personal-laser-defence-equipment"},
+		{"Energy shield", "energy-shield-equipment"},
+		{"Energy shield MK2", "energy-shield-mk2-equipment"},
+		{"Portable fusion reactor", "fusion-reactor-equipment"},
+		{"Efficiency module", "effectivity-module"},
+		{"Efficiency module 2", "effectivity-module-2"},
+		{"Efficiency module 3", "effectivity-module-3"}
+	};
+
 	void reset();
 	void clear_tasks();
 	void extract_parameters(const string& task_reference);
@@ -127,6 +151,7 @@ private:
 	string end_tasks();
 	string signature(string task, string action);
 
+/// Applies a translation to an item. Either the specific translation from map_translation or the common way
 	string check_item_name(string item);
 	void check_mining_distance(string task, string action, string x_cord, string y_cord);
 	void check_interact_distance(string task, string action, string x_cord, string y_cord, string building_name, string orientation);
