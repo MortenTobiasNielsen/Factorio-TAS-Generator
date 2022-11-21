@@ -332,7 +332,9 @@ local function create_entity_replace()
 	end
 
 	--no special fast replace handling
-	player.remove_item({name = item, count = 1})
+	if created_entity then
+		player.remove_item({name = item, count = 1})
+	end
 	return created_entity ~= nil
 end
 
