@@ -2452,7 +2452,7 @@
                 <property name="minimize_button">0</property>
                 <property name="minimum_size"></property>
                 <property name="moveable">1</property>
-                <property name="name">m_panel22</property>
+                <property name="name">type_panel</property>
                 <property name="pane_border">1</property>
                 <property name="pane_position">1102,326</property>
                 <property name="pane_size">700,150</property>
@@ -2462,7 +2462,7 @@
                 <property name="resize">Resizable</property>
                 <property name="show">1</property>
                 <property name="size"></property>
-                <property name="subclass">; ; forward_declare</property>
+                <property name="subclass">TypePanel; TypePanel.h; </property>
                 <property name="toolbar_pane">0</property>
                 <property name="tooltip"></property>
                 <property name="window_extra_style"></property>

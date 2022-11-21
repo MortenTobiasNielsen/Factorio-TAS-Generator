@@ -159,7 +159,7 @@
       <AdditionalLibraryDirectories>$(WXWIN)\lib\vc_x64_lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-    <ItemGroup>
+  <ItemGroup>
     <ClCompile Include="cApp.cpp" />
     <ClCompile Include="cMain.cpp" />
     <ClCompile Include="Functions.cpp" />
@@ -167,6 +167,7 @@
     <ClCompile Include="GUI_Base.cpp" />
     <ClCompile Include="OpenTas.cpp" />
     <ClCompile Include="SaveTas.cpp" />
+    <ClCompile Include="TypePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="SaveTas.h" />
     <ClInclude Include="ScriptProgressBar.h" />
+    <ClInclude Include="TypePanel.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>

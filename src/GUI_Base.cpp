@@ -414,8 +414,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel21->SetSizer( bSizer19 );
 	m_panel21->Layout();
 	bSizer19->Fit( m_panel21 );
-	m_panel22 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel22, wxAuiPaneInfo() .Name( wxT("TaskTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,140 ) ).MinSize( wxSize( 620,120 ) ).Layer( 1 ) );
+	type_panel = new TypePanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
+	m_mgr.AddPane( type_panel, wxAuiPaneInfo() .Name( wxT("TaskTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,140 ) ).MinSize( wxSize( 620,120 ) ).Layer( 1 ) );
 
 	wxBoxSizer* bSizer18;
 	bSizer18 = new wxBoxSizer( wxVERTICAL );
@@ -428,7 +428,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer42;
 	bSizer42 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_take = new wxRadioButton( m_panel22, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_take = new wxRadioButton( type_panel, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer42->Add( rbtn_take, 0, wxALL, 5 );
 
 
@@ -437,7 +437,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_put = new wxRadioButton( m_panel22, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_put = new wxRadioButton( type_panel, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer11->Add( rbtn_put, 0, wxALL, 5 );
 
 
@@ -446,7 +446,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer17;
 	bSizer17 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_game_speed = new wxRadioButton( m_panel22, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_game_speed = new wxRadioButton( type_panel, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer17->Add( rbtn_game_speed, 0, wxALL, 5 );
 
 
@@ -455,7 +455,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer39;
 	bSizer39 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_craft = new wxRadioButton( m_panel22, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_craft = new wxRadioButton( type_panel, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer39->Add( rbtn_craft, 0, wxALL, 5 );
 
 
@@ -464,7 +464,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer15;
 	bSizer15 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_walk = new wxRadioButton( m_panel22, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_walk = new wxRadioButton( type_panel, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer15->Add( rbtn_walk, 0, wxALL, 5 );
 
 
@@ -473,7 +473,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_mine = new wxRadioButton( m_panel22, wxID_ANY, wxT("Mine"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_mine = new wxRadioButton( type_panel, wxID_ANY, wxT("Mine"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer12->Add( rbtn_mine, 0, wxALL, 5 );
 
 
@@ -482,7 +482,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer121;
 	bSizer121 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_start = new wxRadioButton( m_panel22, wxID_ANY, wxT("Start"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_start = new wxRadioButton( type_panel, wxID_ANY, wxT("Start"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer121->Add( rbtn_start, 0, wxALL, 5 );
 
 
@@ -491,7 +491,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_build = new wxRadioButton( m_panel22, wxID_ANY, wxT("Build"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_build = new wxRadioButton( type_panel, wxID_ANY, wxT("Build"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer16->Add( rbtn_build, 0, wxALL, 5 );
 
 
@@ -500,7 +500,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer64;
 	bSizer64 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_recipe = new wxRadioButton( m_panel22, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_recipe = new wxRadioButton( type_panel, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer64->Add( rbtn_recipe, 0, wxALL, 5 );
 
 
@@ -509,7 +509,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer63;
 	bSizer63 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_tech = new wxRadioButton( m_panel22, wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_tech = new wxRadioButton( type_panel, wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer63->Add( rbtn_tech, 0, wxALL, 5 );
 
 
@@ -518,7 +518,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer40;
 	bSizer40 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_limit = new wxRadioButton( m_panel22, wxID_ANY, wxT("Limit"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_limit = new wxRadioButton( type_panel, wxID_ANY, wxT("Limit"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer40->Add( rbtn_limit, 0, wxALL, 5 );
 
 
@@ -527,7 +527,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer431;
 	bSizer431 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_idle = new wxRadioButton( m_panel22, wxID_ANY, wxT("Idle"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_idle = new wxRadioButton( type_panel, wxID_ANY, wxT("Idle"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer431->Add( rbtn_idle, 0, wxALL, 5 );
 
 
@@ -536,7 +536,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer65;
 	bSizer65 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_filter = new wxRadioButton( m_panel22, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_filter = new wxRadioButton( type_panel, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer65->Add( rbtn_filter, 0, wxALL, 5 );
 
 
@@ -545,7 +545,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer141;
 	bSizer141 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_pause = new wxRadioButton( m_panel22, wxID_ANY, wxT("Pause"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_pause = new wxRadioButton( type_panel, wxID_ANY, wxT("Pause"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer141->Add( rbtn_pause, 0, wxALL, 5 );
 
 
@@ -554,7 +554,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_priority = new wxRadioButton( m_panel22, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_priority = new wxRadioButton( type_panel, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer9->Add( rbtn_priority, 0, wxALL, 5 );
 
 
@@ -563,7 +563,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_rotate = new wxRadioButton( m_panel22, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_rotate = new wxRadioButton( type_panel, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer13->Add( rbtn_rotate, 0, wxALL, 5 );
 
 
@@ -572,7 +572,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer41;
 	bSizer41 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_pick_up = new wxRadioButton( m_panel22, wxID_ANY, wxT("Pick Up"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_pick_up = new wxRadioButton( type_panel, wxID_ANY, wxT("Pick Up"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer41->Add( rbtn_pick_up, 0, wxALL, 5 );
 
 
@@ -581,7 +581,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer441;
 	bSizer441 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_drop = new wxRadioButton( m_panel22, wxID_ANY, wxT("Drop"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_drop = new wxRadioButton( type_panel, wxID_ANY, wxT("Drop"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer441->Add( rbtn_drop, 0, wxALL, 5 );
 
 
@@ -590,7 +590,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer14;
 	bSizer14 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_launch = new wxRadioButton( m_panel22, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_launch = new wxRadioButton( type_panel, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer14->Add( rbtn_launch, 0, wxALL, 5 );
 
 
@@ -599,7 +599,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer1411;
 	bSizer1411 = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_save = new wxRadioButton( m_panel22, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_save = new wxRadioButton( type_panel, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer1411->Add( rbtn_save, 0, wxALL, 5 );
 
 
@@ -608,7 +608,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxHORIZONTAL );
 
-	rbtn_stop = new wxRadioButton( m_panel22, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_stop = new wxRadioButton( type_panel, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer8->Add( rbtn_stop, 0, wxALL, 5 );
 
 
@@ -618,9 +618,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer18->Add( fgSizer3, 1, wxEXPAND|wxLEFT|wxRIGHT, 15 );
 
 
-	m_panel22->SetSizer( bSizer18 );
-	m_panel22->Layout();
-	bSizer18->Fit( m_panel22 );
+	type_panel->SetSizer( bSizer18 );
+	type_panel->Layout();
+	bSizer18->Fit( type_panel );
 	m_panel23 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_mgr.AddPane( m_panel23, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,140 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
 

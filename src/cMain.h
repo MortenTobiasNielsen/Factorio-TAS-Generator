@@ -24,6 +24,7 @@ using string = std::string;
 class cMain : public GUI_Base {
 public:
 	cMain();
+	friend TypePanel;
 
 protected:
 	void OnApplicationClose(wxCloseEvent& event);
