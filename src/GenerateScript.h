@@ -161,50 +161,50 @@ private:
 
 	void walk(string step, string action, string x_cord, string y_cord, string comment);
 
-	void mining(string task, string x_cord, string y_cord, string duration, string building_name, string orientation, bool is_building);
+	void mining(string task, string x_cord, string y_cord, string duration, string building_name, string orientation, bool is_building, string comment);
 
-	void craft(string task, string amount, string item);
+	void craft(string task, string amount, string item, string comment);
 
-	void tech(string task, string tech_to_research);
+	void tech(string task, string tech_to_research, string comment);
 
-	void speed(string task, string speed);
+	void speed(string task, string speed, string comment);
 
-	void pause(string task);
+	void pause(string task, string comment);
 
-	void stop(string task, string speed);
+	void stop(string task, string speed, string comment);
 
-	void launch(string task, string x_cord, string y_cord);
+	void launch(string task, string x_cord, string y_cord, string comment);
 
 	void save(string task, string nameOfSaveGame);
 
-	void idle(string task, string amount);
+	void idle(string task, string amount, string comment);
 
-	void rotate(string task, string x_cord, string y_cord, string times, string item, string orientation);
+	void rotate(string task, string x_cord, string y_cord, string times, string item, string, string comment);
 
-	void build(string task, string action, string x_cord, string y_cord, string item, string orientation);
-	void row_build(string task, string x_cord, string y_cord, string item, string orientation, string direction, string number_of_buildings, string building_size);
+	void build(string task, string action, string x_cord, string y_cord, string item, string orientation, string comment);
+	void row_build(string task, string x_cord, string y_cord, string item, string orientation, string direction, string number_of_buildings, string building_size, string comment);
 
-	void take(string task, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string orientation);
-	void row_take(string task, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation);
+	void take(string task, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string orientation, string comment);
+	void row_take(string task, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment);
 
-	void put(string task, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string orientation);
-	void row_put(string task, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation);
+	void put(string task, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string orientation, string comment);
+	void row_put(string task, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment);
 
-	void recipe(string task, string action, string x_cord, string y_cord, string item, string building, string orientation);
-	void row_recipe(string task, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string orientation);
+	void recipe(string task, string action, string x_cord, string y_cord, string item, string building, string orientation, string comment);
+	void row_recipe(string task, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string orientation, string comment);
 
-	void limit(string task, string action, string x_cord, string y_cord, string amount, string from, string building, string orientation);
-	void row_limit(string task, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string orientation);
+	void limit(string task, string action, string x_cord, string y_cord, string amount, string from, string building, string orientation, string comment);
+	void row_limit(string task, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment);
 
-	void priority(string task, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string orientation);
-	void row_priority(string task, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string orientation);
+	void priority(string task, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string orientation, string comment);
+	void row_priority(string task, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment);
 
-	void filter(string task, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string orientation);
-	void row_filter(string task, string x_cord, string y_cord, string item, string amount, string type, string direction_to_build, string number_of_buildings, string building_size, string building, string orientation);
+	void filter(string task, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string orientation, string comment);
+	void row_filter(string task, string x_cord, string y_cord, string item, string amount, string type, string direction_to_build, string number_of_buildings, string building_size, string building, string orientation, string comment);
 
-	void drop(string task, string action, string x_cord, string y_cord, string item, string building);
-	void row_drop(string task, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building, string building_size);
+	void drop(string task, string action, string x_cord, string y_cord, string item, string building, string comment);
+	void row_drop(string task, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building, string building_size, string comment);
 
-	void pick(string task, string action, string x_cord, string y_cord);
-	void row_pick(string task, string x_cord, string y_cord, string direction, string number_of_buildings, string building_size);
+	void pick(string task, string action, string x_cord, string y_cord, string comment);
+	void row_pick(string task, string x_cord, string y_cord, string direction, string number_of_buildings, string building_size, string comment);
 };

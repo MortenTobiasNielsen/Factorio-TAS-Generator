@@ -61,6 +61,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 
 	size_t start_step = 0;
 
+	// Find last 'start' 
 	for (int i = amount_of_tasks - 1; i > 0; i--) {
 		extract_parameters(steps[i]);
 		if (task == "Start") {
@@ -85,7 +86,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 
 		switch (t) {
 		case step_game_speed: 
-			speed(current_step, amount); 
+			speed(current_step, amount, comment);
 			break;
 
 		case step_walk: 
@@ -98,10 +99,10 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			}
 
 			if (find_building(i, grid, steps)) {
-				mining(current_step, x_cord, y_cord, amount, building, build_orientation, true);
+				mining(current_step, x_cord, y_cord, amount, building, build_orientation, true, comment);
 			}
 			else {
-				mining(current_step, x_cord, y_cord, amount, "", "", false);
+				mining(current_step, x_cord, y_cord, amount, "", "", false, comment);
 			}
 			break;
 
@@ -110,19 +111,19 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 				return;
 			}
 
-			rotate(current_step, x_cord, y_cord, amount, item, build_orientation);
+			rotate(current_step, x_cord, y_cord, amount, item, build_orientation, comment);
 			break;
 
 		case step_craft: 
-			craft(current_step, amount == "All" ? "-1" : amount, item);
+			craft(current_step, units == "All" ? "-1" : amount, item, comment);
 			break;
 
 		case step_tech: 
-			tech(current_step, item); 
+			tech(current_step, item, comment); 
 			break;
 
 		case step_build: 
-			row_build(current_step, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size); 
+			row_build(current_step, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size, comment); 
 			break;
 
 		case step_take:
@@ -138,7 +139,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 				return;
 			}
 			
-			row_take(current_step, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_take(current_step, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
 			break;
 
 		case step_put:
@@ -153,7 +154,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			if (from_into == "Not Found") {
 				return;
 			}
-			row_put(current_step, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_put(current_step, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
 			break;
 
 		case step_recipe:
@@ -161,15 +162,15 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 				return;
 			}
 
-			row_recipe(current_step, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
+			row_recipe(current_step, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation, comment);
 			break;
 
 		case step_pause: 
-			pause(current_step); 
+			pause(current_step, comment); 
 			break;
 
 		case step_stop: 
-			stop(current_step, amount); 
+			stop(current_step, amount, comment);
 			break;
 
 		case step_limit:
@@ -185,7 +186,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 				return;
 			}
 
-			row_limit(current_step, x_cord, y_cord, amount, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_limit(current_step, x_cord, y_cord, amount, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
 			break;
 
 		case step_priority:
@@ -200,29 +201,29 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			return;
 		}
 
-		row_priority(current_step, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+		row_priority(current_step, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
 		break;
 
 		case step_filter:
 			if (!find_building(i, grid, steps)) {
 				return;
 			}
-			row_filter(current_step, x_cord, y_cord, item, amount, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			row_filter(current_step, x_cord, y_cord, item, amount, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
 			break;
 
 		case step_drop: 
 			if (!find_building(i, grid, steps)) {
 				return;
 			}
-			row_drop(current_step, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size, building);
+			row_drop(current_step, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size, building, comment);
 			break;
 
 		case step_pick_up: 
-			row_pick(current_step, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
+			row_pick(current_step, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size, comment);
 			break;
 
 		case step_launch: 
-			launch(current_step, x_cord, y_cord); 
+			launch(current_step, x_cord, y_cord, comment); 
 			break;
 
 		case step_save: 
@@ -230,7 +231,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_idle: 
-			idle(current_step, amount); 
+			idle(current_step, amount, comment);
 			break;
 		}
 	}
@@ -645,13 +646,13 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 		last_walking_comment = comment;
 	}
 
-	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\"}\n";
+	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\", \"" + comment + "\"}\n";
 	player_x_cord = std::stof(x_cord);
 	player_y_cord = std::stof(y_cord);
 	total_steps += 1;
 }
 
-void GenerateScript::mining(string step, string x_cord, string y_cord, string duration, string building_name, string orientation, bool is_building)
+void GenerateScript::mining(string step, string x_cord, string y_cord, string duration, string building_name, string orientation, bool is_building, string comment)
 {
 	if (is_building) {
 		check_interact_distance(step, "1", x_cord, y_cord, building_name, orientation);
@@ -660,18 +661,18 @@ void GenerateScript::mining(string step, string x_cord, string y_cord, string du
 		check_mining_distance(step, "1", x_cord, y_cord);
 	}
 
-	step_list += signature(step, "1") + "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration + "}\n";
+	step_list += signature(step, "1") + "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::craft(string step, string amount, string item) {
+void GenerateScript::craft(string step, string amount, string item, string comment) {
 	item = check_item_name(item);
 
-	step_list += signature(step, "1") + "\"craft\", " + amount + ", \"" + item + "\"}\n";
+	step_list += signature(step, "1") + "\"craft\", " + amount + ", \"" + item + "\", \"" + comment + "\"}\n";
 	total_steps += 1;
 };
 
-void GenerateScript::tech(string step, string tech_to_research) {
+void GenerateScript::tech(string step, string tech_to_research, string comment) {
 	tech_to_research = convert_string(tech_to_research);
 
 	if (tech_to_research == "efficiency-module") {
@@ -741,27 +742,27 @@ void GenerateScript::tech(string step, string tech_to_research) {
 		tech_to_research = "battery equipment";
 	}
 
-	step_list += signature(step, "1") + "\"tech\", \"" + tech_to_research + "\"}\n";
+	step_list += signature(step, "1") + "\"tech\", \"" + tech_to_research + "\", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::speed(string step, string speed) {
-	step_list += signature(step, "1") + "\"speed\", " + speed + "}\n";
+void GenerateScript::speed(string step, string speed, string comment) {
+	step_list += signature(step, "1") + "\"speed\", " + speed + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::pause(string step) {
-	step_list += signature(step, "1") + "\"pause\"" + "}\n";
+void GenerateScript::pause(string step, string comment) {
+	step_list += signature(step, "1") + "\"pause\"" + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::stop(string step, string speed) {
-	step_list += signature(step, "1") + "\"stop\", " + speed + "}\n";
+void GenerateScript::stop(string step, string speed, string comment) {
+	step_list += signature(step, "1") + "\"stop\", " + speed + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::launch(string step, string x_cord, string y_cord) {
-	step_list += signature(step, "1") + "\"launch\", {" + x_cord + ", " + y_cord + "}}\n";
+void GenerateScript::launch(string step, string x_cord, string y_cord, string comment) {
+	step_list += signature(step, "1") + "\"launch\", {" + x_cord + ", " + y_cord + "}, \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
@@ -770,28 +771,28 @@ void GenerateScript::save(string step, string nameOfSaveGame) {
 	total_steps += 1;
 }
 
-void GenerateScript::idle(string step, string amount) {
-	step_list += signature(step, "1") + "\"idle\", " + amount + "}\n";
+void GenerateScript::idle(string step, string amount, string comment) {
+	step_list += signature(step, "1") + "\"idle\", " + amount + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::rotate(string step, string x_cord, string y_cord, string times, string item, string orientation) {
+void GenerateScript::rotate(string step, string x_cord, string y_cord, string times, string item, string orientation, string comment) {
 
 	check_interact_distance(step, "1", x_cord, y_cord, item, orientation);
 
 	if (std::stoi(times) == 3) {
-		step_list += signature(step, "1") + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true}\n";
+		step_list += signature(step, "1") + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true, \"" + comment + "\"}\n";
 		total_steps += 1;
 	}
 	else {
 		for (int i = 0; i < std::stoi(times); i++) {
-			step_list += signature(step, to_string(i + 1)) + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false}\n";
+			step_list += signature(step, to_string(i + 1)) + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false, \"" + comment + "\"}\n";
 			total_steps += 1;
 		}
 	}
 }
 
-void GenerateScript::build(string step, string action, string x_cord, string y_cord, string item, string orientation) {
+void GenerateScript::build(string step, string action, string x_cord, string y_cord, string item, string orientation, string comment) {
 	check_interact_distance(step, action, x_cord, y_cord, item, orientation);
 
 	item = check_item_name(item);
@@ -812,22 +813,22 @@ void GenerateScript::build(string step, string action, string x_cord, string y_c
 		return;
 	}
 
-	step_list += signature(step, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + "}\n";
+	step_list += signature(step, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 };
 
-void GenerateScript::row_build(string step, string x_cord, string y_cord, string item, string orientation, string direction, string number_of_buildings, string building_size) {
+void GenerateScript::row_build(string step, string x_cord, string y_cord, string item, string orientation, string direction, string number_of_buildings, string building_size, string comment) {
 
-	build(step, "1", x_cord, y_cord, item, orientation);
+	build(step, "1", x_cord, y_cord, item, orientation, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		build(step, to_string(i + 1), x_cord, y_cord, item, orientation);
+		build(step, to_string(i + 1), x_cord, y_cord, item, orientation, comment);
 	}
 }
 
-void GenerateScript::take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string orientation) {
+void GenerateScript::take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string orientation, string comment) {
 	if (orientation == "Wreck") {
 		check_interact_distance(step, action, x_cord, y_cord, orientation, "North");
 	}
@@ -837,22 +838,22 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + "}\n";
+	step_list += signature(step, action) + "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation) {
+void GenerateScript::row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment) {
 
-	take(step, "1", x_cord, y_cord, amount, item, from, building, orientation);
+	take(step, "1", x_cord, y_cord, amount, item, from, building, orientation, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		take(step, to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation);
+		take(step, to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation, comment);
 	}
 }
 
-void GenerateScript::put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string orientation) {
+void GenerateScript::put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string orientation, string comment) {
 	if (orientation == "Wreck") {
 		check_interact_distance(step, action, x_cord, y_cord, orientation, "North");
 	}
@@ -862,128 +863,128 @@ void GenerateScript::put(string step, string action, string x_cord, string y_cor
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + "}\n";
+	step_list += signature(step, action) + "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation) {
-	put(step, "1", x_cord, y_cord, amount, item, from, building, orientation);
+void GenerateScript::row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment) {
+	put(step, "1", x_cord, y_cord, amount, item, from, building, orientation, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		put(step, to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation);
+		put(step, to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation, comment);
 	}
 }
 
-void GenerateScript::recipe(string step, string action, string x_cord, string y_cord, string item, string building, string orientation) {
+void GenerateScript::recipe(string step, string action, string x_cord, string y_cord, string item, string building, string orientation, string comment) {
 	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
+	step_list += signature(step, action) + "\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string orientation) {
+void GenerateScript::row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string orientation, string comment) {
 
-	recipe(step, "1", x_cord, y_cord, item, building, orientation);
+	recipe(step, "1", x_cord, y_cord, item, building, orientation, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		recipe(step, to_string(i + 1), x_cord, y_cord, item, building, orientation);
+		recipe(step, to_string(i + 1), x_cord, y_cord, item, building, orientation, comment);
 	}
 }
 
-void GenerateScript::limit(string step, string action, string x_cord, string y_cord, string amount, string from, string building, string orientation) {
+void GenerateScript::limit(string step, string action, string x_cord, string y_cord, string amount, string from, string building, string orientation, string comment) {
 	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
 
-	step_list += signature(step, action) + "\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + "}\n";
+	step_list += signature(step, action) + "\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + ", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string orientation) {
+void GenerateScript::row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment) {
 
-	limit(step, "1", x_cord, y_cord, amount, from, building, orientation);
+	limit(step, "1", x_cord, y_cord, amount, from, building, orientation, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		limit(step, to_string(i + 1), x_cord, y_cord, amount, from, building, orientation);
+		limit(step, to_string(i + 1), x_cord, y_cord, amount, from, building, orientation, comment);
 	}
 }
 
-void GenerateScript::priority(string step, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string orientation) {
+void GenerateScript::priority(string step, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string orientation, string comment) {
 	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
 
-	step_list += signature(step, action) + "\"priority\", {" + x_cord + ", " + y_cord + "}, \"" + priority_in + "\", \"" + priority_out + "\"}\n";
+	step_list += signature(step, action) + "\"priority\", {" + x_cord + ", " + y_cord + "}, \"" + priority_in + "\", \"" + priority_out + "\", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string orientation) {
+void GenerateScript::row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment) {
 	priority_in = convert_string(priority_in);
 	priority_out = convert_string(priority_out);
 
-	priority(step, "1", x_cord, y_cord, priority_in, priority_out, building, orientation);
+	priority(step, "1", x_cord, y_cord, priority_in, priority_out, building, orientation, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		priority(step, to_string(i + 1), x_cord, y_cord, priority_in, priority_out, building, orientation);;
+		priority(step, to_string(i + 1), x_cord, y_cord, priority_in, priority_out, building, orientation, comment);;
 	}
 }
 
-void GenerateScript::filter(string step, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string orientation) {
+void GenerateScript::filter(string step, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string orientation, string comment) {
 	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ",  \"" + type + "\"}\n";
+	step_list += signature(step, action) + "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ",  \"" + type + "\", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction, string number_of_buildings, string building_size, string building, string orientation) {
-	filter(step, "1", x_cord, y_cord, item, units, type, building, orientation);
+void GenerateScript::row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction, string number_of_buildings, string building_size, string building, string orientation, string comment) {
+	filter(step, "1", x_cord, y_cord, item, amount, type, building, orientation, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		filter(step, to_string(i + 1), x_cord, y_cord, item, amount, type, building, orientation);
+		filter(step, to_string(i + 1), x_cord, y_cord, item, amount, type, building, orientation, comment);
 	}
 }
 
-void GenerateScript::drop(string step, string action, string x_cord, string y_cord, string item, string building) {
+void GenerateScript::drop(string step, string action, string x_cord, string y_cord, string item, string building, string comment) {
 	check_interact_distance(step, action, x_cord, y_cord, building, "North");
 
 	convert_string(item);
 
-	step_list += signature(step, action) + "\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"}\n";
+	step_list += signature(step, action) + "\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building_size, string building) {
-	drop(step, "1", x_cord, y_cord, item, building);
+void GenerateScript::row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building_size, string building, string comment) {
+	drop(step, "1", x_cord, y_cord, item, building, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		drop(step, to_string(i + 1), x_cord, y_cord, item, building);
+		drop(step, to_string(i + 1), x_cord, y_cord, item, building, comment);
 	}
 }
 
-void GenerateScript::pick(string step, string action, string x_cord, string y_cord) {
+void GenerateScript::pick(string step, string action, string x_cord, string y_cord, string comment) {
 	walk(step, action, x_cord, y_cord, last_walking_comment);
-	step_list += signature(step, action) + "\"pick\", {" + x_cord + ", " + y_cord + "}}\n";
+	step_list += signature(step, action) + "\"pick\", {" + x_cord + ", " + y_cord + "}, \"" + comment + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_pick(string step, string x_cord, string y_cord, string direction, string number_of_buildings, string building_size) {
-	pick(step, "1", x_cord, y_cord);
+void GenerateScript::row_pick(string step, string x_cord, string y_cord, string direction, string number_of_buildings, string building_size, string comment) {
+	pick(step, "1", x_cord, y_cord, comment);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++) {
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		pick(step, to_string(i + 1), x_cord, y_cord);
+		pick(step, to_string(i + 1), x_cord, y_cord, comment);
 	}
 }
