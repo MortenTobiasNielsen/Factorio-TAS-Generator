@@ -6715,7 +6715,7 @@
                 <object class="auinotebookpage" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Buildings</property>
-                    <property name="select">0</property>
+                    <property name="select">1</property>
                     <object class="wxPanel" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
@@ -6902,7 +6902,7 @@
                                             <property name="col_label_values">&quot;X-cord&quot; &quot;Y-cord&quot; &quot;Building&quot; &quot;Orientation&quot; &quot;Limit&quot; &quot;Recipe&quot; &quot;Prio In&quot; &quot;Prio Out&quot; &quot;Filter&quot;</property>
                                             <property name="col_label_vert_alignment">wxALIGN_CENTER</property>
                                             <property name="cols">9</property>
-                                            <property name="column_sizes">50,50,150,70,50,150,50,50,100</property>
+                                            <property name="column_sizes">56,56,150,71,50,150,50,50,150</property>
                                             <property name="context_help"></property>
                                             <property name="context_menu">1</property>
                                             <property name="default_pane">0</property>
@@ -6968,7 +6968,7 @@
                 <object class="auinotebookpage" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Steps</property>
-                    <property name="select">1</property>
+                    <property name="select">0</property>
                     <object class="wxPanel" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
