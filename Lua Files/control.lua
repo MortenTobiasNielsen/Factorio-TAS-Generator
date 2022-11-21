@@ -670,6 +670,7 @@ local function doStep(steps)
 		count = steps[3]
 		item = steps[4]
 
+		msg(steps[step][5])
 		return craft()
 
 	elseif steps[2] == "build" then
@@ -679,6 +680,7 @@ local function doStep(steps)
 		item = steps[4]
 		direction = steps[5]
 
+		msg(steps[step][6])
 		return build()
 
 	elseif steps[2] == "take" then
@@ -689,6 +691,7 @@ local function doStep(steps)
 		amount = steps[5]
 		slot = steps[6]
 
+		msg(steps[step][7])
 		return take()
 
 	elseif steps[2] == "put" then
@@ -699,6 +702,7 @@ local function doStep(steps)
 		amount = steps[5]
 		slot = steps[6]
 
+		msg(steps[step][7])
 		return put()
 
 	elseif steps[2] == "rotate" then
@@ -707,6 +711,7 @@ local function doStep(steps)
 		target_position = steps[3]
 		rev = steps[4]
 
+		msg(steps[step][5])
 		return rotate()
 
 	elseif steps[2] == "tech" then
@@ -714,6 +719,7 @@ local function doStep(steps)
         task = steps[1]
 		item = steps[3]
 
+		msg(steps[step][4])
 		return tech()
 
 	elseif steps[2] == "recipe" then
@@ -722,6 +728,7 @@ local function doStep(steps)
 		target_position = steps[3]
 		item = steps[4]
 
+		msg(steps[step][5])
 		return recipe()
 
 	elseif steps[2] == "limit" then
@@ -731,6 +738,7 @@ local function doStep(steps)
 		amount = steps[4]
 		slot = steps[5]
 		
+		msg(steps[step][6])
 		return limit()
 
 	elseif steps[2] == "priority" then
@@ -740,6 +748,7 @@ local function doStep(steps)
 		input = steps[4]
 		output = steps[5]
 
+		msg(steps[step][6])
 		return priority()
 
 	elseif steps[2] == "filter" then
@@ -750,20 +759,27 @@ local function doStep(steps)
 		slot = steps[5]
 		type = steps[6]
 
+		msg(steps[step][7])
 		return filter()
 
     elseif steps[2] == "drop" then
         task = steps[1]
 		drop_position = steps[3]
 		drop_item = steps[4]
+
+		msg(steps[step][5])
 		return drop()
 
 	elseif steps[2] == "pick" then
 		player.picking_state = true
+
+		msg(steps[step][3])
 		return true
 
 	elseif steps[2] == "idle" then
 		idle = steps[3]
+
+		msg(steps[step][4])
 		return true
 	
 	elseif steps[2] == "launch" then
@@ -771,6 +787,7 @@ local function doStep(steps)
         task = steps[1]
 		target_position = steps[3]
 
+		msg(steps[step][4])
 		return launch()
 	end
 end
@@ -798,6 +815,7 @@ script.on_event(defines.events.on_tick, function(event)
 		end
 
 		if (steps[step][2] == "pause") then
+			msg(steps[step][3])
 			pause()
 			debug("Script paused")
 			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
@@ -806,6 +824,7 @@ script.on_event(defines.events.on_tick, function(event)
 		end
 
 		if (steps[step][2] == "stop") then
+			msg(steps[step][4])
 			speed(steps[step][3])
 			debug(string.format("Script stopped - Game speed: %d", steps[step][3]))
 			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
@@ -814,6 +833,7 @@ script.on_event(defines.events.on_tick, function(event)
 		end
 
 		if (steps[step][2] == "speed") then
+			msg(steps[step][4])
 			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
 			speed(steps[step][3])
 			change_step(1)
@@ -840,6 +860,7 @@ script.on_event(defines.events.on_tick, function(event)
 					idled = 0
 				end
 			elseif steps[step][2] == "walk" then
+				msg(steps[step][5])
 				update_destination_position(steps[step][3][1], steps[step][3][2])
 
 				find_walking_pattern()
@@ -848,7 +869,7 @@ script.on_event(defines.events.on_tick, function(event)
 				change_step(1)
 
 			elseif steps[step][2] == "mine" then
-				
+				msg(steps[step][5])
 				player.update_selected_entity(steps[step][3])
 
 				player.mining_state = {mining = true, position = steps[step][3]}

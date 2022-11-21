@@ -115,7 +115,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_craft: 
-			craft(current_step, units == "All" ? "-1" : amount, item, comment);
+			craft(current_step, amount == "All" ? "-1" : amount, item, comment);
 			break;
 
 		case step_tech: 
