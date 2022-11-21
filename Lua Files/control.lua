@@ -508,14 +508,24 @@ local function find_walking_pattern()
 	end
 end
 
+---comment rounds value to nearest first decimal
+---@param value number
+---@return number
+local function round(value)
+	local precision = 10
+	local round = 0.05
+	return math.floor((value + round) * precision) / precision
+end
+
+
 local function update_player_position()
 	if use_old_walking_pattern then
 		player_position = player.position
 		return
 	end
 
-	player_position.x = tonumber(string.format("%.1f", player.position.x))
-	player_position.y = tonumber(string.format("%.1f", player.position.y))
+	player_position.x = round(player.position.x)
+	player_position.y = round(player.position.y)
 end
 
 local function update_destination_position(x, y)
@@ -524,8 +534,8 @@ local function update_destination_position(x, y)
 		return
 	end
 
-	destination.x = tonumber(string.format("%.1f", x))
-	destination.y = tonumber(string.format("%.1f", y))
+	destination.x = round(x)
+	destination.y = round(y)
 end
 
 local function rotate()

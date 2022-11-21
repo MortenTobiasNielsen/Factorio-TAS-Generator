@@ -528,7 +528,7 @@ void GenerateScript::check_interact_distance(std::string step, std::string actio
 		x_building_size = building_size_map_p->find(building_name)->second[0];
 		y_building_size = building_size_map_p->find(building_name)->second[1];
 	}
-	const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.0f; // TODO remove - can't be static
+	const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.05f; // TODO remove - can't be static
 	static const float max_distance = 10.0f; //Default build distance
 
 	float x_target = std::stof(x_cord);
