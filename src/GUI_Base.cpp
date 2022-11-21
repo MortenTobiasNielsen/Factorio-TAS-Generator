@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-234-gd93c9fc0)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -751,8 +751,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Columns
 	grid_group->SetColSize( 0, 75 );
-	grid_group->SetColSize( 1, 50 );
-	grid_group->SetColSize( 2, 50 );
+	grid_group->SetColSize( 1, 59 );
+	grid_group->SetColSize( 2, 59 );
 	grid_group->SetColSize( 3, 50 );
 	grid_group->SetColSize( 4, 150 );
 	grid_group->SetColSize( 5, 70 );
@@ -782,7 +782,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Cell Defaults
 	grid_group->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
-	grid_group->SetMinSize( wxSize( 850,1500 ) );
+	grid_group->SetMinSize( wxSize( 860,1500 ) );
 
 	bSizer50->Add( grid_group, 1, wxALL|wxEXPAND, 5 );
 
@@ -920,8 +920,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Columns
 	grid_template->SetColSize( 0, 75 );
-	grid_template->SetColSize( 1, 50 );
-	grid_template->SetColSize( 2, 50 );
+	grid_template->SetColSize( 1, 59 );
+	grid_template->SetColSize( 2, 59 );
 	grid_template->SetColSize( 3, 50 );
 	grid_template->SetColSize( 4, 150 );
 	grid_template->SetColSize( 5, 70 );
@@ -951,7 +951,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Cell Defaults
 	grid_template->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
-	grid_template->SetMinSize( wxSize( 850,2500 ) );
+	grid_template->SetMinSize( wxSize( 860,2500 ) );
 
 	bSizer502->Add( grid_template, 0, wxALL|wxEXPAND, 5 );
 
@@ -986,7 +986,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer5011;
 	bSizer5011 = new wxBoxSizer( wxVERTICAL );
 
-	grid_buildings = new wxGrid( building_panel, wxID_ANY, wxDefaultPosition, wxSize( 825,-1 ), 0 );
+	grid_buildings = new wxGrid( building_panel, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), 0 );
 
 	// Grid
 	grid_buildings->CreateGrid( 0, 9 );
@@ -996,15 +996,15 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_buildings->SetMargins( 0, 0 );
 
 	// Columns
-	grid_buildings->SetColSize( 0, 50 );
-	grid_buildings->SetColSize( 1, 50 );
+	grid_buildings->SetColSize( 0, 56 );
+	grid_buildings->SetColSize( 1, 56 );
 	grid_buildings->SetColSize( 2, 150 );
-	grid_buildings->SetColSize( 3, 70 );
+	grid_buildings->SetColSize( 3, 71 );
 	grid_buildings->SetColSize( 4, 50 );
 	grid_buildings->SetColSize( 5, 150 );
 	grid_buildings->SetColSize( 6, 50 );
 	grid_buildings->SetColSize( 7, 50 );
-	grid_buildings->SetColSize( 8, 100 );
+	grid_buildings->SetColSize( 8, 150 );
 	grid_buildings->EnableDragColMove( false );
 	grid_buildings->EnableDragColSize( true );
 	grid_buildings->SetColLabelValue( 0, wxT("X-cord") );
@@ -1026,7 +1026,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Cell Defaults
 	grid_buildings->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
-	grid_buildings->SetMinSize( wxSize( 850,2500 ) );
+	grid_buildings->SetMinSize( wxSize( 860,2500 ) );
 
 	bSizer5011->Add( grid_buildings, 0, wxALL|wxEXPAND, 5 );
 
@@ -1037,7 +1037,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	building_panel->SetSizer( bSizer56111 );
 	building_panel->Layout();
 	bSizer56111->Fit( building_panel );
-	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), false, wxNullBitmap );
+	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), true, wxNullBitmap );
 	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
@@ -1114,9 +1114,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Columns
 	grid_tasks->SetColSize( 0, 75 );
-	grid_tasks->SetColSize( 1, 50 );
-	grid_tasks->SetColSize( 2, 50 );
-	grid_tasks->SetColSize( 3, 50 );
+	grid_tasks->SetColSize( 1, 59 );
+	grid_tasks->SetColSize( 2, 59 );
+	grid_tasks->SetColSize( 3, 58 );
 	grid_tasks->SetColSize( 4, 150 );
 	grid_tasks->SetColSize( 5, 70 );
 	grid_tasks->SetColSize( 6, 70 );
@@ -1146,7 +1146,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Cell Defaults
 	grid_tasks->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
-	grid_tasks->SetMinSize( wxSize( 870,2500 ) );
+	grid_tasks->SetMinSize( wxSize( 860,2500 ) );
 
 	bSizer501->Add( grid_tasks, 0, wxALL|wxEXPAND, 5 );
 
@@ -1157,7 +1157,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->SetSizer( bSizer5611 );
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
-	m_auinotebook1->AddPage( step_panel, wxT("Steps"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
 
 
 	m_mgr.Update();
