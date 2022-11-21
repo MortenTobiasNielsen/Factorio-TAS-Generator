@@ -793,7 +793,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	group_panel->SetSizer( bSizer561 );
 	group_panel->Layout();
 	bSizer561->Fit( group_panel );
-	m_auinotebook1->AddPage( group_panel, wxT("Groups"), false, wxNullBitmap );
+	m_auinotebook1->AddPage( group_panel, wxT("Groups"), true, wxNullBitmap );
 	template_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer( wxVERTICAL );
@@ -1037,7 +1037,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	building_panel->SetSizer( bSizer56111 );
 	building_panel->Layout();
 	bSizer56111->Fit( building_panel );
-	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), false, wxNullBitmap );
 	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
