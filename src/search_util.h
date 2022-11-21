@@ -233,7 +233,7 @@ namespace search{
 	/// <param name="grid">Grid to search in</param>
 	/// <param name="isTaskGrid">If the grid is a task grid - used to determine columns</param>
 	static void findCurrentOrNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid = true) {
-		internal::searchTerms = internal::handleSearchString(event);
+		internal::searchTerms = internal::handleSearchString(event, isTaskGrid);
 		if (internal::trySelectCurrent(grid)) {
 			return;
 		}
@@ -250,7 +250,7 @@ namespace search{
 	/// <param name="grid">Grid to search in</param>
 	/// <param name="isTaskGrid">If the grid is a task grid - used to determine columns</param>
 	static void findNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid = true) {
-		internal::searchTerms = internal::handleSearchString(event);
+		internal::searchTerms = internal::handleSearchString(event, isTaskGrid);
 		internal::trySelectNext(event, grid);
 	}
 }
