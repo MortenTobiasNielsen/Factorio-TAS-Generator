@@ -827,9 +827,19 @@ static const std::vector<std::string> take_from = {"Input",
 												   "Chest",
 												   "Wreck" };
 
+enum INPUT_OUTPUT {
+	LEFT, NONE, RIGHT
+};
+
 static const std::vector<std::string> input_output = { "Left", 
-													   "Right", 
-													   "None"};
+													   "None", 
+													   "Right"};
+
+static inline std::map<std::string, INPUT_OUTPUT> map_input_output = {
+	{input_output[0], LEFT},
+	{input_output[1], NONE},
+	{input_output[2], RIGHT}
+};
 
 static const std::vector<std::string> module_list = {"Speed module", 
 													 "Speed module 2", 
