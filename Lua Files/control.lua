@@ -323,7 +323,7 @@ local function create_entity_replace()
 		--mine all entities inbetween
 		if can_replace_all then
 			for __, e in pairs(entities_between) do
-				e.mine{player.character.get_main_inventory(), true, true, false}
+				player.mine_entity(e, true)
 			end
 		end
 		--spend the item placed
