@@ -7,6 +7,7 @@
 #include "GenerateScript.h"
 #include "SaveTas.h"
 #include "OpenTas.h"
+#include "search_util.h"
 #include <wx/aui/auibook.h>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950)) {
@@ -139,19 +140,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 }
 
 void cMain::TaskSeachOnText(wxCommandEvent& event) {
-	auto str = event.GetString();
-	auto rows = grid_tasks->GetSelectedRows();
-	for (auto id : rows) {
-		auto cell = grid_tasks->GetCellValue(id, 0).ToStdString();
-		if (cell.starts_with(str)) {
-			grid_tasks->SelectRow(id);
-			grid_tasks->ScrollLines(id - rows[0]);
-			event.Skip();
-			return;
-		}
-		else continue;
-	}
-	TaskSeachOnSearchButton(event);
+	search::findCurrentOrNext(event, grid_tasks);
 	event.Skip();
 }
 
@@ -160,27 +149,7 @@ void cMain::TaskSeachOnTextEnter(wxCommandEvent& event) {
 }
 
 void cMain::TaskSeachOnSearchButton(wxCommandEvent& event) {
-	auto str = event.GetString();
-	auto rows = grid_tasks->GetNumberRows();
-	if (str.empty() || rows < 1) {
-		event.Skip();
-		return;
-	}
-	int start;
-	auto sel = grid_tasks->GetSelectedRows();
-	if (sel.empty()) start = 0;
-	else start = grid_tasks->GetSelectedRows().back() + 1;
-
-	for (int i = start; i < rows; i++) {
-		auto cell = grid_tasks->GetCellValue(i, 0).ToStdString();
-		if (cell.starts_with(str)) {
-			grid_tasks->SelectRow(i);
-			grid_tasks->ScrollLines(i-start);
-			event.Skip();
-			return;
-		}
-		else continue;
-	}
+	search::findNext(event, grid_tasks);
 	event.Skip();
 }
 
@@ -189,19 +158,7 @@ void cMain::TaskSeachOnCancelButton(wxCommandEvent& event) {
 }
 
 void cMain::BuildingSearchOnText(wxCommandEvent& event) {
-	auto str = event.GetString();
-	auto rows = grid_tasks->GetSelectedRows();
-	for (auto id : rows) {
-		auto cell = grid_tasks->GetCellValue(id, 0).ToStdString();
-		if (cell.starts_with(str)) {
-			grid_tasks->SelectRow(id);
-			grid_tasks->ScrollLines(id - rows[0]);
-			event.Skip();
-			return;
-		}
-		else continue;
-	}
-	BuildingSearchOnSearchButton(event);
+	search::findCurrentOrNext(event, grid_buildings, false);
 	event.Skip();
 }
 
@@ -210,27 +167,7 @@ void cMain::BuildingSearchOnTextEnter(wxCommandEvent& event) {
 }
 
 void cMain::BuildingSearchOnSearchButton(wxCommandEvent& event) {
-	auto str = event.GetString();
-	auto rows = grid_buildings->GetNumberRows();
-	if (str.empty() || rows < 1) {
-		event.Skip();
-		return;
-	}
-	int start;
-	auto sel = grid_buildings->GetSelectedRows();
-	if (sel.empty()) start = 0;
-	else start = grid_buildings->GetSelectedRows().back() + 1;
-
-	for (int i = start; i < rows; i++) {
-		auto cell = grid_buildings->GetCellValue(i, 0).ToStdString();
-		if (cell.starts_with(str)) {
-			grid_buildings->SelectRow(i);
-			grid_buildings->ScrollLines(i - start);
-			event.Skip();
-			return;
-		}
-		else continue;
-	}
+	search::findNext(event, grid_buildings, false);
 	event.Skip();
 }
 
