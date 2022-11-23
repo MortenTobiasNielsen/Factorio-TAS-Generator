@@ -307,7 +307,9 @@ local function create_entity_replace()
 			return true
 		end
 
-		local entities_between = player.surface.find_entities_filtered{area = {created_entity.position, neighbour_position}, name = replace_type}
+		local entities_between = player.surface.find_entities_filtered{name = replace_type, area = {
+			{x=math.min(created_entity.position.x, neighbour_position.x), y=math.min(created_entity.position.y, neighbour_position.y)},
+			{x=math.max(created_entity.position.x, neighbour_position.x), y=math.max(created_entity.position.y, neighbour_position.y)}}}
 		local entities_between_length = math.abs(created_entity.position.x - neighbour_position.x + created_entity.position.y - neighbour_position.y) - 1
 		local can_replace_all = entities_between_length == #entities_between
 
