@@ -141,6 +141,8 @@ protected:
 
 	void OnTemplateChosen(wxCommandEvent& event);
 	
+	void TemplateAlterTask ( int row, wxGrid* grid );
+
 	// Building
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
 

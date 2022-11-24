@@ -215,9 +215,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer19 = new wxBoxSizer( wxHORIZONTAL );
 
 	wxFlexGridSizer* fgSizer2;
-	fgSizer2 = new wxFlexGridSizer( 4, 3, 0, 0 );
+	fgSizer2 = new wxFlexGridSizer( 1, 3, 0, 0 );
 	fgSizer2->SetFlexibleDirection( wxBOTH );
 	fgSizer2->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
+
+	wxBoxSizer* bSizer1181;
+	bSizer1181 = new wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* bSizerX;
 	bSizerX = new wxBoxSizer( wxHORIZONTAL );
@@ -227,14 +230,60 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_x_cord->Wrap( -1 );
 	bSizerX->Add( label_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 1 );
 	spin_x->SetDigits( 1 );
 	spin_x->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	bSizerX->Add( spin_x, 0, wxALL, 5 );
 
 
-	fgSizer2->Add( bSizerX, 1, 0, 5 );
+	bSizer1181->Add( bSizerX, 1, 0, 5 );
+
+	wxBoxSizer* bSizerY;
+	bSizerY = new wxBoxSizer( wxHORIZONTAL );
+
+	label_y_cord = new wxStaticText( m_panel21, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_y_cord->Wrap( -1 );
+	bSizerY->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	spin_y->SetDigits( 1 );
+	bSizerY->Add( spin_y, 0, wxALL, 5 );
+
+
+	bSizer1181->Add( bSizerY, 1, 0, 5 );
+
+	wxBoxSizer* bSizer36;
+	bSizer36 = new wxBoxSizer( wxHORIZONTAL );
+
+	label_amount = new wxStaticText( m_panel21, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_amount->Wrap( -1 );
+	bSizer36->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 1000000, 1 );
+	bSizer36->Add( spin_amount, 0, wxALL, 5 );
+
+
+	bSizer1181->Add( bSizer36, 1, 0, 5 );
+
+	wxBoxSizer* bSizer361;
+	bSizer361 = new wxBoxSizer( wxHORIZONTAL );
+
+	label_comment = new wxStaticText( m_panel21, wxID_ANY, wxT("Comment:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_comment->Wrap( -1 );
+	bSizer361->Add( label_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	txt_comment = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
+	bSizer361->Add( txt_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	bSizer1181->Add( bSizer361, 1, wxEXPAND, 5 );
+
+
+	fgSizer2->Add( bSizer1181, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer1191;
+	bSizer1191 = new wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* bSizer35;
 	bSizer35 = new wxBoxSizer( wxHORIZONTAL );
@@ -249,36 +298,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer35->Add( cmb_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	fgSizer2->Add( bSizer35, 1, 0, 5 );
-
-	wxBoxSizer* bSizer58;
-	bSizer58 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_building_orientation = new wxStaticText( m_panel21, wxID_ANY, wxT("Building orientation:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
-	label_building_orientation->Wrap( -1 );
-	bSizer58->Add( label_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	cmb_building_orientation = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
-	cmb_building_orientation->SetToolTip( wxT("The orientation of the building. Inserters are reversed.") );
-
-	bSizer58->Add( cmb_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	fgSizer2->Add( bSizer58, 1, 0, 5 );
-
-	wxBoxSizer* bSizerY;
-	bSizerY = new wxBoxSizer( wxHORIZONTAL );
-
-	label_y_cord = new wxStaticText( m_panel21, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
-	label_y_cord->Wrap( -1 );
-	bSizerY->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
-	spin_y->SetDigits( 1 );
-	bSizerY->Add( spin_y, 0, wxALL, 5 );
-
-
-	fgSizer2->Add( bSizerY, 1, 0, 5 );
+	bSizer1191->Add( bSizer35, 1, 0, 5 );
 
 	wxBoxSizer* bSizer31;
 	bSizer31 = new wxBoxSizer( wxHORIZONTAL );
@@ -294,35 +314,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer31->Add( cmb_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	fgSizer2->Add( bSizer31, 1, 0, 5 );
-
-	wxBoxSizer* bSizer59;
-	bSizer59 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_direction_to_build = new wxStaticText( m_panel21, wxID_ANY, wxT("Build direction:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
-	label_direction_to_build->Wrap( -1 );
-	bSizer59->Add( label_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	cmb_direction_to_build = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
-	cmb_direction_to_build->SetToolTip( wxT("The direction to place the next building") );
-
-	bSizer59->Add( cmb_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	fgSizer2->Add( bSizer59, 1, 0, 5 );
-
-	wxBoxSizer* bSizer36;
-	bSizer36 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_amount = new wxStaticText( m_panel21, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
-	label_amount->Wrap( -1 );
-	bSizer36->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 1000000, 1 );
-	bSizer36->Add( spin_amount, 0, wxALL, 5 );
-
-
-	fgSizer2->Add( bSizer36, 1, 0, 5 );
+	bSizer1191->Add( bSizer31, 1, 0, 5 );
 
 	wxBoxSizer* bSizer47;
 	bSizer47 = new wxBoxSizer( wxHORIZONTAL );
@@ -341,36 +333,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer47->Add( radio_input, 0, wxLEFT|wxRIGHT, 5 );
 
 
-	fgSizer2->Add( bSizer47, 1, 0, 5 );
-
-	wxBoxSizer* bSizer51;
-	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_building_size = new wxStaticText( m_panel21, wxID_ANY, wxT("Building size:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
-	label_building_size->Wrap( -1 );
-	bSizer51->Add( label_building_size, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	spin_building_size = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 10, 1 );
-	spin_building_size->SetToolTip( wxT("Number of tiles the building is wide. Used for placing multiple buildings in a row.") );
-	spin_building_size->SetMinSize( wxSize( 80,-1 ) );
-
-	bSizer51->Add( spin_building_size, 0, wxALL, 5 );
-
-
-	fgSizer2->Add( bSizer51, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer361;
-	bSizer361 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_comment = new wxStaticText( m_panel21, wxID_ANY, wxT("Comment:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
-	label_comment->Wrap( -1 );
-	bSizer361->Add( label_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	txt_comment = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
-	bSizer361->Add( txt_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	fgSizer2->Add( bSizer361, 1, wxEXPAND, 5 );
+	bSizer1191->Add( bSizer47, 1, 0, 5 );
 
 	wxBoxSizer* bSizer471;
 	bSizer471 = new wxBoxSizer( wxHORIZONTAL );
@@ -389,7 +352,59 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer471->Add( radio_output, 0, wxLEFT|wxRIGHT, 5 );
 
 
-	fgSizer2->Add( bSizer471, 1, wxEXPAND, 5 );
+	bSizer1191->Add( bSizer471, 1, wxEXPAND, 5 );
+
+
+	fgSizer2->Add( bSizer1191, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer120;
+	bSizer120 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer58;
+	bSizer58 = new wxBoxSizer( wxHORIZONTAL );
+
+	label_building_orientation = new wxStaticText( m_panel21, wxID_ANY, wxT("Building orientation:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_building_orientation->Wrap( -1 );
+	bSizer58->Add( label_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	cmb_building_orientation = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
+	cmb_building_orientation->SetToolTip( wxT("The orientation of the building. Inserters are reversed.") );
+
+	bSizer58->Add( cmb_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	bSizer120->Add( bSizer58, 1, 0, 5 );
+
+	wxBoxSizer* bSizer59;
+	bSizer59 = new wxBoxSizer( wxHORIZONTAL );
+
+	label_direction_to_build = new wxStaticText( m_panel21, wxID_ANY, wxT("Build direction:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_direction_to_build->Wrap( -1 );
+	bSizer59->Add( label_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	cmb_direction_to_build = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
+	cmb_direction_to_build->SetToolTip( wxT("The direction to place the next building") );
+
+	bSizer59->Add( cmb_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	bSizer120->Add( bSizer59, 1, 0, 5 );
+
+	wxBoxSizer* bSizer51;
+	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
+
+	label_building_size = new wxStaticText( m_panel21, wxID_ANY, wxT("Building size:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_building_size->Wrap( -1 );
+	bSizer51->Add( label_building_size, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	spin_building_size = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 10, 1 );
+	spin_building_size->SetToolTip( wxT("Number of tiles the building is wide. Used for placing multiple buildings in a row.") );
+	spin_building_size->SetMinSize( wxSize( 80,-1 ) );
+
+	bSizer51->Add( spin_building_size, 0, wxALL, 5 );
+
+
+	bSizer120->Add( bSizer51, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer52;
 	bSizer52 = new wxBoxSizer( wxHORIZONTAL );
@@ -405,7 +420,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer52->Add( spin_building_amount, 0, wxALL, 5 );
 
 
-	fgSizer2->Add( bSizer52, 1, wxEXPAND, 5 );
+	bSizer120->Add( bSizer52, 1, wxEXPAND, 5 );
+
+
+	fgSizer2->Add( bSizer120, 1, wxEXPAND, 5 );
 
 
 	bSizer19->Add( fgSizer2, 1, wxEXPAND, 5 );
@@ -793,7 +811,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	group_panel->SetSizer( bSizer561 );
 	group_panel->Layout();
 	bSizer561->Fit( group_panel );
-	m_auinotebook1->AddPage( group_panel, wxT("Groups"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( group_panel, wxT("Groups"), false, wxNullBitmap );
 	template_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer( wxVERTICAL );
@@ -847,6 +865,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizer102->Add( bSizer103, 1, 0, 5 );
 
+	m_staticline51 = new wxStaticLine( template_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+	bSizer102->Add( m_staticline51, 0, wxEXPAND | wxALL, 5 );
+
 	wxBoxSizer* bSizer1041;
 	bSizer1041 = new wxBoxSizer( wxVERTICAL );
 
@@ -871,6 +892,38 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizer102->Add( bSizer1041, 0, wxEXPAND, 5 );
 
+	wxBoxSizer* bSizer1042;
+	bSizer1042 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer1052;
+	bSizer1052 = new wxBoxSizer( wxHORIZONTAL );
+
+	label_template_amount_offset = new wxStaticText( template_panel, wxID_ANY, wxT("Amount-Offset:"), wxDefaultPosition, wxSize( 85,-1 ), 0 );
+	label_template_amount_offset->Wrap( -1 );
+	bSizer1052->Add( label_template_amount_offset, 0, wxALIGN_CENTER, 5 );
+
+	spin_amount_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer1052->Add( spin_amount_offset, 0, wxALL, 5 );
+
+
+	bSizer1042->Add( bSizer1052, 1, 0, 5 );
+
+	wxBoxSizer* bSizer1062;
+	bSizer1062 = new wxBoxSizer( wxHORIZONTAL );
+
+	label_template_amount_multiplier = new wxStaticText( template_panel, wxID_ANY, wxT("Amount-Multi:"), wxDefaultPosition, wxSize( 85,-1 ), 0 );
+	label_template_amount_multiplier->Wrap( -1 );
+	bSizer1062->Add( label_template_amount_multiplier, 0, wxALIGN_CENTER, 5 );
+
+	spin_amount_multiplier = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer1062->Add( spin_amount_multiplier, 0, wxALL, 5 );
+
+
+	bSizer1042->Add( bSizer1062, 1, 0, 5 );
+
+
+	bSizer102->Add( bSizer1042, 0, 0, 5 );
+
 	wxBoxSizer* bSizer104;
 	bSizer104 = new wxBoxSizer( wxVERTICAL );
 
@@ -881,8 +934,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_template_x_offset->Wrap( -1 );
 	bSizer105->Add( label_template_x_offset, 0, wxALIGN_CENTER, 5 );
 
-	txt_template_x_offset = new wxTextCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
-	bSizer105->Add( txt_template_x_offset, 0, wxALIGN_CENTER|wxALL, 5 );
+	spin_x_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer105->Add( spin_x_offset, 0, wxALL, 5 );
 
 
 	bSizer104->Add( bSizer105, 1, 0, 5 );
@@ -894,8 +947,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_template_y_offset->Wrap( -1 );
 	bSizer106->Add( label_template_y_offset, 0, wxALIGN_CENTER, 5 );
 
-	txt_template_y_offset = new wxTextCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
-	bSizer106->Add( txt_template_y_offset, 0, wxALIGN_CENTER|wxALL, 5 );
+	spin_y_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	bSizer106->Add( spin_y_offset, 0, wxALL, 5 );
 
 
 	bSizer104->Add( bSizer106, 1, 0, 5 );
@@ -1048,13 +1101,15 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer1001;
 	bSizer1001 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxFlexGridSizer* fgSizer1;
-	fgSizer1 = new wxFlexGridSizer( 0, 2, 0, 0 );
-	fgSizer1->SetFlexibleDirection( wxBOTH );
-	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
 	wxBoxSizer* bSizer113;
 	bSizer113 = new wxBoxSizer( wxHORIZONTAL );
+
+	task_search_ctrl = new wxSearchCtrl( step_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	#ifndef __WXMAC__
+	task_search_ctrl->ShowSearchButton( true );
+	#endif
+	task_search_ctrl->ShowCancelButton( true );
+	bSizer113->Add( task_search_ctrl, 0, wxALL, 5 );
 
 	btn_add_task11 = new wxButton( step_panel, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer113->Add( btn_add_task11, 0, wxALIGN_CENTER|wxALL, 5 );
@@ -1065,37 +1120,18 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_delete_task11 = new wxButton( step_panel, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer113->Add( btn_delete_task11, 0, wxALL, 5 );
 
-	task_search_ctrl = new wxSearchCtrl( step_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	#ifndef __WXMAC__
-	task_search_ctrl->ShowSearchButton( true );
-	#endif
-	task_search_ctrl->ShowCancelButton( true );
-	bSizer113->Add( task_search_ctrl, 0, wxALL, 5 );
-
-
-	fgSizer1->Add( bSizer113, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer1141;
-	bSizer1141 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer1141->Add( 250, 0, 1, wxEXPAND, 5 );
-
 	btn_move_up11 = new wxButton( step_panel, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0 );
 	btn_move_up11->SetToolTip( wxT("Right-click to move 5 but be patient") );
 
-	bSizer1141->Add( btn_move_up11, 0, wxALL, 5 );
+	bSizer113->Add( btn_move_up11, 0, wxALL, 5 );
 
 	btn_move_down11 = new wxButton( step_panel, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0 );
 	btn_move_down11->SetToolTip( wxT("Right-click to move 5 but be patient") );
 
-	bSizer1141->Add( btn_move_down11, 0, wxALL, 5 );
+	bSizer113->Add( btn_move_down11, 0, wxALL, 5 );
 
 
-	fgSizer1->Add( bSizer1141, 1, wxEXPAND, 5 );
-
-
-	bSizer1001->Add( fgSizer1, 1, wxEXPAND, 5 );
+	bSizer1001->Add( bSizer113, 1, wxEXPAND, 5 );
 
 
 	bSizer5611->Add( bSizer1001, 0, wxEXPAND, 5 );
@@ -1157,7 +1193,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->SetSizer( bSizer5611 );
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
-	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
+	m_auinotebook1->AddPage( step_panel, wxT("Steps"), true, wxNullBitmap );
 
 
 	m_mgr.Update();
@@ -1254,13 +1290,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	building_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::BuildingSearchOnText ), NULL, this );
 	building_search_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::BuildingSearchOnTextEnter ), NULL, this );
 	grid_buildings->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnBuildingsGridLeftDoubleClick ), NULL, this );
-	btn_add_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddTaskClicked ), NULL, this );
-	btn_change_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeTaskClicked ), NULL, this );
-	btn_delete_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTaskClicked ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnCancelButton ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::TaskSeachOnTextEnter ), NULL, this );
+	btn_add_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddTaskClicked ), NULL, this );
+	btn_change_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeTaskClicked ), NULL, this );
+	btn_delete_task11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTaskClicked ), NULL, this );
 	btn_move_up11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpClicked ), NULL, this );
 	btn_move_up11->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down11->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
@@ -1318,13 +1354,13 @@ GUI_Base::~GUI_Base()
 	building_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::BuildingSearchOnText ), NULL, this );
 	building_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::BuildingSearchOnTextEnter ), NULL, this );
 	grid_buildings->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnBuildingsGridLeftDoubleClick ), NULL, this );
-	btn_add_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddTaskClicked ), NULL, this );
-	btn_change_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeTaskClicked ), NULL, this );
-	btn_delete_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTaskClicked ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnCancelButton ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::TaskSeachOnTextEnter ), NULL, this );
+	btn_add_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddTaskClicked ), NULL, this );
+	btn_change_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeTaskClicked ), NULL, this );
+	btn_delete_task11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTaskClicked ), NULL, this );
 	btn_move_up11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpClicked ), NULL, this );
 	btn_move_up11->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down11->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );

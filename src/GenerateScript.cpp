@@ -455,7 +455,7 @@ std::string GenerateScript::check_item_name(std::string item) {
 	else if (item == "Personal roboport MK2") {
 		return item = "personal-roboport-mk2-equipment";
 	}
-	else if (item == "Night vision") {
+	else if (item == "Nightvision") {
 		return item = "night-vision-equipment";
 	}
 	else if (item == "Personal battery") {
@@ -467,8 +467,8 @@ std::string GenerateScript::check_item_name(std::string item) {
 	else if (item == "Portable solar panel") {
 		return item = "solar-panel-equipment";
 	}
-	else if (item == "Personal laser defence") {
-		return item = "personal-laser-defence-equipment";
+	else if (item == "Personal laser defense") {
+		return item = "personal-laser-defense-equipment";
 	}
 	else if (item == "Energy shield") {
 		return item = "energy-shield-equipment";

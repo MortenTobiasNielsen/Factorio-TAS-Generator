@@ -58,28 +58,32 @@ struct open_file_return_data {
 	bool auto_put_recipe = false;
 };
 
-static const std::vector<std::string> fuel_list = { "Wood", 
-													"Coal", 
-													"Solid fuel", 
-													"Rocket fuel", 
-													"Nuclear fuel", 
-													"Uranium fuel cell" };
+static const std::vector<std::string> fuel_list = {
+	"Wood",
+	"Coal",
+	"Solid fuel",
+	"Rocket fuel",
+	"Nuclear fuel",
+	"Uranium fuel cell" };
 
-static const std::vector<std::string> chest_list = { "Wooden chest", 
-													 "Iron chest", 
-													 "Steel chest",
-													 "Active provider chest",
-													 "Passive provider chest",
-													 "Storage chest",
-													 "Buffer chest",
-													 "Requester chest"};
+static const std::vector<std::string> chest_list = {
+	"Wooden chest",
+	"Iron chest",
+	"Steel chest",
+	"Active provider chest",
+	"Passive provider chest",
+	"Storage chest",
+	"Buffer chest",
+	"Requester chest"};
 
-static const std::vector<std::string> splitter_list = { "Splitter", 
-														"Fast splitter", 
-														"Express splitter" };
+static const std::vector<std::string> splitter_list = {
+	"Splitter",
+	"Fast splitter",
+	"Express splitter" };
 
-static const std::vector<std::string> filter_inserter_list = { "Filter inserter", 
-															   "Stack filter inserter" };
+static const std::vector<std::string> filter_inserter_list = {
+	"Filter inserter",
+	"Stack filter inserter" };
 
 static const std::map<std::string, std::vector<std::string>> recipes = {
 	{"Assembling machine 1", {"Iron plate", "9", "Iron gear wheel", "5", "Electronic circuit", "3"}},
@@ -141,7 +145,7 @@ static const std::map<std::string, std::vector<std::string>> recipes = {
 	{"Discharge defense remote", {"Electronic circuit", "1"}},
 	{"Assembling machine 2", {"Steel plate", "2", "Iron gear wheel", "5", "Electronic circuit", "3", "Assembling machine 1", "1"}},
 	{"Personal battery", {"Steel plate", "10", "Battery", "5"}},
-	{"Personal battery mk2", {"Processing unit", "15", "Low density structure", "5", "Personal Battery", "10"}},
+	{"Personal battery mk2", {"Processing unit", "15", "Low density structure", "5", "Personal battery", "10"}},
 	{"Concrete", {"Iron ore", "1", "Stone brick", "5", "Water", "100"}},
 	{"Hazard concrete", {"Concrete", "10"}},
 	{"Refined concrete", {"Steel plate", "1", "Iron stick", "8", "Concrete", "20", "Water", "100"}},
@@ -291,372 +295,375 @@ static const std::map<std::string, std::vector<std::string>> recipes = {
 	{"Nuclear fuel reprocessing", {"Used up uranium fuel cell", "5"}},
 	{"Kovarex enrichment process", {"Uranium 235", "40", "Uranium 238", "5"}}};
 
-static const std::map<std::string, std::vector<float>> building_size_list = { 
-{ "Wooden chest" , {0.695313f, 0.695313f} },
-{ "Iron chest" , {0.695313f, 0.695313f} },
-{ "Steel chest" , {0.695313f, 0.695313f} },
-{ "Storage tank" , {2.593750f, 2.593750f} },
-{ "Transport belt" , {0.796875f, 0.796875f} },
-{ "Fast transport belt" , {0.796875f, 0.796875f} },
-{ "Express transport belt" , {0.796875f, 0.796875f} },
-{ "Underground belt" , {0.796875f, 0.796875f} },
-{ "Fast underground belt" , {0.796875f, 0.796875f} },
-{ "Express underground belt" , {0.796875f, 0.796875f} },
-{ "Splitter" , {1.796875f, 0.796875f} },
-{ "Fast splitter" , {1.796875f, 0.796875f} },
-{ "Express splitter" , {1.796875f, 0.796875f} },
-{ "Loader" , {0.796875f, 1.796875f} },
-{ "Fast loader" , {0.796875f, 1.796875f} },
-{ "Express loader" , {0.796875f, 1.796875f} },
-{ "Burner inserter" , {0.296875f, 0.296875f} },
-{ "Inserter" , {0.296875f, 0.296875f} },
-{ "Long-handed inserter" , {0.296875f, 0.296875f} },
-{ "Fast inserter" , {0.296875f, 0.296875f} },
-{ "Filter inserter" , {0.296875f, 0.296875f} },
-{ "Stack inserter" , {0.296875f, 0.296875f} },
-{ "Stack filter inserter" , {0.296875f, 0.296875f} },
-{ "Small electric pole" , {0.296875f, 0.296875f} },
-{ "Medium electric pole" , {0.296875f, 0.296875f} },
-{ "Big electric pole" , {1.296875f, 1.296875f} },
-{ "Substation" , {1.398438f, 1.398438f} },
-{ "Pipe" , {0.578125f, 0.578125f} },
-{ "Pipe to ground" , {0.578125f, 0.488281f} },
-{ "Pump" , {0.578125f, 1.796875f} },
-{ "Curved rail" , {1.500000f, 2.144531f} },
-{ "Straight rail" , {1.398438f, 1.976563f} },
-{ "Train stop" , {1.000000f, 1.000000f} },
-{ "Rail signal" , {0.398438f, 0.398438f} },
-{ "Rail chain signal" , {0.398438f, 0.398438f} },
-{ "Locomotive" , {1.195313f, 5.195313f} },
-{ "Cargo wagon" , {1.195313f, 4.796875f} },
-{ "Fluid wagon" , {1.195313f, 4.796875f} },
-{ "Artillery wagon" , {1.195313f, 4.796875f} },
-{ "Car" , {1.398438f, 2.000000f} },
-{ "Tank" , {1.796875f, 2.593750f} },
-{ "Spidertron" , {2.000000f, 2.000000f} },
-{ "Active provider chest" , {0.695313f, 0.695313f} },
-{ "Passive provider chest" , {0.695313f, 0.695313f} },
-{ "Storage chest" , {0.695313f, 0.695313f} },
-{ "Buffer chest" , {0.695313f, 0.695313f} },
-{ "Requester chest" , {0.695313f, 0.695313f} },
-{ "Roboport" , {3.398438f, 3.398438f} },
-{ "Small lamp" , {0.296875f, 0.296875f} },
-{ "Arithmetic combinator" , {0.695313f, 1.296875f} },
-{ "Decider combinator" , {0.695313f, 1.296875f} },
-{ "Constant combinator" , {0.695313f, 0.695313f} },
-{ "Power switch" , {1.398438f, 1.398438f} },
-{ "Programmable speaker" , {0.593750f, 0.593750f} },
-{ "Boiler" , {2.578125f, 1.578125f} },
-{ "Steam engine" , {2.500000f, 4.695313f} },
-{ "Solar panel" , {2.796875f, 2.796875f} },
-{ "Accumulator" , {1.796875f, 1.796875f} },
-{ "Nuclear reactor" , {4.398438f, 4.398438f} },
-{ "Heat pipe" , {0.593750f, 0.593750f} },
-{ "Heat exchanger" , {2.578125f, 1.578125f} },
-{ "Steam turbine" , {2.500000f, 4.695313f} },
-{ "Burner mining drill" , {1.398438f, 1.398438f} },
-{ "Electric mining drill" , {2.796875f, 2.796875f} },
-{ "Offshore pump" , {1.195313f, 1.343750f} },
-{ "Pumpjack" , {2.398438f, 2.398438f} },
-{ "Stone furnace" , {1.398438f, 1.398438f} },
-{ "Steel furnace" , {1.398438f, 1.398438f} },
-{ "Electric furnace" , {2.398438f, 2.398438f} },
-{ "Assembling machine 1" , {2.398438f, 2.398438f} },
-{ "Assembling machine 2" , {2.398438f, 2.398438f} },
-{ "Assembling machine 3" , {2.398438f, 2.398438f} },
-{ "Oil refinery" , {4.796875f, 4.796875f} },
-{ "Chemical plant" , {2.398438f, 2.398438f} },
-{ "Centrifuge" , {2.398438f, 2.398438f} },
-{ "Lab" , {2.398438f, 2.398438f} },
-{ "Beacon" , {2.398438f, 2.398438f} },
-{ "Rocket silo" , {8.796875f, 8.796875f} },
-{ "Land mine" , {0.796875f, 0.796875f} },
-{ "Stone wall" , {0.578125f, 0.578125f} },
-{ "Gate" , {0.578125f, 0.578125f} },
-{ "Gun turret" , {1.398438f, 1.398438f} },
-{ "Laser turret" , {1.398438f, 1.398438f} },
-{ "Flamethrower turret" , {1.398438f, 2.398438f} },
-{ "Artillery turret" , {2.398438f, 2.398438f} },
-{ "Radar" , {2.398438f, 2.398438f} },
-{ "Item on ground" , {0.273438f, 0.273438f} },
-{ "Rocket silo rocket" , {4.000000f, 11.000000f} },
-{ "Tile ghost" , {1.000000f, 1.000000f} },
-{ "Stone path" , {1, 1} },
-{ "Concrete" , {1, 1} },
-{ "Hazard concrete left" , {1, 1} },
-{ "Hazard concrete right" , {1, 1} },
-{ "Refined concrete" , {1, 1} },
-{ "Refined hazard concrete left" , {1, 1} },
-{ "Refined hazard concrete right" , {1, 1} },
-{ "Landfill" , {1, 1} }
+static const std::map<std::string, std::vector<float>> building_size_list = {
+	{ "Wooden chest" , {0.695313f, 0.695313f} },
+	{ "Iron chest" , {0.695313f, 0.695313f} },
+	{ "Steel chest" , {0.695313f, 0.695313f} },
+	{ "Storage tank" , {2.593750f, 2.593750f} },
+	{ "Transport belt" , {0.796875f, 0.796875f} },
+	{ "Fast transport belt" , {0.796875f, 0.796875f} },
+	{ "Express transport belt" , {0.796875f, 0.796875f} },
+	{ "Underground belt" , {0.796875f, 0.796875f} },
+	{ "Fast underground belt" , {0.796875f, 0.796875f} },
+	{ "Express underground belt" , {0.796875f, 0.796875f} },
+	{ "Splitter" , {1.796875f, 0.796875f} },
+	{ "Fast splitter" , {1.796875f, 0.796875f} },
+	{ "Express splitter" , {1.796875f, 0.796875f} },
+	{ "Loader" , {0.796875f, 1.796875f} },
+	{ "Fast loader" , {0.796875f, 1.796875f} },
+	{ "Express loader" , {0.796875f, 1.796875f} },
+	{ "Burner inserter" , {0.296875f, 0.296875f} },
+	{ "Inserter" , {0.296875f, 0.296875f} },
+	{ "Long-handed inserter" , {0.296875f, 0.296875f} },
+	{ "Fast inserter" , {0.296875f, 0.296875f} },
+	{ "Filter inserter" , {0.296875f, 0.296875f} },
+	{ "Stack inserter" , {0.296875f, 0.296875f} },
+	{ "Stack filter inserter" , {0.296875f, 0.296875f} },
+	{ "Small electric pole" , {0.296875f, 0.296875f} },
+	{ "Medium electric pole" , {0.296875f, 0.296875f} },
+	{ "Big electric pole" , {1.296875f, 1.296875f} },
+	{ "Substation" , {1.398438f, 1.398438f} },
+	{ "Pipe" , {0.578125f, 0.578125f} },
+	{ "Pipe to ground" , {0.578125f, 0.488281f} },
+	{ "Pump" , {0.578125f, 1.796875f} },
+	{ "Curved rail" , {1.500000f, 2.144531f} },
+	{ "Straight rail" , {1.398438f, 1.976563f} },
+	{ "Train stop" , {1.000000f, 1.000000f} },
+	{ "Rail signal" , {0.398438f, 0.398438f} },
+	{ "Rail chain signal" , {0.398438f, 0.398438f} },
+	{ "Locomotive" , {1.195313f, 5.195313f} },
+	{ "Cargo wagon" , {1.195313f, 4.796875f} },
+	{ "Fluid wagon" , {1.195313f, 4.796875f} },
+	{ "Artillery wagon" , {1.195313f, 4.796875f} },
+	{ "Car" , {1.398438f, 2.000000f} },
+	{ "Tank" , {1.796875f, 2.593750f} },
+	{ "Spidertron" , {2.000000f, 2.000000f} },
+	{ "Active provider chest" , {0.695313f, 0.695313f} },
+	{ "Passive provider chest" , {0.695313f, 0.695313f} },
+	{ "Storage chest" , {0.695313f, 0.695313f} },
+	{ "Buffer chest" , {0.695313f, 0.695313f} },
+	{ "Requester chest" , {0.695313f, 0.695313f} },
+	{ "Roboport" , {3.398438f, 3.398438f} },
+	{ "Small lamp" , {0.296875f, 0.296875f} },
+	{ "Arithmetic combinator" , {0.695313f, 1.296875f} },
+	{ "Decider combinator" , {0.695313f, 1.296875f} },
+	{ "Constant combinator" , {0.695313f, 0.695313f} },
+	{ "Power switch" , {1.398438f, 1.398438f} },
+	{ "Programmable speaker" , {0.593750f, 0.593750f} },
+	{ "Boiler" , {2.578125f, 1.578125f} },
+	{ "Steam engine" , {2.500000f, 4.695313f} },
+	{ "Solar panel" , {2.796875f, 2.796875f} },
+	{ "Accumulator" , {1.796875f, 1.796875f} },
+	{ "Nuclear reactor" , {4.398438f, 4.398438f} },
+	{ "Heat pipe" , {0.593750f, 0.593750f} },
+	{ "Heat exchanger" , {2.578125f, 1.578125f} },
+	{ "Steam turbine" , {2.500000f, 4.695313f} },
+	{ "Burner mining drill" , {1.398438f, 1.398438f} },
+	{ "Electric mining drill" , {2.796875f, 2.796875f} },
+	{ "Offshore pump" , {1.195313f, 1.343750f} },
+	{ "Pumpjack" , {2.398438f, 2.398438f} },
+	{ "Stone furnace" , {1.398438f, 1.398438f} },
+	{ "Steel furnace" , {1.398438f, 1.398438f} },
+	{ "Electric furnace" , {2.398438f, 2.398438f} },
+	{ "Assembling machine 1" , {2.398438f, 2.398438f} },
+	{ "Assembling machine 2" , {2.398438f, 2.398438f} },
+	{ "Assembling machine 3" , {2.398438f, 2.398438f} },
+	{ "Oil refinery" , {4.796875f, 4.796875f} },
+	{ "Chemical plant" , {2.398438f, 2.398438f} },
+	{ "Centrifuge" , {2.398438f, 2.398438f} },
+	{ "Lab" , {2.398438f, 2.398438f} },
+	{ "Beacon" , {2.398438f, 2.398438f} },
+	{ "Rocket silo" , {8.796875f, 8.796875f} },
+	{ "Land mine" , {0.796875f, 0.796875f} },
+	{ "Stone wall" , {0.578125f, 0.578125f} },
+	{ "Gate" , {0.578125f, 0.578125f} },
+	{ "Gun turret" , {1.398438f, 1.398438f} },
+	{ "Laser turret" , {1.398438f, 1.398438f} },
+	{ "Flamethrower turret" , {1.398438f, 2.398438f} },
+	{ "Artillery turret" , {2.398438f, 2.398438f} },
+	{ "Radar" , {2.398438f, 2.398438f} },
+	{ "Item on ground" , {0.273438f, 0.273438f} },
+	{ "Rocket silo rocket" , {4.000000f, 11.000000f} },
+	{ "Tile ghost" , {1.000000f, 1.000000f} },
+	{ "Stone brick" , {1, 1} },
+	{ "Concrete" , {1, 1} },
+	{ "Hazard concrete left" , {1, 1} },
+	{ "Hazard concrete right" , {1, 1} },
+	{ "Refined concrete" , {1, 1} },
+	{ "Refined hazard concrete left" , {1, 1} },
+	{ "Refined hazard concrete right" , {1, 1} },
+	{ "Landfill" , {1, 1} }
 };
 
-static const std::map<std::string, std::vector<float>> old_building_size_list = { { "Accumulator", {2, 2} },
-																			  { "Wooden chest", {1, 1} },
-																			  { "Iron chest", {1, 1} },
-																			  { "Steel chest", {1, 1} },
-																			  { "Storage tank", {3, 3} },
-																			  { "Transport belt", {1, 1} },
-																			  { "Fast transport belt", {1, 1} },
-																			  { "Underground belt", {1, 1} },
-																			  { "Fast underground belt", {1, 1} },
-																			  { "Splitter", {2, 1} },
-																			  { "Fast splitter", {2, 1} },
-																			  { "Burner inserter", {1, 1} },
-																			  { "Inserter", {1, 1} },
-																			  { "Long-handed inserter", {1, 1} },
-																			  { "Fast inserter", {1, 1} },
-																			  { "Filter inserter", {1, 1} },
-																			  { "Stack inserter", {1, 1} },
-																			  { "Stack filter inserter", {1, 1} },
-																			  { "Small electric pole", {1, 1} },
-																			  { "Medium electric pole", {1, 1} },
-																			  { "Big electric pole", {2, 2} },
-																			  { "Substation", {2, 2} },
-																			  { "Pipe", {1, 1} },
-																			  { "Pipe to ground", {1, 1} },
-																			  { "Pump", {3, 3} },
-																			  { "Rail", {1.7f, 2.4f} },
-																			  { "Train stop", {1.8f, 1.8f} },
-																			  { "Rail signal", {1, 1} },
-																			  { "Rail chain signal", {1, 1} },
-																			  { "Locomotive", {2, 6} },
-																			  { "Cargo wagon", {2, 6} },
-																			  { "Fluid wagon", {2, 6} },
-																			  { "Artillery wagon", {2, 6} },
-																			  { "Car", {1.2f, 1.9f} },
-																			  { "Tank", {1.7f, 2.5f} },
-																			  { "Spidertron",  {2, 1.9f} },
-																			  { "Logistic robot", {1, 1} },
-																			  { "Construction robot", {1, 1} },
-																			  { "Active provider chest", {1, 1} },
-																			  { "Passive provider chest", {1, 1} },
-																			  { "Storage chest", {1, 1} },
-																			  { "Buffer chest", {1, 1} },
-																			  { "Requester chest", {1, 1} },
-																			  { "Roboport", {4, 4} },
-																			  { "Lamp", {1, 1} },
-																			  { "Red wire", {1, 1} },
-																			  { "Green wire", {1, 1} },
-																			  { "Arithmetic combinator", {1, 2} },
-																			  { "Decider combinator", {1, 2} },
-																			  { "Constant combinator", {1, 1} },
-																			  { "Power switch", {2, 2} },
-																			  { "Programmable speaker", {1, 1} },
-																			  { "Hazard concrete", {1, 1} },
-																			  { "Refined hazard concrete", {1, 1} },
-																			  { "Landfill", {1, 1} },
-																			  { "Land mine", {1, 1} },
-																			  { "Wall", {1, 1} },
-																			  { "Gate", {1, 1} },
-																			  { "Gun turret", {2, 2} },
-																			  { "Laser turret", {2, 2} },
-																			  { "Flamethrower turret", {2, 3} },
-																			  { "Artillery turret", {3, 3} },
-																			  { "Radar", {3, 3} },
-																			  { "Rocket silo", {9, 9} },
-																			  { "Repair pack", {1, 1} },
-																			  { "Boiler", {3, 2} },
-																			  { "Steam engine", {3, 5} },
-																			  { "Steam turbine", {3, 5} },
-																			  { "Solar panel", {3, 3} },
-																			  { "Nuclear reactor", {5, 5} },
-																			  { "Heat exchanger", {3, 2} },
-																			  { "Heat pipe", {1, 1} },
-																			  { "Burner mining drill", {2, 2} },
-																			  { "Electric mining drill", {3, 3} },
-																			  { "Offshore pump", {1, 2} },
-																			  { "Pumpjack", {3, 3} },
-																			  { "Stone furnace", {1.6f, 2} },
-																			  { "Steel furnace", {1.6f, 2} },
-																			  { "Electric furnace", {1.6f, 2} },
-																			  { "Assembling machine 1", {3, 3} },
-																			  { "Assembling machine 2", {3, 3} },
-																			  { "Assembling machine 3", {3, 3} },
-																			  { "Oil refinery", {5, 5} },
-																			  { "Chemical plant", {3, 3} },
-																			  { "Centrifuge", {3, 3} },
-																			  { "Lab", {3, 3} },
-																			  { "Beacon", {3, 3} },
-																			  { "Express transport belt", {1, 1} },
-																			  { "Express underground belt", {1, 1} },
-																			  { "Express splitter", {1, 1} },
-																			  { "Concrete", {1, 1} },
-																			  { "Refined concrete", {1, 1} },
-																			  { "Stone brick",  {1, 1} } };
+static const std::map<std::string, std::vector<float>> old_building_size_list = {
+	{ "Accumulator", {2, 2} },
+	{ "Wooden chest", {1, 1} },
+	{ "Iron chest", {1, 1} },
+	{ "Steel chest", {1, 1} },
+	{ "Storage tank", {3, 3} },
+	{ "Transport belt", {1, 1} },
+	{ "Fast transport belt", {1, 1} },
+	{ "Underground belt", {1, 1} },
+	{ "Fast underground belt", {1, 1} },
+	{ "Splitter", {2, 1} },
+	{ "Fast splitter", {2, 1} },
+	{ "Burner inserter", {1, 1} },
+	{ "Inserter", {1, 1} },
+	{ "Long-handed inserter", {1, 1} },
+	{ "Fast inserter", {1, 1} },
+	{ "Filter inserter", {1, 1} },
+	{ "Stack inserter", {1, 1} },
+	{ "Stack filter inserter", {1, 1} },
+	{ "Small electric pole", {1, 1} },
+	{ "Medium electric pole", {1, 1} },
+	{ "Big electric pole", {2, 2} },
+	{ "Substation", {2, 2} },
+	{ "Pipe", {1, 1} },
+	{ "Pipe to ground", {1, 1} },
+	{ "Pump", {3, 3} },
+	{ "Rail", {1.7f, 2.4f} },
+	{ "Train stop", {1.8f, 1.8f} },
+	{ "Rail signal", {1, 1} },
+	{ "Rail chain signal", {1, 1} },
+	{ "Locomotive", {2, 6} },
+	{ "Cargo wagon", {2, 6} },
+	{ "Fluid wagon", {2, 6} },
+	{ "Artillery wagon", {2, 6} },
+	{ "Car", {1.2f, 1.9f} },
+	{ "Tank", {1.7f, 2.5f} },
+	{ "Spidertron",  {2, 1.9f} },
+	{ "Logistic robot", {1, 1} },
+	{ "Construction robot", {1, 1} },
+	{ "Active provider chest", {1, 1} },
+	{ "Passive provider chest", {1, 1} },
+	{ "Storage chest", {1, 1} },
+	{ "Buffer chest", {1, 1} },
+	{ "Requester chest", {1, 1} },
+	{ "Roboport", {4, 4} },
+	{ "Lamp", {1, 1} },
+	{ "Red wire", {1, 1} },
+	{ "Green wire", {1, 1} },
+	{ "Arithmetic combinator", {1, 2} },
+	{ "Decider combinator", {1, 2} },
+	{ "Constant combinator", {1, 1} },
+	{ "Power switch", {2, 2} },
+	{ "Programmable speaker", {1, 1} },
+	{ "Hazard concrete", {1, 1} },
+	{ "Refined hazard concrete", {1, 1} },
+	{ "Landfill", {1, 1} },
+	{ "Land mine", {1, 1} },
+	{ "Wall", {1, 1} },
+	{ "Gate", {1, 1} },
+	{ "Gun turret", {2, 2} },
+	{ "Laser turret", {2, 2} },
+	{ "Flamethrower turret", {2, 3} },
+	{ "Artillery turret", {3, 3} },
+	{ "Radar", {3, 3} },
+	{ "Rocket silo", {9, 9} },
+	{ "Repair pack", {1, 1} },
+	{ "Boiler", {3, 2} },
+	{ "Steam engine", {3, 5} },
+	{ "Steam turbine", {3, 5} },
+	{ "Solar panel", {3, 3} },
+	{ "Nuclear reactor", {5, 5} },
+	{ "Heat exchanger", {3, 2} },
+	{ "Heat pipe", {1, 1} },
+	{ "Burner mining drill", {2, 2} },
+	{ "Electric mining drill", {3, 3} },
+	{ "Offshore pump", {1, 2} },
+	{ "Pumpjack", {3, 3} },
+	{ "Stone furnace", {1.6f, 2} },
+	{ "Steel furnace", {1.6f, 2} },
+	{ "Electric furnace", {1.6f, 2} },
+	{ "Assembling machine 1", {3, 3} },
+	{ "Assembling machine 2", {3, 3} },
+	{ "Assembling machine 3", {3, 3} },
+	{ "Oil refinery", {5, 5} },
+	{ "Chemical plant", {3, 3} },
+	{ "Centrifuge", {3, 3} },
+	{ "Lab", {3, 3} },
+	{ "Beacon", {3, 3} },
+	{ "Express transport belt", {1, 1} },
+	{ "Express underground belt", {1, 1} },
+	{ "Express splitter", {1, 1} },
+	{ "Concrete", {1, 1} },
+	{ "Refined concrete", {1, 1} },
+	{ "Stone brick",  {1, 1} } };
 
 static const std::map<std::string, std::vector<float>> * building_size_map_p = &building_size_list;
 
-static const std::vector<std::string> handcrafted_list = { "Accumulator",
-														   "Wooden chest",
-														   "Iron chest", 
-														   "Steel chest", 
-														   "Storage tank", 
-														   "Transport belt", 
-														   "Fast transport belt", 
-														   "Underground belt", 
-														   "Fast underground belt", 
-														   "Splitter", 
-														   "Fast splitter", 
-														   "Burner inserter", 
-														   "Inserter", 
-														   "Long-handed inserter", 
-														   "Fast inserter", 
-														   "Filter inserter", 
-														   "Stack inserter", 
-														   "Stack filter inserter", 
-														   "Small electric pole", 
-														   "Medium electric pole", 
-														   "Big electric pole", 
-														   "Substation", 
-														   "Pipe", 
-														   "Pipe to ground", 
-														   "Pump", 
-														   "Rail", 
-														   "Train stop", 
-														   "Rail signal", 
-														   "Rail chain signal", 
-														   "Locomotive", 
-														   "Cargo wagon", 
-														   "Fluid wagon", 
-														   "Artillery wagon", 
-														   "Car", 
-														   "Tank", 
-														   "Spidertron", 
-														   "Spidertron remote", 
-														   "Logistic robot", 
-														   "Construction robot", 
-														   "Active provider chest", 
-														   "Passive provider chest", 
-														   "Storage chest", 
-														   "Buffer chest", 
-														   "Requester chest", 
-														   "Roboport", 
-														   "Lamp", 
-														   "Red wire", 
-														   "Green wire", 
-														   "Arithmetic combinator", 
-														   "Decider combinator", 
-														   "Constant combinator", 
-														   "Power switch", 
-														   "Programmable speaker", 
-														   "Hazard concrete", 
-														   "Refined hazard concrete", 
-														   "Landfill", 
-														   "Cliff explosives", 
-														   "Pistol", 
-														   "Submachine gun", 
-														   "Shotgun", 
-														   "Combat shotgun", 
-														   "Rocket launcher", 
-														   "Flamethrower", 
-														   "Land mine", 
-														   "Firearm magazine", 
-														   "Piercing rounds magazine", 
-														   "Uranium rounds magazine", 
-														   "Shotgun shells", 
-														   "Piercing shotgun shells", 
-														   "Cannon shell", 
-														   "Explosive cannon shell", 
-														   "Uranium cannon shell", 
-														   "Explosive uranium cannon shell", 
-														   "Artillery shell", 
-														   "Rocket", 
-														   "Explosive rocket", 
-														   "Atomic bomb", 
-														   "Grenade", 
-														   "Cluster grenade", 
-														   "Poison capsule", 
-														   "Slowdown capsule", 
-														   "Defender capsule", 
-														   "Distractor capsule", 
-														   "Destroyer capsule", 
-														   "Discharge defense remote", 
-														   "Artillery targeting remote", 
-														   "Light armor", 
-														   "Heavy armor", 
-														   "Modular armor", 
-														   "Power armor", 
-														   "Power armor MK2", 
-														   "Portable solar panel", 
-														   "Portable fusion reactor", 
-														   "Energy shield", 
-														   "Energy shield MK2", 
-														   "Personal battery", 
-														   "Personal battery MK2", 
-														   "Personal laser defense", 
-														   "Discharge defense", 
-														   "Belt immunity equipment", 
-														   "Exoskeleton", 
-														   "Personal roboport", 
-														   "Personal roboport MK2", 
-														   "Nightvision", 
-														   "Wall", 
-														   "Gate", 
-														   "Gun turret", 
-														   "Laser turret", 
-														   "Flamethrower turret", 
-														   "Artillery turret", 
-														   "Radar", 
-														   "Rocket silo", 
-														   "Repair pack", 
-														   "Boiler", 
-														   "Steam engine", 
-														   "Steam turbine", 
-														   "Solar panel", 															 
-														   "Nuclear reactor", 
-														   "Heat exchanger", 
-														   "Heat pipe", 
-														   "Burner mining drill", 
-														   "Electric mining drill", 
-														   "Offshore pump", 
-														   "Pumpjack", 
-														   "Stone furnace", 
-														   "Steel furnace", 
-														   "Electric furnace", 
-														   "Assembling machine 1", 
-														   "Assembling machine 2", 
-														   "Assembling machine 3", 
-														   "Oil refinery", 
-														   "Chemical plant", 
-														   "Centrifuge", 
-														   "Lab", 
-														   "Beacon", 
-														   "Speed module", 
-														   "Speed module 2", 
-														   "Speed module 3", 
-														   "Efficiency module", 
-														   "Efficiency module 2", 
-														   "Efficiency module 3", 
-														   "Productivity module", 
-														   "Productivity module 2", 
-														   "Productivity module 3", 
-														   "Copper cable", 
-														   "Iron stick", 
-														   "Iron gear wheel", 
-														   "Empty barrel",
-														   "Electronic circuit", 
-														   "Advanced circuit", 
-														   "Flying robot frame", 
-														   "Satellite", 
-														   "Rocket control unit", 
-														   "Low density structure", 
-														   "Uranium fuel cell", 
-														   "Automation science pack", 
-														   "Logistic science pack", 
-														   "Military science pack", 
-														   "Chemical science pack", 
-														   "Production science pack", 
-														   "Utility science pack", 
-														   "Space science pack" };
+static const std::vector<std::string> handcrafted_list = {
+	"Accumulator",
+	"Wooden chest",
+	"Iron chest",
+	"Steel chest",
+	"Storage tank",
+	"Transport belt",
+	"Fast transport belt",
+	"Underground belt",
+	"Fast underground belt",
+	"Splitter",
+	"Fast splitter",
+	"Burner inserter",
+	"Inserter",
+	"Long-handed inserter",
+	"Fast inserter",
+	"Filter inserter",
+	"Stack inserter",
+	"Stack filter inserter",
+	"Small electric pole",
+	"Medium electric pole",
+	"Big electric pole",
+	"Substation",
+	"Pipe",
+	"Pipe to ground",
+	"Pump",
+	"Rail",
+	"Train stop",
+	"Rail signal",
+	"Rail chain signal",
+	"Locomotive",
+	"Cargo wagon",
+	"Fluid wagon",
+	"Artillery wagon",
+	"Car",
+	"Tank",
+	"Spidertron",
+	"Spidertron remote",
+	"Logistic robot",
+	"Construction robot",
+	"Active provider chest",
+	"Passive provider chest",
+	"Storage chest",
+	"Buffer chest",
+	"Requester chest",
+	"Roboport",
+	"Lamp",
+	"Red wire",
+	"Green wire",
+	"Arithmetic combinator",
+	"Decider combinator",
+	"Constant combinator",
+	"Power switch",
+	"Programmable speaker",
+	"Hazard concrete",
+	"Refined hazard concrete",
+	"Landfill",
+	"Cliff explosives",
+	"Pistol",
+	"Submachine gun",
+	"Shotgun",
+	"Combat shotgun",
+	"Rocket launcher",
+	"Flamethrower",
+	"Land mine",
+	"Firearm magazine",
+	"Piercing rounds magazine",
+	"Uranium rounds magazine",
+	"Shotgun shells",
+	"Piercing shotgun shells",
+	"Cannon shell",
+	"Explosive cannon shell",
+	"Uranium cannon shell",
+	"Explosive uranium cannon shell",
+	"Artillery shell",
+	"Rocket",
+	"Explosive rocket",
+	"Atomic bomb",
+	"Grenade",
+	"Cluster grenade",
+	"Poison capsule",
+	"Slowdown capsule",
+	"Defender capsule",
+	"Distractor capsule",
+	"Destroyer capsule",
+	"Discharge defense remote",
+	"Artillery targeting remote",
+	"Light armor",
+	"Heavy armor",
+	"Modular armor",
+	"Power armor",
+	"Power armor MK2",
+	"Portable solar panel",
+	"Portable fusion reactor",
+	"Energy shield",
+	"Energy shield MK2",
+	"Personal battery",
+	"Personal battery MK2",
+	"Personal laser defense",
+	"Discharge defense",
+	"Belt immunity equipment",
+	"Exoskeleton",
+	"Personal roboport",
+	"Personal roboport MK2",
+	"Nightvision",
+	"Wall",
+	"Gate",
+	"Gun turret",
+	"Laser turret",
+	"Flamethrower turret",
+	"Artillery turret",
+	"Radar",
+	"Rocket silo",
+	"Repair pack",
+	"Boiler",
+	"Steam engine",
+	"Steam turbine",
+	"Solar panel",
+	"Nuclear reactor",
+	"Heat exchanger",
+	"Heat pipe",
+	"Burner mining drill",
+	"Electric mining drill",
+	"Offshore pump",
+	"Pumpjack",
+	"Stone furnace",
+	"Steel furnace",
+	"Electric furnace",
+	"Assembling machine 1",
+	"Assembling machine 2",
+	"Assembling machine 3",
+	"Oil refinery",
+	"Chemical plant",
+	"Centrifuge",
+	"Lab",
+	"Beacon",
+	"Speed module",
+	"Speed module 2",
+	"Speed module 3",
+	"Efficiency module",
+	"Efficiency module 2",
+	"Efficiency module 3",
+	"Productivity module",
+	"Productivity module 2",
+	"Productivity module 3",
+	"Copper cable",
+	"Iron stick",
+	"Iron gear wheel",
+	"Empty barrel",
+	"Electronic circuit",
+	"Advanced circuit",
+	"Flying robot frame",
+	"Satellite",
+	"Rocket control unit",
+	"Low density structure",
+	"Uranium fuel cell",
+	"Automation science pack",
+	"Logistic science pack",
+	"Military science pack",
+	"Chemical science pack",
+	"Production science pack",
+	"Utility science pack",
+	"Space science pack" };
 
-static const std::vector<std::string> science_packs = { "Automation science pack", 
-														"Logistic science pack", 
-														"Military science pack", 
-														"Chemical science pack", 
-														"Production science pack", 
-														"Utility science pack", 
-														"Space science pack" };
+static const std::vector<std::string> science_packs = {
+	"Automation science pack",
+	"Logistic science pack",
+	"Military science pack",
+	"Chemical science pack",
+	"Production science pack",
+	"Utility science pack",
+	"Space science pack" };
 
 static const std::vector<std::string> furnace_list = { "Iron plate",
 													   "Copper plate",
@@ -690,31 +697,31 @@ static const std::vector<std::string> assemply_level2_extra_list = { "Empty crud
 																	 "Empty water barrel" };
 
 static const std::vector<std::string> chemical_plant_list = { "Flamethrower ammo",
-															  "Solid fuel", 
-															  "Plastic bar", 
-															  "Sulfur",															  
+															  "Solid fuel",
+															  "Plastic bar",
+															  "Sulfur",
 															  "Battery",
 															  "Explosives" };
 
-static const std::vector<std::string> chemical_plant_extra_list = { "Sulfuric acid", 
+static const std::vector<std::string> chemical_plant_extra_list = { "Sulfuric acid",
 																	"Lubricant",
 																	"Heavy oil cracking",
 																	"Light oil cracking" };
 
-static const std::vector<std::string> centrifuge_list = { "Nuclear fuel", 
-														  "Uranium processing",														  
-														  "Nuclear fuel reprocessing", 
+static const std::vector<std::string> centrifuge_list = { "Nuclear fuel",
+														  "Uranium processing",
+														  "Nuclear fuel reprocessing",
 														  "Kovarex enrichment process" };
 
 static const std::vector<std::string> oil_refinery_list = { "Basic oil processing",
-															"Advanced oil processing",															
+															"Advanced oil processing",
 															"Coal liquefaction" };
 
 static const std::vector<std::string> rocket_silo_list = { "Rocket part" };
 
 
-static const std::vector<std::string> raw_resource_list = { "Wood", 
-														    "Coal",
+static const std::vector<std::string> raw_resource_list = { "Wood",
+															"Coal",
 															"Stone",
 															"Iron ore",
 															"Copper ore",
@@ -722,16 +729,16 @@ static const std::vector<std::string> raw_resource_list = { "Wood",
 															"Raw fish" };
 
 static const std::vector<std::string> filter_take_put_drop_extra_list = { "Nuclear fuel",
-																		  "Uranium-235", 
-																		  "Uranium-238", 
+																		  "Uranium-235",
+																		  "Uranium-238",
 																		  "Used-up uranium fuel cell" };
 
-															
-static const std::vector<std::string> weapon_list = { "Pistol", 
-													  "Submachine gun", 
-													  "Shotgun", 
-													  "Combat shotgun", 
-													  "Flamethrower", 
+
+static const std::vector<std::string> weapon_list = { "Pistol",
+													  "Submachine gun",
+													  "Shotgun",
+													  "Combat shotgun",
+													  "Flamethrower",
 													  "Rocket launcher" };
 
 static const std::vector<std::string> magazine_list = { "Firearm magazine",
@@ -741,15 +748,15 @@ static const std::vector<std::string> magazine_list = { "Firearm magazine",
 static const std::vector<std::string> shotgun_shell_list = { "Shotgun shells",
 															 "Piercing shotgun shells" };
 
-static const std::vector<std::string> rocket_list = { "Rocket", 
-													  "Explosive rocket", 
+static const std::vector<std::string> rocket_list = { "Rocket",
+													  "Explosive rocket",
 													  "Atomic bomb" };
 
 static const std::vector<std::string> flamethrower_fuel_list = { "Flamethrower ammo" };
 
-static const std::vector<std::string> tank_shell_list = { "Cannon shell", 
-														  "Explosive cannon shell", 
-														  "Uranium cannon shell", 
+static const std::vector<std::string> tank_shell_list = { "Cannon shell",
+														  "Explosive cannon shell",
+														  "Uranium cannon shell",
 														  "Explosive uranium cannon shell" };
 
 static const std::vector<std::string> grenade_list = {};
@@ -760,70 +767,71 @@ static const std::vector<std::string> tank_shells = {};
 
 static const std::vector<std::string> tank_shells2 = {};
 
-static const std::vector<std::string> item_categories = {"Logistics", 
-														 "Production", 
-														 "Intermediates", 
-														 "Combat"};
+static const std::vector<std::string> item_categories = {
+	"Logistics",
+	"Production",
+	"Intermediates",
+	"Combat"};
 
 static const std::vector<std::string> item_categories_fuel = { "Fuel"};
 
-static const std::vector<std::string> item_logistics = {"None", 
-														"Wooden chest", 
-														"Iron chest", 
-														"Steel chest", 
-														"Transport belt", 
-														"Burner inserter", 
-														"Inserter", 
-														"Long-handed inserter", 
-														"Fast inserter", 
-														"Filter inserter", 
-														"Stack inserter", 
-														"Stack filter inserter", 
-														"Small electric pole", 
-														"Pipe", "Pipe to ground", 
-														"Underground belt", 
+static const std::vector<std::string> item_logistics = {"None",
+														"Wooden chest",
+														"Iron chest",
+														"Steel chest",
+														"Transport belt",
+														"Burner inserter",
+														"Inserter",
+														"Long-handed inserter",
+														"Fast inserter",
+														"Filter inserter",
+														"Stack inserter",
+														"Stack filter inserter",
+														"Small electric pole",
+														"Pipe", "Pipe to ground",
+														"Underground belt",
 														"Splitter" };
 
-static const std::vector<std::string> item_production = { "Boiler", 
-														  "Steam engine", 
-														  "Burner mining drill", 
-														  "Electric mining drill", 
-														  "Offshore pump", "Pumpjack", 
-														  "Stone furnace", 
-														  "Steel furnace", 
-														  "Assembling machine 1", 
-														  "Assembling machine 2", 
-														  "Lab", 
-														  "Speed module", 
-														  "Speed module 2" , 
-														  "Speed module 3", 
-														  "Efficiency module", 
-														  "Efficiency module 2", 
-														  "Efficiency module 3", 
-														  "Productivity module", 
-														  "Productivity module 2", 
+static const std::vector<std::string> item_production = { "Boiler",
+														  "Steam engine",
+														  "Burner mining drill",
+														  "Electric mining drill",
+														  "Offshore pump", "Pumpjack",
+														  "Stone furnace",
+														  "Steel furnace",
+														  "Assembling machine 1",
+														  "Assembling machine 2",
+														  "Lab",
+														  "Speed module",
+														  "Speed module 2" ,
+														  "Speed module 3",
+														  "Efficiency module",
+														  "Efficiency module 2",
+														  "Efficiency module 3",
+														  "Productivity module",
+														  "Productivity module 2",
 														  "Productivity module 3" };
 
-static const std::vector<std::string> item_intermediates = { "Wood", 
-															 "Coal", 
-															 "Stone", 
-															 "Iron ore", 
-															 "Copper ore", 
-															 "Iron plate", 
-															 "Copper plate", 
-															 "Iron gear wheel", 
-															 "Copper cable", 
-															 "Automation science pack", 
+static const std::vector<std::string> item_intermediates = { "Wood",
+															 "Coal",
+															 "Stone",
+															 "Iron ore",
+															 "Copper ore",
+															 "Iron plate",
+															 "Copper plate",
+															 "Iron gear wheel",
+															 "Copper cable",
+															 "Automation science pack",
 															 "Electronic circuit" };
 
-static const std::vector<std::string> item_combat = { "Pistol", 
-												      "Submachine gun", 
+static const std::vector<std::string> item_combat = { "Pistol",
+													  "Submachine gun",
 													  "Shotgun"};
 
-static const std::vector<std::string> take_from = {"Input", 
-												   "Output", 
-												   "Fuel", 
-												   "Modules", 
+static const std::vector<std::string> take_from = {"Input",
+												   "Output",
+												   "Fuel",
+												   "Modules",
 												   "Chest",
 												   "Wreck" };
 
@@ -831,8 +839,8 @@ enum INPUT_OUTPUT {
 	LEFT, NONE, RIGHT
 };
 
-static const std::vector<std::string> input_output = { "Left", 
-													   "None", 
+static const std::vector<std::string> input_output = { "Left",
+													   "None",
 													   "Right"};
 
 static inline std::map<std::string, INPUT_OUTPUT> map_input_output = {
@@ -841,19 +849,19 @@ static inline std::map<std::string, INPUT_OUTPUT> map_input_output = {
 	{input_output[2], RIGHT}
 };
 
-static const std::vector<std::string> module_list = {"Speed module", 
-													 "Speed module 2", 
-													 "Speed module 3", 
-													 "Efficiency module", 
-													 "Efficiency module 2", 
-													 "Efficiency module 3", 
-													 "Productivity module", 
-													 "Productivity module 2", 
+static const std::vector<std::string> module_list = {"Speed module",
+													 "Speed module 2",
+													 "Speed module 3",
+													 "Efficiency module",
+													 "Efficiency module 2",
+													 "Efficiency module 3",
+													 "Productivity module",
+													 "Productivity module 2",
 													 "Productivity module 3"};
 
-static const std::vector<std::string> build_orientations = { "North", 
-															 "East", 
-															 "South", 
+static const std::vector<std::string> build_orientations = { "North",
+															 "East",
+															 "South",
 															 "West"};
 
 static const std::vector<std::string> tech_list = { "Advanced electronics",
@@ -972,7 +980,7 @@ static const std::vector<std::string> tech_list = { "Advanced electronics",
 													"Heavy armor",
 													"Modular armor",
 													"Power armor",
-													"Power armor�MK2",
+													"Power armor MK2",
 													"Gates",
 													"Land mines",
 													"Stone walls",
@@ -1045,10 +1053,11 @@ static const std::vector<std::string> tech_list = { "Advanced electronics",
 													"Speed module 2",
 													"Speed module 3" };
 
-static const std::vector<std::string> drills_list = { "Electric mining drill", 
+static const std::vector<std::string> drills_list = { "Electric mining drill",
 													  "Pumpjack" };
 
-static const struct {
+static const struct
+{
 	std::string game_speed = "Game Speed";
 	std::string walk = "Walk";
 	std::string mine = "Mine";
@@ -1073,7 +1082,8 @@ static const struct {
 
 } struct_tasks_list;
 
-static const struct {
+static const struct
+{
 	std::string input = "input";
 	std::string output = "output";
 	std::string fuel = "fuel";
@@ -1082,18 +1092,21 @@ static const struct {
 	std::string wreck = "wreck";
 } struct_from_into_list;
 
-static const struct {
+static const struct
+{
 	std::string stone = "Stone furnace";
 	std::string steel = "Steel furnace";
 } struct_auto_put_furnace_list;
 
-static const struct {
+static const struct
+{
 	std::string burner_mining_drill = "Burner mining drill";
 	std::string burner_inserter = "Burner inserter";
 	std::string boiler = "Boiler";
 } struct_auto_put_burner_list;
 
-static const struct {
+static const struct
+{
 	std::string wood = "Wood";
 	std::string coal = "Coal";
 	std::string solid_fuel = "Solid fuel";
@@ -1102,7 +1115,8 @@ static const struct {
 	std::string uranium_fuel_cell = "Uranium fuel cell";
 } struct_fuel_list;
 
-static const struct {
+static const struct
+{
 	std::string lab = "Lab";
 	std::string red_science = "automation-science-pack";
 	std::string green_science = "logistic-science-pack";
@@ -1113,16 +1127,19 @@ static const struct {
 	std::string white_science = "space-science-pack";
 } struct_science_list;
 
-struct drill_types {
+struct drill_types
+{
 	std::string burner = "burner-mining-drill";
 	std::string electric = "electric-mining-drill";
 };
 
-struct transport_types {
+struct transport_types
+{
 	std::string yellow_belt = "transport-belt";
 };
 
-static const struct {
+static const struct
+{
 	std::string chest = "defines.inventory.chest";
 	std::string lab_input = "defines.inventory.lab_input";
 	std::string lab_modules = "defines.inventory.lab_modules";
@@ -1133,46 +1150,54 @@ static const struct {
 	std::string assembly_modules = "defines.inventory.assembling_machine_modules";
 } struct_take_put_list;
 
-struct plate_types {
+struct plate_types
+{
 	std::string iron = "iron-plate";
 	std::string copper = "copper-plate";
 };
 
-struct ore_types {
+struct ore_types
+{
 	std::string stone = "stone";
 	std::string iron = "iron-ore";
 	std::string copper = "copper-ore";
 };
 
-struct intermediate_types {
+struct intermediate_types
+{
 	std::string iron_gear_wheel = "iron-gear-wheel";
 	std::string copper_cable = "copper-cable";
 	std::string circuit_green = "electronic-circuit";
 };
 
-struct pipe_struct {
+struct pipe_struct
+{
 	std::string pipe = "pipe";
 	std::string pipe_ground = "pipe-to-ground";
 };
 
-struct power_structures_struct {
+struct power_structures_struct
+{
 	std::string boiler = "boiler";
 	std::string steam_engine = "steam-engine";
 	std::string pump = "offshore-pump";
 	std::string small_pole = "small-electric-pole";
 };
 
-struct chest_types {
+struct chest_types
+{
 	std::string wood = "wooden-chest";
 };
 
-struct assembly_types {
+struct assembly_types
+{
 	std::string level_1 = "assembling-machine-1";
 	std::string level_2 = "assembling-machine-2";
-
+	std::string level_3 = "assembling-machine-3";
 };
 
-struct build_distance_struct {
+struct build_distance_struct
+{
 	float one = 9.8f;
 	float two = 8.8f;
 	float three = 6.8f;
@@ -1184,17 +1209,16 @@ struct build_distance_struct {
 // Observations. The middle of a normal mining path are x.5, y.5 So this should be the point used to calculate how close the player needs to be to mine it
 // The tip-over point from the game to choose one mining path over an adjacent seem to be at the x.0 mark, but this should be tested in the API with e.g. 1.00001 and see if it takes the patch at 0.5 or 1.5
 // It seems like the tip-over point for the player to reach something 3 tiles away is 0.269531 (very random)
-// It furthermore seems like the 3 tiles can only be reached for tiles being a maximum of 
-// maybe the walk function in lua should be changed, so it does not make the studdering but stops as soon as it has rached the distination so if it is 80.1235 then when it is 80.1235 or larger it will stop if it came from below 80.1235. i THink this complexity will slow down the script too much.
 
-
-struct mining_distance_struct {
+struct mining_distance_struct
+{
 	float one = 2.65f;
 	float two = 1.65f;
 	float three = 0.65f;
 };
 
-struct build_direction_struct {
+struct build_direction_struct
+{
 	std::string north = "defines.direction.north";
 	std::string south = "defines.direction.south";
 	std::string east = "defines.direction.east";
@@ -1203,7 +1227,8 @@ struct build_direction_struct {
 
 static const build_direction_struct build_directions;
 
-struct {
+struct
+{
 	std::string north = "North";
 	std::string south = "South";
 	std::string east = "East";
@@ -1211,18 +1236,21 @@ struct {
 
 } struct_direction_list;
 
-struct inserter_types {
+struct inserter_types
+{
 	std::string yellow = "inserter";
 };
 
-struct building_size_struct {
+struct building_size_struct
+{
 	int small_building = 1;
 	int medium_building = 2;
 	int large_building = 3;
 	int very_large_building = 7;
 };
 
-enum walk_direction {
+enum walk_direction
+{
 	north = 1,
 	northeast = 2,
 	northwest = 3,

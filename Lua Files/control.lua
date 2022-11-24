@@ -238,6 +238,15 @@ end
 
 -- Handcraft one or more of a recipe
 local function craft()
+	if not player.force.recipes[item].enabled then
+		if(step > step_reached) then
+			warning(string.format("Task: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - It needs to be researched first.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			step_reached = step
+		end
+
+		return false;
+	end
+
 	amount = player.get_craftable_count(item);
 
 	if amount > 0 then
@@ -628,6 +637,15 @@ local function recipe()
 
 	if not check_selection_reach() then
 		return false
+	end
+
+	if not player.force.recipes[item].enabled then
+		if(step > step_reached) then
+			warning(string.format("Task: %s, Action: %s, Step: %d - Recipe: It is not possible to set recipe %s - It needs to be researched first.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			step_reached = step
+		end
+
+		return false;
 	end
 
 	local items_returned = player_selection.set_recipe(item)

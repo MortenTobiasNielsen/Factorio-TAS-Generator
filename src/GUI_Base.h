@@ -22,9 +22,9 @@
 #include <wx/stattext.h>
 #include <wx/spinctrl.h>
 #include <wx/sizer.h>
+#include <wx/textctrl.h>
 #include <wx/combobox.h>
 #include <wx/radiobox.h>
-#include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 #include <wx/checkbox.h>
@@ -59,26 +59,26 @@ class GUI_Base : public wxFrame
 		wxPanel* m_panel21;
 		wxStaticText* label_x_cord;
 		wxSpinCtrlDouble* spin_x;
-		wxStaticText* label_item;
-		wxComboBox* cmb_item;
-		wxStaticText* label_building_orientation;
-		wxComboBox* cmb_building_orientation;
 		wxStaticText* label_y_cord;
 		wxSpinCtrlDouble* spin_y;
-		wxStaticText* label_from_into;
-		wxComboBox* cmb_from_into;
-		wxStaticText* label_direction_to_build;
-		wxComboBox* cmb_direction_to_build;
 		wxStaticText* label_amount;
 		wxSpinCtrl* spin_amount;
-		wxStaticText* label_input;
-		wxRadioBox* radio_input;
-		wxStaticText* label_building_size;
-		wxSpinCtrl* spin_building_size;
 		wxStaticText* label_comment;
 		wxTextCtrl* txt_comment;
+		wxStaticText* label_item;
+		wxComboBox* cmb_item;
+		wxStaticText* label_from_into;
+		wxComboBox* cmb_from_into;
+		wxStaticText* label_input;
+		wxRadioBox* radio_input;
 		wxStaticText* label_output;
 		wxRadioBox* radio_output;
+		wxStaticText* label_building_orientation;
+		wxComboBox* cmb_building_orientation;
+		wxStaticText* label_direction_to_build;
+		wxComboBox* cmb_direction_to_build;
+		wxStaticText* label_building_size;
+		wxSpinCtrl* spin_building_size;
 		wxStaticText* label_amount_of_buildings;
 		wxSpinCtrl* spin_building_amount;
 		TypePanel* type_panel;
@@ -131,21 +131,26 @@ class GUI_Base : public wxFrame
 		wxButton* btn_template_delete_task;
 		wxButton* btn_template_move_up_task;
 		wxButton* btn_template_move_down_task;
+		wxStaticLine* m_staticline51;
 		wxButton* btn_template_add_to_tasks_list1;
 		wxButton* btn_template_add_from_tasks_list1;
+		wxStaticText* label_template_amount_offset;
+		wxSpinCtrl* spin_amount_offset;
+		wxStaticText* label_template_amount_multiplier;
+		wxSpinCtrl* spin_amount_multiplier;
 		wxStaticText* label_template_x_offset;
-		wxTextCtrl* txt_template_x_offset;
+		wxSpinCtrl* spin_x_offset;
 		wxStaticText* label_template_y_offset;
-		wxTextCtrl* txt_template_y_offset;
+		wxSpinCtrl* spin_y_offset;
 		wxGrid* grid_template;
 		wxPanel* building_panel;
 		wxSearchCtrl* building_search_ctrl;
 		wxGrid* grid_buildings;
 		wxPanel* step_panel;
+		wxSearchCtrl* task_search_ctrl;
 		wxButton* btn_add_task11;
 		wxButton* btn_change_task11;
 		wxButton* btn_delete_task11;
-		wxSearchCtrl* task_search_ctrl;
 		wxButton* btn_move_up11;
 		wxButton* btn_move_down11;
 		wxGrid* grid_tasks;
@@ -241,13 +246,13 @@ class GUI_Base : public wxFrame
 		virtual void BuildingSearchOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void BuildingSearchOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnBuildingsGridLeftDoubleClick( wxGridEvent& event ) { event.Skip(); }
-		virtual void OnAddTaskClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnChangeTaskClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDeleteTaskClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnCancelButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddTaskClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeTaskClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeleteTaskClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
