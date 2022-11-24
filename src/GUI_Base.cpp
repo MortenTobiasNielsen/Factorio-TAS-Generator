@@ -902,7 +902,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_template_amount_offset->Wrap( -1 );
 	bSizer1052->Add( label_template_amount_offset, 0, wxALIGN_CENTER, 5 );
 
-	spin_amount_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	spin_amount_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
 	bSizer1052->Add( spin_amount_offset, 0, wxALL, 5 );
 
 
@@ -915,7 +915,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_template_amount_multiplier->Wrap( -1 );
 	bSizer1062->Add( label_template_amount_multiplier, 0, wxALIGN_CENTER, 5 );
 
-	spin_amount_multiplier = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	spin_amount_multiplier = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
 	bSizer1062->Add( spin_amount_multiplier, 0, wxALL, 5 );
 
 
@@ -934,7 +934,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_template_x_offset->Wrap( -1 );
 	bSizer105->Add( label_template_x_offset, 0, wxALIGN_CENTER, 5 );
 
-	spin_x_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	spin_x_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
 	bSizer105->Add( spin_x_offset, 0, wxALL, 5 );
 
 
@@ -947,7 +947,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	label_template_y_offset->Wrap( -1 );
 	bSizer106->Add( label_template_y_offset, 0, wxALIGN_CENTER, 5 );
 
-	spin_y_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, 0, 10, 0 );
+	spin_y_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
 	bSizer106->Add( spin_y_offset, 0, wxALL, 5 );
 
 

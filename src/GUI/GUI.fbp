@@ -5506,7 +5506,7 @@
                 <object class="auinotebookpage" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Templates</property>
-                    <property name="select">0</property>
+                    <property name="select">1</property>
                     <object class="wxPanel" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
@@ -6527,11 +6527,11 @@
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="initial">0</property>
-                                                            <property name="max">10</property>
+                                                            <property name="max">10000</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
-                                                            <property name="min">0</property>
+                                                            <property name="min">-10000</property>
                                                             <property name="min_size"></property>
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
@@ -6661,11 +6661,11 @@
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="initial">0</property>
-                                                            <property name="max">10</property>
+                                                            <property name="max">10000</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
-                                                            <property name="min">0</property>
+                                                            <property name="min">-10000</property>
                                                             <property name="min_size"></property>
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
@@ -6806,11 +6806,11 @@
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="initial">0</property>
-                                                            <property name="max">10</property>
+                                                            <property name="max">10000</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
-                                                            <property name="min">0</property>
+                                                            <property name="min">-10000</property>
                                                             <property name="min_size"></property>
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
@@ -6940,11 +6940,11 @@
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
                                                             <property name="initial">0</property>
-                                                            <property name="max">10</property>
+                                                            <property name="max">10000</property>
                                                             <property name="max_size"></property>
                                                             <property name="maximize_button">0</property>
                                                             <property name="maximum_size"></property>
-                                                            <property name="min">0</property>
+                                                            <property name="min">-10000</property>
                                                             <property name="min_size"></property>
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
@@ -7334,7 +7334,7 @@
                 <object class="auinotebookpage" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Steps</property>
-                    <property name="select">1</property>
+                    <property name="select">0</property>
                     <object class="wxPanel" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
