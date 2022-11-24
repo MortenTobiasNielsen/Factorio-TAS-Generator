@@ -876,10 +876,114 @@ local function doStep(current_step)
 	end
 end
 
+local function handle_pretick()
+	while true do
+		if steps[step] == nil or steps[step][1] == "break" then
+			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
+			debug_state = false
+			run = false
+			return
+		elseif (steps[step][2] == "pause") then
+			pause()
+			msg("Script paused")
+			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+			debug_state = false
+			return
+		elseif (steps[step][2] == "stop") then
+			speed(steps[step][3])
+			msg(string.format("Script stopped - Game speed: %d", steps[step][3]))
+			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+			debug_state = false
+			run = false
+			return
+		elseif (steps[step][2] == "speed") then
+			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+			speed(steps[step][3])
+			step = step + 1
+		elseif steps[step][2] == "save" then
+			save(steps[step][1][1], steps[step][3])
+			step = step + 1
+		elseif(steps[step][2] == "walk") then
+			use_old_walking_pattern = steps[step][4] == "old" --compatibility
+		else
+			return --no more to do, break loop
+		end
+	end
+end
+
+local function handle_ontick()
+	if pickup_ticks > 0 then
+		player.picking_state = true
+		pickup_ticks = pickup_ticks - 1
+	end
+	if walking.walking == false then
+		if idle > 0 then
+			idle = idle - 1
+			idled = idled + 1
+
+			debug(string.format("Task: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
+
+			if idle == 0 then
+				idled = 0
+			end
+		elseif steps[step][2] == "walk" then
+			update_destination_position(steps[step][3][1], steps[step][3][2])
+
+			find_walking_pattern()
+			walking = walk()
+
+			change_step(1)
+
+		elseif steps[step][2] == "mine" then
+
+			player.update_selected_entity(steps[step][3])
+
+			player.mining_state = {mining = true, position = steps[step][3]}
+
+			duration = steps[step][4]
+
+			ticks_mining = ticks_mining + 1
+
+			if ticks_mining >= duration then
+				player.mining_state = {mining = false, position = steps[step][3]}
+				change_step(1)
+				mining = 0
+				ticks_mining = 0
+			end
+
+			mining = mining + 1
+			if mining > 5 then
+				if player.character_mining_progress == 0 then
+					warning(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					debug_state = false
+				else
+					mining = 0
+				end
+			end
+
+		elseif doStep(steps[step]) then
+			-- Do step while standing still
+			change_step(1)
+
+		end
+	else
+		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
+			if doStep(steps[step]) then
+				-- Do step while walking
+				change_step(1)
+			end
+		end
+	end
+end
+
+local function handle_posttick()
+	
+end
+
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
-	if not run then return end
-    if not player then
+	if not run then return end --early end on console:release
+    if not player then --set some parameters on the first tick
 		player = game.players[1]
 		player.surface.always_day = true
 		player_position = player.position
@@ -888,114 +992,20 @@ script.on_event(defines.events.on_tick, function(event)
 		update_destination_position(player_position.x, player_position.y)
 		player.force.research_queue_enabled = true
 		walking = {walking = false, direction = defines.direction.north}
-
-	elseif player.character ~= nil then
-		update_player_position()
-
-		if steps[step] == nil or steps[step][1] == "break" then
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-			debug_state = false
-			return
-		end
-
-		if (steps[step][2] == "pause") then
-			pause()
-			debug("Script paused")
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-			debug_state = false
-			return
-		end
-
-		if (steps[step][2] == "stop") then
-			speed(steps[step][3])
-			debug(string.format("Script stopped - Game speed: %d", steps[step][3]))
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-			debug_state = false
-			return
-		end
-
-		if (steps[step][2] == "speed") then
-			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
-			speed(steps[step][3])
-			change_step(1)
-		end
-
-		if steps[step][2] == "save" then
-			save(steps[step][1][1], steps[step][3])
-			change_step(1)
-		end
-
-		if(steps[step][2] == "walk") then
-			use_old_walking_pattern = steps[step][4] == "old"
-		end
-
-		if pickup_ticks > 0 then
-			player.picking_state = true
-			pickup_ticks = pickup_ticks - 1
-		end
-
-		walking = walk()
-		if walking.walking == false then
-			if idle > 0 then
-				idle = idle - 1
-				idled = idled + 1
-
-				debug(string.format("Task: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
-
-				if idle == 0 then
-					idled = 0
-				end
-			elseif steps[step][2] == "walk" then
-				update_destination_position(steps[step][3][1], steps[step][3][2])
-
-				find_walking_pattern()
-				walking = walk()
-
-				change_step(1)
-
-			elseif steps[step][2] == "mine" then
-
-				player.update_selected_entity(steps[step][3])
-
-				player.mining_state = {mining = true, position = steps[step][3]}
-
-				duration = steps[step][4]
-
-				ticks_mining = ticks_mining + 1
-
-				if ticks_mining >= duration then
-					player.mining_state = {mining = false, position = steps[step][3]}
-					change_step(1)
-					mining = 0
-					ticks_mining = 0
-				end
-
-				mining = mining + 1
-				if mining > 5 then
-					if player.character_mining_progress == 0 then
-						warning(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
-						debug_state = false
-					else
-						mining = 0
-					end
-				end
-
-			elseif doStep(steps[step]) then
-				-- Do step while standing still
-				change_step(1)
-
-			end
-		else
-			if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
-				if doStep(steps[step]) then
-					-- Do step while walking
-					change_step(1)
-				end
-			end
-		end
-
-		player.walking_state = walking
 	end
+	if player.character == nil then return end --early end if in god mode
+
+	update_player_position()
+
+	handle_pretick()
+	if not run then return end --early end on from pretick
+
+	walking = walk()
+	handle_ontick()
+
+	handle_posttick()
+
+	player.walking_state = walking
 end)
 
 local function mining_event_replace(event, item_name, amount)
