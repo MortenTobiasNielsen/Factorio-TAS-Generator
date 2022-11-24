@@ -314,7 +314,7 @@ local function create_entity_replace()
 		local can_replace_all = entities_between_length == #entities_between
 
 		--chech that all entities betweeen are in the same direction
-		if can_replace_all and not created_entity.name == "pipe-to-ground" then --ignore direction for pipes
+		if can_replace_all and created_entity.name ~= "pipe-to-ground" then --ignore direction for pipes
 			for __, e in pairs(entities_between) do
 				if e.direction ~= created_entity.direction then
 					can_replace_all = false
