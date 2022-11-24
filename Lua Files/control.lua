@@ -321,6 +321,23 @@ local function create_entity_replace()
 					break
 				end
 			end
+		elseif can_replace_all and created_entity.name == "pipe-to-ground" then
+			for __, e in pairs(entities_between) do --check all entities
+				if e.neighbours and e.neighbours[1] then -- null check
+					for ___, n in pairs(e.neighbours[1]) do --check all neighbours for each entity
+						for i = 1, #entities_between do --make sure it exist every neighbour is only part of the set of entities between
+							if entities_between[i] == n then
+								can_replace_all = true
+								break --break out when found
+							else
+								can_replace_all = false
+							end
+						end
+						if not can_replace_all then break end --previous loop didn't find it
+					end
+				end
+				if not can_replace_all then break end --break out
+			end
 		end
 		--mine all entities inbetween
 		if can_replace_all then
