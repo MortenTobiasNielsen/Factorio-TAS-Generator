@@ -22,6 +22,8 @@ local task
 local task_category
 local count
 local item
+local amount
+local slot
 local direction
 local input
 local output
@@ -61,7 +63,7 @@ local on_player_created = function(event)
 end
 
 --Print message intended for viewers
-local function msg(msg) 
+local function msg(msg)
     player.print(msg)
 end
 
@@ -137,7 +139,7 @@ local function check_selection_reach()
 end
 
 -- Check that it is possible to get the inventory of the entity
-local function check_inventory() 
+local function check_inventory()
 	target_inventory = player_selection.get_inventory(slot)
 
 	if not target_inventory then
@@ -209,7 +211,7 @@ local function take()
 
 	if amount == -1 then 
 		amount = target_inventory.get_item_count(item)
-	else 
+	else
 		amount = math.min(target_inventory.get_item_count(item), amount)
 	end
 
@@ -217,7 +219,7 @@ local function take()
 		warning(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
-	
+
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -226,7 +228,7 @@ local function take()
 	end
 
 	target_inventory.remove{name=item, count=amount}
-	
+
 	local text = string.format("+%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"+2 Iron plate (5)"
 	local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
 	player.play_sound{path="utility/inventory_move"}
@@ -263,7 +265,7 @@ local function craft()
             warning(string.format("Task: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
             step_reached = step
 		end
-		
+
         return false
 	end
 end
@@ -391,16 +393,16 @@ local function build()
 				else
 					player.surface.set_tiles({{position = target_position, name = item}})
 				end
-	
+
 				if(item == "landfill") then
 					player.surface.play_sound{path="tile-build-small/landfill", position=target_position}
 				else
 					player.surface.play_sound{path="tile-build-small/concrete", position=target_position}
 				end
-	
+
 				player.remove_item({name = item, count = 1})
 				return true
-				
+
 			elseif not walking.walking then
 				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s not in reach", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
@@ -413,7 +415,7 @@ local function build()
 			if not walking.walking then
 				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
-	
+
 			return false
 		end
 	else
@@ -429,12 +431,12 @@ local function build()
 					return true
 				end
 			end
-	
-		else 
+
+		else
 			if not walking.walking then
 				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
-	
+
 			return false
 		end
 	end
@@ -625,7 +627,7 @@ local function rotate()
 
 	if rev then
 		r = player_selection.rotate({reverse = true})
-	else 
+	else
 		r = player_selection.rotate({reverse = false})
 	end
 
@@ -651,8 +653,8 @@ local function recipe()
 
 	local items_returned = player_selection.set_recipe(item)
 
-	for name, count in pairs (items_returned) do
-		player.insert{name = name, count = count}
+	for name, count_ in pairs (items_returned) do
+		player.insert{name = name, count = count_}
 	end
 
 	return true
@@ -682,7 +684,7 @@ local function limit()
 	if not check_selection_reach() then
 		return false
 	end
-	
+
 	if not check_inventory() then
 		return false
 	end
@@ -693,7 +695,7 @@ local function limit()
 end
 
 local function priority()
-	
+
 	if not check_selection_reach() then
 		return false
 	end
@@ -704,7 +706,7 @@ local function priority()
 	return true
 end
 
-local function filter() 
+local function filter()
 
 	if not check_selection_reach() then
 		return false
@@ -743,7 +745,7 @@ local function drop()
 								spill = true
 								}
 		return true
-	end	
+	end
 
 	return false
 end
@@ -761,114 +763,114 @@ end
 -- Routing function to perform one of the many available steps
 -- True: Indicates the calling function should advance the step. 
 -- False: Indicates the calling function should not advance step.
-local function doStep(steps)
-	if steps[2] == "craft" then
+local function doStep(current_step)
+	if current_step[2] == "craft" then
         task_category = "Craft"
-        task = steps[1]
-		count = steps[3]
-		item = steps[4]
+        task = current_step[1]
+		count = current_step[3]
+		item = current_step[4]
 
 		return craft()
 
-	elseif steps[2] == "build" then
+	elseif current_step[2] == "build" then
         task_category = "Build"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		direction = steps[5]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		direction = current_step[5]
 
 		return build()
 
-	elseif steps[2] == "take" then
+	elseif current_step[2] == "take" then
         task_category = "Take"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		amount = steps[5]
-		slot = steps[6]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		amount = current_step[5]
+		slot = current_step[6]
 
 		return take()
 
-	elseif steps[2] == "put" then
+	elseif current_step[2] == "put" then
         task_category = "Put"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		amount = steps[5]
-		slot = steps[6]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		amount = current_step[5]
+		slot = current_step[6]
 
 		return put()
 
-	elseif steps[2] == "rotate" then
+	elseif current_step[2] == "rotate" then
         task_category = "Rotate"
-        task = steps[1]
-		target_position = steps[3]
-		rev = steps[4]
+        task = current_step[1]
+		target_position = current_step[3]
+		rev = current_step[4]
 
 		return rotate()
 
-	elseif steps[2] == "tech" then
+	elseif current_step[2] == "tech" then
         task_category = "Tech"
-        task = steps[1]
-		item = steps[3]
+        task = current_step[1]
+		item = current_step[3]
 
 		return tech()
 
-	elseif steps[2] == "recipe" then
+	elseif current_step[2] == "recipe" then
         task_category = "Recipe"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
 
 		return recipe()
 
-	elseif steps[2] == "limit" then
+	elseif current_step[2] == "limit" then
         task_category = "limit"
-        task = steps[1]
-		target_position = steps[3]
-		amount = steps[4]
-		slot = steps[5]
+        task = current_step[1]
+		target_position = current_step[3]
+		amount = current_step[4]
+		slot = current_step[5]
 
 		return limit()
 
-	elseif steps[2] == "priority" then
+	elseif current_step[2] == "priority" then
         task_category = "priority"
-        task = steps[1]
-		target_position = steps[3]
-		input = steps[4]
-		output = steps[5]
+        task = current_step[1]
+		target_position = current_step[3]
+		input = current_step[4]
+		output = current_step[5]
 
 		return priority()
 
-	elseif steps[2] == "filter" then
+	elseif current_step[2] == "filter" then
         task_category = "filter"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		slot = steps[5]
-		type = steps[6]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		slot = current_step[5]
+		type = current_step[6]
 
 		return filter()
 
-    elseif steps[2] == "drop" then
-        task = steps[1]
-		drop_position = steps[3]
-		drop_item = steps[4]
+    elseif current_step[2] == "drop" then
+        task = current_step[1]
+		drop_position = current_step[3]
+		drop_item = current_step[4]
 		return drop()
 
-	elseif steps[2] == "pick" then
-		pickup_ticks = pickup_ticks + steps[3] - 1
+	elseif current_step[2] == "pick" then
+		pickup_ticks = pickup_ticks + current_step[3] - 1
 		player.picking_state = true
 		return true
 
-	elseif steps[2] == "idle" then
-		idle = steps[3]
+	elseif current_step[2] == "idle" then
+		idle = current_step[3]
 		return true
 
-	elseif steps[2] == "launch" then
+	elseif current_step[2] == "launch" then
 		task_category = "launch"
-        task = steps[1]
-		target_position = steps[3]
+        task = current_step[1]
+		target_position = current_step[3]
 
 		return launch()
 	end
@@ -1066,10 +1068,12 @@ end
 --seperate functions in case we want it to trigger on other events
 local function set_quick_bar(event)
 	local player = game.players[event.player_index]
-	for i = 1, 10 do 
+	for i = 1, 10 do
 		local set = split_string(settings.global[settings_short..i].value)
-		for key,val in pairs(set) do
-			player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+		if set then
+			for key,val in pairs(set) do
+				player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+			end
 		end
 	end
 end
