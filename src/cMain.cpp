@@ -1524,6 +1524,11 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 		return;
 	}
 
+	if ( spin_amount_offset->GetValue ( ) != 0 && spin_amount_multiplier->GetValue ( ) != 0 ) {
+		wxMessageBox ( "Please either use units-offset or units-multiplier", "Invalid use of template attributes" );
+		return;
+	}
+
 	if (grid_template->IsSelection()) {
 		if (!grid_template->GetSelectedRows().begin()) {
 			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
@@ -1547,10 +1552,7 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 
 			grid_extract_parameters(i, grid_tasks);
 
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() != "") {
-				x_cord = std::to_string(std::stof(x_cord) + wxAtof(txt_template_x_offset->GetValue()));
-				y_cord = std::to_string(std::stof(y_cord) + wxAtof(txt_template_y_offset->GetValue()));
-			} 
+			TemplateAlterTask ( i, grid_tasks );
 
 			grid_insert_data(template_row_num, grid_template);
 
@@ -1569,14 +1571,21 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event) {
 
 // You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
-	if (!grid_tasks->IsSelection()) {
-		row_num = grid_tasks->GetNumberRows();
-	} else {
-		if (!grid_tasks->GetSelectedRows().begin()) {
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
-		} else {
-			row_num = *grid_tasks->GetSelectedRows().begin();
+	if ( !grid_tasks->IsSelection ( ) ) {
+		row_num = grid_tasks->GetNumberRows ( );
+	}
+	else {
+		if ( !grid_tasks->GetSelectedRows ( ).begin ( ) ) {
+			wxMessageBox ( "Please either select row(s) or nothing", "Task list selection not valid" );
+			return;
 		}
+
+		row_num = *grid_tasks->GetSelectedRows ( ).begin ( );
+	}
+
+	if ( spin_amount_offset->GetValue ( ) != 0 && spin_amount_multiplier->GetValue ( ) != 0 ) {
+		wxMessageBox ( "Please either use units-offset or units-multiplier", "Invalid use of template attributes" );
+		return;
 	}
 
 	bool check = false;
@@ -1592,10 +1601,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 		for (int i = template_row_num; i < total_rows; i++) {
 			grid_extract_parameters(i, grid_template);
 
-			if (x_cord != "" || y_cord != "") {
-				x_cord = std::to_string(std::stof(x_cord) + wxAtof(txt_template_x_offset->GetValue()));
-				y_cord = std::to_string(std::stof(y_cord) + wxAtof(txt_template_y_offset->GetValue()));
-			}
+			TemplateAlterTask ( i, grid_template );
 
 			grid_insert_data(row_num, grid_tasks);
 
@@ -1626,10 +1632,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 		
 		grid_extract_parameters(i, grid_template);
 
-		if (x_cord != "" || y_cord != "") {
-			x_cord = std::to_string(std::stof(x_cord) + wxAtof(txt_template_x_offset->GetValue()));
-			y_cord = std::to_string(std::stof(y_cord) + wxAtof(txt_template_y_offset->GetValue()));
-		} 	
+		TemplateAlterTask ( i, grid_template );
 
 		grid_insert_data(row_num, grid_tasks);
 
@@ -1646,6 +1649,29 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event) {
 	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 
 	event.Skip();
+}
+
+void cMain::TemplateAlterTask ( int row, wxGrid* grid ) {
+	grid_extract_parameters ( row, grid );
+
+	if ( grid->GetCellValue ( row, 1 ).ToStdString ( ) != "" ) {
+		x_cord = std::to_string ( std::stof ( x_cord ) + spin_x_offset->GetValue ( ) );
+		y_cord = std::to_string ( std::stof ( y_cord ) + spin_y_offset->GetValue ( ) );
+	}
+
+	if ( grid->GetCellValue ( row, 3 ).ToStdString ( ) != "" ) {
+		if ( amount == "All" ) {
+			return;
+		}
+
+		if ( spin_amount_offset->GetValue ( ) != 0 ) {
+			amount = std::to_string ( std::stof ( amount ) + spin_amount_offset->GetValue ( ) );
+		}
+
+		if ( spin_amount_multiplier->GetValue ( ) != 0 ) {
+			amount = std::to_string ( std::stoi ( amount ) * spin_amount_multiplier->GetValue ( ) );
+		}
+	}
 }
 
 void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event) {
