@@ -8,6 +8,7 @@ local run = true
 local step = 1
 local step_reached = 0
 local idle = 0
+local pickup_ticks = 0
 local mining = 0
 
 local player
@@ -827,7 +828,7 @@ local function doStep(steps)
 		target_position = steps[3]
 		amount = steps[4]
 		slot = steps[5]
-		
+
 		return limit()
 
 	elseif steps[2] == "priority" then
@@ -856,13 +857,14 @@ local function doStep(steps)
 		return drop()
 
 	elseif steps[2] == "pick" then
+		pickup_ticks = pickup_ticks + steps[3] - 1
 		player.picking_state = true
 		return true
 
 	elseif steps[2] == "idle" then
 		idle = steps[3]
 		return true
-	
+
 	elseif steps[2] == "launch" then
 		task_category = "launch"
         task = steps[1]
@@ -875,7 +877,7 @@ end
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
 	if not run then return end
-    if not player then 
+    if not player then
 		player = game.players[1]
 		player.surface.always_day = true
 		player_position = player.position
@@ -889,7 +891,7 @@ script.on_event(defines.events.on_tick, function(event)
 		update_player_position()
 
 		if steps[step] == nil or steps[step][1] == "break" then
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))		
+			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 			debug_state = false
 			return
 		end
@@ -897,7 +899,7 @@ script.on_event(defines.events.on_tick, function(event)
 		if (steps[step][2] == "pause") then
 			pause()
 			debug("Script paused")
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
+			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 			debug_state = false
 			return
 		end
@@ -905,7 +907,7 @@ script.on_event(defines.events.on_tick, function(event)
 		if (steps[step][2] == "stop") then
 			speed(steps[step][3])
 			debug(string.format("Script stopped - Game speed: %d", steps[step][3]))
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
+			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 			debug_state = false
 			return
 		end
@@ -923,6 +925,11 @@ script.on_event(defines.events.on_tick, function(event)
 
 		if(steps[step][2] == "walk") then
 			use_old_walking_pattern = steps[step][4] == "old"
+		end
+
+		if pick > 0 then
+			player.picking_state = true
+			pick = pick - 1
 		end
 
 		walking = walk()
@@ -945,7 +952,7 @@ script.on_event(defines.events.on_tick, function(event)
 				change_step(1)
 
 			elseif steps[step][2] == "mine" then
-				
+
 				player.update_selected_entity(steps[step][3])
 
 				player.mining_state = {mining = true, position = steps[step][3]}
@@ -970,7 +977,7 @@ script.on_event(defines.events.on_tick, function(event)
 						mining = 0
 					end
 				end
-				
+
 			elseif doStep(steps[step]) then
 				-- Do step while standing still
 				change_step(1)
@@ -983,10 +990,10 @@ script.on_event(defines.events.on_tick, function(event)
 					change_step(1)
 				end
 			end
-		end	
+		end
 
 		player.walking_state = walking
-	end	
+	end
 end)
 
 local function mining_event_replace(event, item_name, amount)

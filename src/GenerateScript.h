@@ -150,6 +150,8 @@ private:
 
 	void rotate(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation);
 
+	void pick (std::string step, std::string amount);
+
 	void build(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string orientation);
 	void row_build(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string direction, std::string number_of_buildings, std::string building_size);
 
@@ -173,7 +175,4 @@ private:
 
 	void drop(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building);
 	void row_drop(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building, std::string building_size);
-
-	void pick(std::string task, std::string action, std::string x_cord, std::string y_cord);
-	void row_pick(std::string task, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size);
 };
