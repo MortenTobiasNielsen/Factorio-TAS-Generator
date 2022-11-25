@@ -218,7 +218,7 @@ void GenerateScript::generate(wxWindow* parent, wxGrid* grid, dialog_progress_ba
 			break;
 
 		case step_pick_up: 
-			row_pick(current_step, x_cord, y_cord, direction_to_build, amount_of_buildings, building_size);
+			pick(current_step, amount);
 			break;
 
 		case step_launch: 
@@ -835,6 +835,11 @@ void GenerateScript::idle(std::string step, std::string amount) {
 	total_steps += 1;
 }
 
+void GenerateScript::pick(std::string step, std::string amount) {
+	step_list += signature(step, "1") + "\"pick\", \"" + amount + "\"}\n";
+	total_steps += 1;
+}
+
 void GenerateScript::rotate(std::string step, std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation) {
 
 	check_interact_distance(step, "1", x_cord, y_cord, item, orientation);
@@ -843,7 +848,8 @@ void GenerateScript::rotate(std::string step, std::string x_cord, std::string y_
 		step_list += signature(step, "1") + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true}\n";
 		total_steps += 1;
 	}
-	else {
+	else 
+	{
 		for (int i = 0; i < std::stoi(times); i++) {
 			step_list += signature(step, std::to_string(i + 1)) + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false}\n";
 			total_steps += 1;
@@ -856,19 +862,24 @@ void GenerateScript::build(std::string step, std::string action, std::string x_c
 
 	item = check_item_name(item);
 
-	if (orientation == "North") {
+	if (orientation == "North") 
+	{
 		orientation = build_directions.north;
 	}
-	else if (orientation == "South") {
+	else if (orientation == "South") 
+	{
 		orientation = build_directions.south;
 	}
-	else if (orientation == "East") {
+	else if (orientation == "East") 
+	{
 		orientation = build_directions.east;
 	}
-	else if (orientation == "West") {
+	else if (orientation == "West") 
+	{
 		orientation = build_directions.west;
 	}
-	else {
+	else 
+	{
 		return;
 	}
 
@@ -1029,21 +1040,5 @@ void GenerateScript::row_drop(std::string step, std::string x_cord, std::string 
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
 		drop(step, std::to_string(i + 1), x_cord, y_cord, item, building);
-	}
-}
-
-void GenerateScript::pick(std::string step, std::string action, std::string x_cord, std::string y_cord) {
-	walk(step, action, x_cord, y_cord, last_walking_comment);
-	step_list += signature(step, action) + "\"pick\", {" + x_cord + ", " + y_cord + "}}\n";
-	total_steps += 1;
-}
-
-void GenerateScript::row_pick(std::string step, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size) {
-	pick(step, "1", x_cord, y_cord);
-
-	for (int i = 1; i < std::stof(number_of_buildings); i++) {
-		find_coordinates(x_cord, y_cord, direction, building_size);
-
-		pick(step, std::to_string(i + 1), x_cord, y_cord);
 	}
 }

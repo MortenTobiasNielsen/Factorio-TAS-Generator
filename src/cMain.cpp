@@ -2260,9 +2260,13 @@ bool cMain::setup_for_task_group_template_grid() {
 		break;
 
 	case e_pick_up:
-		amount = not_relevant;
+		x_cord = not_relevant;
+		y_cord = not_relevant;
 		item = not_relevant;
 		build_orientation = not_relevant;
+		direction_to_build = not_relevant;
+		building_size = not_relevant;
+		amount_of_buildings = not_relevant;
 		break;
 
 	case e_drop:
@@ -2616,7 +2620,7 @@ std::string cMain::extract_y_cord() {
 std::string cMain::extract_amount() {
 	int amount = spin_amount->GetValue();
 	
-	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_recipe->GetValue())) {
+	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_recipe->GetValue() || rbtn_pick_up->GetValue())) {
 		return "1";
 	}
 	
