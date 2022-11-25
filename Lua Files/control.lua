@@ -904,8 +904,15 @@ local function handle_pretick()
 		elseif steps[step][2] == "save" then
 			save(steps[step][1][1], steps[step][3])
 			step = step + 1
-		elseif(steps[step][2] == "walk") then
+		elseif(steps[step][2] == "walk" and walking.walking == false) then
 			use_old_walking_pattern = steps[step][4] == "old" --compatibility
+			if use_old_walking_pattern then return end --compatibility
+
+			update_destination_position(steps[step][3][1], steps[step][3][2])
+
+			find_walking_pattern()
+			walking = walk()
+			step = step + 1
 		else
 			return --no more to do, break loop
 		end
@@ -998,10 +1005,10 @@ script.on_event(defines.events.on_tick, function(event)
 
 	update_player_position()
 
+	walking = walk()
 	handle_pretick()
 	if not run then return end --early end on from pretick
 
-	walking = walk()
 	handle_ontick()
 
 	handle_posttick()
