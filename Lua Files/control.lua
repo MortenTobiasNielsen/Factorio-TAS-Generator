@@ -8,7 +8,7 @@ local run = true
 local step = 1
 local step_reached = 0
 local idle = 0
-local pick = 0
+local pickup_ticks = 0
 local mining = 0
 
 local player
@@ -857,7 +857,7 @@ local function doStep(steps)
 		return drop()
 
 	elseif steps[2] == "pick" then
-		pick = steps[3] - 1
+		pickup_ticks = pickup_ticks + steps[3] - 1
 		player.picking_state = true
 		return true
 
