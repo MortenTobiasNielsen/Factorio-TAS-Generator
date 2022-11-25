@@ -858,11 +858,6 @@ local function doStep(current_step)
 		drop_item = current_step[4]
 		return drop()
 
-	elseif current_step[2] == "pick" then
-		pickup_ticks = pickup_ticks + current_step[3] - 1
-		player.picking_state = true
-		return true
-
 	elseif current_step[2] == "idle" then
 		idle = current_step[3]
 		return true
@@ -904,6 +899,10 @@ local function handle_pretick()
 		elseif steps[step][2] == "save" then
 			save(steps[step][1][1], steps[step][3])
 			step = step + 1
+		elseif current_step[2] == "pick" then
+			pickup_ticks = pickup_ticks + current_step[3] - 1
+			player.picking_state = true
+			change_step(1)
 		elseif(steps[step][2] == "walk" and walking.walking == false) then
 			use_old_walking_pattern = steps[step][4] == "old" --compatibility
 			if use_old_walking_pattern then return end --compatibility
@@ -912,7 +911,7 @@ local function handle_pretick()
 
 			find_walking_pattern()
 			walking = walk()
-			step = step + 1
+			change_step(1)
 		else
 			return --no more to do, break loop
 		end
