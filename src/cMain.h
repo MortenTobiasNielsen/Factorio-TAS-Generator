@@ -21,7 +21,8 @@
 
 using string = std::string;
 
-class cMain : public GUI_Base {
+class cMain : public GUI_Base
+{
 public:
 	cMain();
 	friend TypePanel;
@@ -39,7 +40,7 @@ protected:
 	// Script menu items
 	void OnChooseLocation(wxCommandEvent& event);
 	void OnGenerateScript(wxCommandEvent& event);
-	
+
 	// Shortcut menu items
 	void OnChangeShortcuts(wxCommandEvent& event);
 
@@ -79,9 +80,9 @@ protected:
 	// Radio buttons
 	void OnMineChosen(wxCommandEvent& event);
 	void OnRotateChosen(wxCommandEvent& event);
-	void OnCraftChosen(wxCommandEvent& event); 
+	void OnCraftChosen(wxCommandEvent& event);
 	void OnWalkChosen(wxCommandEvent& event);
-	void OnBuildChosen(wxCommandEvent& event); 
+	void OnBuildChosen(wxCommandEvent& event);
 	void OnGameSpeedChosen(wxCommandEvent& event);
 	void OnTakeChosen(wxCommandEvent& event);
 	void OnPutChosen(wxCommandEvent& event);
@@ -140,8 +141,8 @@ protected:
 	void OnTemplateGridDoubleLeftClick(wxGridEvent& event);
 
 	void OnTemplateChosen(wxCommandEvent& event);
-	
-	void TemplateAlterTask ( int row, wxGrid* grid );
+
+	void TemplateAlterTask(int row, wxGrid* grid);
 
 	// Building
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
@@ -160,10 +161,13 @@ protected:
 	void BuildingSearchOnCancelButton(wxCommandEvent& event);
 
 private:
-	enum task_name { e_start = 1, e_stop, e_build, e_craft, e_game_speed, e_pause, e_save, e_recipe, e_limit, e_filter, e_rotate, e_priority, e_put, e_take, e_mine, e_launch, e_walk, e_tech, e_drop, e_pick_up, e_idle};
-	std::map<std::string, cMain::task_name> map_task_name = { {"Start", e_start}, {"Stop", e_stop}, {"Build", e_build}, {"Craft", e_craft}, {"Game Speed", e_game_speed}, {"Pause", e_pause}, {"Save", e_save},
+	enum task_name
+	{
+		e_start = 1, e_stop, e_build, e_craft, e_game_speed, e_pause, e_save, e_recipe, e_limit, e_filter, e_rotate, e_priority, e_put, e_take, e_mine, e_launch, e_walk, e_tech, e_drop, e_pick_up, e_idle
+	};
+	std::map<std::string, cMain::task_name> map_task_name = {{"Start", e_start}, {"Stop", e_stop}, {"Build", e_build}, {"Craft", e_craft}, {"Game Speed", e_game_speed}, {"Pause", e_pause}, {"Save", e_save},
 		{"Recipe", e_recipe}, {"Limit", e_limit}, {"Filter", e_filter}, {"Rotate", e_rotate}, {"Priority", e_priority}, {"Put", e_put}, {"Take", e_take}, {"Mine", e_mine}, {"Launch", e_launch},
-		{"Walk", e_walk}, {"Tech", e_tech}, {"Drop", e_drop}, {"Pick up", e_pick_up}, {"Idle", e_idle} };
+		{"Walk", e_walk}, {"Tech", e_tech}, {"Drop", e_drop}, {"Pick up", e_pick_up}, {"Idle", e_idle}};
 
 	std::string software_version = "0.0.5";
 
@@ -185,29 +189,30 @@ private:
 	bool auto_close_save = true;
 	bool auto_close_save_as = false;
 
-	const struct parameter_choices_struct {
+	const struct parameter_choices_struct
+	{
 		// x-cord, y-cord, amount, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
-		std::vector<bool> game_speed = { false, false, true, false, false, false, false, false, false , false, false, false};
-		std::vector<bool> mining = { true, true, true, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> rotate = { true, true, true, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> craft = { false, false, true, true, false, false, false, false, false, false, false, false };
-		std::vector<bool> walk = { true, true, false, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> build = { true, true, false, true, false, false, false, false, true, true, true, true };
-		std::vector<bool> take = { true, true, true, true, true, false, false, false, false, true, true, true };
-		std::vector<bool> put = { true, true, true, true, true, false, false, false, false, true, true, true };
-		std::vector<bool> filter = { true, true, true, true, false, false, false, false, false, true, true, true };
-		std::vector<bool> recipe = { true, true, true, true, false, false, false, false, false, true, true, true };
-		std::vector<bool> tech = { false, false, false, false, false, true, false, false, false, false, false, false };
-		std::vector<bool> launch = { true, true, false, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> save = { false, false, false, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> priority = { true, true, false, false, false, false, true, true, false, true, true, true };
-		std::vector<bool> limit = { true, true, true, false, false, false, false, false, false, true, true, true };
-		std::vector<bool> Start = { false, false, false, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> Pause = { false, false, false, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> stop = { false, false, true, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> drop = { true, true, false, true, false, false, false, false, false, true, true, true };
-		std::vector<bool> pick = { false, false, true, false, false, false, false, false, false, false, false, false };
-		std::vector<bool> idle = { false, false, true, false, false, false, false, false, false, false, false, false };
+		std::vector<bool> game_speed = {false, false, true, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> mining = {true, true, true, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> rotate = {true, true, true, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> craft = {false, false, true, true, false, false, false, false, false, false, false, false};
+		std::vector<bool> walk = {true, true, false, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> build = {true, true, false, true, false, false, false, false, true, true, true, true};
+		std::vector<bool> take = {true, true, true, true, true, false, false, false, false, true, true, true};
+		std::vector<bool> put = {true, true, true, true, true, false, false, false, false, true, true, true};
+		std::vector<bool> filter = {true, true, true, true, false, false, false, false, false, true, true, true};
+		std::vector<bool> recipe = {true, true, true, true, false, false, false, false, false, true, true, true};
+		std::vector<bool> tech = {false, false, false, false, false, true, false, false, false, false, false, false};
+		std::vector<bool> launch = {true, true, false, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> save = {false, false, false, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> priority = {true, true, false, false, false, false, true, true, false, true, true, true};
+		std::vector<bool> limit = {true, true, true, false, false, false, false, false, false, true, true, true};
+		std::vector<bool> Start = {false, false, false, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> Pause = {false, false, false, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> stop = {false, false, true, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};
+		std::vector<bool> pick = {false, false, true, false, false, false, false, false, false, false, false, false};
+		std::vector<bool> idle = {false, false, true, false, false, false, false, false, false, false, false, false};
 	};
 
 	parameter_choices_struct parameter_choices;
@@ -252,7 +257,7 @@ private:
 	std::string task;
 	std::string x_cord;
 	std::string y_cord;
-	std::string amount; 
+	std::string amount;
 	std::string comment;
 	std::string item;
 	std::string from_into;
@@ -301,7 +306,7 @@ private:
 	wxArrayString recipe_choices;
 	wxArrayString filter_take_put_drop_choices;
 	wxArrayString building_choices;
-	
+
 	// For group and template strucktures
 	std::string group_name;
 	std::vector<std::string> group_list;
@@ -335,7 +340,7 @@ private:
 	void background_colour_update(wxGrid* grid, int row, std::string task);
 
 	void group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>>& map);
-	
+
 	void update_group_template_grid(wxGrid* grid, std::vector<std::string>& list, std::map<std::string, std::vector<std::string>>& map, std::string map_name);
 	void grid_extract_parameters(const int& row, wxGrid* grid);
 	void grid_insert_data(const int& row, wxGrid* grid);
@@ -349,12 +354,12 @@ private:
 	bool find_building_for_script(int& row);
 
 	bool compare_task_strings(const wxString& str1, const std::string& str2);
-	
+
 	void update_parameters(wxGrid* grid, wxCommandEvent& event);
 	void update_group_map();
 	void update_template_map();
 
-	bool check_input (std::string& item, const std::vector<std::string>& all_items);
+	bool check_input(std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(std::string& item);
 	bool check_buildings_grid();
 

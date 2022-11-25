@@ -12,7 +12,8 @@
 
 #include "ScriptProgressBar.h"
 
-class GenerateScript {
+class GenerateScript
+{
 public:
 	GenerateScript();
 	void generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string& folder_location, bool auto_close, bool only_generate_script, std::string goal_chosen);
@@ -61,7 +62,8 @@ private:
 
 	std::string last_walking_comment;
 
-	enum step_name {
+	enum step_name
+	{
 		step_start = 1,
 		step_stop,
 		step_build,
@@ -150,7 +152,7 @@ private:
 
 	void rotate(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation);
 
-	void pick (std::string step, std::string amount);
+	void pick(std::string step, std::string amount);
 
 	void build(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string orientation);
 	void row_build(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string direction, std::string number_of_buildings, std::string building_size);

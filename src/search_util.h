@@ -8,7 +8,8 @@
 /// <summary>
 /// Contains methods to search through a grid for row matching a search string
 /// </summary>
-namespace search{
+namespace search
+{
 	using std::vector;
 	using std::tuple;
 	using std::stringstream;
@@ -40,14 +41,16 @@ namespace search{
 		stringstream ss(s);
 		string item;
 
-		while (getline(ss, item, delim)) {
+		while (getline(ss, item, delim))
+		{
 			result.push_back(item);
 		}
 
 		return result;
 	}
 
-	namespace internal {
+	namespace internal
+	{
 
 		/// <summary>
 		/// Internal - Splits a string into column : text, if no colon is found uses column=any
@@ -57,15 +60,15 @@ namespace search{
 		static tuple<wxString, wxString> extractColon(const wxString& s)
 		{
 			size_t t = s.find_first_of(':');
-			if (t > s.size()) return { "any", s };
-			return { s.substr(0, t),
-				s.substr(t + 1, s.Length()) };
+			if (t > s.size()) return {"any", s};
+			return {s.substr(0, t),
+				s.substr(t + 1, s.Length())};
 		}
 
 		//column header for task grids
-		static inline const vector<wxString> taskcolumns = { "task", "x-cord", "y-cord", "units", "item" , "orientation", "direction", "size", "amount", "comment" };
+		static inline const vector<wxString> taskcolumns = {"task", "x-cord", "y-cord", "units", "item", "orientation", "direction", "size", "amount", "comment"};
 		//column header for building grid
-		static inline const vector<wxString> buildingcolumns = { "x-cord", "y-cord", "building", "orientation", "limit", "recipe", "prio in", "prio out", "filter" };
+		static inline const vector<wxString> buildingcolumns = {"x-cord", "y-cord", "building", "orientation", "limit", "recipe", "prio in", "prio out", "filter"};
 
 		/// <summary>
 		/// Internal - Converts a search text into a list of columns
@@ -77,19 +80,22 @@ namespace search{
 		{
 			auto [column, text] = extractColon(s);
 			vector<int> c; //casd
-			if (column == "any") {
+			if (column == "any")
+			{
 				c.reserve(5);
 				double throwaway = 0;
 				if (isTaskGrid)
 				{
-					if (text.ToDouble(&throwaway)) {
+					if (text.ToDouble(&throwaway))
+					{
 						c.push_back(1);
 						c.push_back(2);
 						c.push_back(3);
 						c.push_back(7);
 						c.push_back(8);
 					}
-					else {
+					else
+					{
 						c.push_back(0);
 						c.push_back(4);
 						c.push_back(5);
@@ -99,12 +105,14 @@ namespace search{
 				}
 				else
 				{
-					if (text.ToDouble(&throwaway)) {
+					if (text.ToDouble(&throwaway))
+					{
 						c.push_back(0);
 						c.push_back(1);
 						c.push_back(4);
 					}
-					else {
+					else
+					{
 						c.push_back(2);
 						c.push_back(3);
 						c.push_back(5);
@@ -114,11 +122,14 @@ namespace search{
 					}
 				}
 			}
-			else {
+			else
+			{
 				for (int i = 0; i < column.Length(); i++) column[i] = std::tolower(column[i]); // convert custom column to lower case
-				vector<wxString> columns = isTaskGrid ? taskcolumns : buildingcolumns; 
-				for (int i = 0; i < 10; i++) {
-					if (columns[i].starts_with(column)) {
+				vector<wxString> columns = isTaskGrid ? taskcolumns : buildingcolumns;
+				for (int i = 0; i < 10; i++)
+				{
+					if (columns[i].starts_with(column))
+					{
 						c.push_back(i);
 						break;
 					}
@@ -126,7 +137,7 @@ namespace search{
 				//TODO: handle if no column is found
 			}
 
-			return { c, text };
+			return {c, text};
 		}
 
 		/// <summary>
@@ -162,13 +173,18 @@ namespace search{
 		/// </summary>
 		/// <param name="grid">grid to search</param>
 		/// <returns>True if any selected row matches the search</returns>
-		static bool trySelectCurrent(wxGrid* grid) {
+		static bool trySelectCurrent(wxGrid* grid)
+		{
 			auto rows = grid->GetSelectedRows();
-			for (auto id : rows) {
+			for (auto id : rows)
+			{
 				int a = 0;
-				for (auto [columns, term] : searchTerms) {
-					for (auto c : columns) { //any column contains term
-						if (grid->GetCellValue(id, c).starts_with(term)) {
+				for (auto [columns, term] : searchTerms)
+				{
+					for (auto c : columns)
+					{ //any column contains term
+						if (grid->GetCellValue(id, c).starts_with(term))
+						{
 							a++;
 							break;
 						}
@@ -192,9 +208,11 @@ namespace search{
 		/// <param name="event">Event containing the search string</param>
 		/// <param name="grid">Grid to search in</param>
 		/// <returns>True if a row is found</returns>
-		static bool trySelectNext(wxCommandEvent& event, wxGrid* grid) {
+		static bool trySelectNext(wxCommandEvent& event, wxGrid* grid)
+		{
 			auto rows = grid->GetNumberRows();
-			if (event.GetString().size() < 1 || rows < 1) { // no text or no rows => end search
+			if (event.GetString().size() < 1 || rows < 1)
+			{ // no text or no rows => end search
 				return false;
 			}
 
@@ -203,12 +221,16 @@ namespace search{
 			if (sel.empty()) start = 0; //no select => start at beginning
 			else start = grid->GetSelectedRows().back() + 1; // select => start at end of selection
 
-			for (int i = start; i < rows; i++) {
+			for (int i = start; i < rows; i++)
+			{
 
 				int a = 0, c;
-				for (auto [columns, term] : searchTerms) {
-					for (c = 0; c < columns.size(); c++) { //any column contains term
-						if (grid->GetCellValue(i, columns[c]).starts_with(term)) {
+				for (auto [columns, term] : searchTerms)
+				{
+					for (c = 0; c < columns.size(); c++)
+					{ //any column contains term
+						if (grid->GetCellValue(i, columns[c]).starts_with(term))
+						{
 							a++;
 							break;
 						}
@@ -232,12 +254,14 @@ namespace search{
 	/// <param name="event">Search trigger event - contains search string</param>
 	/// <param name="grid">Grid to search in</param>
 	/// <param name="isTaskGrid">If the grid is a task grid - used to determine columns</param>
-	static void findCurrentOrNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid = true) {
+	static void findCurrentOrNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid = true)
+	{
 		internal::searchTerms = internal::handleSearchString(event, isTaskGrid);
-		if (internal::trySelectCurrent(grid)) {
+		if (internal::trySelectCurrent(grid))
+		{
 			return;
 		}
-		else 
+		else
 		{
 			internal::trySelectNext(event, grid);
 		}
@@ -249,7 +273,8 @@ namespace search{
 	/// <param name="event">Search trigger event - contains search string</param>
 	/// <param name="grid">Grid to search in</param>
 	/// <param name="isTaskGrid">If the grid is a task grid - used to determine columns</param>
-	static void findNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid = true) {
+	static void findNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid = true)
+	{
 		internal::searchTerms = internal::handleSearchString(event, isTaskGrid);
 		internal::trySelectNext(event, grid);
 	}
