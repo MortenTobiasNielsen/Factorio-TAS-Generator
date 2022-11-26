@@ -872,23 +872,9 @@ local function doStep(current_step)
 end
 
 local function handle_pretick()
-	--pretick sets step directly so it doesn't raise to many events
+	--pretick sets step directly so it doesn't raise too many events
 	while run do
-		if steps[step] == nil or steps[step][1] == "break" then
-			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
-			debug_state = false
-			run = false
-			return
-		elseif (steps[step][2] == "pause") then
-			pause()
-			msg("Script paused")
-			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-			debug_state = false
-			return
-		elseif (steps[step][2] == "stop") then
-			speed(steps[step][3])
-			msg(string.format("Script stopped - Game speed: %d", steps[step][3]))
-			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		if steps[step] == nil then
 			debug_state = false
 			run = false
 			return
@@ -899,8 +885,8 @@ local function handle_pretick()
 		elseif steps[step][2] == "save" then
 			save(steps[step][1][1], steps[step][3])
 			step = step + 1
-		elseif current_step[2] == "pick" then
-			pickup_ticks = pickup_ticks + current_step[3] - 1
+		elseif steps[2] == "pick" then
+			pickup_ticks = pickup_ticks + steps[3] - 1
 			player.picking_state = true
 			change_step(1)
 		elseif(steps[step][2] == "walk" and walking.walking == false) then
@@ -983,8 +969,29 @@ local function handle_ontick()
 	end
 end
 
+--- handle end the run
 local function handle_posttick()
-	
+	if not run then return end
+	if walking.walking or mining==0 or pickup_ticks==0 or idle==0 then --we have to finish the previous task before we end the run
+	elseif steps[step] == nil or steps[step][1] == "break" then
+		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
+		debug_state = false
+		run = false
+		return
+	elseif (steps[step][2] == "pause") then
+		pause()
+		msg("Script paused")
+		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		return
+	elseif (steps[step][2] == "stop") then
+		speed(steps[step][3])
+		msg(string.format("Script stopped - Game speed: %d", steps[step][3]))
+		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		run = false
+		return
+	end
 end
 
 -- Main per-tick event handler
@@ -1006,7 +1013,7 @@ script.on_event(defines.events.on_tick, function(event)
 
 	walking = walk()
 	handle_pretick()
-	if not run then return end --early end on from pretick
+	if not run then return end --early end from pretick
 
 	handle_ontick()
 
