@@ -972,7 +972,7 @@ end
 --- handle end the run
 local function handle_posttick()
 	if not run then return end
-	if walking.walking or mining==0 or pickup_ticks==0 or idle==0 then --we have to finish the previous task before we end the run
+	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then --we have to finish the previous task before we end the run
 	elseif steps[step] == nil or steps[step][1] == "break" then
 		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
 		debug_state = false
