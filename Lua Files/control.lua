@@ -927,9 +927,9 @@ script.on_event(defines.events.on_tick, function(event)
 			use_old_walking_pattern = steps[step][4] == "old"
 		end
 
-		if pick > 0 then
+		if pickup_ticks > 0 then
 			player.picking_state = true
-			pick = pick - 1
+			pickup_ticks = pickup_ticks - 1
 		end
 
 		walking = walk()
