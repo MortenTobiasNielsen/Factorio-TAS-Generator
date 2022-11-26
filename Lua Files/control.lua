@@ -889,7 +889,7 @@ local function handle_pretick()
 			pickup_ticks = pickup_ticks + steps[3] - 1
 			player.picking_state = true
 			change_step(1)
-		elseif(steps[step][2] == "walk" and walking.walking == false) then
+		elseif(steps[step][2] == "walk" and walking.walking == false and idle < 1) then
 			use_old_walking_pattern = steps[step][4] == "old" --compatibility
 			if use_old_walking_pattern then return end --compatibility
 
