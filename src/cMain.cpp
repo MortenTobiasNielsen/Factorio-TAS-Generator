@@ -2468,7 +2468,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 	}
 
 	GenerateScript generate_script;
-	generate_script.generate(this, grid_tasks, dialog_progress_bar, tasks_data_to_save, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
+	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
 
 	event.Skip();
 }

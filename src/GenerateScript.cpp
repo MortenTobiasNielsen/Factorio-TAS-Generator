@@ -85,6 +85,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 			wxYield();
 		}
 
+		TransferParameters(steps[i]);
 		switch (steps[i].TaskEnum)
 		{
 			case step_game_speed:
@@ -92,7 +93,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 				break;
 
 			case step_walk:
-				walk(current_step, "1", to_string(steps[i].X), to_string(steps[i].Y), steps[i].Comment.ToStdString());
+				walk(current_step, "1", x_cord, y_cord, comment);
 				break;
 
 			case step_mine:
@@ -101,7 +102,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 					amount = "1000";
 				}
 
-				if (find_building(i, grid, steps))
+				if (find_building(i, steps))
 				{
 					mining(current_step, x_cord, y_cord, amount, building, build_orientation, true);
 				}
@@ -112,7 +113,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 				break;
 
 			case step_rotate:
-				if (!find_building(i, grid, steps))
+				if (!find_building(i, steps))
 				{
 					return;
 				}
@@ -137,7 +138,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 
 				if (from_into != struct_from_into_list.wreck)
 				{
-					find_building(i, grid, steps);
+					find_building(i, steps);
 				}
 
 				from_into = extract_define(from_into, building);
@@ -155,7 +156,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 
 				if (from_into != struct_from_into_list.wreck)
 				{
-					find_building(i, grid, steps);
+					find_building(i, steps);
 				}
 
 				from_into = extract_define(from_into, building);
@@ -168,7 +169,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 				break;
 
 			case step_recipe:
-				if (!find_building(i, grid, steps))
+				if (!find_building(i, steps))
 				{
 					return;
 				}
@@ -189,7 +190,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 
 				if (from_into != struct_from_into_list.wreck)
 				{
-					find_building(i, grid, steps);
+					find_building(i, steps);
 				}
 
 				from_into = extract_define(from_into, building);
@@ -210,7 +211,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 				priority_out = build_orientation.substr(pos + 2);
 			}
 
-			if (!find_building(i, grid, steps))
+			if (!find_building(i, steps))
 			{
 				return;
 			}
@@ -219,7 +220,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 			break;
 
 			case step_filter:
-				if (!find_building(i, grid, steps))
+				if (!find_building(i, steps))
 				{
 					return;
 				}
@@ -227,7 +228,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 				break;
 
 			case step_drop:
-				if (!find_building(i, grid, steps))
+				if (!find_building(i, steps))
 				{
 					return;
 				}
@@ -310,22 +311,6 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 	}
 }
 
-void GenerateScript::extract_parameters(const string& task_reference)
-{
-	split_task(task_reference);
-
-	task = step_segments[0];
-	x_cord = step_segments[1];
-	y_cord = step_segments[2];
-	amount = step_segments[3];
-	item = step_segments[4];
-	build_orientation = step_segments[5];
-	direction_to_build = step_segments[6];
-	building_size = step_segments[7];
-	amount_of_buildings = step_segments[8];
-	comment = step_segments[9];
-}
-
 string GenerateScript::extract_define(string from_into, string building)
 {
 	if (from_into == struct_from_into_list.wreck)
@@ -377,41 +362,40 @@ string GenerateScript::extract_define(string from_into, string building)
 	return "Not Found";
 }
 
-void GenerateScript::split_task(const string& task_reference)
+void GenerateScript::TransferParameters(StepParameters& stepParameters)
 {
-	stringstream data_line;
-	data_line.str(task_reference);
-
-	step_segments = {};
-
-	while (std::getline(data_line, segment, ';'))
-	{
-		step_segments.push_back(segment);
-	}
+	task = stepParameters.Task;
+	x_cord = to_string(stepParameters.X);
+	y_cord = to_string(stepParameters.Y);
+	amount = stepParameters.Amount;
+	item = stepParameters.Item;
+	build_orientation = stepParameters.Orientation;
+	direction_to_build = stepParameters.Direction;
+	building_size = to_string(stepParameters.Size);
+	amount_of_buildings = to_string(stepParameters.Buildings);
+	comment = stepParameters.Comment;
 }
 
-bool GenerateScript::find_building(int& row, wxGrid* grid, std::vector<string>& steps)
+bool GenerateScript::find_building(int& row, std::vector<StepParameters>& steps)
 {
 	for (int i = row - 1; i > -1; i--)
 	{
-		if (compare_task_strings(grid->GetCellValue(i, 0), struct_tasks_list.build))
+		if (steps[i].TaskEnum == e_build)
 		{
-			split_task(steps[i]);
-
-			building_x_cord = step_segments[1];
-			building_y_cord = step_segments[2];
+			building_x_cord = to_string(steps[i].X);
+			building_y_cord = to_string(steps[i].Y);
 
 			if (x_cord == building_x_cord && y_cord == building_y_cord)
 			{
-				building = step_segments[4];
-				build_orientation = step_segments[5];
+				building = steps[i].Item;
+				build_orientation = steps[i].Orientation;
 
 				return true;
 			}
 
-			building_direction_to_build = step_segments[6];
-			building_building_size = step_segments[7];
-			building_amount_of_buildings = step_segments[8];
+			building_direction_to_build = steps[i].Direction;
+			building_building_size = to_string(steps[i].Size);
+			building_amount_of_buildings = to_string(steps[i].Buildings);
 
 			for (int j = 1; j < std::stoi(building_amount_of_buildings); j++)
 			{
@@ -419,24 +403,22 @@ bool GenerateScript::find_building(int& row, wxGrid* grid, std::vector<string>& 
 
 				if (x_cord == building_x_cord && y_cord == building_y_cord)
 				{
-					building = step_segments[4];
-					build_orientation = step_segments[5];
+					building = steps[i].Item;
+					build_orientation = steps[i].Orientation;
 
 					return true;
 				}
 			}
 		}
-		else if (compare_task_strings(grid->GetCellValue(i, 0), struct_tasks_list.rotate))
+		else if (steps[i].TaskEnum == e_rotate)
 		{
-			split_task(steps[i]);
-
-			building_x_cord = step_segments[1];
-			building_y_cord = step_segments[2];
+			building_x_cord = to_string(steps[i].X);
+			building_y_cord = to_string(steps[i].Y);
 
 			if (x_cord == building_x_cord && y_cord == building_y_cord)
 			{
-				building = step_segments[4];
-				build_orientation = step_segments[5];
+				building = steps[i].Item;
+				build_orientation = steps[i].Orientation;
 
 				return true;
 			}

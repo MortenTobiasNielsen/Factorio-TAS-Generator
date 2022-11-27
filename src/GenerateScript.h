@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <map>
 
+#include "StepParameters.h"
 #include "ScriptProgressBar.h"
 
 using std::string;
@@ -117,10 +118,9 @@ private:
 
 	void reset();
 	void clear_tasks();
-	void extract_parameters(const string& task_reference);
+	void TransferParameters(StepParameters& stepParameters);
 	string extract_define(string from_into, string building);
-	void split_task(const string& task_reference);
-	bool find_building(int& row, wxGrid* grid, std::vector<string>& steps);
+	bool find_building(int& row, std::vector<StepParameters>& steps);
 
 	string convert_string(string input);
 
