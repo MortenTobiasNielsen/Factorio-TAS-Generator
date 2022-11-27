@@ -10,8 +10,33 @@
 #include <sstream>
 
 #include "Functions.h"
+#include "StepParameters.h"
+#include "BuildingNameToIndex.h"
 #include "utils.h"
 #include "ScriptProgressBar.h"
+
+using std::vector;
+
+struct open_file_return_data
+{
+	bool success = false;
+	std::string goal;
+	std::vector<StepParameters> steps;
+	std::map<std::string, std::vector<std::string>> group_map;
+	std::map<std::string, std::vector<std::string>> template_map;
+	std::string save_file_location;
+	std::string generate_code_folder_location;
+
+	bool auto_close_generate_script = false;
+	bool auto_close_open = false;
+	bool auto_close_save = false;
+	bool auto_close_save_as = false;
+
+	bool auto_put_furnace = false;
+	bool auto_put_burner = false;
+	bool auto_put_lab = false;
+	bool auto_put_recipe = false;
+};
 
 class OpenTas
 {
@@ -29,6 +54,8 @@ private:
 
 	std::string template_name;
 	std::vector<std::string> template_list;
+
+	vector<Building> buildingSnapshot;
 
 	int total_lines = 0;
 	int lines_processed = 0;

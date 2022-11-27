@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 
 #include "Building.h"
+#include "TaskNameToEnum.h"
 #include "utils.h"
 
 using std::string;
@@ -36,6 +37,11 @@ struct StepParameters
 		Y = InitialY;
 		OriginalX = InitialX;
 		OriginalY = InitialY;
+
+		TaskEnum = e_stop;
+		Size = 1;
+		Buildings = 1;
+		BuildingIndex = 0;
 	}
 
 	inline void Reset()

@@ -167,8 +167,6 @@ protected:
 	void BuildingSearchOnCancelButton(wxCommandEvent& event);
 
 private:
-	double invalidBuildingX = 0.3543534;
-
 	std::string software_version = "0.0.5";
 
 	wxString window_title = "EZRaiderz TAS Helper";
@@ -417,4 +415,5 @@ private:
 	bool new_extra_building_checks(StepParameters stepParameters);
 
 	int GenerateBuildingSnapShot(int end_row);
+	void new_populate_tasks_grid();
 };

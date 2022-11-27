@@ -940,32 +940,16 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 
 	if (stepParameters.TaskEnum == e_recipe)
 	{
-		for (int i = 0; i < stepParameters.Buildings; i++)
+		if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
 		{
-			for (int j = amountOfBuildings - 1; j > -1; j--)
-			{
-				if (stepParameters == BuildingsSnapShot[j])
-				{
-					if (IsValidRecipeStep(stepParameters))
-					{
-						break;
-					}
-					
-					wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-					return;
-				}
+			wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+			return;
+		};
 
-				if (j == 0)
-				{
-					wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-					return;
-				}
-			}
-
-			stepParameters.Next();
+		if (!IsValidRecipeStep(stepParameters))
+		{
+			return;
 		}
-
-		stepParameters.Reset();
 
 		new_update_tasks_grid(&stepParameters);
 
@@ -2257,7 +2241,8 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 			return;
 		}
 
-		tasks_data_to_save = result.steps;
+		//tasks_data_to_save = result.steps;
+		StepGridData = result.steps;
 		group_map = result.group_map;
 		template_map = result.template_map;
 		save_file_location = result.save_file_location;
@@ -2302,7 +2287,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 		check_lab->SetValue(result.auto_put_lab);
 		check_recipe->SetValue(result.auto_put_recipe);
 
-		populate_tasks_grid();
+		new_populate_tasks_grid();
 
 		dialog_progress_bar->set_progress(100.0f - 35);
 		wxYield();
@@ -2357,8 +2342,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 
 		SetLabel(window_title + " - " + file_name);
 
-		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-
 		dialog_progress_bar->set_progress(100);
 		if (auto_close_open)
 		{
@@ -2371,6 +2354,27 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 	}
 
 	event.Skip();
+}
+
+void cMain::new_populate_tasks_grid()
+{
+	if (grid_tasks->GetNumberRows() > 0)
+	{
+		grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
+	}
+
+	size_t amount_of_tasks = StepGridData.size();
+
+	grid_tasks->InsertRows(0, amount_of_tasks);
+
+	for (int i = 0; i < amount_of_tasks; i++)
+	{
+		auto gridEntry = PrepareStepParametersForGrid(&StepGridData[i]);
+
+		PopulateGrid(grid_tasks, i, gridEntry);
+
+		background_colour_update(grid_tasks, i, StepGridData[i].Task);
+	}
 }
 
 void cMain::populate_tasks_grid()
@@ -4036,16 +4040,7 @@ void cMain::new_update_tasks_grid(StepParameters* stepParameters)
 
 	grid_tasks->InsertRows(row_num, 1);
 
-	grid_tasks->SetCellValue(row_num, 0, gridEntry->Task);
-	grid_tasks->SetCellValue(row_num, 1, gridEntry->X);
-	grid_tasks->SetCellValue(row_num, 2, gridEntry->Y);
-	grid_tasks->SetCellValue(row_num, 3, gridEntry->Amount);
-	grid_tasks->SetCellValue(row_num, 4, gridEntry->Item);
-	grid_tasks->SetCellValue(row_num, 5, gridEntry->BuildingOrientation);
-	grid_tasks->SetCellValue(row_num, 6, gridEntry->DirectionToBuild);
-	grid_tasks->SetCellValue(row_num, 7, gridEntry->BuildingSize);
-	grid_tasks->SetCellValue(row_num, 8, gridEntry->AmountOfBuildings);
-	grid_tasks->SetCellValue(row_num, 9, gridEntry->Comment);
+	PopulateGrid(grid_tasks,row_num, gridEntry);
 
 	if (grid_tasks->IsSelection())
 	{
@@ -4287,27 +4282,11 @@ int cMain::GenerateBuildingSnapShot(int end_row)
 		switch (StepGridData[i].TaskEnum)
 		{
 			case e_build:
-				for (int j = 0; j < StepGridData[i].Buildings; j++)
-				{
-					BuildingsSnapShot[buildingsInSnapShot].X = StepGridData[i].X;
-					BuildingsSnapShot[buildingsInSnapShot].Y = StepGridData[i].Y;
-					BuildingsSnapShot[buildingsInSnapShot].Index = StepGridData[i].BuildingIndex;
-
-					StepGridData[i].Next();
-					buildingsInSnapShot++;
-				}
-
-				StepGridData[i].Reset();
+				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, StepGridData[i]);
 				continue;
 
 			case e_mine:
-				for (int j = 0; j < buildingsInSnapShot; j++)
-				{
-					if (BuildingsSnapShot[j] == StepGridData[i])
-					{
-						BuildingsSnapShot[j].X = -0.4523543; // Invalidate the building
-					}
-				}
+				ProcessMiningStep(BuildingsSnapShot, buildingsInSnapShot, StepGridData[i]);
 
 				continue;
 

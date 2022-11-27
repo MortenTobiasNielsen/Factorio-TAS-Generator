@@ -2,7 +2,6 @@
 
 #include "OpenTas.h"
 
-
 void OpenTas::reset()
 {
 	seglist.reserve(100);
@@ -87,6 +86,20 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 
 	return_data.steps.reserve(total_lines);
 
+	buildingSnapshot.reserve(100000);
+	auto invalidBuilding = new Building{
+		.X = invalidBuildingX,
+		.Y = 0,
+		.Index = 0,
+	};
+
+	for (int i = 0; i < buildingSnapshot.capacity(); i++)
+	{
+		buildingSnapshot.push_back(*invalidBuilding);
+	}
+
+	int buildingsInSnapShot = 0;
+
 	while (update_segment(file))
 	{
 		if (seglist.size() != step_segment_size && seglist.size() != step_segment_size_without_comment)
@@ -100,7 +113,73 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 			comment = seglist[9];
 		}
 
-		return_data.steps.push_back(seglist[0] + ";" + seglist[1] + ";" + seglist[2] + ";" + seglist[3] + ";" + seglist[4] + ";" + seglist[5] + ";" + seglist[6] + ";" + seglist[7] + ";" + seglist[8] + ";" + comment + ";");
+		auto step = new StepParameters(0, 0);
+
+		if (seglist[1] != "")
+		{
+			step->X = stod(seglist[1]);
+			step->OriginalX = stod(seglist[1]);
+			step->Y = stod(seglist[2]);
+			step->OriginalY = stod(seglist[2]);
+		}
+
+		if (seglist[7] != "")
+		{
+			step->Size = stoi(seglist[7]);
+		}
+
+		if (seglist[8] != "")
+		{
+			step->Buildings = stoi(seglist[8]);
+		}
+
+		step->Task = seglist[0];
+		step->Amount = seglist[3];
+		step->Item = seglist[4];
+		step->Orientation = seglist[5];
+		step->Direction = seglist[6];
+		step->Comment = comment;
+
+		step->TaskEnum = TaskNames.find(step->Task)->second;
+
+		switch (step->TaskEnum)
+		{
+			case e_build:
+				step->BuildingIndex = BuildingNameToIndex.find(step->Item.ToStdString())->second;
+
+				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, *step);
+				break;
+
+			case e_mine:
+				ProcessMiningStep(buildingSnapshot, buildingsInSnapShot, *step);
+				break;
+
+			case e_recipe:
+			case e_filter:
+			case e_rotate:
+			case e_priority:
+			case e_launch:
+			case e_drop:
+				if (!BuildingExists(buildingSnapshot, buildingsInSnapShot, *step))
+				{
+					return false;
+				}
+				break;
+
+			case e_limit:
+			case e_put:
+			case e_take:
+				if (step->Orientation != "Wreck" && !BuildingExists(buildingSnapshot, buildingsInSnapShot, *step))
+				{
+					return false;
+				}
+
+				break;
+			default:
+				break;
+		}
+
+		return_data.steps.push_back(*step);
 
 		lines_processed++;
 
