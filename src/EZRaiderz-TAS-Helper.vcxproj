@@ -170,16 +170,21 @@
     <ClCompile Include="TypePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Building.h" />
+    <ClInclude Include="BuildingNameToIndex.h" />
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
     <ClInclude Include="control_info.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
+    <ClInclude Include="TaskNameToEnum.h" />
     <ClInclude Include="OpenTas.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SaveTas.h" />
     <ClInclude Include="ScriptProgressBar.h" />
+    <ClInclude Include="GridEntry.h" />
+    <ClInclude Include="StepParameters.h" />
     <ClInclude Include="TypePanel.h" />
     <ClInclude Include="search_util.h" />
     <ClInclude Include="utils.h" />

@@ -83,6 +83,18 @@ void string_capitalized(std::string& string)
 	}
 }
 
+void string_capitalized(wxString& string)
+{
+	if (string != "")
+	{
+		string[0] = std::toupper(string[0]);
+		for (int i = 1; string[i] != '\0'; ++i)
+		{
+			string[i] = tolower(string[i]);
+		}
+	}
+}
+
 bool is_number(const std::string& str)
 {
 	for (auto s : str)

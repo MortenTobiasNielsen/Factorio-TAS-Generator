@@ -14,12 +14,18 @@
 #include <codecvt>
 #include <filesystem>
 
-
+#include "TaskNameToEnum.h"
+#include "StepParameters.h"
+#include "GridEntry.h"
+#include "Building.h"
+#include "BuildingNameToIndex.h"
 #include "GUI_Base.h"
 #include "ScriptProgressBar.h"
 #include "../icon.xpm"
 
-using string = std::string;
+using std::string;
+using std::vector;
+using std::to_string;
 
 class cMain : public GUI_Base
 {
@@ -161,14 +167,6 @@ protected:
 	void BuildingSearchOnCancelButton(wxCommandEvent& event);
 
 private:
-	enum task_name
-	{
-		e_start = 1, e_stop, e_build, e_craft, e_game_speed, e_pause, e_save, e_recipe, e_limit, e_filter, e_rotate, e_priority, e_put, e_take, e_mine, e_launch, e_walk, e_tech, e_drop, e_pick_up, e_idle
-	};
-	std::map<std::string, cMain::task_name> map_task_name = {{"Start", e_start}, {"Stop", e_stop}, {"Build", e_build}, {"Craft", e_craft}, {"Game Speed", e_game_speed}, {"Pause", e_pause}, {"Save", e_save},
-		{"Recipe", e_recipe}, {"Limit", e_limit}, {"Filter", e_filter}, {"Rotate", e_rotate}, {"Priority", e_priority}, {"Put", e_put}, {"Take", e_take}, {"Mine", e_mine}, {"Launch", e_launch},
-		{"Walk", e_walk}, {"Tech", e_tech}, {"Drop", e_drop}, {"Pick up", e_pick_up}, {"Idle", e_idle}};
-
 	std::string software_version = "0.0.5";
 
 	wxString window_title = "EZRaiderz TAS Helper";
@@ -246,6 +244,7 @@ private:
 
 	std::string data;
 	std::string not_relevant = "";
+	wxString new_not_relevant = "";
 	std::vector<std::string> all_buildings;
 	std::vector<std::string> all_items;
 	std::vector<std::string> part_assembly_recipes;
@@ -318,6 +317,8 @@ private:
 
 	// Used when the tasks are saved to a file
 	std::vector<std::string> tasks_data_to_save;
+	std::vector<StepParameters> StepGridData;
+	vector<Building> BuildingsSnapShot;
 
 	void reset_to_new_window();
 	bool checks_before_reset_window();
@@ -390,4 +391,28 @@ private:
 	bool find_building(int amount_of_buildings);
 
 	void malformed_saved_file_message();
+
+	void new_update_tasks_grid(StepParameters* stepParameters);
+	GridEntry* PrepareStepParametersForGrid(StepParameters* stepParameters);
+	StepParameters ExtractStepParameters();
+	double new_extract_x_cord();
+	double new_extract_y_cord();
+	int new_extract_building_size();
+	int new_extract_amount_of_buildings();
+
+	void new_background_colour_update(wxGrid* grid, int row, TaskName task);
+
+	bool new_check_input(wxString& item, const std::vector<std::string>& all_items);
+
+	bool IsValidBuildStep(StepParameters stepParameters);
+	bool IsValidRecipeStep(StepParameters stepParameters);
+	bool IsValidCraftStep(StepParameters stepParameters);
+	bool IsValidPutTakeStep(StepParameters stepParameters);
+	bool IsValidTechStep(StepParameters stepParameters);
+
+	void new_auto_put(std::string put_item, std::string put_amount, std::string put_into);
+	bool new_find_building(int startRow, StepParameters stepParameters);
+	bool new_extra_building_checks(StepParameters stepParameters);
+
+	void GenerateBuildingSnapShot(int end_row);
 };

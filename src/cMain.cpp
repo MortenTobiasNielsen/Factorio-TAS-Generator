@@ -18,6 +18,9 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	task_segments.reserve(100);
 	seglist.reserve(100);
 
+	// Ensure that realocations shouldn't be needed for a long while.
+	BuildingsSnapShot.reserve(10000);
+
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
 
@@ -490,7 +493,7 @@ bool cMain::change_row(wxGrid* grid)
 
 void cMain::background_colour_update(wxGrid* grid, int row, std::string task)
 {
-	switch (map_task_name[task])
+	switch (TaskNames[task])
 	{
 		case e_start:
 			grid->SetCellBackgroundColour(row, 0, *wxGREEN);
@@ -590,7 +593,7 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row)
 		In_memory_extract_parameters_buildings(tasks_data_to_save[i]);
 		task_number = std::to_string(i + 1);
 
-		switch (map_task_name[building_task])
+		switch (TaskNames[building_task])
 		{
 			case e_build:
 				update_buildings();
@@ -852,6 +855,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 		{
 			return;
 		}
+
 		row_num = *grid_tasks->GetSelectedRows().begin();
 	}
 	else
@@ -859,30 +863,140 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 		row_num = grid_tasks->GetNumberRows();
 	}
 
-	extract_parameters();
-	mine_building_found = false;
+	auto stepParameters = ExtractStepParameters();
 
-	auto t = map_task_name[task];
-	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch)
+	if (stepParameters.TaskEnum == e_build)
 	{
-		if (row_num != grid_tasks->GetNumberRows())
+		if (!IsValidBuildStep(stepParameters))
 		{
-			update_buildings_grid_from_scratch(0, row_num);
+			return;
 		}
 
-		building_task = task;
-		building_x_cord = x_cord;
-		building_y_cord = y_cord;
-		building_units = amount;
-		building_item = item;
-		building_build_orientation = build_orientation;
-		building_direction_to_build = direction_to_build;
-		building_building_size = building_size;
-		building_amount_of_buildings = amount_of_buildings;
-		building_priority_in = priority_in;
-		building_priority_out = priority_out;
-		building_comment = comment;
+		new_update_tasks_grid(&stepParameters);
 
+		std::string to_check = stepParameters.Item.ToStdString();
+		string_capitalized(to_check);
+
+		if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel)
+		{
+			stepParameters.TaskEnum = e_put;
+			stepParameters.Task = struct_tasks_list.put;
+			stepParameters.Amount = "1";
+			stepParameters.Item = struct_fuel_list.coal;
+			stepParameters.FromInto = struct_from_into_list.fuel;
+
+			new_update_tasks_grid(&stepParameters);
+		}
+
+		if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler)
+		{
+			stepParameters.TaskEnum = e_put;
+			stepParameters.Task = struct_tasks_list.put;
+			stepParameters.Amount = "1";
+			stepParameters.Item = struct_fuel_list.coal;
+			stepParameters.FromInto = struct_from_into_list.fuel;
+
+			new_update_tasks_grid(&stepParameters);
+		}
+
+		if (check_lab->IsChecked() && to_check == struct_science_list.lab)
+		{
+			stepParameters.TaskEnum = e_put;
+			stepParameters.Task = struct_tasks_list.put;
+			stepParameters.Amount = "1";
+			stepParameters.Item = "Automation science pack";
+			stepParameters.FromInto = struct_from_into_list.input;
+
+			new_update_tasks_grid(&stepParameters);
+		}
+
+		event.Skip();
+		return;
+	}
+
+	if (task == e_craft)
+	{
+		if (!IsValidCraftStep(stepParameters))
+		{
+			return;
+		}
+
+		new_update_tasks_grid(&stepParameters);
+	}
+
+	GenerateBuildingSnapShot(row_num - 1);
+
+	if (task == e_recipe)
+	{
+		for (int i = 0; i < stepParameters.Buildings; i++)
+		{
+			new_find_building(row_num - 1, stepParameters);
+
+			if (!IsValidRecipeStep(stepParameters))
+			{
+				return;
+			}
+
+			stepParameters.Next();
+		}
+
+		stepParameters.Reset();
+
+		new_update_tasks_grid(&stepParameters);
+
+		std::string to_check = stepParameters.Item.ToStdString();
+		string_capitalized(to_check);
+
+		if (check_recipe->IsChecked())
+		{
+			std::vector<std::string> recipe = recipes.find(to_check)->second;
+
+			int multiplier = std::stoi(stepParameters.Amount);
+			for (int i = 0; i < recipe.size(); i += 2)
+			{
+				stepParameters.Task = struct_tasks_list.put;
+				stepParameters.Amount = std::to_string(stoi(recipe[i + 1]) * multiplier);
+				stepParameters.Item = recipe[i];
+				stepParameters.FromInto = struct_from_into_list.input;
+
+				new_update_tasks_grid(&stepParameters);
+			}
+		}
+
+		event.Skip();
+		return;
+	}
+
+	if (task == e_put || task == e_take)
+	{
+		if (!IsValidPutTakeStep(stepParameters))
+		{
+			return;
+		}
+
+		new_update_tasks_grid(&stepParameters);
+	}
+
+	if (task == e_tech )
+	{
+		if (!IsValidTechStep(stepParameters))
+		{
+			return;
+		}
+
+		new_update_tasks_grid(&stepParameters);
+	}
+
+	if (task == e_priority)
+	{
+		new_update_tasks_grid(&stepParameters);
+	}
+
+
+
+
+	if (task == e_mine || task == e_limit || task == e_filter || task == e_rotate || task == e_launch)
+	{
 		if (check_buildings_grid())
 		{
 			if (setup_for_task_group_template_grid())
@@ -925,21 +1039,6 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 				}
 			}
 		}
-		else
-		{
-			if (row_num != grid_tasks->GetNumberRows())
-			{
-				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
-			}
-
-			event.Skip();
-			return;
-		}
-
-		if (row_num != grid_tasks->GetNumberRows())
-		{
-			update_buildings_grid_from_scratch(row_num + 1, grid_tasks->GetNumberRows());
-		}
 	}
 	else
 	{
@@ -967,7 +1066,7 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event)
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	// setup buildingsgrid and ensure the building exists
-	auto t = map_task_name[task];
+	auto t = TaskNames[task];
 	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch)
 	{
 		if (row_num != grid_tasks->GetNumberRows())
@@ -2412,7 +2511,7 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event)
 
 bool cMain::setup_for_task_group_template_grid()
 {
-	auto t = map_task_name[task];
+	auto t = TaskNames[task];
 	switch (t)
 	{
 		case e_game_speed:
@@ -2690,6 +2789,8 @@ bool cMain::setup_for_task_group_template_grid()
 
 	return true;
 }
+
+
 
 
 std::string FormatString(wxString s)
@@ -3265,7 +3366,6 @@ bool cMain::compare_task_strings(const wxString& str1, const std::string& str2)
 	return true;
 }
 
-// New function
 bool cMain::find_building(int amount_of_buildings)
 {
 	building_row_num = grid_buildings->GetNumberRows();
@@ -3718,4 +3818,475 @@ bool cMain::check_input(std::string& item, const std::vector<std::string>& all_i
 	}
 
 	return false;
+}
+
+StepParameters cMain::ExtractStepParameters()
+{
+	auto stepParameters = StepParameters(new_extract_x_cord(), new_extract_y_cord());
+
+	stepParameters.Task = extract_task();
+	stepParameters.Amount = extract_amount();
+	stepParameters.Item = extract_item();
+	stepParameters.FromInto = extract_from_into();
+	stepParameters.Orientation = extract_building_orientation();
+	stepParameters.Direction = extract_direction_to_build();
+	stepParameters.Size = new_extract_building_size();
+	stepParameters.Buildings = new_extract_amount_of_buildings();
+	stepParameters.PriorityIn = extract_priority_in();
+	stepParameters.PriorityOut = extract_priority_out();
+	stepParameters.Comment = extract_comment();
+
+	stepParameters.TaskEnum = TaskNames[stepParameters.Task];
+
+	return stepParameters;
+}
+
+double cMain::new_extract_x_cord()
+{
+	return spin_x->GetValue();
+}
+
+double cMain::new_extract_y_cord()
+{
+	return spin_y->GetValue();
+}
+
+int cMain::new_extract_building_size()
+{
+	return spin_building_size->GetValue();
+}
+
+int cMain::new_extract_amount_of_buildings()
+{
+	return spin_building_amount->GetValue();
+}
+
+GridEntry* cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
+{
+	auto gridEntry = new GridEntry{
+		.Task = stepParameters->Task,
+		.Comment = stepParameters->Comment,
+	};
+
+	switch (stepParameters->TaskEnum)
+	{
+		case e_start:
+		case e_pause:
+		case e_save:
+			break;
+
+		case e_game_speed:
+		case e_stop:
+		case e_idle:
+		case e_pick_up:
+		case e_craft:
+			gridEntry->Amount = stepParameters->Amount;
+			break;
+
+		case e_walk:
+		case e_launch:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			break;
+
+		case e_mine:
+			if (mine_building_found)
+			{
+				gridEntry->Item = building; // This should be changed to something less convoluted 
+			}
+
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Amount = stepParameters->Amount;
+			break;
+
+		case e_rotate:
+			item = building;
+
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Amount = stepParameters->Amount;
+			gridEntry->Item = item; // This should be changed to something less convoluted 
+			break;
+
+		case e_build:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Item = stepParameters->Item;
+			gridEntry->BuildingOrientation = stepParameters->Orientation;
+			gridEntry->DirectionToBuild = stepParameters->Direction;
+			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			break;
+
+		case e_take:
+		case e_put:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Amount = stepParameters->Amount;
+			gridEntry->Item = stepParameters->Item;
+			gridEntry->BuildingOrientation = stepParameters->FromInto;
+			gridEntry->DirectionToBuild = stepParameters->Direction;
+			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			break;
+
+		case e_tech:
+			gridEntry->Item = stepParameters->Item;
+			break;
+
+		case e_recipe:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Amount = stepParameters->Amount;
+			gridEntry->Item = stepParameters->Item;
+			gridEntry->DirectionToBuild = stepParameters->Direction;
+			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			break;
+
+		case e_limit:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Amount = stepParameters->Amount;
+			gridEntry->BuildingOrientation = "Chest";
+			gridEntry->DirectionToBuild = stepParameters->Direction;
+			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			break;
+
+		case e_priority:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->BuildingOrientation = stepParameters->PriorityIn + "," + stepParameters->PriorityOut;
+			gridEntry->DirectionToBuild = stepParameters->Direction;
+			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			break;
+
+		case e_drop:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Item = stepParameters->Item;
+			gridEntry->DirectionToBuild = stepParameters->Direction;
+			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			break;
+
+		case e_filter:
+			gridEntry->X = std::to_string(stepParameters->X);
+			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry->Amount = stepParameters->Amount;
+			gridEntry->Item = stepParameters->Item;
+			gridEntry->DirectionToBuild = stepParameters->Direction;
+			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			break;
+	}
+
+	return gridEntry;
+}
+
+// ensure that the variables are actually what they are supposed to be
+void cMain::new_update_tasks_grid(StepParameters* stepParameters)
+{
+	auto gridEntry = PrepareStepParametersForGrid(stepParameters);
+
+	int row_num;
+
+	if (grid_tasks->IsSelection())
+	{
+		if (!grid_tasks->GetSelectedRows().begin())
+		{
+			return;
+		}
+
+		row_num = *grid_tasks->GetSelectedRows().begin();
+	}
+	else
+	{
+		row_num = grid_tasks->GetNumberRows();
+	}
+
+	grid_tasks->InsertRows(row_num, 1);
+
+	grid_tasks->SetCellValue(row_num, 0, gridEntry->Task);
+	grid_tasks->SetCellValue(row_num, 1, gridEntry->X);
+	grid_tasks->SetCellValue(row_num, 2, gridEntry->Y);
+	grid_tasks->SetCellValue(row_num, 3, gridEntry->Amount);
+	grid_tasks->SetCellValue(row_num, 4, gridEntry->Item);
+	grid_tasks->SetCellValue(row_num, 5, gridEntry->BuildingOrientation);
+	grid_tasks->SetCellValue(row_num, 6, gridEntry->DirectionToBuild);
+	grid_tasks->SetCellValue(row_num, 7, gridEntry->BuildingSize);
+	grid_tasks->SetCellValue(row_num, 8, gridEntry->AmountOfBuildings);
+	grid_tasks->SetCellValue(row_num, 9, gridEntry->Comment);
+
+	if (grid_tasks->IsSelection())
+	{
+		auto it1 = StepGridData.begin();
+		it1 += row_num;
+
+		StepGridData.insert(it1, *stepParameters);
+	}
+	else
+	{
+		StepGridData.push_back(*stepParameters);
+	}
+
+	new_background_colour_update(grid_tasks, row_num, stepParameters->TaskEnum);
+}
+
+void cMain::new_background_colour_update(wxGrid* grid, int row, TaskName task)
+{
+	switch (task)
+	{
+		case e_start:
+			grid->SetCellBackgroundColour(row, 0, *wxGREEN);
+			return;
+		case e_stop:
+			grid->SetCellBackgroundColour(row, 0, *wxRED);
+			return;
+		case e_build:
+			grid->SetCellBackgroundColour(row, 0, *wxCYAN);
+			return;
+		case e_craft:
+			grid->SetCellBackgroundColour(row, 0, *wxLIGHT_GREY);
+			return;
+		case e_game_speed:
+		case e_pause:
+		case e_save:
+			grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
+			return;
+		default:
+			grid->SetCellBackgroundColour(row, 0, *wxWHITE);
+	}
+}
+
+bool cMain::IsValidBuildStep(StepParameters stepParameters)
+{
+	if (!new_check_input(stepParameters.Item, all_buildings))
+	{
+		wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+		return false;
+	}
+
+	if (!new_check_input(stepParameters.Orientation, build_orientations))
+	{
+		wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
+		return false;
+	}
+
+	if (!new_check_input(stepParameters.Direction, build_orientations))
+	{
+		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+		return false;
+	}
+
+	return true;
+}
+
+bool cMain::IsValidRecipeStep(StepParameters stepParameters)
+{
+	switch (stepParameters.BuildingIndex)
+	{
+		case AssemblingMachine1:
+			if (new_check_input(stepParameters.Item, part_assembly_recipes))
+			{
+				return true;
+			}
+
+			wxMessageBox("The item chosen is not a valid recipe for an assembling machine 1", "Item chosen is not valid");
+			return false;
+
+		case AssemblingMachine2:
+		case AssemblingMachine3:
+			if (new_check_input(stepParameters.Item, full_assembly_recipes))
+			{
+				return true;
+			}
+
+			wxMessageBox("The item chosen is not a valid recipe for an assembling machine", "Item chosen is not valid");
+			return false;
+
+		case OilRefinery:
+			if (!new_check_input(stepParameters.Item, oil_refinery_list))
+			{
+				return true;
+			}
+			
+			wxMessageBox("The item chosen is not a valid recipe for an oil refinery", "Item chosen is not valid");
+			return false;
+
+		case ChemicalPlant:
+			if (!new_check_input(stepParameters.Item, full_chemical_plant_recipes))
+			{
+				return true;
+			}
+
+			wxMessageBox("The item chosen is not a valid recipe for a chemical plant", "Item chosen is not valid");
+			return false;
+
+		case Centrifuge:
+			if (!new_check_input(stepParameters.Item, centrifuge_list))
+			{
+				return true;
+			}
+
+			wxMessageBox("The item chosen is not a valid recipe for a centrifuge", "Item chosen is not valid");
+			return false;
+
+		case StoneFurnace:
+		case SteelFurnace:
+		case ElectricFurnace:
+			if (!new_check_input(stepParameters.Item, furnace_list))
+			{
+				return true;
+			}
+			
+			wxMessageBox("The item chosen is not a valid recipe for a furnace", "Item chosen is not valid");
+			return false;
+
+		default:
+			return true;;
+	}
+}
+
+bool cMain::IsValidCraftStep(StepParameters stepParameters)
+{
+	if (!new_check_input(stepParameters.Item, handcrafted_list))
+	{
+		wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
+		return false;
+	}
+
+	return true;
+}
+
+bool cMain::IsValidPutTakeStep(StepParameters stepParameters)
+{
+	if (!check_take_put(item))
+	{
+		return false;
+	}
+
+	if (!check_input(direction_to_build, build_orientations))
+	{
+		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
+		return false;
+	}
+
+	return true;
+}
+
+bool cMain::IsValidTechStep(StepParameters stepParameters)
+{
+	if (!new_check_input(stepParameters.Item, tech_list))
+	{
+		wxMessageBox("The tech is not valid - please try again", "Please use the tech dropdown menu");
+		return false;
+	}
+
+	return true;
+}
+
+bool cMain::new_check_input(wxString& item, const std::vector<std::string>& all_items)
+{
+	std::string item_lower = "";
+	for (unsigned int i = 0; i < item.size(); i++)
+	{
+		item_lower.push_back(std::tolower(item[i]));
+	}
+
+	for (auto it = all_items.begin(); it < all_items.end(); it++)
+	{
+
+		std::string check_item_lower = "";
+
+		for (unsigned int i = 0; i < (*it).size(); i++)
+		{
+			check_item_lower.push_back(std::tolower((*it)[i]));
+		}
+
+		if (item_lower == check_item_lower)
+		{
+			item = *it;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void cMain::new_auto_put(std::string put_item, std::string put_amount, std::string put_into)
+{
+	cmb_from_into->SetValue(put_into);
+
+	task = struct_tasks_list.put;
+	item = put_item;
+	amount = put_amount;
+	from_into = put_into;
+	setup_for_task_group_template_grid();
+	update_tasks_grid();
+
+
+	//new_update_tasks_grid();
+}
+
+bool cMain::new_extra_building_checks(StepParameters stepParameters)
+{
+	auto buildingName = FindBuildingName(stepParameters.BuildingIndex);
+
+	switch (stepParameters.TaskEnum)
+	{
+		case e_limit: 
+			return check_input(buildingName, chest_list);
+
+		case e_priority:
+			return check_input(buildingName, splitter_list);
+
+		case e_filter:
+			return check_input(buildingName, splitter_list) && check_input(buildingName, filter_inserter_list);
+
+		default:
+			return true;
+	}
+}
+
+void cMain::GenerateBuildingSnapShot(int end_row)
+{
+	int buildingsInSnapShot = 0;
+
+	for (int i = 0; i < end_row; i++)
+	{
+		switch (StepGridData[i].TaskEnum)
+		{
+			case e_build:
+				for (int j = 0; j < StepGridData[i].Buildings; j++)
+				{
+					BuildingsSnapShot[buildingsInSnapShot].X = StepGridData[i].X;
+					BuildingsSnapShot[buildingsInSnapShot].Y = StepGridData[i].Y;
+					BuildingsSnapShot[buildingsInSnapShot].Index = StepGridData[i].BuildingIndex;
+
+					StepGridData[i].Next();
+					buildingsInSnapShot++;
+				}
+				
+				StepGridData[i].Reset();
+				continue;
+
+			case e_mine:
+				for (int j = 0; j < buildingsInSnapShot; j++)
+				{
+					if (BuildingsSnapShot[j] == StepGridData[i])
+					{
+						BuildingsSnapShot[j].X = -0.4523543; // Invalidate the building
+					}
+				}
+
+				continue;
+
+			default:
+				continue;
+		}
+	}
 }
