@@ -9,6 +9,9 @@
     <ClCompile Include="OpenTas.cpp" />
     <ClCompile Include="SaveTas.cpp" />
     <ClCompile Include="TypePanel.cpp" />
+    <ClCompile Include="BuildingNameToIndex.cpp">
+      <Filter>Maps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />

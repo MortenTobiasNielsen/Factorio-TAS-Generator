@@ -20,6 +20,16 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	// Ensure that realocations shouldn't be needed for a long while.
 	BuildingsSnapShot.reserve(10000);
+	auto invalidBuilding = new Building{
+		.X = invalidBuildingX,
+		.Y = 0,
+		.Index = 0,
+	};
+
+	for (int i = 0; i < BuildingsSnapShot.capacity(); i++)
+	{
+		BuildingsSnapShot.push_back(*invalidBuilding);
+	}
 
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
 	part_assembly_recipes.insert(part_assembly_recipes.end(), assemply_level1_list.begin(), assemply_level1_list.end());
@@ -493,7 +503,7 @@ bool cMain::change_row(wxGrid* grid)
 
 void cMain::background_colour_update(wxGrid* grid, int row, std::string task)
 {
-	switch (TaskNames[task])
+	switch (TaskNames.find(task)->second)
 	{
 		case e_start:
 			grid->SetCellBackgroundColour(row, 0, *wxGREEN);
@@ -593,7 +603,7 @@ void cMain::update_buildings_grid_from_scratch(int start_row, int end_row)
 		In_memory_extract_parameters_buildings(tasks_data_to_save[i]);
 		task_number = std::to_string(i + 1);
 
-		switch (TaskNames[building_task])
+		switch (TaskNames.find(task)->second)
 		{
 			case e_build:
 				update_buildings();
@@ -872,6 +882,8 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 			return;
 		}
 
+		stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item.ToStdString())->second;
+
 		new_update_tasks_grid(&stepParameters);
 
 		std::string to_check = stepParameters.Item.ToStdString();
@@ -914,7 +926,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 		return;
 	}
 
-	if (task == e_craft)
+	if (stepParameters.TaskEnum == e_craft)
 	{
 		if (!IsValidCraftStep(stepParameters))
 		{
@@ -924,17 +936,30 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 		new_update_tasks_grid(&stepParameters);
 	}
 
-	GenerateBuildingSnapShot(row_num - 1);
+	int amountOfBuildings = GenerateBuildingSnapShot(row_num);
 
-	if (task == e_recipe)
+	if (stepParameters.TaskEnum == e_recipe)
 	{
 		for (int i = 0; i < stepParameters.Buildings; i++)
 		{
-			new_find_building(row_num - 1, stepParameters);
-
-			if (!IsValidRecipeStep(stepParameters))
+			for (int j = amountOfBuildings - 1; j > -1; j--)
 			{
-				return;
+				if (stepParameters == BuildingsSnapShot[j])
+				{
+					if (IsValidRecipeStep(stepParameters))
+					{
+						break;
+					}
+					
+					wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+					return;
+				}
+
+				if (j == 0)
+				{
+					wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+					return;
+				}
 			}
 
 			stepParameters.Next();
@@ -954,6 +979,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 			int multiplier = std::stoi(stepParameters.Amount);
 			for (int i = 0; i < recipe.size(); i += 2)
 			{
+				stepParameters.TaskEnum = e_put;
 				stepParameters.Task = struct_tasks_list.put;
 				stepParameters.Amount = std::to_string(stoi(recipe[i + 1]) * multiplier);
 				stepParameters.Item = recipe[i];
@@ -967,7 +993,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 		return;
 	}
 
-	if (task == e_put || task == e_take)
+	if (stepParameters.TaskEnum == e_put || task == e_take)
 	{
 		if (!IsValidPutTakeStep(stepParameters))
 		{
@@ -977,7 +1003,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 		new_update_tasks_grid(&stepParameters);
 	}
 
-	if (task == e_tech )
+	if (stepParameters.TaskEnum == e_tech)
 	{
 		if (!IsValidTechStep(stepParameters))
 		{
@@ -987,7 +1013,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 		new_update_tasks_grid(&stepParameters);
 	}
 
-	if (task == e_priority)
+	if (stepParameters.TaskEnum == e_priority)
 	{
 		new_update_tasks_grid(&stepParameters);
 	}
@@ -1066,7 +1092,7 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event)
 	row_num = *grid_tasks->GetSelectedRows().begin();
 
 	// setup buildingsgrid and ensure the building exists
-	auto t = TaskNames[task];
+	auto t = TaskNames.find(task)->second;
 	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch)
 	{
 		if (row_num != grid_tasks->GetNumberRows())
@@ -2511,7 +2537,7 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event)
 
 bool cMain::setup_for_task_group_template_grid()
 {
-	auto t = TaskNames[task];
+	auto t = TaskNames.find(task)->second;
 	switch (t)
 	{
 		case e_game_speed:
@@ -3836,7 +3862,7 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.PriorityOut = extract_priority_out();
 	stepParameters.Comment = extract_comment();
 
-	stepParameters.TaskEnum = TaskNames[stepParameters.Task];
+	stepParameters.TaskEnum = TaskNames.find(stepParameters.Task)->second;
 
 	return stepParameters;
 }
@@ -4113,7 +4139,7 @@ bool cMain::IsValidRecipeStep(StepParameters stepParameters)
 			{
 				return true;
 			}
-			
+
 			wxMessageBox("The item chosen is not a valid recipe for an oil refinery", "Item chosen is not valid");
 			return false;
 
@@ -4142,7 +4168,7 @@ bool cMain::IsValidRecipeStep(StepParameters stepParameters)
 			{
 				return true;
 			}
-			
+
 			wxMessageBox("The item chosen is not a valid recipe for a furnace", "Item chosen is not valid");
 			return false;
 
@@ -4238,7 +4264,7 @@ bool cMain::new_extra_building_checks(StepParameters stepParameters)
 
 	switch (stepParameters.TaskEnum)
 	{
-		case e_limit: 
+		case e_limit:
 			return check_input(buildingName, chest_list);
 
 		case e_priority:
@@ -4252,7 +4278,7 @@ bool cMain::new_extra_building_checks(StepParameters stepParameters)
 	}
 }
 
-void cMain::GenerateBuildingSnapShot(int end_row)
+int cMain::GenerateBuildingSnapShot(int end_row)
 {
 	int buildingsInSnapShot = 0;
 
@@ -4270,7 +4296,7 @@ void cMain::GenerateBuildingSnapShot(int end_row)
 					StepGridData[i].Next();
 					buildingsInSnapShot++;
 				}
-				
+
 				StepGridData[i].Reset();
 				continue;
 
@@ -4289,4 +4315,6 @@ void cMain::GenerateBuildingSnapShot(int end_row)
 				continue;
 		}
 	}
+
+	return buildingsInSnapShot;
 }

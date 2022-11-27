@@ -3,7 +3,7 @@
 #include <string>
 #include <wx/wx.h>
 
-#include "TaskNameToEnum.h"
+#include "Building.h"
 #include "utils.h"
 
 using std::string;
@@ -75,8 +75,11 @@ struct StepParameters
 	{
 		if (toCompare.X == X && toCompare.Y == Y)
 		{
+			BuildingIndex = toCompare.Index;
 			return true;
 		}
+
+		return false;
 	}
 
 	inline bool operator==(const StepParameters& toCompare)
