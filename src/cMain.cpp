@@ -19,8 +19,8 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	seglist.reserve(100);
 
 	// Ensure that realocations shouldn't be needed for a long while.
-	BuildingsSnapShot.reserve(10000);
-	auto invalidBuilding = new Building{
+	BuildingsSnapShot.reserve(100000);
+	Building invalidBuilding{
 		.X = invalidBuildingX,
 		.Y = 0,
 		.Index = 0,
@@ -28,7 +28,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	for (int i = 0; i < BuildingsSnapShot.capacity(); i++)
 	{
-		BuildingsSnapShot.push_back(*invalidBuilding);
+		BuildingsSnapShot.push_back(invalidBuilding);
 	}
 
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
@@ -882,11 +882,11 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 			return;
 		}
 
-		stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item.ToStdString())->second;
+		stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item)->second;
 
 		new_update_tasks_grid(&stepParameters);
 
-		std::string to_check = stepParameters.Item.ToStdString();
+		std::string to_check = stepParameters.Item;
 		string_capitalized(to_check);
 
 		if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel)
@@ -953,7 +953,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 
 		new_update_tasks_grid(&stepParameters);
 
-		std::string to_check = stepParameters.Item.ToStdString();
+		std::string to_check = stepParameters.Item;
 		string_capitalized(to_check);
 
 		if (check_recipe->IsChecked())
@@ -2233,34 +2233,33 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 		}
 
 		OpenTas open;
-		open_file_return_data result = open.Open(dialog_progress_bar, file);
+		open_file_return_data* result = open.Open(dialog_progress_bar, file);
 
-		if (!result.success)
+		if (!result->success)
 		{
 			malformed_saved_file_message();
 			return;
 		}
 
-		//tasks_data_to_save = result.steps;
-		StepGridData = result.steps;
-		group_map = result.group_map;
-		template_map = result.template_map;
-		save_file_location = result.save_file_location;
-		generate_code_folder_location = result.generate_code_folder_location;
+		StepGridData = result->steps;
+		group_map = result->group_map;
+		template_map = result->template_map;
+		save_file_location = result->save_file_location;
+		generate_code_folder_location = result->generate_code_folder_location;
 
-		if (result.goal == goal_steelaxe_text)
+		if (result->goal == goal_steelaxe_text)
 		{
 			menu_goals->GetMenuItems()[0]->Check();
 		}
-		else if (result.goal == goal_GOTLAP_text)
+		else if (result->goal == goal_GOTLAP_text)
 		{
 			menu_goals->GetMenuItems()[1]->Check();
 		}
-		else if (result.goal == goal_any_percent_text)
+		else if (result->goal == goal_any_percent_text)
 		{
 			menu_goals->GetMenuItems()[2]->Check();
 		}
-		else if (result.goal == goal_debug_text)
+		else if (result->goal == goal_debug_text)
 		{
 			menu_goals->GetMenuItems()[3]->Check();
 		}
@@ -2270,31 +2269,31 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 			return;
 		}
 
-		menu_auto_close->GetMenuItems()[0]->Check(result.auto_close_generate_script);
-		auto_close_generate_script = result.auto_close_generate_script;
+		menu_auto_close->GetMenuItems()[0]->Check(result->auto_close_generate_script);
+		auto_close_generate_script = result->auto_close_generate_script;
 
-		menu_auto_close->GetMenuItems()[1]->Check(result.auto_close_open);
-		auto_close_open = result.auto_close_open;
+		menu_auto_close->GetMenuItems()[1]->Check(result->auto_close_open);
+		auto_close_open = result->auto_close_open;
 
-		menu_auto_close->GetMenuItems()[2]->Check(result.auto_close_save);
-		auto_close_save = result.auto_close_save;
+		menu_auto_close->GetMenuItems()[2]->Check(result->auto_close_save);
+		auto_close_save = result->auto_close_save;
 
-		menu_auto_close->GetMenuItems()[3]->Check(result.auto_close_save_as);
-		auto_close_save_as = result.auto_close_save_as;
+		menu_auto_close->GetMenuItems()[3]->Check(result->auto_close_save_as);
+		auto_close_save_as = result->auto_close_save_as;
 
-		check_furnace->SetValue(result.auto_put_furnace);
-		check_burner->SetValue(result.auto_put_burner);
-		check_lab->SetValue(result.auto_put_lab);
-		check_recipe->SetValue(result.auto_put_recipe);
+		check_furnace->SetValue(result->auto_put_furnace);
+		check_burner->SetValue(result->auto_put_burner);
+		check_lab->SetValue(result->auto_put_lab);
+		check_recipe->SetValue(result->auto_put_recipe);
 
 		new_populate_tasks_grid();
 
 		dialog_progress_bar->set_progress(100.0f - 35);
 		wxYield();
 
-		if (result.group_map.size())
+		if (result->group_map.size())
 		{
-			std::vector<std::string> keys = get_keys(result.group_map);
+			std::vector<std::string> keys = get_keys(result->group_map);
 
 			for (int i = 0; i < keys.size(); i++)
 			{
@@ -2314,9 +2313,9 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 		dialog_progress_bar->set_progress(100.0f - 25);
 		wxYield();
 
-		if (result.template_map.size())
+		if (result->template_map.size())
 		{
-			std::vector<std::string> keys = get_keys(result.template_map);
+			std::vector<std::string> keys = get_keys(result->template_map);
 
 			for (int i = 0; i < keys.size(); i++)
 			{
@@ -2369,9 +2368,9 @@ void cMain::new_populate_tasks_grid()
 
 	for (int i = 0; i < amount_of_tasks; i++)
 	{
-		auto gridEntry = PrepareStepParametersForGrid(&StepGridData[i]);
+		GridEntry gridEntry = PrepareStepParametersForGrid(&StepGridData[i]);
 
-		PopulateGrid(grid_tasks, i, gridEntry);
+		PopulateGrid(grid_tasks, i, &gridEntry);
 
 		background_colour_update(grid_tasks, i, StepGridData[i].Task);
 	}
@@ -3891,9 +3890,9 @@ int cMain::new_extract_amount_of_buildings()
 	return spin_building_amount->GetValue();
 }
 
-GridEntry* cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
+GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 {
-	auto gridEntry = new GridEntry{
+	GridEntry gridEntry{
 		.Task = stepParameters->Task,
 		.Comment = stepParameters->Comment,
 	};
@@ -3910,107 +3909,107 @@ GridEntry* cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_idle:
 		case e_pick_up:
 		case e_craft:
-			gridEntry->Amount = stepParameters->Amount;
+			gridEntry.Amount = stepParameters->Amount;
 			break;
 
 		case e_walk:
 		case e_launch:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
 			break;
 
 		case e_mine:
 			if (mine_building_found)
 			{
-				gridEntry->Item = building; // This should be changed to something less convoluted 
+				gridEntry.Item = building; // This should be changed to something less convoluted 
 			}
 
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Amount = stepParameters->Amount;
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Amount = stepParameters->Amount;
 			break;
 
 		case e_rotate:
 			item = building;
 
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Amount = stepParameters->Amount;
-			gridEntry->Item = item; // This should be changed to something less convoluted 
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Item = item; // This should be changed to something less convoluted 
 			break;
 
 		case e_build:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Item = stepParameters->Item;
-			gridEntry->BuildingOrientation = stepParameters->Orientation;
-			gridEntry->DirectionToBuild = stepParameters->Direction;
-			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Item = stepParameters->Item;
+			gridEntry.BuildingOrientation = stepParameters->Orientation;
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 
 		case e_take:
 		case e_put:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Amount = stepParameters->Amount;
-			gridEntry->Item = stepParameters->Item;
-			gridEntry->BuildingOrientation = stepParameters->FromInto;
-			gridEntry->DirectionToBuild = stepParameters->Direction;
-			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Item = stepParameters->Item;
+			gridEntry.BuildingOrientation = stepParameters->FromInto;
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 
 		case e_tech:
-			gridEntry->Item = stepParameters->Item;
+			gridEntry.Item = stepParameters->Item;
 			break;
 
 		case e_recipe:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Amount = stepParameters->Amount;
-			gridEntry->Item = stepParameters->Item;
-			gridEntry->DirectionToBuild = stepParameters->Direction;
-			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Item = stepParameters->Item;
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 
 		case e_limit:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Amount = stepParameters->Amount;
-			gridEntry->BuildingOrientation = "Chest";
-			gridEntry->DirectionToBuild = stepParameters->Direction;
-			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.BuildingOrientation = "Chest";
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 
 		case e_priority:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->BuildingOrientation = stepParameters->PriorityIn + "," + stepParameters->PriorityOut;
-			gridEntry->DirectionToBuild = stepParameters->Direction;
-			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.BuildingOrientation = stepParameters->PriorityIn + "," + stepParameters->PriorityOut;
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 
 		case e_drop:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Item = stepParameters->Item;
-			gridEntry->DirectionToBuild = stepParameters->Direction;
-			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Item = stepParameters->Item;
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 
 		case e_filter:
-			gridEntry->X = std::to_string(stepParameters->X);
-			gridEntry->Y = std::to_string(stepParameters->Y);
-			gridEntry->Amount = stepParameters->Amount;
-			gridEntry->Item = stepParameters->Item;
-			gridEntry->DirectionToBuild = stepParameters->Direction;
-			gridEntry->BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry->AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Item = stepParameters->Item;
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 	}
 
@@ -4020,7 +4019,7 @@ GridEntry* cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 // ensure that the variables are actually what they are supposed to be
 void cMain::new_update_tasks_grid(StepParameters* stepParameters)
 {
-	auto gridEntry = PrepareStepParametersForGrid(stepParameters);
+	GridEntry gridEntry = PrepareStepParametersForGrid(stepParameters);
 
 	int row_num;
 
@@ -4040,7 +4039,7 @@ void cMain::new_update_tasks_grid(StepParameters* stepParameters)
 
 	grid_tasks->InsertRows(row_num, 1);
 
-	PopulateGrid(grid_tasks,row_num, gridEntry);
+	PopulateGrid(grid_tasks, row_num, &gridEntry);
 
 	if (grid_tasks->IsSelection())
 	{
@@ -4210,7 +4209,7 @@ bool cMain::IsValidTechStep(StepParameters stepParameters)
 	return true;
 }
 
-bool cMain::new_check_input(wxString& item, const std::vector<std::string>& all_items)
+bool cMain::new_check_input(string& item, const std::vector<std::string>& all_items)
 {
 	std::string item_lower = "";
 	for (unsigned int i = 0; i < item.size(); i++)

@@ -18,18 +18,19 @@ struct StepParameters
 	int Size;
 	int Buildings;
 	int BuildingIndex;
+	Orientation OrientationIndex;
 
 	TaskName TaskEnum;
 
 	string Task;
 	string Amount;
-	wxString Item;
-	wxString FromInto;
-	wxString Orientation;
-	wxString Direction;
+	string Item;
+	string FromInto;
+	string Orientation;
+	string Direction;
 	string PriorityIn;
 	string PriorityOut;
-	wxString Comment;
+	string Comment;
 
 	StepParameters(double InitialX, double InitialY)
 	{
@@ -38,6 +39,7 @@ struct StepParameters
 		OriginalX = InitialX;
 		OriginalY = InitialY;
 
+		OrientationIndex = North;
 		TaskEnum = e_stop;
 		Size = 1;
 		Buildings = 1;
@@ -82,6 +84,7 @@ struct StepParameters
 		if (toCompare.X == X && toCompare.Y == Y)
 		{
 			BuildingIndex = toCompare.Index;
+			OrientationIndex = toCompare.OrientationIndex;
 			return true;
 		}
 

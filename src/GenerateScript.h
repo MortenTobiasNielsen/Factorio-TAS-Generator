@@ -52,18 +52,7 @@ private:
 	string from_into;
 	string priority_in;
 	string priority_out;
-
 	string building;
-	string building_x_cord;
-	string building_y_cord;
-	string building_units;
-	string building_build_orientation;
-	string building_direction_to_build;
-	string building_building_size;
-	string building_amount_of_buildings;
-	string building_priority_in;
-	string building_priority_out;
-	string building_comment;
 
 	string last_walking_comment;
 
@@ -119,6 +108,7 @@ private:
 	void reset();
 	void clear_tasks();
 	void TransferParameters(StepParameters& stepParameters);
+	void SetBuildingAndOrientation(StepParameters* stepParameters);
 	string extract_define(string from_into, string building);
 	bool find_building(int& row, std::vector<StepParameters>& steps);
 

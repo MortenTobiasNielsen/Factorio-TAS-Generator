@@ -393,7 +393,7 @@ private:
 	void malformed_saved_file_message();
 
 	void new_update_tasks_grid(StepParameters* stepParameters);
-	GridEntry* PrepareStepParametersForGrid(StepParameters* stepParameters);
+	GridEntry PrepareStepParametersForGrid(StepParameters* stepParameters);
 	StepParameters ExtractStepParameters();
 	double new_extract_x_cord();
 	double new_extract_y_cord();
@@ -402,7 +402,7 @@ private:
 
 	void new_background_colour_update(wxGrid* grid, int row, TaskName task);
 
-	bool new_check_input(wxString& item, const std::vector<std::string>& all_items);
+	bool new_check_input(string& item, const std::vector<std::string>& all_items);
 
 	bool IsValidBuildStep(StepParameters stepParameters);
 	bool IsValidRecipeStep(StepParameters stepParameters);

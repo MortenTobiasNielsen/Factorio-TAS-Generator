@@ -1,6 +1,8 @@
 #pragma once
 
 #include "GenerateScript.h"
+
+#include "BuildingNameToIndex.h"
 #include "utils.h"
 #include "Functions.h"
 #include "control_info.h"
@@ -89,7 +91,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 		switch (steps[i].TaskEnum)
 		{
 			case step_game_speed:
-				speed(current_step, steps[i].Amount);
+				speed(current_step, amount);
 				break;
 
 			case step_walk:
@@ -102,21 +104,26 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 					amount = "1000";
 				}
 
-				if (find_building(i, steps))
-				{
-					mining(current_step, x_cord, y_cord, amount, building, build_orientation, true);
-				}
-				else
+				if (steps[i].BuildingIndex == 0)
 				{
 					mining(current_step, x_cord, y_cord, amount, "", "", false);
 				}
+				else
+				{
+					SetBuildingAndOrientation(&steps[i]);
+
+					mining(current_step, x_cord, y_cord, amount, building, build_orientation, true);
+				}
+
 				break;
 
 			case step_rotate:
-				if (!find_building(i, steps))
+				if (steps[i].BuildingIndex == 0)
 				{
 					return;
 				}
+
+				SetBuildingAndOrientation(&steps[i]);
 
 				rotate(current_step, x_cord, y_cord, amount, item, build_orientation);
 				break;
@@ -138,7 +145,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 
 				if (from_into != struct_from_into_list.wreck)
 				{
-					find_building(i, steps);
+					SetBuildingAndOrientation(&steps[i]);
 				}
 
 				from_into = extract_define(from_into, building);
@@ -156,7 +163,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 
 				if (from_into != struct_from_into_list.wreck)
 				{
-					find_building(i, steps);
+					SetBuildingAndOrientation(&steps[i]);
 				}
 
 				from_into = extract_define(from_into, building);
@@ -169,10 +176,12 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 				break;
 
 			case step_recipe:
-				if (!find_building(i, steps))
+				if (steps[i].BuildingIndex == 0)
 				{
 					return;
 				}
+
+				SetBuildingAndOrientation(&steps[i]);
 
 				row_recipe(current_step, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
 				break;
@@ -190,7 +199,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 
 				if (from_into != struct_from_into_list.wreck)
 				{
-					find_building(i, steps);
+					SetBuildingAndOrientation(&steps[i]);
 				}
 
 				from_into = extract_define(from_into, building);
@@ -211,27 +220,35 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 				priority_out = build_orientation.substr(pos + 2);
 			}
 
-			if (!find_building(i, steps))
+			if (steps[i].BuildingIndex == 0)
 			{
 				return;
 			}
+
+			SetBuildingAndOrientation(&steps[i]);
 
 			row_priority(current_step, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 			break;
 
 			case step_filter:
-				if (!find_building(i, steps))
+				if (steps[i].BuildingIndex == 0)
 				{
 					return;
 				}
+
+				SetBuildingAndOrientation(&steps[i]);
+
 				row_filter(current_step, x_cord, y_cord, item, amount, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 				break;
 
 			case step_drop:
-				if (!find_building(i, steps))
+				if (steps[i].BuildingIndex == 0)
 				{
 					return;
 				}
+
+				SetBuildingAndOrientation(&steps[i]);
+
 				row_drop(current_step, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size, building);
 				break;
 
@@ -311,6 +328,12 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 	}
 }
 
+void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
+{
+	building = FindBuildingName(step->BuildingIndex);
+	build_orientation = build_orientations[step->OrientationIndex];
+}
+
 string GenerateScript::extract_define(string from_into, string building)
 {
 	if (from_into == struct_from_into_list.wreck)
@@ -374,64 +397,6 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	building_size = to_string(stepParameters.Size);
 	amount_of_buildings = to_string(stepParameters.Buildings);
 	comment = stepParameters.Comment;
-}
-
-bool GenerateScript::find_building(int& row, std::vector<StepParameters>& steps)
-{
-	for (int i = row - 1; i > -1; i--)
-	{
-		if (steps[i].TaskEnum == e_build)
-		{
-			building_x_cord = to_string(steps[i].X);
-			building_y_cord = to_string(steps[i].Y);
-
-			if (x_cord == building_x_cord && y_cord == building_y_cord)
-			{
-				building = steps[i].Item;
-				build_orientation = steps[i].Orientation;
-
-				return true;
-			}
-
-			building_direction_to_build = steps[i].Direction;
-			building_building_size = to_string(steps[i].Size);
-			building_amount_of_buildings = to_string(steps[i].Buildings);
-
-			for (int j = 1; j < std::stoi(building_amount_of_buildings); j++)
-			{
-				find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
-
-				if (x_cord == building_x_cord && y_cord == building_y_cord)
-				{
-					building = steps[i].Item;
-					build_orientation = steps[i].Orientation;
-
-					return true;
-				}
-			}
-		}
-		else if (steps[i].TaskEnum == e_rotate)
-		{
-			building_x_cord = to_string(steps[i].X);
-			building_y_cord = to_string(steps[i].Y);
-
-			if (x_cord == building_x_cord && y_cord == building_y_cord)
-			{
-				building = steps[i].Item;
-				build_orientation = steps[i].Orientation;
-
-				return true;
-			}
-		}
-	}
-
-	if (task == struct_tasks_list.mine)
-	{
-		return false;
-	}
-
-	wxMessageBox("Task: " + current_step + " have no building associated with it - please correct the error and try again", "The building does not exist");
-	return false;
 }
 
 string GenerateScript::convert_string(string input)

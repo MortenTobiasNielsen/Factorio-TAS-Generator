@@ -865,10 +865,28 @@ static const std::vector<std::string> module_list = {
 	"Productivity module 2",
 	"Productivity module 3"};
 
-static const std::vector<std::string> build_orientations = {"North",
-"East",
-"South",
-"West"};
+static const std::vector<std::string> build_orientations = {
+	"North",
+	"East",
+	"South",
+	"West"
+};
+
+enum Orientation
+{
+	North,
+	East,
+	South,
+	West,
+};
+
+static inline std::map<std::string, Orientation> OrientationToIndex = {
+	{build_orientations[North], North},
+	{build_orientations[East], East},
+	{build_orientations[South], South},
+	{build_orientations[West], West}
+};
+
 
 static const std::vector<std::string> tech_list = {"Advanced electronics",
 "Advanced electronics 2",

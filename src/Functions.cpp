@@ -124,6 +124,7 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 	buildings[buildingsInSnapShot].X = stepParameters.X;
 	buildings[buildingsInSnapShot].Y = stepParameters.Y;
 	buildings[buildingsInSnapShot].Index = stepParameters.BuildingIndex;
+	buildings[buildingsInSnapShot].OrientationIndex = stepParameters.OrientationIndex;
 	buildingsInSnapShot++;
 
 	if (stepParameters.Buildings == 1)
@@ -138,6 +139,7 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 		buildings[buildingsInSnapShot].X = stepParameters.X;
 		buildings[buildingsInSnapShot].Y = stepParameters.Y;
 		buildings[buildingsInSnapShot].Index = stepParameters.BuildingIndex;
+		buildings[buildingsInSnapShot].OrientationIndex = stepParameters.OrientationIndex;
 		buildingsInSnapShot++;
 	}
 

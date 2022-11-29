@@ -17,7 +17,7 @@ void OpenTas::reset()
 	return_data.success = false;
 }
 
-open_file_return_data OpenTas::Open(dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
+open_file_return_data* OpenTas::Open(dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
 {
 	reset();
 
@@ -39,7 +39,7 @@ open_file_return_data OpenTas::Open(dialog_progress_bar_base* dialog_progress_ba
 		return_data.success = true;
 	}
 
-	return return_data;
+	return &return_data;
 }
 
 bool OpenTas::extract_total_steps(std::ifstream& file)
@@ -87,7 +87,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 	return_data.steps.reserve(total_lines);
 
 	buildingSnapshot.reserve(100000);
-	auto invalidBuilding = new Building{
+	Building invalidBuilding{
 		.X = invalidBuildingX,
 		.Y = 0,
 		.Index = 0,
@@ -95,7 +95,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 
 	for (int i = 0; i < buildingSnapshot.capacity(); i++)
 	{
-		buildingSnapshot.push_back(*invalidBuilding);
+		buildingSnapshot.push_back(invalidBuilding);
 	}
 
 	int buildingsInSnapShot = 0;
@@ -113,45 +113,46 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 			comment = seglist[9];
 		}
 
-		auto step = new StepParameters(0, 0);
+		StepParameters step(0, 0);
 
 		if (seglist[1] != "")
 		{
-			step->X = stod(seglist[1]);
-			step->OriginalX = stod(seglist[1]);
-			step->Y = stod(seglist[2]);
-			step->OriginalY = stod(seglist[2]);
+			step.X = stod(seglist[1]);
+			step.OriginalX = stod(seglist[1]);
+			step.Y = stod(seglist[2]);
+			step.OriginalY = stod(seglist[2]);
 		}
 
 		if (seglist[7] != "")
 		{
-			step->Size = stoi(seglist[7]);
+			step.Size = stoi(seglist[7]);
 		}
 
 		if (seglist[8] != "")
 		{
-			step->Buildings = stoi(seglist[8]);
+			step.Buildings = stoi(seglist[8]);
 		}
 
-		step->Task = seglist[0];
-		step->Amount = seglist[3];
-		step->Item = seglist[4];
-		step->Orientation = seglist[5];
-		step->Direction = seglist[6];
-		step->Comment = comment;
+		step.Task = seglist[0];
+		step.Amount = seglist[3];
+		step.Item = seglist[4];
+		step.Orientation = seglist[5];
+		step.Direction = seglist[6];
+		step.Comment = comment;
 
-		step->TaskEnum = TaskNames.find(step->Task)->second;
+		step.TaskEnum = TaskNames.find(step.Task)->second;
 
-		switch (step->TaskEnum)
+		switch (step.TaskEnum)
 		{
 			case e_build:
-				step->BuildingIndex = BuildingNameToIndex.find(step->Item.ToStdString())->second;
+				step.BuildingIndex = BuildingNameToIndex.find(step.Item)->second;
+				step.OrientationIndex = OrientationToIndex.find(step.Orientation)->second;
 
-				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, *step);
+				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
 
 			case e_mine:
-				ProcessMiningStep(buildingSnapshot, buildingsInSnapShot, *step);
+				ProcessMiningStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
 
 			case e_recipe:
@@ -160,7 +161,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 			case e_priority:
 			case e_launch:
 			case e_drop:
-				if (!BuildingExists(buildingSnapshot, buildingsInSnapShot, *step))
+				if (!BuildingExists(buildingSnapshot, buildingsInSnapShot, step))
 				{
 					return false;
 				}
@@ -169,7 +170,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 			case e_limit:
 			case e_put:
 			case e_take:
-				if (step->Orientation != "Wreck" && !BuildingExists(buildingSnapshot, buildingsInSnapShot, *step))
+				if (step.Orientation != "Wreck" && !BuildingExists(buildingSnapshot, buildingsInSnapShot, step))
 				{
 					return false;
 				}
@@ -179,7 +180,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 				break;
 		}
 
-		return_data.steps.push_back(*step);
+		return_data.steps.push_back(step);
 
 		lines_processed++;
 
