@@ -33,6 +33,7 @@ local duration = 0
 local ticks_mining = 0
 local idled = 0
 local font_size = 0.15 --best guess estimate of fontsize for flying text
+local q_save = nil
 
 local pos_pos = false
 local pos_neg = false
@@ -872,6 +873,11 @@ local function doStep(current_step)
 end
 
 local function handle_pretick()
+	if q_save and walking.walking == false and idle < 1 then 
+		save(q_save.task, q_save.name)
+		if steps[step] then warning(string.format("Creating safe save file for task %s resulted in saving on step %s", task, steps[step][1][1])) end
+		q_save = nil
+	end
 	--pretick sets step directly so it doesn't raise too many events
 	while run do
 		if steps[step] == nil then
@@ -883,7 +889,11 @@ local function handle_pretick()
 			speed(steps[step][3])
 			step = step + 1
 		elseif steps[step][2] == "save" then
-			save(steps[step][1][1], steps[step][3])
+			if walking.walking == false and idle < 1 then
+				save(steps[step][1][1], steps[step][3])
+			else
+				q_save = {task = steps[step][1][1], name = steps[step][3]}
+			end
 			step = step + 1
 		elseif steps[2] == "pick" then
 			pickup_ticks = pickup_ticks + steps[3] - 1
