@@ -102,6 +102,7 @@ protected:
 
 	// Task
 	void OnAddTaskClicked(wxCommandEvent& event);
+	void OnAddTaskRightClicked(wxMouseEvent& event);
 	void OnChangeTaskClicked(wxCommandEvent& event);
 	void OnDeleteTaskClicked(wxCommandEvent& event);
 	void OnMoveUpClicked(wxCommandEvent& event);
@@ -110,6 +111,9 @@ protected:
 	void OnMoveDownFiveClicked(wxMouseEvent& event);
 
 	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
+
+	//Adds a task specified by stepdetail panel at row_num
+	void AddTask(int row_num);
 
 	// Group
 	void OnNewGroupClicked(wxCommandEvent& event);
@@ -327,7 +331,7 @@ private:
 	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>>& map);
 	bool change_row(wxGrid* grid);
 
-	void update_tasks_grid();
+	void update_tasks_grid(int row = -1);
 	void update_buildings_grid();
 	void update_buildings_grid_from_scratch(int start_row, int end_row);
 	void update_buildings();

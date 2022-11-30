@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
+// C++ code generated with wxFormBuilder (version 3.10.1-234-gd93c9fc0)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -251,6 +251,7 @@ class GUI_Base : public wxFrame
 		virtual void TaskSeachOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void TaskSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddTaskClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddTaskRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnChangeTaskClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTaskClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }

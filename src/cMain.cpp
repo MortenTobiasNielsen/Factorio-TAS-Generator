@@ -515,10 +515,13 @@ void cMain::background_colour_update(wxGrid* grid, int row, std::string task)
 }
 
 // ensure that the variables are actually what they are supposed to be
-void cMain::update_tasks_grid()
+void cMain::update_tasks_grid(int row)
 {
-
-	if (grid_tasks->IsSelection())
+	if (row != -1)
+	{
+		row_num = row;
+	}
+	else if (grid_tasks->IsSelection())
 	{
 		if (!grid_tasks->GetSelectedRows().begin())
 		{
@@ -843,6 +846,24 @@ void cMain::update_group_template_grid(wxGrid* grid, std::vector<std::string>& l
 	}
 }
 
+void cMain::OnAddTaskRightClicked(wxMouseEvent& event)
+{
+	if (grid_tasks->IsSelection())
+	{
+		if (!grid_tasks->GetSelectedRows().end())
+		{
+			return;
+		}
+		row_num = grid_tasks->GetSelectedRows().Last() + 1;
+	}
+	else
+	{
+		row_num = grid_tasks->GetNumberRows();
+	}
+	AddTask(row_num);
+	event.Skip();
+}
+
 // You have chosen not to implement a check to see if there are already a building at the location, given that it would open for a lot of concerns about fast replaceing buildings 
 void cMain::OnAddTaskClicked(wxCommandEvent& event)
 {
@@ -858,7 +879,12 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 	{
 		row_num = grid_tasks->GetNumberRows();
 	}
+	AddTask(row_num);
+	event.Skip();
+}
 
+void cMain::AddTask(int row_num)
+{
 	extract_parameters();
 	mine_building_found = false;
 
@@ -932,7 +958,6 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
 			}
 
-			event.Skip();
 			return;
 		}
 
@@ -945,11 +970,9 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 	{
 		if (setup_for_task_group_template_grid())
 		{
-			update_tasks_grid();
+			update_tasks_grid(row_num);
 		}
 	}
-
-	event.Skip();
 }
 
 // It has been chosen to not make massive checks when a task is changed, given that it would be very complicated
