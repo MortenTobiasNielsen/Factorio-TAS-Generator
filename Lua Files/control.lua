@@ -672,6 +672,10 @@ local function pause()
 	return true
 end
 
+local function resume()
+	game.tick_paused = false
+end
+
 -- Set the gameplay speed. 1 is standard speed
 local function speed(speed)
 	game.speed = speed
@@ -899,6 +903,12 @@ local function handle_pretick()
 			pickup_ticks = pickup_ticks + steps[3] - 1
 			player.picking_state = true
 			change_step(1)
+		elseif (steps[step][2] == "pause") then
+			pause()
+			msg("Script paused")
+			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+			change_step(1)
+			debug_state = false
 		elseif(steps[step][2] == "walk" and walking.walking == false and idle < 1) then
 			use_old_walking_pattern = steps[step][4] == "old" --compatibility
 			if use_old_walking_pattern then return end --compatibility
@@ -987,12 +997,6 @@ local function handle_posttick()
 		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
 		debug_state = false
 		run = false
-		return
-	elseif (steps[step][2] == "pause") then
-		pause()
-		msg("Script paused")
-		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-		debug_state = false
 		return
 	elseif (steps[step][2] == "stop") then
 		speed(steps[step][3])
@@ -1146,3 +1150,5 @@ script.on_init(function()
         if freeplay["set_disable_crashsite"] then remote.call("freeplay", "set_disable_crashsite", true) end --Disable crashsite
     end
 end)
+
+commands.add_command("resume", nil, resume)
