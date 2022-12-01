@@ -416,4 +416,7 @@ private:
 
 	int GenerateBuildingSnapShot(int end_row);
 	void new_populate_tasks_grid();
+
+	void AddTask(int row);
+	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);
 };

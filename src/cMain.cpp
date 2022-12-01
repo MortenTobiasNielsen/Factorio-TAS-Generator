@@ -865,15 +865,20 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 			return;
 		}
 
-		row_num = *grid_tasks->GetSelectedRows().begin();
+		AddTask(*grid_tasks->GetSelectedRows().begin());
 	}
 	else
 	{
-		row_num = grid_tasks->GetNumberRows();
+		AddTask(grid_tasks->GetNumberRows());
 	}
-
-	auto stepParameters = ExtractStepParameters();
 	
+	event.Skip();
+}
+
+void cMain::AddTask(int row)
+{
+	auto stepParameters = ExtractStepParameters();
+
 	std::string to_check;
 
 	// Cases where an association with a building isn't needed
@@ -941,7 +946,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 
 			new_update_tasks_grid(&stepParameters);
 			return;
-		
+
 		case e_tech:
 			if (!IsValidTechnologyStep(stepParameters))
 			{
@@ -955,7 +960,7 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 			break;
 	}
 
-	int amountOfBuildings = GenerateBuildingSnapShot(row_num);
+	int amountOfBuildings = GenerateBuildingSnapShot(row);
 
 	// Cases with special handling
 	switch (stepParameters.TaskEnum)
@@ -1040,134 +1045,86 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event)
 		return;
 	}
 
-	// Is it possible to simply delete the task to be changed and add the changes as a new task?
-
-
-	auto stepParameters = ExtractStepParameters();
-
-	row_num = *grid_tasks->GetSelectedRows().begin();
-
-	if (grid_tasks->GetCellValue(row_num, 0) == "Build")
+	int startRow = *grid_tasks->GetSelectedRows().begin();
+	if (StepGridData[startRow].TaskEnum == e_build)
 	{
-		// Delete all related tasks
-	}
-
-	switch (stepParameters.TaskEnum)
-	{
-		case e_start:
-		case e_walk:
-		case e_game_speed:
-		case e_pause:
-		case e_save:
-		case e_stop:
-		case e_pick_up:
-		case e_idle:
-		case e_take:
-
-
-
-		default:
-			break;
-	}
-
-
-
-	extract_parameters();
-
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
-	{
-		wxMessageBox("Please select a row to change", "Selection not valid");
-		event.Skip();
-		return;
-	}
-
-	row_num = *grid_tasks->GetSelectedRows().begin();
-
-	// setup buildingsgrid and ensure the building exists
-	auto t = TaskNames.find(task)->second;
-	if (t == e_mine || t == e_recipe || t == e_build || t == e_limit || t == e_priority || t == e_filter || t == e_rotate || t == e_put || t == e_take || t == e_launch)
-	{
-		if (row_num != grid_tasks->GetNumberRows())
+		auto stepParameters = ExtractStepParameters();
+		if (stepParameters.TaskEnum == e_build)
 		{
-			update_buildings_grid_from_scratch(0, row_num);
-		}
-
-		building_task = task;
-		building_x_cord = x_cord;
-		building_y_cord = y_cord;
-		building_units = amount;
-		building_comment = comment;
-		building_item = item;
-		building_build_orientation = build_orientation;
-		building_direction_to_build = direction_to_build;
-		building_building_size = building_size;
-		building_amount_of_buildings = amount_of_buildings;
-		building_priority_in = priority_in;
-		building_priority_out = priority_out;
-
-		if (!check_buildings_grid() || !setup_for_task_group_template_grid())
-		{
-			if (row_num != grid_tasks->GetNumberRows())
+			if (StepGridData[startRow].Size != stepParameters.Size)
 			{
-				update_buildings_grid_from_scratch(row_num, grid_tasks->GetNumberRows());
+				wxMessageBox("Making changes to the size of a building can cause large misalignments and is therefore not supported.\nAdd the task and delete the old if you are sure it won't cause problems.");
+				return;
 			}
 
-			event.Skip();
-			return;
-		}
-	}
-
-	if (task == "Build" && grid_tasks->GetCellValue(row_num, 0) == "Build")
-	{
-		std::string saved_x_cord = x_cord;
-		std::string saved_y_cord = y_cord;
-
-		building_x_cord = grid_tasks->GetCellValue(row_num, 1);
-		building_y_cord = grid_tasks->GetCellValue(row_num, 2);
-		building_direction_to_build = grid_tasks->GetCellValue(row_num, 6);
-		building_building_size = grid_tasks->GetCellValue(row_num, 7);
-		building_comment = grid_tasks->GetCellValue(row_num, 9);
-
-		int total_rows = grid_tasks->GetNumberRows();
-		std::vector<int> changed_rows = {};
-
-		building_amount_of_buildings = std::to_string(std::min(std::stoi(amount_of_buildings), wxAtoi(grid_tasks->GetCellValue(row_num, 8))));
-
-		for (int i = 0; i < std::stoi(building_amount_of_buildings); i++)
-		{
-			for (int j = row_num + 1; j < total_rows; j++)
+			// Align future steps if the position (X, Y) of a building is changed.
+			if (!(stepParameters == StepGridData[startRow]))
 			{
-				if (grid_tasks->GetCellValue(j, 1) == building_x_cord && grid_tasks->GetCellValue(j, 2) == building_y_cord)
+				if (wxMessageBox("Are you sure? The tool will try to realign later steps to account for the building(s) being moved, but it can cause misalignments.", "Warning - be sure to have a backup!", wxICON_QUESTION | wxYES_NO, this) != wxYES)
 				{
-					if (grid_tasks->GetCellValue(j, 0) == "Mine")
-					{
-						break;
-					}
-					if (std::find(changed_rows.begin(), changed_rows.end(), j) == changed_rows.end())
-					{
-						grid_tasks->SetCellValue(j, 1, x_cord);
-						grid_tasks->SetCellValue(j, 2, y_cord);
-						changed_rows.push_back(j);
-
-						tasks_data_to_save[j] = (grid_tasks->GetCellValue(j, 0) + ";" + grid_tasks->GetCellValue(j, 1) + ";" + grid_tasks->GetCellValue(j, 2) + ";" + grid_tasks->GetCellValue(j, 3) + ";" + grid_tasks->GetCellValue(j, 4) + ";" + grid_tasks->GetCellValue(j, 5) + ";" + grid_tasks->GetCellValue(j, 6) + ";" + grid_tasks->GetCellValue(j, 7) + ";" + grid_tasks->GetCellValue(j, 8) + ";" + grid_tasks->GetCellValue(j, 9) + ";");
-					}
+					return;
 				}
+
+				for (int i = 0; i < StepGridData[startRow].Buildings; i++)
+				{
+					for (int j = startRow + 1; j < StepGridData.size(); j++)
+					{
+						if (StepGridData[j].X == StepGridData[startRow].X && StepGridData[j].Y == StepGridData[startRow].Y)
+						{
+							StepGridData[j].X = stepParameters.X;
+							StepGridData[j].Y = stepParameters.Y;
+							grid_tasks->SetCellValue(j, 1, to_string(stepParameters.X));
+							grid_tasks->SetCellValue(j, 2, to_string(stepParameters.Y));
+						}
+					}
+
+					StepGridData[startRow].Next();
+					stepParameters.Next();
+				}
+				
+				StepGridData[startRow].Reset();
+				stepParameters.Reset();
 			}
-
-			find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
-			find_coordinates(x_cord, y_cord, direction_to_build, building_size);
 		}
-
-		x_cord = saved_x_cord;
-		y_cord = saved_y_cord;
+		else
+		{
+			if (wxMessageBox("Are you sure you want to change this build step?\nAll future steps associated with the buildings removed will be removed to avoid issues.", "The build step you are changing could be associated with future steps", wxICON_QUESTION | wxYES_NO, this) != wxYES)
+			{
+				return;
+			}
+		}
 	}
 
-	change_row(grid_tasks);
-	tasks_data_to_save[row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+	if (rbtn_build->GetValue())
+	{
+		if (startRow + 1 < grid_tasks->GetNumberRows())
+		{
+			grid_tasks->SelectRow(startRow + 1);
+		}
+		else
+		{
+			grid_tasks->ClearSelection();
+		}
 
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+		AddTask(startRow);
+		DeleteStepsRelatedToBuilding(startRow, 1);
+	}
+	else
+	{
+		DeleteStepsRelatedToBuilding(startRow, 1);
+		if (startRow < grid_tasks->GetNumberRows())
+		{
+			grid_tasks->SelectRow(startRow);
+		}
+		else
+		{
+			grid_tasks->ClearSelection();
+		}
 
-	event.Skip();
+		AddTask(startRow);
+	}
+
+	grid_tasks->SelectRow(startRow);
 }
 
 void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
@@ -1207,7 +1164,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 
 	counter--;
 
-	// If the last row of the block is also the tasks_grid's last row then the rows are just deleted
+	// If the last row of the block is also the last row of StepGridData then the rows are just deleted
 	if ((startRow + RowsToDelete) == StepGridData.size())
 	{
 		grid_tasks->DeleteRows(startRow, RowsToDelete);
@@ -1234,7 +1191,6 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 		}
 	}
 
-	// The rows are run through, if there are no build tasks or the user gives permission to delete the build tasks
 	int amountOfRowsToCheck = startRow + RowsToDelete;
 	int rowsDeleted = 0;
 
@@ -1321,6 +1277,51 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 	StepGridData.erase(it1, it2);
 
 	event.Skip();
+}
+
+void cMain::DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete)
+{
+	int amountOfRowsToCheck = startRow + RowsToDelete;
+	int rowsDeleted = 0;
+
+	for (int i = startRow; i < amountOfRowsToCheck; i++)
+	{
+		if (StepGridData[i].TaskEnum == e_build)
+		{
+			for (int j = 0; j < StepGridData[i].Buildings; j++)
+			{
+				int totalLines = StepGridData.size();
+
+				for (int k = (startRow + RowsToDelete - rowsDeleted); k < totalLines; k++)
+				{
+					if (StepGridData[i] == StepGridData[k])
+					{
+						if (StepGridData[k].TaskEnum == e_mine || StepGridData[k].TaskEnum == e_build)
+						{
+							break;
+						}
+
+						grid_tasks->DeleteRows(k);
+						auto it1 = StepGridData.begin();
+						it1 += k + rowsDeleted;
+						StepGridData.erase(it1);
+
+						k--;
+						totalLines--;
+
+						continue;
+					}
+				}
+
+				StepGridData[i].Next();
+			}
+		}
+
+		grid_tasks->DeleteRows(i);
+		i--;
+		amountOfRowsToCheck--;
+		rowsDeleted++;
+	}
 }
 
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
