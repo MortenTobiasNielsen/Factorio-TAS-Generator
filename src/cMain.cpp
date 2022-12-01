@@ -3807,7 +3807,7 @@ bool cMain::save_file(bool save_as)
 		dialog_progress_bar,
 		save_as,
 		auto_list,
-		tasks_data_to_save,
+		StepGridData,
 		group_map,
 		template_map,
 		save_file_location,

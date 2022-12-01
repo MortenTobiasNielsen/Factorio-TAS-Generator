@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 #include <wx/wx.h>
 
 #include "Building.h"
@@ -8,6 +9,8 @@
 #include "utils.h"
 
 using std::string;
+using std::to_string;
+using std::ofstream;
 
 struct StepParameters
 {
@@ -76,6 +79,61 @@ struct StepParameters
 		{
 			X -= Size;
 			return;
+		}
+	}
+
+	string ToString()
+	{
+		switch (TaskEnum)
+		{
+
+			case e_start:
+			case e_pause:
+			case e_save:
+				return Task + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+
+			case e_stop:
+			case e_game_speed:
+			case e_idle:
+			case e_pick_up:
+				return Task + ";" + ";" + ";" + Amount + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+
+			case e_build:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+
+			case e_craft:
+				return Task + ";" + ";" + ";" + Amount + ";" + Item + ";" +";" + ";" + ";" + ";" + Comment + ";";
+
+			case e_recipe:
+			case e_filter:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+
+			case e_limit:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+
+			case e_rotate:
+			case e_mine:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+
+			case e_priority:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+
+			case e_put:
+			case e_take:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			
+			case e_launch:
+			case e_walk:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+
+			case e_tech:
+				return Task + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+
+			case e_drop:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			
+			default:
+				return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 		}
 	}
 

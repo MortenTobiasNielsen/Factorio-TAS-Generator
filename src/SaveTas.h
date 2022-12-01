@@ -9,6 +9,7 @@
 #include <map>
 
 #include "ScriptProgressBar.h"
+#include "StepParameters.h"
 #include "utils.h"
 
 class SaveTas
@@ -19,7 +20,7 @@ public:
 		dialog_progress_bar_base* dialog_progress_bar,
 		bool save_as,
 		std::vector<bool> auto_list,
-		std::vector<std::string> steps,
+		std::vector<StepParameters> steps,
 		std::map<std::string, std::vector<std::string>> maps,
 		std::map<std::string, std::vector<std::string>> templates,
 		std::string folder_location,

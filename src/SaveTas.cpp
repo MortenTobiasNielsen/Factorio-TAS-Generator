@@ -7,7 +7,7 @@ bool SaveTas::Save(
 	dialog_progress_bar_base* dialog_progress_bar,
 	bool save_as,
 	std::vector<bool> auto_list,
-	std::vector<std::string> steps,
+	std::vector<StepParameters> steps,
 	std::map<std::string, std::vector<std::string>> maps,
 	std::map<std::string, std::vector<std::string>> templates,
 	std::string folder_location,
@@ -40,7 +40,7 @@ bool SaveTas::Save(
 	myfile << steps_indicator << std::endl;
 	for (auto it = steps.begin(); it < steps.end(); it++)
 	{
-		myfile << *it << std::endl;
+		myfile << (*it).ToString() << std::endl;
 
 		lines_processed++;
 
