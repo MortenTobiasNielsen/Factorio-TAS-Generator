@@ -1045,86 +1045,20 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event)
 		return;
 	}
 
-	int startRow = *grid_tasks->GetSelectedRows().begin();
-	if (StepGridData[startRow].TaskEnum == e_build)
+	int row = *grid_tasks->GetSelectedRows().begin();
+	if (StepGridData[row].TaskEnum == e_build)
 	{
-		auto stepParameters = ExtractStepParameters();
-		if (stepParameters.TaskEnum == e_build)
-		{
-			if (StepGridData[startRow].Size != stepParameters.Size)
-			{
-				wxMessageBox("Making changes to the size of a building can cause large misalignments and is therefore not supported.\nAdd the task and delete the old if you are sure it won't cause problems.");
-				return;
-			}
-
-			// Align future steps if the position (X, Y) of a building is changed.
-			if (!(stepParameters == StepGridData[startRow]))
-			{
-				if (wxMessageBox("Are you sure? The tool will try to realign later steps to account for the building(s) being moved, but it can cause misalignments.", "Warning - be sure to have a backup!", wxICON_QUESTION | wxYES_NO, this) != wxYES)
-				{
-					return;
-				}
-
-				for (int i = 0; i < StepGridData[startRow].Buildings; i++)
-				{
-					for (int j = startRow + 1; j < StepGridData.size(); j++)
-					{
-						if (StepGridData[j].X == StepGridData[startRow].X && StepGridData[j].Y == StepGridData[startRow].Y)
-						{
-							StepGridData[j].X = stepParameters.X;
-							StepGridData[j].Y = stepParameters.Y;
-							grid_tasks->SetCellValue(j, 1, to_string(stepParameters.X));
-							grid_tasks->SetCellValue(j, 2, to_string(stepParameters.Y));
-						}
-					}
-
-					StepGridData[startRow].Next();
-					stepParameters.Next();
-				}
-				
-				StepGridData[startRow].Reset();
-				stepParameters.Reset();
-			}
-		}
-		else
-		{
-			if (wxMessageBox("Are you sure you want to change this build step?\nAll future steps associated with the buildings removed will be removed to avoid issues.", "The build step you are changing could be associated with future steps", wxICON_QUESTION | wxYES_NO, this) != wxYES)
-			{
-				return;
-			}
-		}
+		wxMessageBox("It has turned out to be immensely difficult to ensure alignment when a build task is changed and it is therefore no longer supported.", "No longer supported");
+		return;
 	}
 
-	if (rbtn_build->GetValue())
-	{
-		if (startRow + 1 < grid_tasks->GetNumberRows())
-		{
-			grid_tasks->SelectRow(startRow + 1);
-		}
-		else
-		{
-			grid_tasks->ClearSelection();
-		}
+	auto stepParameters = ExtractStepParameters();
+	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
 
-		AddTask(startRow);
-		DeleteStepsRelatedToBuilding(startRow, 1);
-	}
-	else
-	{
-		DeleteStepsRelatedToBuilding(startRow, 1);
-		if (startRow < grid_tasks->GetNumberRows())
-		{
-			grid_tasks->SelectRow(startRow);
-		}
-		else
-		{
-			grid_tasks->ClearSelection();
-		}
+	StepGridData[row] = stepParameters;
+	PopulateGrid(grid_tasks, row, &gridEntry);
 
-		AddTask(startRow);
-	}
-
-	grid_tasks->SelectRow(startRow);
+	grid_tasks->SelectRow(row);
 }
 
 void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
