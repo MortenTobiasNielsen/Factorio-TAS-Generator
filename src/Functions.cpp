@@ -162,6 +162,7 @@ void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, Ste
 bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters)
 {
 	int buildingsFound = 0;
+	Orientation firstOrientation = North;
 
 	for (int i = 0; i < stepParameters.Buildings; i++)
 	{
@@ -169,6 +170,11 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 		{
 			if (stepParameters == buildings[j])
 			{
+				if (buildingsFound == 0)
+				{
+					firstOrientation = buildings[j].OrientationIndex;
+				}
+
 				buildingsFound++;
 				break;
 			}
@@ -177,6 +183,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 		if (buildingsFound == stepParameters.Buildings)
 		{
 			stepParameters.Reset();
+			stepParameters.OrientationIndex = firstOrientation;
 			return true;
 		}
 
