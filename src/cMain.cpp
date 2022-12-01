@@ -285,8 +285,8 @@ void cMain::move_row(wxGrid* grid, bool up)
 {
 	for (const auto& block : grid->GetSelectedRowBlocks())
 	{
-		row_num = block.GetTopRow();
-		row_count = block.GetBottomRow() - row_num + 1;
+		auto row_num = block.GetTopRow();
+		auto row_count = block.GetBottomRow() - row_num + 1;
 
 		if (up)
 		{
@@ -295,29 +295,27 @@ void cMain::move_row(wxGrid* grid, bool up)
 				continue;
 			}
 
-			row_to_move = row_num - 1;
+			auto row = row_num - 1;
+			auto moveTo = row_num + row_count;
 
-			grid_extract_parameters(row_to_move, grid);
+			grid->InsertRows(moveTo);
 
-			grid->InsertRows(row_num + row_count);
+			TransferData(row, moveTo, grid);
 
-			grid_insert_data(row_num + row_count, grid);
+			background_colour_update(grid, moveTo, grid->GetCellValue(moveTo, 0).ToStdString());
 
-			background_colour_update(grid, row_num + row_count, grid->GetCellValue(row_num + row_count, 0).ToStdString());
+			grid->DeleteRows(row);
 
-			grid->DeleteRows(row_to_move);
+			auto it1 = StepGridData.begin();
+			it1 += row;
 
-			it1 = tasks_data_to_save.begin();
-			it1 += row_to_move;
+			auto data = *it1;
+			StepGridData.erase(it1);
 
-			data = *it1;
-			tasks_data_to_save.erase(it1);
+			auto it2 = StepGridData.begin();
+			it2 += moveTo - 1;
 
-			it2 = tasks_data_to_save.begin();
-			it2 += row_num + row_count - 1;
-
-			tasks_data_to_save.insert(it2, data);
-
+			StepGridData.insert(it2, data);
 		}
 		else
 		{
@@ -326,27 +324,26 @@ void cMain::move_row(wxGrid* grid, bool up)
 				continue;
 			}
 
-			row_to_move = row_num + row_count;
+			auto row = row_num + row_count;
+			auto moveTo = row_num;
 
-			grid_extract_parameters(row_to_move, grid);
+			grid->InsertRows(moveTo);
 
-			grid->DeleteRows(row_to_move);
+			TransferData(row + 1, moveTo, grid);
 
-			grid->InsertRows(row_num);
+			grid->DeleteRows(row + 1);
 
-			grid_insert_data(row_num, grid);
+			background_colour_update(grid, moveTo, grid->GetCellValue(moveTo, 0).ToStdString());
 
-			background_colour_update(grid, row_num, grid->GetCellValue(row_num, 0).ToStdString());
+			auto it1 = StepGridData.begin();
+			it1 += row;
 
-			it1 = tasks_data_to_save.begin();
-			it1 += row_to_move;
+			auto it2 = StepGridData.begin();
+			it2 += moveTo;
 
-			it2 = tasks_data_to_save.begin();
-			it2 += row_num;
-
-			data = *it1;
-			tasks_data_to_save.erase(it1);
-			tasks_data_to_save.insert(it2, data);
+			auto data = *it1;
+			StepGridData.erase(it1);
+			StepGridData.insert(it2, data);
 		}
 	}
 }
@@ -1265,8 +1262,9 @@ void cMain::OnMoveUpClicked(wxCommandEvent& event)
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
+
 	move_row(grid_tasks, true);
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -1278,7 +1276,7 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event)
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 	move_row(grid_tasks, false);
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -1293,7 +1291,7 @@ void cMain::OnMoveUpFiveClicked(wxMouseEvent& event)
 	{
 		move_row(grid_tasks, true);
 	}
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -1308,7 +1306,7 @@ void cMain::OnMoveDownFiveClicked(wxMouseEvent& event)
 	{
 		move_row(grid_tasks, false);
 	}
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -1615,6 +1613,20 @@ void cMain::grid_extract_parameters(const int& row, wxGrid* grid)
 	building_size = grid->GetCellValue(row, 7).ToStdString();
 	amount_of_buildings = grid->GetCellValue(row, 8).ToStdString();
 	comment = grid->GetCellValue(row, 9).ToStdString();
+}
+
+void cMain::TransferData(const int& row, const int& MoveTo, wxGrid* grid)
+{
+	grid->SetCellValue(MoveTo, 0, grid->GetCellValue(row, 0));
+	grid->SetCellValue(MoveTo, 1, grid->GetCellValue(row, 1));
+	grid->SetCellValue(MoveTo, 2, grid->GetCellValue(row, 2));
+	grid->SetCellValue(MoveTo, 3, grid->GetCellValue(row, 3));
+	grid->SetCellValue(MoveTo, 4, grid->GetCellValue(row, 4));
+	grid->SetCellValue(MoveTo, 5, grid->GetCellValue(row, 5));
+	grid->SetCellValue(MoveTo, 6, grid->GetCellValue(row, 6));
+	grid->SetCellValue(MoveTo, 7, grid->GetCellValue(row, 7));
+	grid->SetCellValue(MoveTo, 8, grid->GetCellValue(row, 8));
+	grid->SetCellValue(MoveTo, 9, grid->GetCellValue(row, 9));
 }
 
 void cMain::grid_insert_data(const int& row, wxGrid* grid)

@@ -419,4 +419,5 @@ private:
 
 	void AddTask(int row);
 	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);
+	void TransferData(const int& row, const int& MoveRowBy, wxGrid* grid);
 };
