@@ -151,7 +151,7 @@ void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, Ste
 {
 	for (int i = 0; i < buildingsInSnapShot; i++)
 	{
-		if (buildings[i] == stepParameters)
+		if (stepParameters == buildings[i])
 		{
 			buildings[i].X = -0.4523543; // Invalidate the building
 			return;

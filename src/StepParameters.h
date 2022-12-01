@@ -151,8 +151,7 @@ struct StepParameters
 
 	inline bool operator==(const StepParameters& toCompare)
 	{
-		if (toCompare.Task != struct_tasks_list.build ||
-			(toCompare.X != X && toCompare.Y != Y))
+		if (toCompare.X != X && toCompare.Y != Y)
 		{
 			return false;
 		}
@@ -204,6 +203,7 @@ struct StepParameters
 				}
 			}
 		}
+
 		if (toCompare.Y == Y)
 		{
 			if (toCompare.Direction == struct_direction_list.east)

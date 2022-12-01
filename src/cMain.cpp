@@ -856,7 +856,6 @@ void cMain::update_group_template_grid(wxGrid* grid, std::vector<std::string>& l
 	}
 }
 
-// You have chosen not to implement a check to see if there are already a building at the location, given that it would open for a lot of concerns about fast replaceing buildings 
 void cMain::OnAddTaskClicked(wxCommandEvent& event)
 {
 	if (grid_tasks->IsSelection())
@@ -874,196 +873,205 @@ void cMain::OnAddTaskClicked(wxCommandEvent& event)
 	}
 
 	auto stepParameters = ExtractStepParameters();
+	
+	std::string to_check;
 
-	if (stepParameters.TaskEnum == e_build)
+	// Cases where an association with a building isn't needed
+	switch (stepParameters.TaskEnum)
 	{
-		if (!IsValidBuildStep(stepParameters))
-		{
-			return;
-		}
-
-		stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item)->second;
-
-		new_update_tasks_grid(&stepParameters);
-
-		std::string to_check = stepParameters.Item;
-		string_capitalized(to_check);
-
-		if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel)
-		{
-			stepParameters.TaskEnum = e_put;
-			stepParameters.Task = struct_tasks_list.put;
-			stepParameters.Amount = "1";
-			stepParameters.Item = struct_fuel_list.coal;
-			stepParameters.FromInto = struct_from_into_list.fuel;
-
+		case e_start:
+		case e_walk:
+		case e_game_speed:
+		case e_pause:
+		case e_save:
+		case e_stop:
+		case e_pick_up:
+		case e_idle:
 			new_update_tasks_grid(&stepParameters);
-		}
-
-		if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler)
-		{
-			stepParameters.TaskEnum = e_put;
-			stepParameters.Task = struct_tasks_list.put;
-			stepParameters.Amount = "1";
-			stepParameters.Item = struct_fuel_list.coal;
-			stepParameters.FromInto = struct_from_into_list.fuel;
-
-			new_update_tasks_grid(&stepParameters);
-		}
-
-		if (check_lab->IsChecked() && to_check == struct_science_list.lab)
-		{
-			stepParameters.TaskEnum = e_put;
-			stepParameters.Task = struct_tasks_list.put;
-			stepParameters.Amount = "1";
-			stepParameters.Item = "Automation science pack";
-			stepParameters.FromInto = struct_from_into_list.input;
-
-			new_update_tasks_grid(&stepParameters);
-		}
-
-		event.Skip();
-		return;
-	}
-
-	if (stepParameters.TaskEnum == e_craft)
-	{
-		if (!IsValidCraftStep(stepParameters))
-		{
 			return;
-		}
 
-		new_update_tasks_grid(&stepParameters);
-	}
-
-	int amountOfBuildings = GenerateBuildingSnapShot(row_num);
-
-	if (stepParameters.TaskEnum == e_recipe)
-	{
-		if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
-		{
-			wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-			return;
-		};
-
-		if (!IsValidRecipeStep(stepParameters))
-		{
-			return;
-		}
-
-		new_update_tasks_grid(&stepParameters);
-
-		std::string to_check = stepParameters.Item;
-		string_capitalized(to_check);
-
-		if (check_recipe->IsChecked())
-		{
-			std::vector<std::string> recipe = recipes.find(to_check)->second;
-
-			int multiplier = std::stoi(stepParameters.Amount);
-			for (int i = 0; i < recipe.size(); i += 2)
+		case e_build:
+			if (!IsValidBuildStep(stepParameters))
 			{
-				stepParameters.TaskEnum = e_put;
-				stepParameters.Task = struct_tasks_list.put;
-				stepParameters.Amount = std::to_string(stoi(recipe[i + 1]) * multiplier);
-				stepParameters.Item = recipe[i];
+				return;
+			}
+
+			stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item)->second;
+
+			new_update_tasks_grid(&stepParameters);
+
+			to_check = stepParameters.Item;
+			string_capitalized(to_check);
+
+			stepParameters.TaskEnum = e_put;
+			stepParameters.Task = struct_tasks_list.put;
+			stepParameters.Amount = "1";
+
+			if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel)
+			{
+				stepParameters.Item = struct_fuel_list.coal;
+				stepParameters.FromInto = struct_from_into_list.fuel;
+
+				new_update_tasks_grid(&stepParameters);
+			}
+
+			if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler)
+			{
+				stepParameters.Item = struct_fuel_list.coal;
+				stepParameters.FromInto = struct_from_into_list.fuel;
+
+				new_update_tasks_grid(&stepParameters);
+			}
+
+			if (check_lab->IsChecked() && to_check == struct_science_list.lab)
+			{
+				stepParameters.Item = "Automation science pack";
 				stepParameters.FromInto = struct_from_into_list.input;
 
 				new_update_tasks_grid(&stepParameters);
 			}
-		}
 
-		event.Skip();
-		return;
-	}
-
-	if (stepParameters.TaskEnum == e_put || task == e_take)
-	{
-		if (!IsValidPutTakeStep(stepParameters))
-		{
 			return;
-		}
 
-		new_update_tasks_grid(&stepParameters);
-	}
-
-	if (stepParameters.TaskEnum == e_tech)
-	{
-		if (!IsValidTechStep(stepParameters))
-		{
-			return;
-		}
-
-		new_update_tasks_grid(&stepParameters);
-	}
-
-	if (stepParameters.TaskEnum == e_priority)
-	{
-		new_update_tasks_grid(&stepParameters);
-	}
-
-
-
-
-	if (task == e_mine || task == e_limit || task == e_filter || task == e_rotate || task == e_launch)
-	{
-		if (check_buildings_grid())
-		{
-			if (setup_for_task_group_template_grid())
+		case e_craft:
+			if (!IsValidCraftStep(stepParameters))
 			{
+				return;
+			}
 
-				update_tasks_grid();
+			new_update_tasks_grid(&stepParameters);
+			return;
+		
+		case e_tech:
+			if (!IsValidTechnologyStep(stepParameters))
+			{
+				return;
+			}
 
-				std::string base_units = "1";
-				std::string to_check = item;
-				string_capitalized(to_check);
+			new_update_tasks_grid(&stepParameters);
+			return;
 
-				if (task == struct_tasks_list.build)
+		default:
+			break;
+	}
+
+	int amountOfBuildings = GenerateBuildingSnapShot(row_num);
+
+	// Cases with special handling
+	switch (stepParameters.TaskEnum)
+	{
+		case e_recipe:
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			{
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				return;
+			};
+
+			if (!IsValidRecipeStep(stepParameters))
+			{
+				return;
+			}
+
+			new_update_tasks_grid(&stepParameters);
+
+			to_check = stepParameters.Item;
+			string_capitalized(to_check);
+
+			if (check_recipe->IsChecked())
+			{
+				std::vector<std::string> recipe = recipes.find(to_check)->second;
+
+				int multiplier = std::stoi(stepParameters.Amount);
+				for (int i = 0; i < recipe.size(); i += 2)
 				{
-					if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel)
-					{
-						auto_put(struct_fuel_list.coal, base_units, struct_from_into_list.fuel);
-					}
+					stepParameters.TaskEnum = e_put;
+					stepParameters.Task = struct_tasks_list.put;
+					stepParameters.Amount = std::to_string(stoi(recipe[i + 1]) * multiplier);
+					stepParameters.Item = recipe[i];
+					stepParameters.FromInto = struct_from_into_list.input;
 
-					if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler)
-					{
-						auto_put(struct_fuel_list.coal, base_units, struct_from_into_list.fuel);
-					}
-
-					if (check_lab->IsChecked() && to_check == struct_science_list.lab)
-					{
-						auto_put("Automation science pack", base_units, struct_from_into_list.input);
-					}
-				}
-
-				if (task == struct_tasks_list.recipe && check_recipe->IsChecked())
-				{
-					std::vector<std::string> recipe = recipes.find(to_check)->second;
-
-					int multiplier = std::stoi(amount);
-					for (int i = 0; i < recipe.size(); i += 2)
-					{
-						std::string units_to_put = std::to_string(stoi(recipe[i + 1]) * multiplier);
-						auto_put(recipe[i], units_to_put, struct_from_into_list.input);
-					}
+					new_update_tasks_grid(&stepParameters);
 				}
 			}
-		}
-	}
-	else
-	{
-		if (setup_for_task_group_template_grid())
-		{
-			update_tasks_grid();
-		}
-	}
 
-	event.Skip();
+			return;
+
+		case e_mine:
+			// A building doesn't need to exist, but if it does it should be noted.
+			BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters);
+			new_update_tasks_grid(&stepParameters);
+			return;
+
+		case e_put:
+		case e_take:
+			if (!IsValidPutTakeStep(stepParameters))
+			{
+				return;
+			}
+
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			{
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				return;
+			};
+
+			new_update_tasks_grid(&stepParameters);
+			return;
+
+		default:
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			{
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				return;
+			};
+
+			new_update_tasks_grid(&stepParameters);
+			return;
+	}
 }
 
 // It has been chosen to not make massive checks when a task is changed, given that it would be very complicated
 void cMain::OnChangeTaskClicked(wxCommandEvent& event)
 {
+	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
+	{
+		wxMessageBox("Please select a row to change", "Selection not valid");
+		event.Skip();
+		return;
+	}
+
+	// Is it possible to simply delete the task to be changed and add the changes as a new task?
+
+
+	auto stepParameters = ExtractStepParameters();
+
+	row_num = *grid_tasks->GetSelectedRows().begin();
+
+	if (grid_tasks->GetCellValue(row_num, 0) == "Build")
+	{
+		// Delete all related tasks
+	}
+
+	switch (stepParameters.TaskEnum)
+	{
+		case e_start:
+		case e_walk:
+		case e_game_speed:
+		case e_pause:
+		case e_save:
+		case e_stop:
+		case e_pick_up:
+		case e_idle:
+		case e_take:
+
+
+
+		default:
+			break;
+	}
+
+
+
 	extract_parameters();
 
 	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
@@ -1178,167 +1186,139 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 	int counter = 1;
 
 	row_selections.clear();
+	int startRow = 0;
+	int RowsToDelete = 0;
 
 	// Find the first block of rows selected - extract the first row and the amount of rows in the block
 	for (const auto& block : grid_tasks->GetSelectedRowBlocks())
 	{
 		if (counter == 1)
 		{
-			building_row_num = block.GetTopRow();
-			building_row_count = block.GetBottomRow() - building_row_num + 1;
+			startRow = block.GetTopRow();
+			RowsToDelete = block.GetBottomRow() - startRow + 1;
 
 			counter++;
+			continue;
 		}
-		else
-		{
-			row_selections.push_back(std::to_string(block.GetTopRow()) + "," + std::to_string(block.GetBottomRow() - block.GetTopRow() + 1));
-		}
+
+		row_selections.push_back(std::to_string(block.GetTopRow()) + "," + std::to_string(block.GetBottomRow() - block.GetTopRow() + 1));
+		counter++;
 	}
+
+	counter--;
 
 	// If the last row of the block is also the tasks_grid's last row then the rows are just deleted
-	if ((building_row_num + building_row_count) == grid_tasks->GetNumberRows())
+	if ((startRow + RowsToDelete) == StepGridData.size())
 	{
-		grid_tasks->DeleteRows(building_row_num, building_row_count);
+		grid_tasks->DeleteRows(startRow, RowsToDelete);
 
+		if (startRow - 1 >= 0)
+		{
+			grid_tasks->SelectRow(startRow - 1);
+		}
+
+		return;
 	}
-	else
+
+	// Otherwise the rows are run through to see if at least one of the tasks is a build task
+	for (int i = startRow; i < (startRow + RowsToDelete); i++)
 	{
-		// Otherwise the rows are run through to see if at least one of the tasks is a build task
-		for (int i = building_row_num; i < (building_row_num + building_row_count); i++)
+		if (StepGridData[i].TaskEnum == e_build)
 		{
-			building_task = grid_tasks->GetCellValue(i, 0).ToStdString();
-
-			if (building_task == "Build")
+			if (wxMessageBox("At least one of the rows selected is a build task - are you sure you want to delete the rows selected?\nAll future tasks associated with the building(s) will be removed to avoid issues.", "The build task(s) you are deleting could be associated with future tasks", wxICON_QUESTION | wxYES_NO, this) != wxYES)
 			{
-				if (wxMessageBox("At least one of the rows selected is a build task - are you sure you want to delete the rows selected?\nAll future tasks associated with the building(s) will be removed to avoid issues.", "The build task(s) you are deleting could be associated with future tasks", wxICON_QUESTION | wxYES_NO, this) != wxYES)
-				{
-					return;
-				}
-				else
-				{
-					break;
-				}
+				return;
 			}
+
+			break;
 		}
+	}
 
-		// The rows are run through, if there are no build tasks or the user gives permission to delete the build tasks
-		int total_rows = building_row_num + building_row_count;
-		int main_lines_deleted = 0;
+	// The rows are run through, if there are no build tasks or the user gives permission to delete the build tasks
+	int amountOfRowsToCheck = startRow + RowsToDelete;
+	int rowsDeleted = 0;
 
-		for (int i = building_row_num; i < total_rows; i++)
+	for (int i = startRow; i < amountOfRowsToCheck; i++)
+	{
+		if (StepGridData[i].TaskEnum == e_build)
 		{
-			building_task = grid_tasks->GetCellValue(i, 0).ToStdString();
-
-			if (building_task == "Build")
+			for (int j = 0; j < StepGridData[i].Buildings; j++)
 			{
-				building_x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();
-				building_y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();
-				building_direction_to_build = grid_tasks->GetCellValue(i, 6).ToStdString();
-				building_building_size = grid_tasks->GetCellValue(i, 7).ToStdString();
-				building_amount_of_buildings = grid_tasks->GetCellValue(i, 8).ToStdString();
+				int totalLines = StepGridData.size();
 
-				// The current row is a build task and each building of the task are run through to check for associated tasks 
-				for (int j = 0; j < std::stoi(building_amount_of_buildings); j++)
+				for (int k = (startRow + RowsToDelete - rowsDeleted); k < totalLines; k++)
 				{
-					int total_rows_inner = grid_tasks->GetNumberRows();
-
-					// All of the future tasks on the tasks grid are run through
-					for (int k = (building_row_num + building_row_count - main_lines_deleted); k < total_rows_inner; k++)
+					if (StepGridData[i] == StepGridData[k])
 					{
-						if (grid_tasks->GetCellValue(k, 1).ToStdString() == building_x_cord && grid_tasks->GetCellValue(k, 2).ToStdString() == building_y_cord)
+						if (StepGridData[k].TaskEnum == e_mine || StepGridData[k].TaskEnum == e_build)
 						{
-							if (grid_tasks->GetCellValue(k, 0).ToStdString() == "Mine" || grid_tasks->GetCellValue(k, 0).ToStdString() == "Build")
-							{
-								break;
-							}
-
-							grid_tasks->DeleteRows(k);
-							it1 = tasks_data_to_save.begin();
-							it1 += k + main_lines_deleted;
-							tasks_data_to_save.erase(it1);
-
-							k--;
-							total_rows_inner--;
+							break;
 						}
-						else if (grid_tasks->GetCellValue(k, 0).ToStdString() == "Build")
-						{
-							if (wxAtoi(grid_tasks->GetCellValue(k, 8)) > 1)
-							{
-								x_cord = grid_tasks->GetCellValue(k, 1).ToStdString();
-								y_cord = grid_tasks->GetCellValue(k, 2).ToStdString();
-								direction_to_build = grid_tasks->GetCellValue(k, 6).ToStdString();
-								building_size = grid_tasks->GetCellValue(k, 7).ToStdString();
-								amount_of_buildings = grid_tasks->GetCellValue(k, 8).ToStdString();
 
-								for (int l = 1; l < std::stoi(amount_of_buildings); l++)
-								{
-									find_coordinates(x_cord, y_cord, direction_to_build, building_size);
-									if (x_cord == building_x_cord && y_cord == building_y_cord)
-									{
-										k = total_rows_inner;
-										break;
-									}
-								}
-							}
-						}
+						grid_tasks->DeleteRows(k);
+						auto it1 = StepGridData.begin();
+						it1 += k + rowsDeleted;
+						StepGridData.erase(it1);
+
+						k--;
+						totalLines--;
+
+						continue;
 					}
-
-					find_coordinates(building_x_cord, building_y_cord, building_direction_to_build, building_building_size);
 				}
 
+				StepGridData[i].Next();
 			}
-			else if (building_task == "Rotate")
-			{
-				x_cord = grid_tasks->GetCellValue(i, 1).ToStdString();;
-				y_cord = grid_tasks->GetCellValue(i, 2).ToStdString();;
-				building = grid_tasks->GetCellValue(i, 4).ToStdString();
-				building_build_orientation = grid_tasks->GetCellValue(i, 5).ToStdString();
-				row_num = i;
-
-				update_future_rotate_tasks();
-			}
-
-			grid_tasks->DeleteRows(i);
-			i--;
-			total_rows--;
-			main_lines_deleted++;
 		}
+
+		grid_tasks->DeleteRows(i);
+		i--;
+		amountOfRowsToCheck--;
+		rowsDeleted++;
 	}
 
 	// The row after the deleted row(s) are selected if there were no other row blocks selected
 	if (counter == 1)
 	{
-		grid_tasks->SelectRow(building_row_num);
+		if (startRow < grid_tasks->GetNumberRows())
+		{
+			grid_tasks->SelectRow(startRow);
+		}
+		else if(startRow - 1 >= 0)
+		{
+			grid_tasks->SelectRow(startRow - 1);
+		}
 	}
 	else
 	{
 		// Otherwise the other selections are selected once more
 		grid_tasks->ClearSelection();
+
+		auto StartRow = 0;
+		auto rowCount = 0;
 		for (auto selection : row_selections)
 		{
 			long long pos = selection.find(",");
 
-			row_num = std::stoi(selection.substr(0, pos)) - building_row_count;
-			row_count = std::stoi(selection.substr(pos + 1));
+			StartRow = std::stoi(selection.substr(0, pos)) - RowsToDelete;
+			rowCount = std::stoi(selection.substr(pos + 1));
 
-			int total_rows = row_num + row_count;
+			int total_rows = StartRow + rowCount;
 
-			for (int i = row_num; i < total_rows; i++)
+			for (int i = StartRow; i < total_rows; i++)
 			{
 				grid_tasks->SelectRow(i, true);
 			}
 		}
 	}
 
-	it1 = tasks_data_to_save.begin();
-	it2 = tasks_data_to_save.begin();
+	auto it1 = StepGridData.begin();
+	auto it2 = StepGridData.begin();
 
-	it1 += building_row_num;
-	it2 += building_row_num + building_row_count;
+	it1 += startRow;
+	it2 += startRow + RowsToDelete;
 
-	tasks_data_to_save.erase(it1, it2);
-
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+	StepGridData.erase(it1, it2);
 
 	event.Skip();
 }
@@ -4189,7 +4169,7 @@ bool cMain::IsValidPutTakeStep(StepParameters stepParameters)
 		return false;
 	}
 
-	if (!check_input(direction_to_build, build_orientations))
+	if (!check_input(stepParameters.Direction, build_orientations))
 	{
 		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 		return false;
@@ -4198,7 +4178,7 @@ bool cMain::IsValidPutTakeStep(StepParameters stepParameters)
 	return true;
 }
 
-bool cMain::IsValidTechStep(StepParameters stepParameters)
+bool cMain::IsValidTechnologyStep(StepParameters stepParameters)
 {
 	if (!new_check_input(stepParameters.Item, tech_list))
 	{
@@ -4235,21 +4215,6 @@ bool cMain::new_check_input(string& item, const std::vector<std::string>& all_it
 	}
 
 	return false;
-}
-
-void cMain::new_auto_put(std::string put_item, std::string put_amount, std::string put_into)
-{
-	cmb_from_into->SetValue(put_into);
-
-	task = struct_tasks_list.put;
-	item = put_item;
-	amount = put_amount;
-	from_into = put_into;
-	setup_for_task_group_template_grid();
-	update_tasks_grid();
-
-
-	//new_update_tasks_grid();
 }
 
 bool cMain::new_extra_building_checks(StepParameters stepParameters)

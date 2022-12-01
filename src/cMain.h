@@ -408,9 +408,9 @@ private:
 	bool IsValidRecipeStep(StepParameters stepParameters);
 	bool IsValidCraftStep(StepParameters stepParameters);
 	bool IsValidPutTakeStep(StepParameters stepParameters);
-	bool IsValidTechStep(StepParameters stepParameters);
+	bool IsValidTechnologyStep(StepParameters stepParameters);
+	bool IsValidPriorityStep(StepParameters stepParameters);
 
-	void new_auto_put(std::string put_item, std::string put_amount, std::string put_into);
 	bool new_find_building(int startRow, StepParameters stepParameters);
 	bool new_extra_building_checks(StepParameters stepParameters);
 
