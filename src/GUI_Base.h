@@ -35,7 +35,6 @@
 #include <wx/aui/auibook.h>
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
-#include <wx/scrolwin.h>
 #include <wx/gauge.h>
 #include <wx/dialog.h>
 
@@ -162,7 +161,6 @@ class GUI_Base : public wxFrame
 		virtual void OnChooseLocation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGenerateScript( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOnlyGenerateSteps( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnChangeShortcuts( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCraftMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWalkMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGameSpeedMenuSelected( wxCommandEvent& event ) { event.Skip(); }
@@ -258,82 +256,6 @@ class GUI_Base : public wxFrame
 		wxAuiManager m_mgr;
 
 		~GUI_Base();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class Shortcuts_Menu
-///////////////////////////////////////////////////////////////////////////////
-class Shortcuts_Menu : public wxFrame
-{
-	private:
-
-	protected:
-		wxScrolledWindow* m_scrolledWindow3;
-		wxStaticText* label_shortcut_walk;
-		wxTextCtrl* m_textCtrl681;
-		wxStaticText* label_shortcut_walk1;
-		wxTextCtrl* m_textCtrl6811;
-		wxStaticText* label_shortcut_walk2;
-		wxTextCtrl* m_textCtrl6812;
-		wxStaticText* label_shortcut_walk3;
-		wxTextCtrl* m_textCtrl6813;
-		wxStaticText* label_shortcut_walk4;
-		wxTextCtrl* m_textCtrl6814;
-		wxStaticText* label_shortcut_walk5;
-		wxTextCtrl* m_textCtrl6815;
-		wxStaticText* label_shortcut_walk6;
-		wxTextCtrl* m_textCtrl6816;
-		wxStaticText* label_shortcut_walk7;
-		wxTextCtrl* m_textCtrl6817;
-		wxStaticText* label_shortcut_walk8;
-		wxTextCtrl* m_textCtrl6818;
-		wxScrolledWindow* m_scrolledWindow1;
-		wxStaticText* label_shortcut_walk9;
-		wxTextCtrl* m_textCtrl6819;
-		wxStaticText* label_shortcut_walk11;
-		wxTextCtrl* m_textCtrl68111;
-		wxStaticText* label_shortcut_walk21;
-		wxTextCtrl* m_textCtrl68121;
-		wxStaticText* label_shortcut_walk31;
-		wxTextCtrl* m_textCtrl68131;
-		wxStaticText* label_shortcut_walk41;
-		wxTextCtrl* m_textCtrl68141;
-		wxStaticText* label_shortcut_walk51;
-		wxTextCtrl* m_textCtrl68151;
-		wxStaticText* label_shortcut_walk61;
-		wxTextCtrl* m_textCtrl68161;
-		wxStaticText* label_shortcut_walk71;
-		wxTextCtrl* m_textCtrl68171;
-		wxStaticText* label_shortcut_walk81;
-		wxTextCtrl* m_textCtrl68181;
-		wxScrolledWindow* m_scrolledWindow11;
-		wxStaticText* label_shortcut_walk91;
-		wxTextCtrl* m_textCtrl68191;
-		wxStaticText* label_shortcut_walk111;
-		wxTextCtrl* m_textCtrl681111;
-		wxStaticText* label_shortcut_walk211;
-		wxTextCtrl* m_textCtrl681211;
-		wxStaticText* label_shortcut_walk311;
-		wxTextCtrl* m_textCtrl681311;
-		wxStaticText* label_shortcut_walk411;
-		wxTextCtrl* m_textCtrl681411;
-		wxStaticText* label_shortcut_walk511;
-		wxTextCtrl* m_textCtrl681511;
-		wxStaticText* label_shortcut_walk611;
-		wxTextCtrl* m_textCtrl681611;
-		wxStaticText* label_shortcut_walk711;
-		wxTextCtrl* m_textCtrl681711;
-		wxStaticText* label_shortcut_walk811;
-		wxTextCtrl* m_textCtrl681811;
-		wxButton* m_button3;
-		wxButton* m_button4;
-
-	public:
-
-		Shortcuts_Menu( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Change Shortcuts"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 570,396 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
-
-		~Shortcuts_Menu();
 
 };
 

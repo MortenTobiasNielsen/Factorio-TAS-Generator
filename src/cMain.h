@@ -48,9 +48,6 @@ protected:
 	void OnChooseLocation(wxCommandEvent& event);
 	void OnGenerateScript(wxCommandEvent& event);
 
-	// Shortcut menu items
-	void OnChangeShortcuts(wxCommandEvent& event);
-
 	void OnWalkMenuSelected(wxCommandEvent& event);
 	void OnMineMenuSelected(wxCommandEvent& event);
 	void OnGameSpeedMenuSelected(wxCommandEvent& event);
@@ -123,9 +120,6 @@ protected:
 	void OnDeleteGroupClicked(wxCommandEvent& event);
 	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
 	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
-	void In_memory_extract_parameters(const std::string& task_reference);
-	void In_memory_extract_parameters_buildings(const std::string& task_reference);
-	void split_task(const std::string& task_reference);
 	void OnGroupChangeClicked(wxCommandEvent& event);
 	void OnGroupDeleteClicked(wxCommandEvent& event);
 	void OnGroupMoveUpClicked(wxCommandEvent& event);
@@ -153,9 +147,6 @@ protected:
 
 	// Building
 	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
-
-	// Input
-	void OnUnitsChanged(wxCommandEvent& event);
 
 	//Seach
 	void TaskSeachOnText(wxCommandEvent& event);
@@ -322,7 +313,7 @@ private:
 	vector<Building> BuildingsSnapShot;
 
 	void ResetToNewWindow();
-	bool checks_before_reset_window();
+	bool ChecksBeforeResetWindow();
 	bool CheckBeforeClose();
 
 	void MoveRow(wxGrid* grid, bool up = false);
@@ -339,58 +330,40 @@ private:
 
 	void setup_paramters(std::vector<bool> parameters);
 
-	void populate_tasks_grid();
 
-	bool setup_for_task_group_template_grid();
 
-	bool find_building_for_script(int& row);
 
-	bool compare_task_strings(const wxString& str1, const std::string& str2);
-
-	void update_parameters(GridEntry* gridEntry, wxCommandEvent& event);
-	void update_group_map();
+	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event);
 	void update_template_map();
 
-	bool check_input(std::string& item, const std::vector<std::string>& all_items);
-	bool check_take_put(std::string& item);
+	bool CheckTakePut(std::string& item);
 
-	bool extra_building_checks();
 
-	bool save_file(bool save_as);
+	bool SaveFile(bool save_as);
 
-	void extract_parameters();
 	std::string extract_task();
-	std::string extract_x_cord();
-	std::string extract_y_cord();
-	std::string extract_amount();
-	std::string extract_comment();
-	std::string extract_item();
-	std::string extract_from_into();
-	std::string extract_tech();
-	std::string extract_priority_in();
-	std::string extract_priority_out();
-	std::string extract_building_orientation();
-	std::string extract_direction_to_build();
-	std::string extract_building_size();
-	std::string extract_amount_of_buildings();
+	std::string ExtractAmount();
+	std::string ExtractComment();
+	std::string ExtractItem();
+	std::string ExtractFromInto();
+	std::string ExtractTech();
+	std::string ExtractPriorityIn();
+	std::string ExtractPriorityOut();
+	std::string ExtractBuildingOrientation();
+	std::string ExtractDirectionToBuild();
 
 	void update_future_rotate_tasks();
 	void find_new_orientation();
-	bool find_building(int amount_of_buildings);
 
 	void malformed_saved_file_message();
 
 	void new_update_tasks_grid(StepParameters* stepParameters);
 	GridEntry PrepareStepParametersForGrid(StepParameters* stepParameters);
 	StepParameters ExtractStepParameters();
-	double new_extract_x_cord();
-	double new_extract_y_cord();
-	int new_extract_building_size();
-	int new_extract_amount_of_buildings();
-
-	void new_background_colour_update(wxGrid* grid, int row, TaskName task);
-
-	bool new_check_input(string& item, const vector<string>& all_items);
+	double ExtractX();
+	double ExtractY();
+	int ExtractBuildingSize();
+	int ExtractAmountOfBuildings();
 
 	bool ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true);
 	bool IsValidBuildStep(StepParameters stepParameters);
@@ -404,7 +377,7 @@ private:
 	bool new_extra_building_checks(StepParameters stepParameters);
 
 	int GenerateBuildingSnapShot(int end_row);
-	void new_populate_tasks_grid();
+	void PopulateStepGrid();
 
 	void AddTask(int row);
 	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);

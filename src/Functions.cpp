@@ -108,10 +108,10 @@ bool is_number(const std::string& str)
 	return true;
 }
 
-std::vector<std::string> get_keys(std::map<std::string, std::vector<std::string>> map)
+vector<string> get_keys(map<string, vector<StepParameters>> map)
 {
-	std::vector<std::string> keys;
-	for (std::map<std::string, std::vector<std::string>>::iterator it = map.begin(); it != map.end(); ++it)
+	vector<string> keys;
+	for (std::map<string, vector<StepParameters>>::iterator it = map.begin(); it != map.end(); ++it)
 	{
 		keys.push_back(it->first);
 	}
