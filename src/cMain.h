@@ -321,23 +321,13 @@ private:
 	std::vector<StepParameters> StepGridData;
 	vector<Building> BuildingsSnapShot;
 
-	void reset_to_new_window();
+	void ResetToNewWindow();
 	bool checks_before_reset_window();
-	bool check_before_close();
+	bool CheckBeforeClose();
 
 	void MoveRow(wxGrid* grid, bool up = false);
 	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	bool ChangeRow(wxGrid* grid, StepParameters step);
-
-	void update_tasks_grid();
-	void update_buildings_grid();
-	void update_buildings_grid_from_scratch(int start_row, int end_row);
-	void update_buildings();
-	bool update_recipe();
-	bool update_limit();
-	bool update_priority();
-	bool update_filter();
-	bool Update_rotation();
 
 	void BackgroundColorUpdate(wxGrid* grid, int row, TaskName task);
 
@@ -357,13 +347,12 @@ private:
 
 	bool compare_task_strings(const wxString& str1, const std::string& str2);
 
-	void update_parameters(wxGrid* grid, wxCommandEvent& event);
+	void update_parameters(GridEntry* gridEntry, wxCommandEvent& event);
 	void update_group_map();
 	void update_template_map();
 
 	bool check_input(std::string& item, const std::vector<std::string>& all_items);
 	bool check_take_put(std::string& item);
-	bool check_buildings_grid();
 
 	bool extra_building_checks();
 
@@ -385,8 +374,6 @@ private:
 	std::string extract_building_size();
 	std::string extract_amount_of_buildings();
 
-	void auto_put(std::string put_item, std::string put_amount, std::string put_into);
-
 	void update_future_rotate_tasks();
 	void find_new_orientation();
 	bool find_building(int amount_of_buildings);
@@ -403,7 +390,7 @@ private:
 
 	void new_background_colour_update(wxGrid* grid, int row, TaskName task);
 
-	bool new_check_input(string& item, const std::vector<std::string>& all_items);
+	bool new_check_input(string& item, const vector<string>& all_items);
 
 	bool ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true);
 	bool IsValidBuildStep(StepParameters stepParameters);
@@ -422,4 +409,5 @@ private:
 	void AddTask(int row);
 	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
+	GridEntry ExtractGridEntry(wxGrid* grid, int row);
 };

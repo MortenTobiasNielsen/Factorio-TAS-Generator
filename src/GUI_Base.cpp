@@ -1016,81 +1016,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	template_panel->Layout();
 	bSizer5612->Fit( template_panel );
 	m_auinotebook1->AddPage( template_panel, wxT("Templates"), false, wxNullBitmap );
-	building_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer56111;
-	bSizer56111 = new wxBoxSizer( wxVERTICAL );
-
-
-	bSizer56111->Add( 0, 33, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer122;
-	bSizer122 = new wxBoxSizer( wxVERTICAL );
-
-	building_search_ctrl = new wxSearchCtrl( building_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	#ifndef __WXMAC__
-	building_search_ctrl->ShowSearchButton( true );
-	#endif
-	building_search_ctrl->ShowCancelButton( true );
-	bSizer122->Add( building_search_ctrl, 0, wxALL, 5 );
-
-
-	bSizer56111->Add( bSizer122, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer5011;
-	bSizer5011 = new wxBoxSizer( wxVERTICAL );
-
-	grid_buildings = new wxGrid( building_panel, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-
-	// Grid
-	grid_buildings->CreateGrid( 0, 9 );
-	grid_buildings->EnableEditing( false );
-	grid_buildings->EnableGridLines( true );
-	grid_buildings->EnableDragGridSize( false );
-	grid_buildings->SetMargins( 0, 0 );
-
-	// Columns
-	grid_buildings->SetColSize( 0, 56 );
-	grid_buildings->SetColSize( 1, 56 );
-	grid_buildings->SetColSize( 2, 150 );
-	grid_buildings->SetColSize( 3, 71 );
-	grid_buildings->SetColSize( 4, 50 );
-	grid_buildings->SetColSize( 5, 150 );
-	grid_buildings->SetColSize( 6, 50 );
-	grid_buildings->SetColSize( 7, 50 );
-	grid_buildings->SetColSize( 8, 150 );
-	grid_buildings->EnableDragColMove( false );
-	grid_buildings->EnableDragColSize( true );
-	grid_buildings->SetColLabelValue( 0, wxT("X-cord") );
-	grid_buildings->SetColLabelValue( 1, wxT("Y-cord") );
-	grid_buildings->SetColLabelValue( 2, wxT("Building") );
-	grid_buildings->SetColLabelValue( 3, wxT("Orientation") );
-	grid_buildings->SetColLabelValue( 4, wxT("Limit") );
-	grid_buildings->SetColLabelValue( 5, wxT("Recipe") );
-	grid_buildings->SetColLabelValue( 6, wxT("Prio In") );
-	grid_buildings->SetColLabelValue( 7, wxT("Prio Out") );
-	grid_buildings->SetColLabelValue( 8, wxT("Filter") );
-	grid_buildings->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
-
-	// Rows
-	grid_buildings->EnableDragRowSize( false );
-	grid_buildings->SetRowLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
-
-	// Label Appearance
-
-	// Cell Defaults
-	grid_buildings->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
-	grid_buildings->SetMinSize( wxSize( 860,2500 ) );
-
-	bSizer5011->Add( grid_buildings, 0, wxALL|wxEXPAND, 5 );
-
-
-	bSizer56111->Add( bSizer5011, 1, wxEXPAND, 5 );
-
-
-	building_panel->SetSizer( bSizer56111 );
-	building_panel->Layout();
-	bSizer56111->Fit( building_panel );
-	m_auinotebook1->AddPage( building_panel, wxT("Buildings"), false, wxNullBitmap );
 	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
@@ -1193,7 +1118,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->SetSizer( bSizer5611 );
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
-	m_auinotebook1->AddPage( step_panel, wxT("Steps"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
 
 
 	m_mgr.Update();
@@ -1285,11 +1210,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_template_add_to_tasks_list1->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddToTasksListClicked ), NULL, this );
 	btn_template_add_from_tasks_list1->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddFromTasksListClicked ), NULL, this );
 	grid_template->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTemplateGridDoubleLeftClick ), NULL, this );
-	building_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnCancelButton ), NULL, this );
-	building_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnSearchButton ), NULL, this );
-	building_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::BuildingSearchOnText ), NULL, this );
-	building_search_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::BuildingSearchOnTextEnter ), NULL, this );
-	grid_buildings->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnBuildingsGridLeftDoubleClick ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnCancelButton ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
@@ -1349,11 +1269,6 @@ GUI_Base::~GUI_Base()
 	btn_template_add_to_tasks_list1->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddToTasksListClicked ), NULL, this );
 	btn_template_add_from_tasks_list1->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddFromTasksListClicked ), NULL, this );
 	grid_template->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTemplateGridDoubleLeftClick ), NULL, this );
-	building_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnCancelButton ), NULL, this );
-	building_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::BuildingSearchOnSearchButton ), NULL, this );
-	building_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::BuildingSearchOnText ), NULL, this );
-	building_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::BuildingSearchOnTextEnter ), NULL, this );
-	grid_buildings->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnBuildingsGridLeftDoubleClick ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnCancelButton ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::TaskSeachOnSearchButton ), NULL, this );
 	task_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::TaskSeachOnText ), NULL, this );
