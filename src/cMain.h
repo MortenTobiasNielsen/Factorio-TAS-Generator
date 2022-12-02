@@ -8,7 +8,6 @@
 #include <map>
 #include <fstream>
 #include <sstream>
-
 #include <iomanip>
 #include <locale>
 #include <codecvt>
@@ -20,6 +19,7 @@
 #include "Building.h"
 #include "BuildingNameToIndex.h"
 #include "GUI_Base.h"
+#include "utils.h"
 #include "ScriptProgressBar.h"
 #include "../icon.xpm"
 
@@ -237,13 +237,7 @@ private:
 	std::string data;
 	std::string not_relevant = "";
 	wxString new_not_relevant = "";
-	std::vector<std::string> all_buildings;
-	std::vector<std::string> all_items;
-	std::vector<std::string> part_assembly_recipes;
-	std::vector<std::string> full_assembly_recipes;
-	std::vector<std::string> full_chemical_plant_recipes;
-	std::vector<std::string> all_recipes;
-
+	
 	// Overall variables for parameters
 	std::string task;
 	std::string x_cord;
@@ -309,8 +303,7 @@ private:
 
 	// Used when the tasks are saved to a file
 	std::vector<std::string> tasks_data_to_save;
-	std::vector<StepParameters> StepGridData;
-	vector<Building> BuildingsSnapShot;
+
 
 	void ResetToNewWindow();
 	bool ChecksBeforeResetWindow();
@@ -365,13 +358,7 @@ private:
 	int ExtractBuildingSize();
 	int ExtractAmountOfBuildings();
 
-	bool ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true);
-	bool IsValidBuildStep(StepParameters stepParameters);
-	bool IsValidRecipeStep(StepParameters stepParameters);
-	bool IsValidCraftStep(StepParameters stepParameters);
-	bool IsValidPutTakeStep(StepParameters stepParameters);
-	bool IsValidTechnologyStep(StepParameters stepParameters);
-	bool IsValidPriorityStep(StepParameters stepParameters);
+	
 
 	bool new_find_building(int startRow, StepParameters stepParameters);
 	bool new_extra_building_checks(StepParameters stepParameters);

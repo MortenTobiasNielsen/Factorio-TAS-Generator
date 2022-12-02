@@ -20,7 +20,7 @@ bool compare_task_strings(const wxString& str1, const std::string& str2)
 	return true;
 }
 
-bool check_input(std::string& item, const std::vector<std::string>& all_items)
+bool check_input(string& item, const std::vector<std::string>& all_items)
 {
 	std::string item_lower = "";
 	for (unsigned int i = 0; i < item.size(); i++)

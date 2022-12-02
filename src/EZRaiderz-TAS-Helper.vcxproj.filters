@@ -12,6 +12,7 @@
     <ClCompile Include="BuildingNameToIndex.cpp">
       <Filter>Maps</Filter>
     </ClCompile>
+    <ClCompile Include="Validation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -42,6 +43,7 @@
     <ClInclude Include="TaskNameToEnum.h">
       <Filter>Maps</Filter>
     </ClInclude>
+    <ClInclude Include="Validation.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EZRaiderz-TAS-Helper.rc" />

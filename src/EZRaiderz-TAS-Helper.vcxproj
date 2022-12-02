@@ -169,6 +169,7 @@
     <ClCompile Include="OpenTas.cpp" />
     <ClCompile Include="SaveTas.cpp" />
     <ClCompile Include="TypePanel.cpp" />
+    <ClCompile Include="Validation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Building.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="TypePanel.h" />
     <ClInclude Include="search_util.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="Validation.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon.ico" />
