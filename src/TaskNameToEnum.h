@@ -14,3 +14,8 @@ enum TaskName
 static const std::map<string, TaskName> TaskNames = {{"Start", e_start}, {"Stop", e_stop}, {"Build", e_build}, {"Craft", e_craft}, {"Game Speed", e_game_speed}, {"Pause", e_pause}, {"Save", e_save},
 	{"Recipe", e_recipe}, {"Limit", e_limit}, {"Filter", e_filter}, {"Rotate", e_rotate}, {"Priority", e_priority}, {"Put", e_put}, {"Take", e_take}, {"Mine", e_mine}, {"Launch", e_launch},
 	{"Walk", e_walk}, {"Tech", e_tech}, {"Drop", e_drop}, {"Pick up", e_pick_up}, {"Idle", e_idle}};
+
+TaskName ToTaskName(string task)
+{
+	return TaskNames.find(task)->second;
+}

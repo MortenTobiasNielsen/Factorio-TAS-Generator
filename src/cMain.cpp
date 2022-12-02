@@ -281,28 +281,28 @@ bool cMain::check_before_close()
 	return true;
 }
 
-void cMain::move_row(wxGrid* grid, bool up)
+void cMain::MoveRow(wxGrid* grid, bool up)
 {
 	for (const auto& block : grid->GetSelectedRowBlocks())
 	{
-		auto row_num = block.GetTopRow();
-		auto row_count = block.GetBottomRow() - row_num + 1;
+		auto rowNum = block.GetTopRow();
+		auto rowCount = block.GetBottomRow() - rowNum + 1;
 
 		if (up)
 		{
-			if (row_num == 0)
+			if (rowNum == 0)
 			{
 				continue;
 			}
 
-			auto row = row_num - 1;
-			auto moveTo = row_num + row_count;
+			auto row = rowNum - 1;
+			auto moveTo = rowNum + rowCount;
 
 			grid->InsertRows(moveTo);
 
-			TransferData(row, moveTo, grid);
+			GridTransfer(grid, row, grid, moveTo);
 
-			background_colour_update(grid, moveTo, grid->GetCellValue(moveTo, 0).ToStdString());
+			BackgroundColorUpdate(grid, moveTo, ToTaskName(grid->GetCellValue(moveTo, 0).ToStdString()));
 
 			grid->DeleteRows(row);
 
@@ -319,21 +319,21 @@ void cMain::move_row(wxGrid* grid, bool up)
 		}
 		else
 		{
-			if ((row_num + row_count) == (grid->GetNumberRows()))
+			if ((rowNum + rowCount) == (grid->GetNumberRows()))
 			{
 				continue;
 			}
 
-			auto row = row_num + row_count;
-			auto moveTo = row_num;
+			auto row = rowNum + rowCount;
+			auto moveTo = rowNum;
 
 			grid->InsertRows(moveTo);
 
-			TransferData(row + 1, moveTo, grid);
+			GridTransfer(grid, row + 1, grid, moveTo);
 
 			grid->DeleteRows(row + 1);
 
-			background_colour_update(grid, moveTo, grid->GetCellValue(moveTo, 0).ToStdString());
+			BackgroundColorUpdate(grid, moveTo, ToTaskName(grid->GetCellValue(moveTo, 0).ToStdString()));
 
 			auto it1 = StepGridData.begin();
 			it1 += row;
@@ -348,7 +348,7 @@ void cMain::move_row(wxGrid* grid, bool up)
 	}
 }
 
-void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>>& map)
+void cMain::GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map)
 {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin())
 	{
@@ -357,39 +357,38 @@ void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std:
 
 	for (const auto& block : grid->GetSelectedRowBlocks())
 	{
-		row_num = block.GetTopRow();
-		row_count = block.GetBottomRow() - row_num + 1;
+		auto rowNum = block.GetTopRow();
+		auto rowCount = block.GetBottomRow() - rowNum + 1;
 
+		auto row = 0;
 		if (up)
 		{
-			if (row_num == 0)
+			if (rowNum == 0)
 			{
 				continue;
 			}
 
-			row_to_move = row_num - 1;
+			row = rowNum - 1;
 
 		}
 		else
 		{
-			if ((row_num + row_count) == (grid->GetNumberRows()))
+			if ((rowNum + rowCount) == (grid->GetNumberRows()))
 			{
 				continue;
 			}
 
-			row_to_move = row_num + row_count + 1;
-			row_count = 0;
+			row = rowNum + rowCount + 1;
+			rowCount = 0;
 		}
 
-		grid->InsertRows(row_num + row_count);
+		grid->InsertRows(rowNum + rowCount);
 
-		grid_extract_parameters(row_to_move, grid);
+		GridTransfer(grid, row, grid, rowNum + rowCount);
 
-		grid_insert_data(row_num + row_count, grid);
+		BackgroundColorUpdate(grid, rowNum + rowCount, ToTaskName(grid->GetCellValue(rowNum + rowCount, 0).ToStdString()));
 
-		background_colour_update(grid, row_num + row_count, grid->GetCellValue(row_num + row_count, 0).ToStdString());
-
-		grid->DeleteRows(row_to_move);
+		grid->DeleteRows(row);
 
 		if (!map.empty())
 		{
@@ -399,25 +398,25 @@ void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std:
 				if (up)
 				{
 
-					it1 = map[map_name].begin();
-					it1 += row_to_move;
+					auto it1 = map[map_name].begin();
+					it1 += row;
 
-					data = *it1;
+					auto data = *it1;
 					map[map_name].erase(it1);
 
-					it2 = map[map_name].begin();
-					it2 += row_num + row_count - 1;
+					auto it2 = map[map_name].begin();
+					it2 += rowNum + rowCount - 1;
 					map[map_name].insert(it2, data);
 				}
 				else
 				{
-					it1 = map[map_name].begin();
-					it1 += row_to_move - 1;
+					auto it1 = map[map_name].begin();
+					it1 += row - 1;
 
-					it2 = map[map_name].begin();
-					it2 += row_num;
+					auto it2 = map[map_name].begin();
+					it2 += rowNum;
 
-					data = *it1;
+					auto data = *it1;
 					map[map_name].erase(it1, it1 + 1);
 					map[map_name].insert(it2, data);
 				}
@@ -426,8 +425,7 @@ void cMain::group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std:
 	}
 }
 
-// ensure that you are not deleting rows, which you are not supposed to if the user has ctrl + clicked multiple blocks of tasks
-bool cMain::delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>>& map)
+bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
 {
 	if (!grid->IsSelection())
 	{
@@ -437,24 +435,27 @@ bool cMain::delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std:
 
 	row_selections.clear();
 
+	auto rowNum = 0;
+	auto rowCount = 0;
+
 	for (const auto& block : grid->GetSelectedRowBlocks())
 	{
-		row_num = block.GetTopRow();
-		row_count = block.GetBottomRow() - row_num + 1;
+		rowNum = block.GetTopRow();
+		rowCount = block.GetBottomRow() - rowNum + 1;
 
 		row_selections.push_back(std::to_string(block.GetTopRow()) + "," + std::to_string(block.GetBottomRow() - block.GetTopRow() + 1));
 	}
 
-	building_row_count = 0;
+	auto rowsDeleted = 0;
 
 	for (auto selection : row_selections)
 	{
 		long long pos = selection.find(",");
 
-		row_num = std::stoi(selection.substr(0, pos)) - building_row_count;
-		row_count = std::stoi(selection.substr(pos + 1));
+		rowNum = std::stoi(selection.substr(0, pos)) - rowsDeleted;
+		rowCount = std::stoi(selection.substr(pos + 1));
 
-		grid->DeleteRows(row_num, row_count);
+		grid->DeleteRows(rowNum, rowCount);
 
 		if (!map.empty())
 		{
@@ -462,24 +463,24 @@ bool cMain::delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std:
 
 			if (map.find(map_name) != map.end())
 			{
-				it1 = map[map_name].begin();
-				it2 = map[map_name].begin();
+				auto it1 = map[map_name].begin();
+				auto it2 = map[map_name].begin();
 
-				it1 += row_num;
-				it2 += row_num + row_count;
+				it1 += rowNum;
+				it2 += rowNum + rowCount;
 
 				map[map_name].erase(it1, it2);
 			}
 		}
 
-		building_row_count += row_count;
+		rowsDeleted += rowCount;
 	}
 
 	return true;
 }
 
 // ensure that the variables are actually what they are supposed to be
-bool cMain::change_row(wxGrid* grid)
+bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin())
 	{
@@ -487,20 +488,25 @@ bool cMain::change_row(wxGrid* grid)
 		return false;
 	}
 
-	row_num = *grid->GetSelectedRows().begin();
+	auto rowNum = *grid->GetSelectedRows().begin();
 
-	setup_for_task_group_template_grid();
+	if (!ValidateStep(rowNum, step, false))
+	{
+		return;
+	}
 
-	grid_insert_data(row_num, grid);
+	GridEntry gridEntry = PrepareStepParametersForGrid(&step);
 
-	background_colour_update(grid, row_num, task);
+	PopulateGrid(grid, rowNum, &gridEntry);
+
+	BackgroundColorUpdate(grid, rowNum, step.TaskEnum);
 
 	return true;
 }
 
-void cMain::background_colour_update(wxGrid* grid, int row, std::string task)
+void cMain::BackgroundColorUpdate(wxGrid* grid, int row, TaskName task)
 {
-	switch (TaskNames.find(task)->second)
+	switch (task)
 	{
 		case e_start:
 			grid->SetCellBackgroundColour(row, 0, *wxGREEN);
@@ -566,7 +572,7 @@ void cMain::update_tasks_grid()
 		tasks_data_to_save.push_back(task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 	}
 
-	background_colour_update(grid_tasks, row_num, task);
+	BackgroundColorUpdate(grid_tasks, row_num, task);
 }
 
 // Ensure that the variables are actually what they are supposed to be and have not been altered by side functions
@@ -813,43 +819,23 @@ bool cMain::Update_rotation()
 	return false;
 }
 
-void cMain::update_group_template_grid(wxGrid* grid, std::vector<std::string>& list, std::map<std::string, std::vector<std::string>>& map, std::string map_name)
+void cMain::UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps, map<string, vector<StepParameters>>& map, string name)
 {
 	if (grid->GetNumberRows() > 0)
 	{
 		grid->DeleteRows(0, grid->GetNumberRows());
 	}
 
-	list = map[map_name];
-	grid->InsertRows(0, list.size());
+	steps = map[name];
+	grid->InsertRows(0, steps.size());
 
-	for (unsigned int i = 0; i < list.size(); i++)
+	for (int i = 0; i < steps.size(); i++)
 	{
-		std::stringstream data_line;
-		data_line.str(list[i]);
-		seglist = {};
+		GridEntry gridEntry = PrepareStepParametersForGrid(&steps[i]);
 
-		while (std::getline(data_line, segment, ';'))
-		{
-			seglist.push_back(segment);
-		}
+		PopulateGrid(grid, i, &gridEntry);
 
-		grid->SetCellValue(i, 0, seglist[0]);
-		grid->SetCellValue(i, 1, seglist[1]);
-		grid->SetCellValue(i, 2, seglist[2]);
-		grid->SetCellValue(i, 3, seglist[3]);
-		grid->SetCellValue(i, 4, seglist[4]);
-		grid->SetCellValue(i, 5, seglist[5]);
-		grid->SetCellValue(i, 6, seglist[6]);
-		grid->SetCellValue(i, 7, seglist[7]);
-		grid->SetCellValue(i, 8, seglist[8]);
-
-		if (seglist.size() > 9)
-		{
-			grid->SetCellValue(i, 9, seglist[9]);
-		}
-
-		background_colour_update(grid, i, seglist[0]);
+		BackgroundColorUpdate(grid, i, steps[i].TaskEnum);
 	}
 }
 
@@ -876,28 +862,15 @@ void cMain::AddTask(int row)
 {
 	auto stepParameters = ExtractStepParameters();
 
-	std::string to_check;
+	if (!ValidateStep(row, stepParameters))
+	{
+		return;
+	};
 
-	// Cases where an association with a building isn't needed
+	std::string to_check;
 	switch (stepParameters.TaskEnum)
 	{
-		case e_start:
-		case e_walk:
-		case e_game_speed:
-		case e_pause:
-		case e_save:
-		case e_stop:
-		case e_pick_up:
-		case e_idle:
-			new_update_tasks_grid(&stepParameters);
-			return;
-
 		case e_build:
-			if (!IsValidBuildStep(stepParameters))
-			{
-				return;
-			}
-
 			stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item)->second;
 
 			new_update_tasks_grid(&stepParameters);
@@ -935,45 +908,7 @@ void cMain::AddTask(int row)
 
 			return;
 
-		case e_craft:
-			if (!IsValidCraftStep(stepParameters))
-			{
-				return;
-			}
-
-			new_update_tasks_grid(&stepParameters);
-			return;
-
-		case e_tech:
-			if (!IsValidTechnologyStep(stepParameters))
-			{
-				return;
-			}
-
-			new_update_tasks_grid(&stepParameters);
-			return;
-
-		default:
-			break;
-	}
-
-	int amountOfBuildings = GenerateBuildingSnapShot(row);
-
-	// Cases with special handling
-	switch (stepParameters.TaskEnum)
-	{
 		case e_recipe:
-			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
-			{
-				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return;
-			};
-
-			if (!IsValidRecipeStep(stepParameters))
-			{
-				return;
-			}
-
 			new_update_tasks_grid(&stepParameters);
 
 			to_check = stepParameters.Item;
@@ -998,35 +933,7 @@ void cMain::AddTask(int row)
 
 			return;
 
-		case e_mine:
-			// A building doesn't need to exist, but if it does it should be noted.
-			BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters);
-			new_update_tasks_grid(&stepParameters);
-			return;
-
-		case e_put:
-		case e_take:
-			if (!IsValidPutTakeStep(stepParameters))
-			{
-				return;
-			}
-
-			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
-			{
-				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return;
-			};
-
-			new_update_tasks_grid(&stepParameters);
-			return;
-
 		default:
-			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
-			{
-				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
-				return;
-			};
-
 			new_update_tasks_grid(&stepParameters);
 			return;
 	}
@@ -1263,7 +1170,7 @@ void cMain::OnMoveUpClicked(wxCommandEvent& event)
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
-	move_row(grid_tasks, true);
+	MoveRow(grid_tasks, true);
 	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
@@ -1275,7 +1182,7 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event)
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
-	move_row(grid_tasks, false);
+	MoveRow(grid_tasks, false);
 	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
@@ -1289,7 +1196,7 @@ void cMain::OnMoveUpFiveClicked(wxMouseEvent& event)
 	}
 	for (int i = 0; i < 5; i++)
 	{
-		move_row(grid_tasks, true);
+		MoveRow(grid_tasks, true);
 	}
 	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
@@ -1304,7 +1211,7 @@ void cMain::OnMoveDownFiveClicked(wxMouseEvent& event)
 	}
 	for (int i = 0; i < 5; i++)
 	{
-		move_row(grid_tasks, false);
+		MoveRow(grid_tasks, false);
 	}
 	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
@@ -1322,20 +1229,20 @@ void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event)
 
 void cMain::OnNewGroupClicked(wxCommandEvent& event)
 {
+	auto rowNum = 0;
+	auto rowCount = cmb_choose_group->GetCount();
+	auto name = cmb_choose_group->GetValue().ToStdString();
 
-	group_row_count = cmb_choose_group->GetCount();
-	group_name = cmb_choose_group->GetValue().ToStdString();
-
-	if (group_name == "")
+	if (name == "")
 	{
 		wxMessageBox("Please write a group name", "Group name cannot be blank");
 		event.Skip();
 		return;
 	}
 
-	for (int i = 0; i < group_row_count; i++)
+	for (int i = 0; i < rowCount; i++)
 	{
-		if (group_name == cmb_choose_group->GetString(i).ToStdString())
+		if (name == cmb_choose_group->GetString(i).ToStdString())
 		{
 			wxMessageBox("Group names have to be unique - please write a new name in the Choose Group field", "Group names should be unique");
 			event.Skip();
@@ -1351,41 +1258,42 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event)
 	}
 
 	cmb_choose_group->Clear();
-	group_choices.Add(group_name);
+	group_choices.Add(name);
 	cmb_choose_group->Append(group_choices);
-	cmb_choose_group->SetValue(group_name);
-	group_list = {};
+	cmb_choose_group->SetValue(name);
+	
+	vector<StepParameters> groupSteps = {};
 
 	if (grid_group->IsSelection())
 	{
-		group_row_num = *grid_group->GetSelectedRows().begin();
-		group_row_count = grid_group->GetSelectedRows().GetCount();
+		rowNum = *grid_group->GetSelectedRows().begin();
+		rowCount = grid_group->GetSelectedRows().GetCount();
 	}
 	else
 	{
-		group_row_num = 0;
-		group_row_count = grid_group->GetNumberRows();
+		rowNum = 0;
+		rowCount = grid_group->GetNumberRows();
 
-		if (!group_row_count)
+		if (!rowCount)
 		{
-			group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+			group_map.insert(pair<string, vector<StepParameters>>(name, groupSteps));
 			event.Skip();
 			return;
 		}
 	}
 
-	for (int i = group_row_num; i < (group_row_num + group_row_count); i++)
+	for (int i = rowNum; i < (rowNum + rowCount); i++)
 	{
-		grid_extract_parameters(i, grid_group);
+		auto stepParameters = ExtractStepParameters();
 
-		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+		groupSteps.push_back(stepParameters);
 
-		background_colour_update(grid_group, i, task);
+		BackgroundColorUpdate(grid_group, i, stepParameters.TaskEnum);
 	}
 
-	group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+	group_map.insert(pair<string, vector<StepParameters>>(name, groupSteps));
 
-	update_group_template_grid(grid_group, group_list, group_map, group_name);
+	UpdateGroupTemplateGrid(grid_group, groupSteps, group_map, name);
 
 	event.Skip();
 }
@@ -1397,38 +1305,41 @@ void cMain::OnDeleteGroupClicked(wxCommandEvent& event)
 		return;
 	}
 
-	group_name = cmb_choose_group->GetValue();
+	auto name = cmb_choose_group->GetValue().ToStdString();
 
-	if (group_map.find(group_name) != group_map.end())
+	if (group_map.find(name) == group_map.end())
 	{
-		group_map.erase(group_name);
-		group_choices.Remove(group_name);
-		cmb_choose_group->Clear();
-		cmb_choose_group->Append(group_choices);
-
-		if (group_choices.size())
-		{
-			cmb_choose_group->SetValue(*group_choices.begin());
-			OnGroupChosen(event);
-		}
-		else if (grid_group->GetNumberRows())
-		{
-			grid_group->DeleteRows(0, grid_group->GetNumberRows());
-		}
+		return;
 	}
 
-	event.Skip();
+	group_map.erase(name);
+	group_choices.Remove(name);
+	cmb_choose_group->Clear();
+	cmb_choose_group->Append(group_choices);
+
+	if (group_choices.size())
+	{
+		cmb_choose_group->SetValue(*group_choices.begin());
+		OnGroupChosen(event);
+		return;
+	}
+
+	if (grid_group->GetNumberRows())
+	{
+		grid_group->DeleteRows(0, grid_group->GetNumberRows());
+	}
 }
 
 void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event)
 {
 	if (!grid_tasks->IsSelection())
 	{
-		wxMessageBox("No task is chosen - please select row(s) in the task list", "Cannot add task to group");
+		wxMessageBox("No step is chosen - please select row(s) in the step list", "Cannot add step to group");
 		event.Skip();
 		return;
 	}
 
+	auto rowsToAdd = grid_group->GetNumberRows();
 	if (grid_group->IsSelection())
 	{
 		if (!grid_group->GetSelectedRows().begin())
@@ -1437,32 +1348,26 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event)
 			event.Skip();
 			return;
 		}
-		group_row_num = *grid_group->GetSelectedRows().begin();
-	}
-	else
-	{
-		group_row_num = grid_group->GetNumberRows();
+
+		rowsToAdd = *grid_group->GetSelectedRows().begin();
 	}
 
 	for (const auto& block : grid_tasks->GetSelectedRowBlocks())
 	{
-		row_num = block.GetTopRow();
-		row_count = block.GetBottomRow() - row_num + 1;
+		auto startRow = block.GetTopRow();
+		auto rowCount = block.GetBottomRow() - startRow + 1;
 
-		grid_group->InsertRows(group_row_num, row_count);
+		grid_group->InsertRows(rowsToAdd, rowCount);
 
-		int total_rows = row_num + row_count;
+		int total_rows = startRow + rowCount;
 
-		for (int i = row_num; i < total_rows; i++)
+		for (int i = startRow; i < total_rows; i++)
 		{
+			GridTransfer(grid_tasks, i, grid_group, rowsToAdd);
 
-			grid_extract_parameters(i, grid_tasks);
+			BackgroundColorUpdate(grid_group, rowsToAdd, ToTaskName(grid_tasks->GetCellValue(i, 0).ToStdString()));
 
-			grid_insert_data(group_row_num, grid_group);
-
-			background_colour_update(grid_group, group_row_num, grid_tasks->GetCellValue(i, 0).ToStdString());
-
-			group_row_num += 1;
+			rowsToAdd += 1;
 		}
 	}
 
@@ -1485,7 +1390,6 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
 		{
 			row_num = *grid_tasks->GetSelectedRows().begin();
 		}
-
 	}
 	else
 	{
@@ -1496,14 +1400,14 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
 
 	for (const auto& block : grid_group->GetSelectedRowBlocks())
 	{
-		group_row_num = block.GetTopRow();
-		group_row_count = block.GetBottomRow() - group_row_num + 1;
+		rowNum = block.GetTopRow();
+		group_row_count = block.GetBottomRow() - rowNum + 1;
 
 		grid_tasks->InsertRows(row_num, group_row_count);
 
-		int total_rows = group_row_num + group_row_count;
+		int total_rows = rowNum + group_row_count;
 
-		for (int i = group_row_num; i < total_rows; i++)
+		for (int i = rowNum; i < total_rows; i++)
 		{
 
 			grid_extract_parameters(i, grid_group);
@@ -1515,7 +1419,7 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
 
 			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 
-			background_colour_update(grid_tasks, row_num, task);
+			BackgroundColorUpdate(grid_tasks, row_num, task);
 
 			row_num += 1;
 
@@ -1545,7 +1449,7 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
 
 		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 
-		background_colour_update(grid_tasks, row_num, task);
+		BackgroundColorUpdate(grid_tasks, row_num, task);
 
 		row_num += 1;
 	}
@@ -1615,18 +1519,18 @@ void cMain::grid_extract_parameters(const int& row, wxGrid* grid)
 	comment = grid->GetCellValue(row, 9).ToStdString();
 }
 
-void cMain::TransferData(const int& row, const int& MoveTo, wxGrid* grid)
+void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow)
 {
-	grid->SetCellValue(MoveTo, 0, grid->GetCellValue(row, 0));
-	grid->SetCellValue(MoveTo, 1, grid->GetCellValue(row, 1));
-	grid->SetCellValue(MoveTo, 2, grid->GetCellValue(row, 2));
-	grid->SetCellValue(MoveTo, 3, grid->GetCellValue(row, 3));
-	grid->SetCellValue(MoveTo, 4, grid->GetCellValue(row, 4));
-	grid->SetCellValue(MoveTo, 5, grid->GetCellValue(row, 5));
-	grid->SetCellValue(MoveTo, 6, grid->GetCellValue(row, 6));
-	grid->SetCellValue(MoveTo, 7, grid->GetCellValue(row, 7));
-	grid->SetCellValue(MoveTo, 8, grid->GetCellValue(row, 8));
-	grid->SetCellValue(MoveTo, 9, grid->GetCellValue(row, 9));
+	to->SetCellValue(toRow, 0, from->GetCellValue(fromRow, 0));
+	to->SetCellValue(toRow, 1, from->GetCellValue(fromRow, 1));
+	to->SetCellValue(toRow, 2, from->GetCellValue(fromRow, 2));
+	to->SetCellValue(toRow, 3, from->GetCellValue(fromRow, 3));
+	to->SetCellValue(toRow, 4, from->GetCellValue(fromRow, 4));
+	to->SetCellValue(toRow, 5, from->GetCellValue(fromRow, 5));
+	to->SetCellValue(toRow, 6, from->GetCellValue(fromRow, 6));
+	to->SetCellValue(toRow, 7, from->GetCellValue(fromRow, 7));
+	to->SetCellValue(toRow, 8, from->GetCellValue(fromRow, 8));
+	to->SetCellValue(toRow, 9, from->GetCellValue(fromRow, 9));
 }
 
 void cMain::grid_insert_data(const int& row, wxGrid* grid)
@@ -1646,19 +1550,22 @@ void cMain::grid_insert_data(const int& row, wxGrid* grid)
 // You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnGroupChangeClicked(wxCommandEvent& event)
 {
-	extract_parameters();
-
-	if (setup_for_task_group_template_grid())
+	auto stepParameters = ExtractStepParameters();
+	
+	if (!ChangeRow(grid_group, stepParameters))
 	{
-		change_row(grid_group);
-
-		group_name = cmb_choose_group->GetValue().ToStdString();
-
-		if (!(group_map.find(group_name) == group_map.end()))
-		{
-			group_map[group_name][row_num] = (task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-		}
+		return;
 	}
+
+	auto group_name = cmb_choose_group->GetValue().ToStdString();
+	if (group_map.find(group_name) == group_map.end())
+	{
+		return;
+	}
+	
+	auto rowNum = *grid_group->GetSelectedRows().begin();
+
+	group_map[group_name][rowNum] = stepParameters;
 
 	event.Skip();
 }
@@ -1670,7 +1577,7 @@ void cMain::OnGroupDeleteClicked(wxCommandEvent& event)
 		return;
 	}
 
-	delete_row(grid_group, cmb_choose_group, group_map);
+	DeleteRow(grid_group, cmb_choose_group, group_map);
 
 	event.Skip();
 }
@@ -1678,7 +1585,7 @@ void cMain::OnGroupDeleteClicked(wxCommandEvent& event)
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnGroupMoveUpClicked(wxCommandEvent& event)
 {
-	group_template_move_row(grid_group, cmb_choose_group, true, group_map);
+	GroupTemplateMoveRow(grid_group, cmb_choose_group, true, group_map);
 
 	event.Skip();
 }
@@ -1686,7 +1593,7 @@ void cMain::OnGroupMoveUpClicked(wxCommandEvent& event)
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnGroupMoveDownClicked(wxCommandEvent& event)
 {
-	group_template_move_row(grid_group, cmb_choose_group, false, group_map);
+	GroupTemplateMoveRow(grid_group, cmb_choose_group, false, group_map);
 
 	event.Skip();
 }
@@ -1703,7 +1610,7 @@ void cMain::OnGroupGridDoubleLeftClick(wxGridEvent& event)
 void cMain::OnGroupChosen(wxCommandEvent& event)
 {
 	group_name = cmb_choose_group->GetValue();
-	update_group_template_grid(grid_group, group_list, group_map, group_name);;
+	UpdateGroupTemplateGrid(grid_group, group_list, group_map, group_name);;
 
 	event.Skip();
 }
@@ -1711,26 +1618,27 @@ void cMain::OnGroupChosen(wxCommandEvent& event)
 void cMain::OnTemplateChosen(wxCommandEvent& event)
 {
 	template_name = cmb_choose_template->GetValue();
-	update_group_template_grid(grid_template, template_list, template_map, template_name);
+	UpdateGroupTemplateGrid(grid_template, template_list, template_map, template_name);
 
 	event.Skip();
 }
 
 void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 {
-	row_count = cmb_choose_template->GetCount();
-	template_name = cmb_choose_template->GetValue().ToStdString();
+	auto rowNum = 0;
+	auto rowCount = cmb_choose_template->GetCount();
+	auto name = cmb_choose_template->GetValue().ToStdString();
 
-	if (template_name == "")
+	if (name == "")
 	{
 		wxMessageBox("Please write a template name", "Template name cannot be blank");
 		event.Skip();
 		return;
 	}
 
-	for (int i = 0; i < row_count; i++)
+	for (int i = 0; i < rowCount; i++)
 	{
-		if (template_name == cmb_choose_template->GetString(i).ToStdString())
+		if (name == cmb_choose_template->GetString(i).ToStdString())
 		{
 			wxMessageBox("Template names have to be unique - please write a new name in the Choose Template field", "Template names should be unique");
 			event.Skip();
@@ -1746,43 +1654,42 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 	}
 
 	cmb_choose_template->Clear();
-	template_choices.Add(template_name);
+	template_choices.Add(name);
 	cmb_choose_template->Append(template_choices);
-	cmb_choose_template->SetValue(template_name);
-	template_list = {};
+	cmb_choose_template->SetValue(name);
+
+	vector<StepParameters> template_list = {};
 
 	if (grid_template->IsSelection())
 	{
 
-		row_num = *grid_template->GetSelectedRows().begin();
-		row_count = grid_template->GetSelectedRows().GetCount();
+		rowNum = *grid_template->GetSelectedRows().begin();
+		rowCount = grid_template->GetSelectedRows().GetCount();
 	}
 	else
 	{
-		row_count = grid_template->GetNumberRows();
+		rowCount = grid_template->GetNumberRows();
 
-		if (row_count)
+		if (!rowCount)
 		{
-			row_num = 0;
-		}
-		else
-		{
-			template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+			template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
 			event.Skip();
 			return;
 		}
 	}
 
-	for (int i = row_num; i < row_num + row_count; i++)
+	for (int i = rowNum; i < rowNum + rowCount; i++)
 	{
-		grid_extract_parameters(i, grid_template);
+		auto stepParameters = ExtractStepParameters();
 
-		template_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+		template_list.push_back(stepParameters);
+
+		BackgroundColorUpdate(grid_template, i, stepParameters.TaskEnum);
 	}
 
-	template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+	template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
 
-	update_group_template_grid(grid_template, template_list, template_map, template_name);
+	UpdateGroupTemplateGrid(grid_template, template_list, template_map, name);
 
 	event.Skip();
 }
@@ -1795,34 +1702,36 @@ void cMain::OnDeleteTemplateClicked(wxCommandEvent& event)
 		return;
 	}
 
-	template_name = cmb_choose_template->GetValue();
+	auto name = cmb_choose_template->GetValue().ToStdString();
 
-	if (template_map.find(template_name) != template_map.end())
+	if (template_map.find(name) == template_map.end())
 	{
-		template_map.erase(template_name);
-		template_choices.Remove(template_name);
-		cmb_choose_template->Clear();
-		cmb_choose_template->Append(template_choices);
-
-		if (template_choices.size())
-		{
-			cmb_choose_template->SetValue(*template_choices.begin());
-			OnTemplateChosen(event);
-		}
-		else if (grid_template->GetNumberRows())
-		{
-			grid_template->DeleteRows(0, grid_template->GetNumberRows());
-		}
+		return;
 	}
 
-	event.Skip();
+	template_map.erase(name);
+	template_choices.Remove(name);
+	cmb_choose_template->Clear();
+	cmb_choose_template->Append(template_choices);
+
+	if (template_choices.size())
+	{
+		cmb_choose_template->SetValue(*template_choices.begin());
+		OnTemplateChosen(event);
+		return;
+	}
+
+	if (grid_template->GetNumberRows())
+	{
+		grid_template->DeleteRows(0, grid_template->GetNumberRows());
+	}
 }
 
 void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 {
 	if (!grid_tasks->IsSelection())
 	{
-		wxMessageBox("No task is chosen - please select a row in the task list", "Cannot add task to group");
+		wxMessageBox("No step is chosen - please select a row in the step list", "Cannot add step to template");
 		event.Skip();
 		return;
 	}
@@ -1833,42 +1742,40 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 		return;
 	}
 
+	auto rowsToAdd = grid_group->GetNumberRows();
 	if (grid_template->IsSelection())
 	{
 		if (!grid_template->GetSelectedRows().begin())
 		{
-			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
+			wxMessageBox("Please either select row(s) or nothing", "Template list selection not valid");
 			event.Skip();
 			return;
 		}
-		template_row_num = *grid_template->GetSelectedRows().begin();
-	}
-	else
-	{
-		template_row_num = grid_template->GetNumberRows();
+
+		rowsToAdd = *grid_template->GetSelectedRows().begin();
 	}
 
 	for (const auto& block : grid_tasks->GetSelectedRowBlocks())
 	{
-		row_num = block.GetTopRow();
-		row_count = block.GetBottomRow() - row_num + 1;
+		auto startRow = block.GetTopRow();
+		auto rowCount = block.GetBottomRow() - startRow + 1;
 
-		grid_template->InsertRows(template_row_num, row_count);
+		grid_template->InsertRows(rowsToAdd, rowCount);
 
-		int total_rows = row_num + row_count;
+		int total_rows = startRow + rowCount;
 
-		for (int i = row_num; i < total_rows; i++)
+		for (int i = startRow; i < total_rows; i++)
 		{
 
 			grid_extract_parameters(i, grid_tasks);
 
 			TemplateAlterTask(i, grid_tasks);
 
-			grid_insert_data(template_row_num, grid_template);
+			grid_insert_data(rowsToAdd, grid_template);
 
-			background_colour_update(grid_template, template_row_num, grid_tasks->GetCellValue(i, 0).ToStdString());
+			BackgroundColorUpdate(grid_template, rowsToAdd, ToTaskName(grid_tasks->GetCellValue(i, 0).ToStdString()));
 
-			template_row_num += 1;
+			rowsToAdd += 1;
 		}
 	}
 
@@ -1923,7 +1830,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 
 			grid_insert_data(row_num, grid_tasks);
 
-			background_colour_update(grid_tasks, row_num, task);
+			BackgroundColorUpdate(grid_tasks, row_num, task);
 
 			it1 = tasks_data_to_save.begin();
 			it1 += row_num;
@@ -1956,7 +1863,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 
 		grid_insert_data(row_num, grid_tasks);
 
-		background_colour_update(grid_tasks, row_num, task);
+		BackgroundColorUpdate(grid_tasks, row_num, task);
 
 		it1 = tasks_data_to_save.begin();
 		it1 += row_num;
@@ -2006,7 +1913,7 @@ void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event)
 
 	if (setup_for_task_group_template_grid())
 	{
-		change_row(grid_template);
+		ChangeRow(grid_template);
 
 		template_name = cmb_choose_template->GetValue().ToStdString();
 
@@ -2026,7 +1933,7 @@ void cMain::OnTemplateDeleteTaskClicked(wxCommandEvent& event)
 		return;
 	}
 
-	delete_row(grid_template, cmb_choose_template, template_map);
+	DeleteRow(grid_template, cmb_choose_template, template_map);
 
 	event.Skip();
 }
@@ -2034,7 +1941,7 @@ void cMain::OnTemplateDeleteTaskClicked(wxCommandEvent& event)
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnTemplateMoveUpClicked(wxCommandEvent& event)
 {
-	group_template_move_row(grid_template, cmb_choose_template, true, template_map);
+	GroupTemplateMoveRow(grid_template, cmb_choose_template, true, template_map);
 
 	event.Skip();
 }
@@ -2042,7 +1949,7 @@ void cMain::OnTemplateMoveUpClicked(wxCommandEvent& event)
 // You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnTemplateMoveDownClicked(wxCommandEvent& event)
 {
-	group_template_move_row(grid_template, cmb_choose_template, false, template_map);
+	GroupTemplateMoveRow(grid_template, cmb_choose_template, false, template_map);
 
 	event.Skip();
 }
@@ -2299,7 +2206,7 @@ void cMain::new_populate_tasks_grid()
 
 		PopulateGrid(grid_tasks, i, &gridEntry);
 
-		background_colour_update(grid_tasks, i, StepGridData[i].Task);
+		BackgroundColorUpdate(grid_tasks, i, StepGridData[i].TaskEnum);
 	}
 }
 
@@ -2336,7 +2243,7 @@ void cMain::populate_tasks_grid()
 		grid_tasks->SetCellValue(i, 8, seglist[8]);
 		grid_tasks->SetCellValue(i, 9, seglist[9]);
 
-		background_colour_update(grid_tasks, i, seglist[0]);
+		BackgroundColorUpdate(grid_tasks, i, seglist[0]);
 	}
 }
 
@@ -3032,11 +2939,13 @@ void cMain::update_parameters(wxGrid* grid, wxCommandEvent& event)
 
 void cMain::update_group_map()
 {
-	group_list = {};
-	row_num = grid_group->GetNumberRows();
+	vector<StepParameters> group_list = {};
+	auto row_num = grid_group->GetNumberRows();
 
 	for (int i = 0; i < row_num; i++)
 	{
+
+
 		grid_extract_parameters(i, grid_group);
 
 		group_list.push_back(task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
@@ -4006,6 +3915,84 @@ void cMain::new_background_colour_update(wxGrid* grid, int row, TaskName task)
 			return;
 		default:
 			grid->SetCellBackgroundColour(row, 0, *wxWHITE);
+	}
+}
+
+
+
+bool cMain::ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true)
+{
+	// Cases where an association with a building isn't needed
+	switch (stepParameters.TaskEnum)
+	{
+		case e_start:
+		case e_walk:
+		case e_game_speed:
+		case e_pause:
+		case e_save:
+		case e_stop:
+		case e_pick_up:
+		case e_idle:
+			return;
+
+		case e_build:
+			return IsValidBuildStep(stepParameters);
+
+		case e_craft:
+			return IsValidCraftStep(stepParameters);
+
+		case e_tech:
+			return IsValidTechnologyStep(stepParameters);
+
+		default:
+			break;
+	}
+
+	if (!validateBuildSteps)
+	{
+		return;
+	}
+
+	int amountOfBuildings = GenerateBuildingSnapShot(row);
+	switch (stepParameters.TaskEnum) 
+	{
+		case e_recipe:
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			{
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				return false;
+			};
+
+			return IsValidRecipeStep(stepParameters);
+					
+		case e_mine:
+			// A building doesn't need to exist, but if it does it should be noted.
+			BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters);
+		
+		case e_put:
+		case e_take:
+			if (!IsValidPutTakeStep(stepParameters))
+			{
+				return false;
+			}
+
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			{
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				return false;
+			};
+
+			return true;
+
+		default:
+
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			{
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				return false;
+			};
+
+			return true;
 	}
 }
 

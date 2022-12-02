@@ -25,6 +25,7 @@
 
 using std::string;
 using std::vector;
+using std::pair;
 using std::to_string;
 
 class cMain : public GUI_Base
@@ -230,7 +231,7 @@ private:
 	long long building_row_num;
 	long long building_row_count;
 
-	long long group_row_num;
+	long long rowNum;
 	long long group_row_count;
 
 	long long template_row_num;
@@ -308,12 +309,12 @@ private:
 
 	// For group and template strucktures
 	std::string group_name;
-	std::vector<std::string> group_list;
-	std::map<std::string, std::vector<std::string>> group_map;
+	std::vector<StepParameters> group_list;
+	std::map<std::string, std::vector<StepParameters>> group_map;
 
 	std::string template_name;
-	std::vector<std::string> template_list;
-	std::map<std::string, std::vector<std::string>> template_map;
+	std::vector<StepParameters> template_list;
+	std::map<std::string, std::vector<StepParameters>> template_map;
 
 	// Used when the tasks are saved to a file
 	std::vector<std::string> tasks_data_to_save;
@@ -324,9 +325,9 @@ private:
 	bool checks_before_reset_window();
 	bool check_before_close();
 
-	void move_row(wxGrid* grid, bool up = false);
-	bool delete_row(wxGrid* grid, wxComboBox* cmb, std::map<std::string, std::vector<std::string>>& map);
-	bool change_row(wxGrid* grid);
+	void MoveRow(wxGrid* grid, bool up = false);
+	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
+	bool ChangeRow(wxGrid* grid, StepParameters step);
 
 	void update_tasks_grid();
 	void update_buildings_grid();
@@ -338,11 +339,11 @@ private:
 	bool update_filter();
 	bool Update_rotation();
 
-	void background_colour_update(wxGrid* grid, int row, std::string task);
+	void BackgroundColorUpdate(wxGrid* grid, int row, TaskName task);
 
-	void group_template_move_row(wxGrid* grid, wxComboBox* cmb, bool up, std::map<std::string, std::vector<std::string>>& map);
+	void GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map);
 
-	void update_group_template_grid(wxGrid* grid, std::vector<std::string>& list, std::map<std::string, std::vector<std::string>>& map, std::string map_name);
+	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps, map<string, vector<StepParameters>>& map, string name);
 	void grid_extract_parameters(const int& row, wxGrid* grid);
 	void grid_insert_data(const int& row, wxGrid* grid);
 
@@ -404,6 +405,7 @@ private:
 
 	bool new_check_input(string& item, const std::vector<std::string>& all_items);
 
+	bool ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true);
 	bool IsValidBuildStep(StepParameters stepParameters);
 	bool IsValidRecipeStep(StepParameters stepParameters);
 	bool IsValidCraftStep(StepParameters stepParameters);
@@ -419,5 +421,5 @@ private:
 
 	void AddTask(int row);
 	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);
-	void TransferData(const int& row, const int& MoveRowBy, wxGrid* grid);
+	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
 };

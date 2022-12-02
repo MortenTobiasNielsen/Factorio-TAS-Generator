@@ -6,13 +6,13 @@ bool SaveTas::Save(
 	wxWindow* parent,
 	dialog_progress_bar_base* dialog_progress_bar,
 	bool save_as,
-	std::vector<bool> auto_list,
-	std::vector<StepParameters> steps,
-	std::map<std::string, std::vector<std::string>> maps,
-	std::map<std::string, std::vector<std::string>> templates,
-	std::string folder_location,
-	std::string folder_location_generate,
-	std::string goal)
+	vector<bool> auto_list,
+	vector<StepParameters> steps,
+	map<string, vector<StepParameters>> maps,
+	map<string, vector<StepParameters>> templates,
+	string folder_location,
+	string folder_location_generate,
+	string goal)
 {
 	int total_lines = steps.size() + maps.size() + templates.size();
 	int lines_processed = 0;
@@ -36,7 +36,6 @@ bool SaveTas::Save(
 	myfile << goal_indicator << std::endl;
 	myfile << goal << std::endl;
 
-
 	myfile << steps_indicator << std::endl;
 	for (auto it = steps.begin(); it < steps.end(); it++)
 	{
@@ -58,7 +57,7 @@ bool SaveTas::Save(
 		{
 			for (auto value : element.second)
 			{
-				myfile << element.first + ";" + value << std::endl;
+				myfile << element.first + ";" + value.ToString() << std::endl;
 
 				lines_processed++;
 
@@ -78,7 +77,7 @@ bool SaveTas::Save(
 		{
 			for (auto value : element.second)
 			{
-				myfile << element.first + ";" + value << std::endl;
+				myfile << element.first + ";" + value.ToString() << std::endl;
 
 				lines_processed++;
 

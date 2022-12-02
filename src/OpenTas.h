@@ -15,17 +15,20 @@
 #include "utils.h"
 #include "ScriptProgressBar.h"
 
+using std::string;
 using std::vector;
+using std::map;
+using std::pair;
 
 struct open_file_return_data
 {
 	bool success = false;
-	std::string goal;
-	std::vector<StepParameters> steps;
-	std::map<std::string, std::vector<std::string>> group_map;
-	std::map<std::string, std::vector<std::string>> template_map;
-	std::string save_file_location;
-	std::string generate_code_folder_location;
+	string goal;
+	vector<StepParameters> steps;
+	map<string, vector<StepParameters>> group_map;
+	map<string, vector<StepParameters>> template_map;
+	string save_file_location;
+	string generate_code_folder_location;
 
 	bool auto_close_generate_script = false;
 	bool auto_close_open = false;
@@ -46,14 +49,7 @@ public:
 private:
 	open_file_return_data return_data;
 
-	std::string segment;
-	std::vector<std::string> seglist;
-
-	std::string group_name;
-	std::vector<std::string> group_list;
-
-	std::string template_name;
-	std::vector<std::string> template_list;
+	vector<string> segments;
 
 	vector<Building> buildingSnapshot;
 
