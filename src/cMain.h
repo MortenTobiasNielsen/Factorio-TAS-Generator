@@ -163,7 +163,6 @@ private:
 
 	wxString window_title = "EZRaiderz TAS Helper";
 
-	Shortcuts_Menu* shortcuts = nullptr;
 	dialog_progress_bar_base* dialog_progress_bar = nullptr;
 
 	std::string generate_code_folder_location = "";
@@ -361,7 +360,7 @@ private:
 	
 
 	bool new_find_building(int startRow, StepParameters stepParameters);
-	bool new_extra_building_checks(StepParameters stepParameters);
+	
 
 	int GenerateBuildingSnapShot(int end_row);
 	void PopulateStepGrid();
@@ -370,4 +369,24 @@ private:
 	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
 	GridEntry ExtractGridEntry(wxGrid* grid, int row);
+
+	bool ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true);
+	bool IsValidBuildStep(StepParameters stepParameters);
+	bool IsValidRecipeStep(StepParameters stepParameters);
+	bool IsValidCraftStep(StepParameters stepParameters);
+	bool IsValidPutTakeStep(StepParameters stepParameters);
+	bool IsValidTechnologyStep(StepParameters stepParameters);
+	bool IsValidPriorityStep(StepParameters stepParameters);
+
+	bool CheckTakePut(StepParameters stepParameters);
+	bool ExtraBuildingChecks(StepParameters stepParameters);
+
+	vector<string> all_buildings;
+	vector<string> all_items;
+	vector<string> part_assembly_recipes;
+	vector<string> full_assembly_recipes;
+	vector<string> full_chemical_plant_recipes;
+	vector<string> all_recipes;
+	vector<StepParameters> StepGridData;
+	vector<Building> BuildingsSnapShot;
 };

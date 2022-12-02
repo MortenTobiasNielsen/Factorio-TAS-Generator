@@ -47,15 +47,6 @@ static const string goal_GOTLAP_text = "Getting On Track Like A Pro";
 static const string goal_any_percent_text = "Any %";
 static const string goal_debug_text = "Debug";
 
-vector<string> all_buildings;
-vector<string> all_items;
-vector<string> part_assembly_recipes;
-vector<string> full_assembly_recipes;
-vector<string> full_chemical_plant_recipes;
-vector<string> all_recipes;
-vector<StepParameters> StepGridData;
-vector<Building> BuildingsSnapShot;
-
 static const std::vector<std::string> fuel_list = {
 	"Wood",
 	"Coal",
