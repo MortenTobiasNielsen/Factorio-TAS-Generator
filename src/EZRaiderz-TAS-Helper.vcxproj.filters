@@ -12,20 +12,28 @@
     <ClCompile Include="BuildingNameToIndex.cpp">
       <Filter>Maps</Filter>
     </ClCompile>
+    <ClCompile Include="StepParameters.cpp">
+      <Filter>Structs</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskNameToEnum.cpp">
+      <Filter>Maps</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogProgressBar.cpp" />
+    <ClCompile Include="SearchUtil.cpp">
+      <Filter>Structs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
-    <ClInclude Include="control_info.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="OpenTas.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SaveTas.h" />
-    <ClInclude Include="ScriptProgressBar.h" />
+    <ClInclude Include="DialogProgressBar.h" />
     <ClInclude Include="TypePanel.h" />
-    <ClInclude Include="search_util.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="StepParameters.h">
       <Filter>Structs</Filter>
@@ -42,6 +50,10 @@
     <ClInclude Include="TaskNameToEnum.h">
       <Filter>Maps</Filter>
     </ClInclude>
+    <ClInclude Include="SearchUtil.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="SearchUtilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EZRaiderz-TAS-Helper.rc" />

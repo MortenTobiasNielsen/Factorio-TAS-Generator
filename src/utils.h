@@ -4,9 +4,6 @@
 #include <vector>
 #include <map>
 
-#include "StepParameters.h"
-#include "Building.h"
-
 using std::string;
 using std::vector;
 using std::map;
@@ -47,15 +44,16 @@ static const string goal_GOTLAP_text = "Getting On Track Like A Pro";
 static const string goal_any_percent_text = "Any %";
 static const string goal_debug_text = "Debug";
 
-static const std::vector<std::string> fuel_list = {
+static const vector<string> fuel_list = {
 	"Wood",
 	"Coal",
 	"Solid fuel",
 	"Rocket fuel",
 	"Nuclear fuel",
-	"Uranium fuel cell"};
+	"Uranium fuel cell"
+};
 
-static const std::vector<std::string> chest_list = {
+static const vector<string> chest_list = {
 	"Wooden chest",
 	"Iron chest",
 	"Steel chest",
@@ -63,18 +61,21 @@ static const std::vector<std::string> chest_list = {
 	"Passive provider chest",
 	"Storage chest",
 	"Buffer chest",
-	"Requester chest"};
+	"Requester chest"
+};
 
-static const std::vector<std::string> splitter_list = {
+static const vector<string> splitter_list = {
 	"Splitter",
 	"Fast splitter",
-	"Express splitter"};
+	"Express splitter"
+};
 
-static const std::vector<std::string> filter_inserter_list = {
+static const vector<string> filter_inserter_list = {
 	"Filter inserter",
-	"Stack filter inserter"};
+	"Stack filter inserter"
+};
 
-static const std::map<std::string, std::vector<std::string>> recipes = {
+static const map<string, vector<string>> recipes = {
 	{"Assembling machine 1", {"Iron plate", "9", "Iron gear wheel", "5", "Electronic circuit", "3"}},
 	{"Automation science pack", {"Copper plate", "1", "Iron gear wheel", "1"}},
 	{"Firearm magazine", {"Iron plate", "4"}},
@@ -282,9 +283,10 @@ static const std::map<std::string, std::vector<std::string>> recipes = {
 	{"Nuclear fuel", {"Rocket fuel", "1", "Uranium 235", "1"}},
 	{"Uranium fuel cell", {"Iron plate", "10", "Uranium 235", "1", "Uranium 238", "19"}},
 	{"Nuclear fuel reprocessing", {"Used up uranium fuel cell", "5"}},
-	{"Kovarex enrichment process", {"Uranium 235", "40", "Uranium 238", "5"}}};
+	{"Kovarex enrichment process", {"Uranium 235", "40", "Uranium 238", "5"}}
+};
 
-static const std::map<std::string, std::vector<float>> building_size_list = {
+static const map<string, vector<float>> building_size_list = {
 	{"Wooden chest", {0.695313f, 0.695313f}},
 	{"Iron chest", {0.695313f, 0.695313f}},
 	{"Steel chest", {0.695313f, 0.695313f}},
@@ -384,7 +386,7 @@ static const std::map<std::string, std::vector<float>> building_size_list = {
 	{"Landfill", {1, 1}}
 };
 
-static const std::map<std::string, std::vector<float>> old_building_size_list = {
+static const map<string, vector<float>> old_building_size_list = {
 	{"Accumulator", {2, 2}},
 	{"Wooden chest", {1, 1}},
 	{"Iron chest", {1, 1}},
@@ -895,197 +897,203 @@ static inline std::map<std::string, Orientation> OrientationToIndex = {
 };
 
 
-static const std::vector<std::string> tech_list = {"Advanced electronics",
-"Advanced electronics 2",
-"Automation",
-"Automation 2",
-"Automation 3",
-"Electric energy accumulators",
-"Electric energy distribution 1",
-"Electric energy distribution 2",
-"Fast inserter",
-"Fluid handling",
-"Logistics",
-"Logistics 2",
-"Logistics 3",
-"Nuclear power",
-"Oil processing",
-"Rocket silo",
-"Solar energy",
-"Stack inserter",
-"Atomic bomb",
-"Combat robotics",
-"Combat robotics 2",
-"Combat robotics 3",
-"Flamethrower",
-"Military",
-"Military 2",
-"Military 3",
-"Military 4",
-"Rocketry",
-"Explosive rocketry",
-"Uranium ammo",
-"Artillery shell range",
-"Artillery shell shooting speed",
-"Braking force 1",
-"Braking force 2",
-"Braking force 3",
-"Braking force 4",
-"Braking force 5",
-"Braking force 6",
-"Braking force 7",
-"Energy weapons damage 1",
-"Energy weapons damage 2",
-"Energy weapons damage 3",
-"Energy weapons damage 4",
-"Energy weapons damage 5",
-"Energy weapons damage 6",
-"Energy weapons damage 7",
-"Follower robot count 1",
-"Follower robot count 2",
-"Follower robot count 3",
-"Follower robot count 4",
-"Follower robot count 5",
-"Follower robot count 6",
-"Follower robot count 7",
-"Inserter capacity bonus 1",
-"Inserter capacity bonus 2",
-"Inserter capacity bonus 3",
-"Inserter capacity bonus 4",
-"Inserter capacity bonus 5",
-"Inserter capacity bonus 6",
-"Inserter capacity bonus 7",
-"Lab research speed 1",
-"Lab research speed 2",
-"Lab research speed 3",
-"Lab research speed 4",
-"Lab research speed 5",
-"Lab research speed 6",
-"Laser turret shooting speed 1",
-"Laser turret shooting speed 2",
-"Laser turret shooting speed 3",
-"Laser turret shooting speed 4",
-"Laser turret shooting speed 5",
-"Laser turret shooting speed 6",
-"Laser turret shooting speed 7",
-"Mining productivity 1",
-"Mining productivity 2",
-"Mining productivity 3",
-"Mining productivity 4",
-"Mining productivity 4",
-"Physical projectile damage 1",
-"Physical projectile damage 2",
-"Physical projectile damage 3",
-"Physical projectile damage 4",
-"Physical projectile damage 5",
-"Physical projectile damage 6",
-"Physical projectile damage 7",
-"Refined flammables",
-"Refined flammables 2",
-"Stronger explosives 1",
-"Stronger explosives 2",
-"Stronger explosives 3",
-"Stronger explosives 4",
-"Stronger explosives 5",
-"Stronger explosives 6",
-"Stronger explosives 7",
-"Weapon shooting speed 1",
-"Weapon shooting speed 2",
-"Weapon shooting speed 3",
-"Weapon shooting speed 4",
-"Weapon shooting speed 5",
-"Weapon shooting speed 6",
-"Worker robot cargo size 1",
-"Worker robot cargo size 2",
-"Worker robot cargo size 3",
-"Worker robot speed 1",
-"Worker robot speed 2",
-"Worker robot speed 3",
-"Worker robot speed 4",
-"Worker robot speed 5",
-"Worker robot speed 6",
-"Construction robotics",
-"Logistic robotics",
-"Steel axe",
-"Toolbelt",
-"Heavy armor",
-"Modular armor",
-"Power armor",
-"Power armor MK2",
-"Gates",
-"Land mines",
-"Stone walls",
-"turrets",
-"Laser turrets",
-"Artillery",
-"Advanced material processing",
-"Advanced material processing 2",
-"Advanced oil processing",
-"Battery",
-"Circuit network",
-"Chemical science pack",
-"Cliff explosives",
-"Coal liquefaction",
-"Concrete",
-"Electronics",
-"Engine",
-"Electric engine",
-"Explosives",
-"Flammables",
-"Kovarex enrichment process",
-"Landfill",
-"Laser",
-"Logistic science pack",
-"Logistic system",
-"Low density structure",
-"Lubricant",
-"Military science pack",
-"Nuclear fuel reprocessing",
-"Optics",
-"Plastics",
-"Production science pack",
-"Robotics",
-"Rocket control unit",
-"Rocket fuel",
-"Space science pack",
-"Steel processing",
-"Sulfur processing",
-"Uranium processing",
-"Utility science pack",
-"Automated rail transportation",
-"Automobilism",
-"Fluid wagon",
-"Rail signals",
-"Railway",
-"Tanks",
-"Spidertron",
-"Belt immunity equipment",
-"Discharge defense",
-"Energy shield equipment",
-"Energy shield equipment MK2",
-"Exoskeleton equipment",
-"Nightvision equipment",
-"Personal battery",
-"Personal battery MK2",
-"Personal laser defense",
-"Personal roboport",
-"Personal roboport MK2",
-"Portable fusion reactor",
-"Portable solar panel",
-"Modules",
-"Effect transmission",
-"Efficiency module",
-"Efficiency module 2",
-"Efficiency module 3",
-"Productivity module",
-"Productivity module 2",
-"Productivity module 3",
-"Speed module",
-"Speed module 2",
-"Speed module 3"};
+static const std::vector<std::string> tech_list = 
+{
+	"Advanced electronics",
+	"Advanced electronics 2",
+	"Automation",
+	"Automation 2",
+	"Automation 3",
+	"Electric energy accumulators",
+	"Electric energy distribution 1",
+	"Electric energy distribution 2",
+	"Fast inserter",
+	"Fluid handling",
+	"Logistics",
+	"Logistics 2",
+	"Logistics 3",
+	"Nuclear power",
+	"Oil processing",
+	"Rocket silo",
+	"Solar energy",
+	"Stack inserter",
+	"Atomic bomb",
+	"Combat robotics",
+	"Combat robotics 2",
+	"Combat robotics 3",
+	"Flamethrower",
+	"Military",
+	"Military 2",
+	"Military 3",
+	"Military 4",
+	"Rocketry",
+	"Explosive rocketry",
+	"Uranium ammo",
+	"Artillery shell range",
+	"Artillery shell shooting speed",
+	"Braking force 1",
+	"Braking force 2",
+	"Braking force 3",
+	"Braking force 4",
+	"Braking force 5",
+	"Braking force 6",
+	"Braking force 7",
+	"Energy weapons damage 1",
+	"Energy weapons damage 2",
+	"Energy weapons damage 3",
+	"Energy weapons damage 4",
+	"Energy weapons damage 5",
+	"Energy weapons damage 6",
+	"Energy weapons damage 7",
+	"Follower robot count 1",
+	"Follower robot count 2",
+	"Follower robot count 3",
+	"Follower robot count 4",
+	"Follower robot count 5",
+	"Follower robot count 6",
+	"Follower robot count 7",
+	"Inserter capacity bonus 1",
+	"Inserter capacity bonus 2",
+	"Inserter capacity bonus 3",
+	"Inserter capacity bonus 4",
+	"Inserter capacity bonus 5",
+	"Inserter capacity bonus 6",
+	"Inserter capacity bonus 7",
+	"Lab research speed 1",
+	"Lab research speed 2",
+	"Lab research speed 3",
+	"Lab research speed 4",
+	"Lab research speed 5",
+	"Lab research speed 6",
+	"Laser turret shooting speed 1",
+	"Laser turret shooting speed 2",
+	"Laser turret shooting speed 3",
+	"Laser turret shooting speed 4",
+	"Laser turret shooting speed 5",
+	"Laser turret shooting speed 6",
+	"Laser turret shooting speed 7",
+	"Mining productivity 1",
+	"Mining productivity 2",
+	"Mining productivity 3",
+	"Mining productivity 4",
+	"Mining productivity 4",
+	"Physical projectile damage 1",
+	"Physical projectile damage 2",
+	"Physical projectile damage 3",
+	"Physical projectile damage 4",
+	"Physical projectile damage 5",
+	"Physical projectile damage 6",
+	"Physical projectile damage 7",
+	"Refined flammables",
+	"Refined flammables 2",
+	"Stronger explosives 1",
+	"Stronger explosives 2",
+	"Stronger explosives 3",
+	"Stronger explosives 4",
+	"Stronger explosives 5",
+	"Stronger explosives 6",
+	"Stronger explosives 7",
+	"Weapon shooting speed 1",
+	"Weapon shooting speed 2",
+	"Weapon shooting speed 3",
+	"Weapon shooting speed 4",
+	"Weapon shooting speed 5",
+	"Weapon shooting speed 6",
+	"Worker robot cargo size 1",
+	"Worker robot cargo size 2",
+	"Worker robot cargo size 3",
+	"Worker robot speed 1",
+	"Worker robot speed 2",
+	"Worker robot speed 3",
+	"Worker robot speed 4",
+	"Worker robot speed 5",
+	"Worker robot speed 6",
+	"Construction robotics",
+	"Logistic robotics",
+	"Steel axe",
+	"Toolbelt",
+	"Heavy armor",
+	"Modular armor",
+	"Power armor",
+	"Power armor MK2",
+	"Gates",
+	"Land mines",
+	"Stone walls",
+	"turrets",
+	"Laser turrets",
+	"Artillery",
+	"Advanced material processing",
+	"Advanced material processing 2",
+	"Advanced oil processing",
+	"Battery",
+	"Circuit network",
+	"Chemical science pack",
+	"Cliff explosives",
+	"Coal liquefaction",
+	"Concrete",
+	"Electronics",
+	"Engine",
+	"Electric engine",
+	"Explosives",
+	"Flammables",
+	"Kovarex enrichment process",
+	"Landfill",
+	"Laser",
+	"Logistic science pack",
+	"Logistic system",
+	"Low density structure",
+	"Lubricant",
+	"Military science pack",
+	"Nuclear fuel reprocessing",
+	"Optics",
+	"Plastics",
+	"Production science pack",
+	"Robotics",
+	"Rocket control unit",
+	"Rocket fuel",
+	"Space science pack",
+	"Steel processing",
+	"Sulfur processing",
+	"Uranium processing",
+	"Utility science pack",
+	"Automated rail transportation",
+	"Automobilism",
+	"Fluid wagon",
+	"Rail signals",
+	"Railway",
+	"Tanks",
+	"Spidertron",
+	"Belt immunity equipment",
+	"Discharge defense",
+	"Energy shield equipment",
+	"Energy shield equipment MK2",
+	"Exoskeleton equipment",
+	"Nightvision equipment",
+	"Personal battery",
+	"Personal battery MK2",
+	"Personal laser defense",
+	"Personal roboport",
+	"Personal roboport MK2",
+	"Portable fusion reactor",
+	"Portable solar panel",
+	"Modules",
+	"Effect transmission",
+	"Efficiency module",
+	"Efficiency module 2",
+	"Efficiency module 3",
+	"Productivity module",
+	"Productivity module 2",
+	"Productivity module 3",
+	"Speed module",
+	"Speed module 2",
+	"Speed module 3"
+};
 
-static const std::vector<std::string> drills_list = {"Electric mining drill",
-"Pumpjack"};
+static const std::vector<std::string> drills_list = 
+{
+	"Electric mining drill",
+	"Pumpjack"
+};
 
 static const struct
 {
@@ -1158,16 +1166,16 @@ static const struct
 	std::string white_science = "space-science-pack";
 } struct_science_list;
 
-struct drill_types
+static const struct 
 {
 	std::string burner = "burner-mining-drill";
 	std::string electric = "electric-mining-drill";
-};
+} drill_types;
 
-struct transport_types
+static const struct 
 {
 	std::string yellow_belt = "transport-belt";
-};
+} transport_types;
 
 static const struct
 {
@@ -1181,84 +1189,82 @@ static const struct
 	std::string assembly_modules = "defines.inventory.assembling_machine_modules";
 } struct_take_put_list;
 
-struct plate_types
+static const struct 
 {
 	std::string iron = "iron-plate";
 	std::string copper = "copper-plate";
-};
+} plate_types;
 
-struct ore_types
+static const struct 
 {
 	std::string stone = "stone";
 	std::string iron = "iron-ore";
 	std::string copper = "copper-ore";
-};
+} ore_types;
 
-struct intermediate_types
+static const struct 
 {
 	std::string iron_gear_wheel = "iron-gear-wheel";
 	std::string copper_cable = "copper-cable";
 	std::string circuit_green = "electronic-circuit";
-};
+} intermediate_types;
 
-struct pipe_struct
+static const struct 
 {
 	std::string pipe = "pipe";
 	std::string pipe_ground = "pipe-to-ground";
-};
+} pipe_struct;
 
-struct power_structures_struct
+static const struct 
 {
 	std::string boiler = "boiler";
 	std::string steam_engine = "steam-engine";
 	std::string pump = "offshore-pump";
 	std::string small_pole = "small-electric-pole";
-};
+} power_structures_struct;
 
-struct chest_types
+static const struct 
 {
 	std::string wood = "wooden-chest";
-};
+} chest_types;
 
-struct assembly_types
+static const struct 
 {
 	std::string level_1 = "assembling-machine-1";
 	std::string level_2 = "assembling-machine-2";
 	std::string level_3 = "assembling-machine-3";
-};
+} assembly_types;
 
-struct build_distance_struct
+static const struct 
 {
 	float one = 9.8f;
 	float two = 8.8f;
 	float three = 6.8f;
 	float four = 5.8f;
 	float five = 3.8f;
-};
+} build_distance_struct;
 
 
 // Observations. The middle of a normal mining path are x.5, y.5 So this should be the point used to calculate how close the player needs to be to mine it
 // The tip-over point from the game to choose one mining path over an adjacent seem to be at the x.0 mark, but this should be tested in the API with e.g. 1.00001 and see if it takes the patch at 0.5 or 1.5
 // It seems like the tip-over point for the player to reach something 3 tiles away is 0.269531 (very random)
 
-struct mining_distance_struct
+static const struct 
 {
 	float one = 2.65f;
 	float two = 1.65f;
 	float three = 0.65f;
-};
+} mining_distance_struct;
 
-struct build_direction_struct
+static const struct 
 {
 	std::string north = "defines.direction.north";
 	std::string south = "defines.direction.south";
 	std::string east = "defines.direction.east";
 	std::string west = "defines.direction.west";
-};
+} build_direction_struct;
 
-static const build_direction_struct build_directions;
-
-struct
+static const struct
 {
 	std::string north = "North";
 	std::string south = "South";
@@ -1267,18 +1273,18 @@ struct
 
 } struct_direction_list;
 
-struct inserter_types
+static const struct 
 {
 	std::string yellow = "inserter";
-};
+} inserter_types;
 
-struct building_size_struct
+static const struct 
 {
 	int small_building = 1;
 	int medium_building = 2;
 	int large_building = 3;
 	int very_large_building = 7;
-};
+} building_size_struct;
 
 enum walk_direction
 {

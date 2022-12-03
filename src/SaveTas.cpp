@@ -4,7 +4,7 @@
 
 bool SaveTas::Save(
 	wxWindow* parent,
-	dialog_progress_bar_base* dialog_progress_bar,
+	DialogProgressBar* dialog_progress_bar,
 	bool save_as,
 	vector<bool> auto_list,
 	vector<StepParameters> steps,
@@ -19,7 +19,7 @@ bool SaveTas::Save(
 
 	if (!dialog_progress_bar)
 	{
-		dialog_progress_bar = new dialog_progress_bar_base(parent, wxID_ANY, "Processing request");
+		dialog_progress_bar = new DialogProgressBar(parent, wxID_ANY, "Processing request");
 	}
 
 	dialog_progress_bar->set_text("Saving file");

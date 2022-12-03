@@ -1,13 +1,6 @@
 #pragma once
 
 #include "cMain.h"
-#include "GUI_Base.h"
-#include "Functions.h"
-#include "GenerateScript.h"
-#include "SaveTas.h"
-#include "OpenTas.h"
-#include "search_util.h"
-#include <wx/aui/auibook.h>
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950))
 {
@@ -161,7 +154,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 void cMain::TaskSeachOnText(wxCommandEvent& event)
 {
-	search::findCurrentOrNext(event, grid_tasks);
+	Search::FindCurrentOrNext(event, grid_tasks);
 	event.Skip();
 }
 
@@ -172,21 +165,11 @@ void cMain::TaskSeachOnTextEnter(wxCommandEvent& event)
 
 void cMain::TaskSeachOnSearchButton(wxCommandEvent& event)
 {
-	search::findNext(event, grid_tasks);
+	Search::FindNext(event, grid_tasks);
 	event.Skip();
 }
 
 void cMain::TaskSeachOnCancelButton(wxCommandEvent& event)
-{
-	event.Skip();// do nothing, it will clear the search box
-}
-
-void cMain::BuildingSearchOnTextEnter(wxCommandEvent& event)
-{
-	BuildingSearchOnText(event);//seems not to fire
-}
-
-void cMain::BuildingSearchOnCancelButton(wxCommandEvent& event)
 {
 	event.Skip();// do nothing, it will clear the search box
 }
@@ -474,7 +457,7 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 
 	if (!ValidateStep(rowNum, step, false))
 	{
-		return;
+		return false;
 	}
 
 	GridEntry gridEntry = PrepareStepParametersForGrid(&step);
@@ -1080,86 +1063,86 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event)
 }
 
 // You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
-void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
-{
-	if (grid_tasks->IsSelection())
-	{
-		if (!grid_tasks->GetSelectedRows().begin())
-		{
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
-		}
-		else
-		{
-			row_num = *grid_tasks->GetSelectedRows().begin();
-		}
-	}
-	else
-	{
-		row_num = grid_tasks->GetNumberRows();
-	}
-
-	bool check = false;
-
-	for (const auto& block : grid_group->GetSelectedRowBlocks())
-	{
-		rowNum = block.GetTopRow();
-		group_row_count = block.GetBottomRow() - rowNum + 1;
-
-		grid_tasks->InsertRows(row_num, group_row_count);
-
-		int total_rows = rowNum + group_row_count;
-
-		for (int i = rowNum; i < total_rows; i++)
-		{
-
-			grid_extract_parameters(i, grid_group);
-
-			grid_insert_data(row_num, grid_tasks);
-
-			it1 = tasks_data_to_save.begin();
-			it1 += row_num;
-
-			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-
-			BackgroundColorUpdate(grid_tasks, row_num, task);
-
-			row_num += 1;
-
-			check = true;
-		}
-	}
-
-	if (check)
-	{
-		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-		event.Skip();
-		return;
-	}
-
-	group_row_count = grid_group->GetNumberRows();
-	grid_tasks->InsertRows(row_num, group_row_count);
-
-	for (int i = 0; i < group_row_count; i++)
-	{
-
-		grid_extract_parameters(i, grid_group);
-
-		grid_insert_data(row_num, grid_tasks);
-
-		it1 = tasks_data_to_save.begin();
-		it1 += row_num;
-
-		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-
-		BackgroundColorUpdate(grid_tasks, row_num, task);
-
-		row_num += 1;
-	}
-
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-
-	event.Skip();
-}
+//void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
+//{
+//	if (grid_tasks->IsSelection())
+//	{
+//		if (!grid_tasks->GetSelectedRows().begin())
+//		{
+//			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+//		}
+//		else
+//		{
+//			row_num = *grid_tasks->GetSelectedRows().begin();
+//		}
+//	}
+//	else
+//	{
+//		row_num = grid_tasks->GetNumberRows();
+//	}
+//
+//	bool check = false;
+//
+//	for (const auto& block : grid_group->GetSelectedRowBlocks())
+//	{
+//		rowNum = block.GetTopRow();
+//		group_row_count = block.GetBottomRow() - rowNum + 1;
+//
+//		grid_tasks->InsertRows(row_num, group_row_count);
+//
+//		int total_rows = rowNum + group_row_count;
+//
+//		for (int i = rowNum; i < total_rows; i++)
+//		{
+//
+//			grid_extract_parameters(i, grid_group);
+//
+//			grid_insert_data(row_num, grid_tasks);
+//
+//			it1 = tasks_data_to_save.begin();
+//			it1 += row_num;
+//
+//			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+//
+//			BackgroundColorUpdate(grid_tasks, row_num, task);
+//
+//			row_num += 1;
+//
+//			check = true;
+//		}
+//	}
+//
+//	if (check)
+//	{
+//		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+//		event.Skip();
+//		return;
+//	}
+//
+//	group_row_count = grid_group->GetNumberRows();
+//	grid_tasks->InsertRows(row_num, group_row_count);
+//
+//	for (int i = 0; i < group_row_count; i++)
+//	{
+//
+//		grid_extract_parameters(i, grid_group);
+//
+//		grid_insert_data(row_num, grid_tasks);
+//
+//		it1 = tasks_data_to_save.begin();
+//		it1 += row_num;
+//
+//		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+//
+//		BackgroundColorUpdate(grid_tasks, row_num, task);
+//
+//		row_num += 1;
+//	}
+//
+//	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+//
+//	event.Skip();
+//}
 
 void cMain::grid_extract_parameters(const int& row, wxGrid* grid)
 {
@@ -1445,95 +1428,95 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 }
 
 // You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
-void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
-{
-	if (!grid_tasks->IsSelection())
-	{
-		row_num = grid_tasks->GetNumberRows();
-	}
-	else
-	{
-		if (!grid_tasks->GetSelectedRows().begin())
-		{
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
-			return;
-		}
-
-		row_num = *grid_tasks->GetSelectedRows().begin();
-	}
-
-	if (spin_amount_offset->GetValue() != 0 && spin_amount_multiplier->GetValue() != 0)
-	{
-		wxMessageBox("Please either use units-offset or units-multiplier", "Invalid use of template attributes");
-		return;
-	}
-
-	bool check = false;
-
-	for (const auto& block : grid_template->GetSelectedRowBlocks())
-	{
-		template_row_num = block.GetTopRow();
-		template_row_count = block.GetBottomRow() - template_row_num + 1;
-
-		grid_tasks->InsertRows(row_num, template_row_count);
-
-		int total_rows = template_row_num + template_row_count;
-
-		for (int i = template_row_num; i < total_rows; i++)
-		{
-			grid_extract_parameters(i, grid_template);
-
-			TemplateAlterTask(i, grid_template);
-
-			grid_insert_data(row_num, grid_tasks);
-
-			BackgroundColorUpdate(grid_tasks, row_num, task);
-
-			it1 = tasks_data_to_save.begin();
-			it1 += row_num;
-
-			check = true;
-
-			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-
-			row_num += 1;
-		}
-	}
-
-	if (check)
-	{
-		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-		event.Skip();
-		return;
-	}
-
-	template_row_count = grid_template->GetNumberRows();
-
-	grid_tasks->InsertRows(row_num, template_row_count);
-
-	for (int i = 0; i < template_row_count; i++)
-	{
-
-		grid_extract_parameters(i, grid_template);
-
-		TemplateAlterTask(i, grid_template);
-
-		grid_insert_data(row_num, grid_tasks);
-
-		BackgroundColorUpdate(grid_tasks, row_num, task);
-
-		it1 = tasks_data_to_save.begin();
-		it1 += row_num;
-
-		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-
-		row_num += 1;
-	}
-
-	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-
-	event.Skip();
-}
+//void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
+//{
+//	if (!grid_tasks->IsSelection())
+//	{
+//		row_num = grid_tasks->GetNumberRows();
+//	}
+//	else
+//	{
+//		if (!grid_tasks->GetSelectedRows().begin())
+//		{
+//			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+//			return;
+//		}
+//
+//		row_num = *grid_tasks->GetSelectedRows().begin();
+//	}
+//
+//	if (spin_amount_offset->GetValue() != 0 && spin_amount_multiplier->GetValue() != 0)
+//	{
+//		wxMessageBox("Please either use units-offset or units-multiplier", "Invalid use of template attributes");
+//		return;
+//	}
+//
+//	bool check = false;
+//
+//	for (const auto& block : grid_template->GetSelectedRowBlocks())
+//	{
+//		template_row_num = block.GetTopRow();
+//		template_row_count = block.GetBottomRow() - template_row_num + 1;
+//
+//		grid_tasks->InsertRows(row_num, template_row_count);
+//
+//		int total_rows = template_row_num + template_row_count;
+//
+//		for (int i = template_row_num; i < total_rows; i++)
+//		{
+//			grid_extract_parameters(i, grid_template);
+//
+//			TemplateAlterTask(i, grid_template);
+//
+//			grid_insert_data(row_num, grid_tasks);
+//
+//			BackgroundColorUpdate(grid_tasks, row_num, task);
+//
+//			it1 = tasks_data_to_save.begin();
+//			it1 += row_num;
+//
+//			check = true;
+//
+//			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+//
+//			row_num += 1;
+//		}
+//	}
+//
+//	if (check)
+//	{
+//		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+//		event.Skip();
+//		return;
+//	}
+//
+//	template_row_count = grid_template->GetNumberRows();
+//
+//	grid_tasks->InsertRows(row_num, template_row_count);
+//
+//	for (int i = 0; i < template_row_count; i++)
+//	{
+//
+//		grid_extract_parameters(i, grid_template);
+//
+//		TemplateAlterTask(i, grid_template);
+//
+//		grid_insert_data(row_num, grid_tasks);
+//
+//		BackgroundColorUpdate(grid_tasks, row_num, task);
+//
+//		it1 = tasks_data_to_save.begin();
+//		it1 += row_num;
+//
+//		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+//
+//		row_num += 1;
+//	}
+//
+//	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+//
+//	event.Skip();
+//}
 
 void cMain::TemplateAlterTask(int row, wxGrid* grid)
 {
@@ -1697,7 +1680,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 
 		if (!dialog_progress_bar)
 		{
-			dialog_progress_bar = new dialog_progress_bar_base(this, wxID_ANY, "Processing request");
+			dialog_progress_bar = new DialogProgressBar(this, wxID_ANY, "Processing request");
 		}
 
 		OpenTas open;
@@ -2604,7 +2587,7 @@ GridEntry cMain::ExtractGridEntry(wxGrid* grid, int row)
 	return gridEntry;
 }
 
-bool cMain::ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true)
+bool cMain::ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps)
 {
 	// Cases where an association with a building isn't needed
 	switch (stepParameters.TaskEnum)

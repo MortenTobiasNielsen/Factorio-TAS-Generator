@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 
-#include "ScriptProgressBar.h"
+#include "DialogProgressBar.h"
 #include "StepParameters.h"
 #include "utils.h"
 
@@ -21,7 +21,7 @@ class SaveTas
 public:
 	bool Save(
 		wxWindow* parent,
-		dialog_progress_bar_base* dialog_progress_bar,
+		DialogProgressBar* dialog_progress_bar,
 		bool save_as,
 		vector<bool> auto_list,
 		vector<StepParameters> steps,
@@ -29,7 +29,8 @@ public:
 		map<string, vector<StepParameters>> templates,
 		string folder_location,
 		string folder_location_generate,
-		string goal);
+		string goal
+	);
 
 private:
 	inline const char* const bool_to_string(bool b);

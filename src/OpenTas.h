@@ -13,7 +13,7 @@
 #include "StepParameters.h"
 #include "BuildingNameToIndex.h"
 #include "utils.h"
-#include "ScriptProgressBar.h"
+#include "DialogProgressBar.h"
 
 using std::string;
 using std::vector;
@@ -44,7 +44,7 @@ struct open_file_return_data
 class OpenTas
 {
 public:
-	open_file_return_data* Open(dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file);
+	open_file_return_data* Open(DialogProgressBar* dialog_progress_bar, std::ifstream& file);
 
 private:
 	open_file_return_data return_data;
@@ -60,9 +60,9 @@ private:
 
 	bool extract_total_steps(std::ifstream& file);
 	bool extract_goal(std::ifstream& file);
-	bool extract_steps(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar);
-	bool extract_groups(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar);
-	bool extract_templates(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar);
+	bool extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
+	bool extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
+	bool extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
 	bool extract_save_location(std::ifstream& file);
 	bool extract_script_location(std::ifstream& file);
 	bool extract_auto_close(std::ifstream& file);

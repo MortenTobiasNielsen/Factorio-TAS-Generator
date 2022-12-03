@@ -2,14 +2,9 @@
 
 #include "GenerateScript.h"
 
-#include "BuildingNameToIndex.h"
-#include "utils.h"
-#include "Functions.h"
-#include "control_info.h"
 
 GenerateScript::GenerateScript()
 {
-	software_version = "0.0.5";
 	reset();
 }
 
@@ -35,7 +30,28 @@ string GenerateScript::end_tasks()
 	return step_list + "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n" + "return step";
 }
 
-void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
+void GenerateScript::AddInfoFile(string& folder_location)
+{
+	auto software_version = "0.0.5";
+
+	std::ofstream saver;
+
+	saver.open(folder_location + "\\info.json");
+
+	saver << "{";
+	saver << "\n\t\"name\": \"" << folder_location.substr(folder_location.rfind("\\") + 1) << "\",";
+	saver << "\n\t\"version\": \"" << software_version << "\",";
+	saver << "\n\t\"title\": \"" << folder_location.substr(folder_location.rfind("\\") + 1) << "\",";
+	saver << "\n\t\"author\": \"" << "DunRaider" << "\",";
+	saver << "\n\t\"factorio_version\": \"" << "1.1" << "\",";
+	saver << "\n\t\"contact\": \"" << "" << "\",";
+	saver << "\n\t\"description\": \"" << "This run has been made with the help of EZRaiderz TAS helper" << "\",";
+	saver << "\n}";
+
+	saver.close();
+}
+
+void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
 {
 	reset();
 
@@ -55,7 +71,7 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 
 	if (!dialog_progress_bar)
 	{
-		dialog_progress_bar = new dialog_progress_bar_base(parent, wxID_ANY, "Processing request");
+		dialog_progress_bar = new DialogProgressBar(parent, wxID_ANY, "Processing request");
 	}
 
 	dialog_progress_bar->set_text("Generating Script");
@@ -300,14 +316,9 @@ void GenerateScript::generate(wxWindow* parent, dialog_progress_bar_base* dialog
 		fs::copy_file("..\\Lua Files\\" + goal, folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
 	}
 
-	//generate info file
+	AddInfoFile(folder_location);
+	
 	std::ofstream saver;
-	saver.open(folder_location + "\\info.json");
-	saver << "\{\n\t\"name\": \"" + folder_location.substr(folder_location.rfind("\\") + 1) + "\",";
-	saver << "\n\t\"version\": \"" << software_version << "\",";
-	saver << "\n\t\"title\": \"" + folder_location.substr(folder_location.rfind("\\") + 1) + "\",";
-	saver << info;
-	saver.close();
 
 	//generate step file
 	saver.open(folder_location + "\\steps.lua");
@@ -964,19 +975,19 @@ void GenerateScript::build(string step, string action, string x_cord, string y_c
 
 	if (orientation == "North")
 	{
-		orientation = build_directions.north;
+		orientation = build_direction_struct.north;
 	}
 	else if (orientation == "South")
 	{
-		orientation = build_directions.south;
+		orientation = build_direction_struct.south;
 	}
 	else if (orientation == "East")
 	{
-		orientation = build_directions.east;
+		orientation = build_direction_struct.east;
 	}
 	else if (orientation == "West")
 	{
-		orientation = build_directions.west;
+		orientation = build_direction_struct.west;
 	}
 	else
 	{

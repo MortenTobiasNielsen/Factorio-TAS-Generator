@@ -11,7 +11,7 @@ void OpenTas::reset()
 	return_data.success = false;
 }
 
-open_file_return_data* OpenTas::Open(dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
+open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std::ifstream& file)
 {
 	reset();
 
@@ -71,7 +71,7 @@ bool OpenTas::extract_goal(std::ifstream& file)
 	return true;
 }
 
-bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar)
+bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
 	if (!update_segment(file) || (segments[0] != steps_indicator && segments[0] != "Tasks:"))
 	{
@@ -188,7 +188,7 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 	return false;
 }
 
-bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar)
+bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
 	vector<StepParameters> steps = {};
 	string name = "";
@@ -273,7 +273,7 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 	return false;
 }
 
-bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar)
+bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
 	vector<StepParameters> steps = {};
 	string name = "";

@@ -10,8 +10,11 @@
 #include <filesystem>
 #include <map>
 
+#include "BuildingNameToIndex.h"
+#include "DialogProgressBar.h"
+#include "Functions.h"
 #include "StepParameters.h"
-#include "ScriptProgressBar.h"
+#include "utils.h"
 
 using std::string;
 using std::vector;
@@ -21,11 +24,9 @@ class GenerateScript
 {
 public:
 	GenerateScript();
-	void generate(wxWindow* parent, dialog_progress_bar_base* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal);
+	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal);
 
 private:
-	string software_version;
-
 	string step_list;
 	float player_x_cord;
 	float player_y_cord;
@@ -56,6 +57,8 @@ private:
 	void reset();
 	void clear_tasks();
 	string end_tasks();
+
+	void AddInfoFile(string& folder_location);
 
 	void SetBuildingAndOrientation(StepParameters* stepParameters);
 	void TransferParameters(StepParameters& stepParameters);

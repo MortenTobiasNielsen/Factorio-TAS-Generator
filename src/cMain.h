@@ -3,6 +3,8 @@
 #include <wx/wx.h>
 #include <wx/statline.h>
 #include <wx/grid.h>
+#include <wx/aui/auibook.h>
+
 #include <string>
 #include <vector>
 #include <map>
@@ -13,14 +15,20 @@
 #include <codecvt>
 #include <filesystem>
 
-#include "TaskNameToEnum.h"
-#include "StepParameters.h"
-#include "GridEntry.h"
 #include "Building.h"
 #include "BuildingNameToIndex.h"
+#include "Functions.h"
 #include "GUI_Base.h"
+#include "GenerateScript.h"
+#include "GridEntry.h"
+#include "OpenTas.h"
+#include "SaveTas.h"
+#include "StepParameters.h"
+#include "SearchUtil.h"
+#include "DialogProgressBar.h"
+#include "TaskNameToEnum.h"
 #include "utils.h"
-#include "ScriptProgressBar.h"
+
 #include "../icon.xpm"
 
 using std::string;
@@ -119,7 +127,7 @@ protected:
 	void OnNewGroupClicked(wxCommandEvent& event);
 	void OnDeleteGroupClicked(wxCommandEvent& event);
 	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
-	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
+	//void OnGroupAddToTasksListClicked(wxCommandEvent& event);
 	void OnGroupChangeClicked(wxCommandEvent& event);
 	void OnGroupDeleteClicked(wxCommandEvent& event);
 	void OnGroupMoveUpClicked(wxCommandEvent& event);
@@ -133,7 +141,7 @@ protected:
 	void OnNewTemplateClicked(wxCommandEvent& event);
 	void OnDeleteTemplateClicked(wxCommandEvent& event);
 	void OnTemplateAddFromTasksListClicked(wxCommandEvent& event);
-	void OnTemplateAddToTasksListClicked(wxCommandEvent& event);
+	//void OnTemplateAddToTasksListClicked(wxCommandEvent& event);
 	void OnTemplateChangeTaskClicked(wxCommandEvent& event);
 	void OnTemplateDeleteTaskClicked(wxCommandEvent& event);
 	void OnTemplateMoveUpClicked(wxCommandEvent& event);
@@ -145,25 +153,16 @@ protected:
 
 	void TemplateAlterTask(int row, wxGrid* grid);
 
-	// Building
-	void OnBuildingsGridLeftDoubleClick(wxGridEvent& event);
-
 	//Seach
 	void TaskSeachOnText(wxCommandEvent& event);
 	void TaskSeachOnTextEnter(wxCommandEvent& event);
 	void TaskSeachOnSearchButton(wxCommandEvent& event);
 	void TaskSeachOnCancelButton(wxCommandEvent& event);
-	void BuildingSearchOnText(wxCommandEvent& event);
-	void BuildingSearchOnTextEnter(wxCommandEvent& event);
-	void BuildingSearchOnSearchButton(wxCommandEvent& event);
-	void BuildingSearchOnCancelButton(wxCommandEvent& event);
 
 private:
-	std::string software_version = "0.0.5";
-
 	wxString window_title = "EZRaiderz TAS Helper";
 
-	dialog_progress_bar_base* dialog_progress_bar = nullptr;
+	DialogProgressBar* dialog_progress_bar = nullptr;
 
 	std::string generate_code_folder_location = "";
 	std::string save_file_location = "";
