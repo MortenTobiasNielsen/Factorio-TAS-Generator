@@ -149,7 +149,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	// split steps into seperate panel
 	wxAuiNotebook* a = (wxAuiNotebook*)step_panel->GetParent();
-	a->Split(3, wxRIGHT);
+	a->Split(2, wxRIGHT);
 }
 
 void cMain::TaskSeachOnText(wxCommandEvent& event)
