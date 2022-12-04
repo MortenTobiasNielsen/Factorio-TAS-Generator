@@ -81,7 +81,7 @@ void cMain::setup_paramters(std::vector<bool> parameters)
 
 // Finds the current radio button that is choosen, 
 // determines which task type that is and returns the task name
-string cMain::extract_task()
+string cMain::ExtractTask()
 {
 	//row 1
 	if (rbtn_take->GetValue())

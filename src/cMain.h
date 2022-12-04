@@ -164,13 +164,8 @@ private:
 
 	DialogProgressBar* dialog_progress_bar = nullptr;
 
-	std::string generate_code_folder_location = "";
-	std::string save_file_location = "";
-
-	std::string open_data_string;
-
-	std::string no_longer_connected = " is no longer connected with a building.\nPlease reverse the change/move or connect the task again by adding a build task in front of it.";
-	std::string no_longer_connected_heading = "Tasks are no longer aligned correctly";
+	string generate_code_folder_location = "";
+	string save_file_location = "";
 
 	bool auto_close_generate_script = true;
 	bool auto_close_open = false;
@@ -180,102 +175,34 @@ private:
 	const struct parameter_choices_struct
 	{
 		// x-cord, y-cord, amount, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
-		std::vector<bool> game_speed = {false, false, true, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> mining = {true, true, true, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> rotate = {true, true, true, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> craft = {false, false, true, true, false, false, false, false, false, false, false, false};
-		std::vector<bool> walk = {true, true, false, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> build = {true, true, false, true, false, false, false, false, true, true, true, true};
-		std::vector<bool> take = {true, true, true, true, true, false, false, false, false, true, true, true};
-		std::vector<bool> put = {true, true, true, true, true, false, false, false, false, true, true, true};
-		std::vector<bool> filter = {true, true, true, true, false, false, false, false, false, true, true, true};
-		std::vector<bool> recipe = {true, true, true, true, false, false, false, false, false, true, true, true};
-		std::vector<bool> tech = {false, false, false, true, false, false, false, false, false, false, false, false};
-		std::vector<bool> launch = {true, true, false, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> save = {false, false, false, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> priority = {true, true, false, false, false, false, true, true, false, true, true, true};
-		std::vector<bool> limit = {true, true, true, false, false, false, false, false, false, true, true, true};
-		std::vector<bool> Start = {false, false, false, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> Pause = {false, false, false, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> stop = {false, false, true, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};
-		std::vector<bool> pick = {false, false, true, false, false, false, false, false, false, false, false, false};
-		std::vector<bool> idle = {false, false, true, false, false, false, false, false, false, false, false, false};
-	};
+		vector<bool> game_speed = {false, false, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> mining = {true, true, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> rotate = {true, true, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> craft = {false, false, true, true, false, false, false, false, false, false, false, false};
+		vector<bool> walk = {true, true, false, false, false, false, false, false, false, false, false, false};
+		vector<bool> build = {true, true, false, true, false, false, false, false, true, true, true, true};
+		vector<bool> take = {true, true, true, true, true, false, false, false, false, true, true, true};
+		vector<bool> put = {true, true, true, true, true, false, false, false, false, true, true, true};
+		vector<bool> filter = {true, true, true, true, false, false, false, false, false, true, true, true};
+		vector<bool> recipe = {true, true, true, true, false, false, false, false, false, true, true, true};
+		vector<bool> tech = {false, false, false, true, false, false, false, false, false, false, false, false};
+		vector<bool> launch = {true, true, false, false, false, false, false, false, false, false, false, false};
+		vector<bool> save = {false, false, false, false, false, false, false, false, false, false, false, false};
+		vector<bool> priority = {true, true, false, false, false, false, true, true, false, true, true, true};
+		vector<bool> limit = {true, true, true, false, false, false, false, false, false, true, true, true};
+		vector<bool> Start = {false, false, false, false, false, false, false, false, false, false, false, false};
+		vector<bool> Pause = {false, false, false, false, false, false, false, false, false, false, false, false};
+		vector<bool> stop = {false, false, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};
+		vector<bool> pick = {false, false, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> idle = {false, false, true, false, false, false, false, false, false, false, false, false};
+	} parameter_choices;
 
-	parameter_choices_struct parameter_choices;
+	vector<string> row_selections;
 
-	std::vector<std::string>::iterator it1;
-	std::vector<std::string>::iterator it2;
-
-	std::string segment;
-	std::vector<std::string> seglist;
-	std::vector<std::string> task_segments;
-
-	std::vector<std::string> row_selections;
-
-	long long row_num;
-	long long row_count;
-
-	long long building_row_num;
-	long long building_row_count;
-
-	long long rowNum;
-	long long group_row_count;
-
-	long long template_row_num;
-	long long template_row_count;
-
-	long long row_to_move;
-
-	bool mine_building_found;
-
-	std::string task_number;
-
-	std::string data;
-	std::string not_relevant = "";
+	string not_relevant = "";
 	wxString new_not_relevant = "";
 	
-	// Overall variables for parameters
-	std::string task;
-	std::string x_cord;
-	std::string y_cord;
-	std::string amount;
-	std::string comment;
-	std::string item;
-	std::string from_into;
-	std::string tech_to_start;
-	std::string build_orientation;
-	std::string direction_to_build;
-	std::string building_size;
-	std::string amount_of_buildings;
-
-	int amount_of_buildings_int;
-
-	std::string building;
-
-	// Variables specific to the buildings grid
-	std::string building_task;
-	std::string building_x_cord;
-	std::string building_y_cord;
-	std::string building_units;
-	std::string building_item;
-	std::string building_build_orientation;
-	std::string building_direction_to_build;
-	std::string building_building_size;
-	std::string building_amount_of_buildings;
-	std::string building_priority_in;
-	std::string building_priority_out;
-	std::string building_comment;
-
-	int building_amount_of_buildings_int;
-
-	std::string limit;
-	std::string recipe;
-	std::string priority_in;
-	std::string priority_out;
-	std::string filter;
-
 	// Arrays used to populate combo boxes
 	wxArrayString item_choices;
 	wxArrayString take_from_choices;
@@ -291,72 +218,43 @@ private:
 	wxArrayString building_choices;
 
 	// For group and template strucktures
-	std::string group_name;
-	std::vector<StepParameters> group_list;
-	std::map<std::string, std::vector<StepParameters>> group_map;
-
-	std::string template_name;
-	std::vector<StepParameters> template_list;
-	std::map<std::string, std::vector<StepParameters>> template_map;
-
-	// Used when the tasks are saved to a file
-	std::vector<std::string> tasks_data_to_save;
-
+	map<string, vector<StepParameters>> group_map;
+	map<string, vector<StepParameters>> template_map;
 
 	void ResetToNewWindow();
 	bool ChecksBeforeResetWindow();
 	bool CheckBeforeClose();
 
 	void MoveRow(wxGrid* grid, bool up = false);
+	void GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map);
 	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	bool ChangeRow(wxGrid* grid, StepParameters step);
 
 	void BackgroundColorUpdate(wxGrid* grid, int row, TaskName task);
 
-	void GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map);
-
-	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps, map<string, vector<StepParameters>>& map, string name);
-	void grid_extract_parameters(const int& row, wxGrid* grid);
-	void grid_insert_data(const int& row, wxGrid* grid);
+	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
+	//void grid_extract_parameters(const int& row, wxGrid* grid);
+	//void grid_insert_data(const int& row, wxGrid* grid);
 
 	void setup_paramters(std::vector<bool> parameters);
 
-
-
-
 	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event);
-	void update_template_map();
 
 	bool CheckTakePut(std::string& item);
 
-
 	bool SaveFile(bool save_as);
 
-	std::string extract_task();
-	std::string ExtractAmount();
-	std::string ExtractComment();
-	std::string ExtractItem();
-	std::string ExtractFromInto();
-	std::string ExtractTech();
-	std::string ExtractPriorityIn();
-	std::string ExtractPriorityOut();
-	std::string ExtractBuildingOrientation();
-	std::string ExtractDirectionToBuild();
+	string ExtractTask();
+	string ExtractAmount();
 
 	void update_future_rotate_tasks();
-	void find_new_orientation();
+	string find_new_orientation(string originalOrientaion, const int& rotateAmount);
 
 	void malformed_saved_file_message();
 
-	void new_update_tasks_grid(StepParameters* stepParameters);
+	void UpdateStepGrid(StepParameters* stepParameters);
 	GridEntry PrepareStepParametersForGrid(StepParameters* stepParameters);
 	StepParameters ExtractStepParameters();
-	double ExtractX();
-	double ExtractY();
-	int ExtractBuildingSize();
-	int ExtractAmountOfBuildings();
-
-	
 
 	bool new_find_building(int startRow, StepParameters stepParameters);
 	
@@ -367,18 +265,18 @@ private:
 	void AddTask(int row);
 	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
-	GridEntry ExtractGridEntry(wxGrid* grid, int row);
+	GridEntry ExtractGridEntry(wxGrid* grid, const int& row);
 
-	bool ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps = true);
-	bool IsValidBuildStep(StepParameters stepParameters);
-	bool IsValidRecipeStep(StepParameters stepParameters);
-	bool IsValidCraftStep(StepParameters stepParameters);
-	bool IsValidPutTakeStep(StepParameters stepParameters);
-	bool IsValidTechnologyStep(StepParameters stepParameters);
-	bool IsValidPriorityStep(StepParameters stepParameters);
+	bool ValidateStep(const int& row, StepParameters& stepParameters, bool validateBuildSteps = true);
+	bool IsValidBuildStep(StepParameters& stepParameters);
+	bool IsValidRecipeStep(StepParameters& stepParameters);
+	bool IsValidCraftStep(StepParameters& stepParameters);
+	bool IsValidPutTakeStep(StepParameters& stepParameters);
+	bool IsValidTechnologyStep(StepParameters& stepParameters);
+	bool IsValidPriorityStep(StepParameters& stepParameters);
 
-	bool CheckTakePut(StepParameters stepParameters);
-	bool ExtraBuildingChecks(StepParameters stepParameters);
+	bool CheckTakePut(StepParameters& stepParameters);
+	bool ExtraBuildingChecks(StepParameters& stepParameters);
 
 	vector<string> all_buildings;
 	vector<string> all_items;

@@ -7,9 +7,6 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	SetIcon(icon_xpm);
 	SetLabel(window_title);
 
-	task_segments.reserve(100);
-	seglist.reserve(100);
-
 	// Ensure that realocations shouldn't be needed for a long while.
 	BuildingsSnapShot.reserve(100000);
 	Building invalidBuilding{
@@ -197,19 +194,15 @@ void cMain::ResetToNewWindow()
 	rbtn_walk->SetValue(true);
 	setup_paramters(parameter_choices.walk);
 
-	group_name = "";
 	group_map.clear();
 	cmb_choose_group->Clear();
-	group_list = {};
 	group_choices = {};
 
-	template_name = "";
 	template_map.clear();
 	cmb_choose_template->Clear();
-	template_list = {};
 	template_choices = {};
 
-	tasks_data_to_save = {};
+	StepGridData = {};
 	save_file_location = "";
 	generate_code_folder_location = "";
 
@@ -495,15 +488,13 @@ void cMain::BackgroundColorUpdate(wxGrid* grid, int row, TaskName task)
 	}
 }
 
-// TODO: See if this can be simplied a little - why are steps a parameter when what is passed isn't used?
-void cMain::UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps, map<string, vector<StepParameters>>& map, string name)
+void cMain::UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
 {
 	if (grid->GetNumberRows() > 0)
 	{
 		grid->DeleteRows(0, grid->GetNumberRows());
 	}
 
-	steps = map[name];
 	grid->InsertRows(0, steps.size());
 
 	for (int i = 0; i < steps.size(); i++)
@@ -550,7 +541,7 @@ void cMain::AddTask(int row)
 		case e_build:
 			stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item)->second;
 
-			new_update_tasks_grid(&stepParameters);
+			UpdateStepGrid(&stepParameters);
 
 			to_check = stepParameters.Item;
 			string_capitalized(to_check);
@@ -564,7 +555,7 @@ void cMain::AddTask(int row)
 				stepParameters.Item = struct_fuel_list.coal;
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
-				new_update_tasks_grid(&stepParameters);
+				UpdateStepGrid(&stepParameters);
 			}
 
 			if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler)
@@ -572,7 +563,7 @@ void cMain::AddTask(int row)
 				stepParameters.Item = struct_fuel_list.coal;
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
-				new_update_tasks_grid(&stepParameters);
+				UpdateStepGrid(&stepParameters);
 			}
 
 			if (check_lab->IsChecked() && to_check == struct_science_list.lab)
@@ -580,13 +571,13 @@ void cMain::AddTask(int row)
 				stepParameters.Item = "Automation science pack";
 				stepParameters.FromInto = struct_from_into_list.input;
 
-				new_update_tasks_grid(&stepParameters);
+				UpdateStepGrid(&stepParameters);
 			}
 
 			return;
 
 		case e_recipe:
-			new_update_tasks_grid(&stepParameters);
+			UpdateStepGrid(&stepParameters);
 
 			to_check = stepParameters.Item;
 			string_capitalized(to_check);
@@ -604,14 +595,14 @@ void cMain::AddTask(int row)
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = struct_from_into_list.input;
 
-					new_update_tasks_grid(&stepParameters);
+					UpdateStepGrid(&stepParameters);
 				}
 			}
 
 			return;
 
 		default:
-			new_update_tasks_grid(&stepParameters);
+			UpdateStepGrid(&stepParameters);
 			return;
 	}
 }
@@ -970,7 +961,7 @@ void cMain::OnNewGroupClicked(wxCommandEvent& event)
 
 	group_map.insert(pair<string, vector<StepParameters>>(name, groupSteps));
 
-	UpdateGroupTemplateGrid(grid_group, groupSteps, group_map, name);
+	UpdateGroupTemplateGrid(grid_group, group_map[name]);
 
 	event.Skip();
 }
@@ -1144,19 +1135,19 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event)
 //	event.Skip();
 //}
 
-void cMain::grid_extract_parameters(const int& row, wxGrid* grid)
-{
-	task = grid->GetCellValue(row, 0).ToStdString();
-	x_cord = grid->GetCellValue(row, 1).ToStdString();
-	y_cord = grid->GetCellValue(row, 2).ToStdString();
-	amount = grid->GetCellValue(row, 3).ToStdString();
-	item = grid->GetCellValue(row, 4).ToStdString();
-	build_orientation = grid->GetCellValue(row, 5).ToStdString();
-	direction_to_build = grid->GetCellValue(row, 6).ToStdString();
-	building_size = grid->GetCellValue(row, 7).ToStdString();
-	amount_of_buildings = grid->GetCellValue(row, 8).ToStdString();
-	comment = grid->GetCellValue(row, 9).ToStdString();
-}
+//void cMain::grid_extract_parameters(const int& row, wxGrid* grid)
+//{
+//	task = grid->GetCellValue(row, 0).ToStdString();
+//	x_cord = grid->GetCellValue(row, 1).ToStdString();
+//	y_cord = grid->GetCellValue(row, 2).ToStdString();
+//	amount = grid->GetCellValue(row, 3).ToStdString();
+//	item = grid->GetCellValue(row, 4).ToStdString();
+//	build_orientation = grid->GetCellValue(row, 5).ToStdString();
+//	direction_to_build = grid->GetCellValue(row, 6).ToStdString();
+//	building_size = grid->GetCellValue(row, 7).ToStdString();
+//	amount_of_buildings = grid->GetCellValue(row, 8).ToStdString();
+//	comment = grid->GetCellValue(row, 9).ToStdString();
+//}
 
 void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow)
 {
@@ -1172,19 +1163,19 @@ void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int
 	to->SetCellValue(toRow, 9, from->GetCellValue(fromRow, 9));
 }
 
-void cMain::grid_insert_data(const int& row, wxGrid* grid)
-{
-	grid->SetCellValue(row, 0, task);
-	grid->SetCellValue(row, 1, x_cord);
-	grid->SetCellValue(row, 2, y_cord);
-	grid->SetCellValue(row, 3, amount);
-	grid->SetCellValue(row, 4, item);
-	grid->SetCellValue(row, 5, build_orientation);
-	grid->SetCellValue(row, 6, direction_to_build);
-	grid->SetCellValue(row, 7, building_size);
-	grid->SetCellValue(row, 8, amount_of_buildings);
-	grid->SetCellValue(row, 9, comment);
-}
+//void cMain::grid_insert_data(const int& row, wxGrid* grid)
+//{
+//	grid->SetCellValue(row, 0, task);
+//	grid->SetCellValue(row, 1, x_cord);
+//	grid->SetCellValue(row, 2, y_cord);
+//	grid->SetCellValue(row, 3, amount);
+//	grid->SetCellValue(row, 4, item);
+//	grid->SetCellValue(row, 5, build_orientation);
+//	grid->SetCellValue(row, 6, direction_to_build);
+//	grid->SetCellValue(row, 7, building_size);
+//	grid->SetCellValue(row, 8, amount_of_buildings);
+//	grid->SetCellValue(row, 9, comment);
+//}
 
 // You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnGroupChangeClicked(wxCommandEvent& event)
@@ -1248,17 +1239,13 @@ void cMain::OnGroupGridDoubleLeftClick(wxGridEvent& event)
 
 void cMain::OnGroupChosen(wxCommandEvent& event)
 {
-	group_name = cmb_choose_group->GetValue();
-	UpdateGroupTemplateGrid(grid_group, group_list, group_map, group_name);;
-
+	UpdateGroupTemplateGrid(grid_group, group_map[cmb_choose_group->GetValue().ToStdString()]);
 	event.Skip();
 }
 
 void cMain::OnTemplateChosen(wxCommandEvent& event)
 {
-	template_name = cmb_choose_template->GetValue();
-	UpdateGroupTemplateGrid(grid_template, template_list, template_map, template_name);
-
+	UpdateGroupTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
 	event.Skip();
 }
 
@@ -1328,7 +1315,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 
 	template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
 
-	UpdateGroupTemplateGrid(grid_template, template_list, template_map, name);
+	UpdateGroupTemplateGrid(grid_template, template_map[name]);
 
 	event.Skip();
 }
@@ -1518,34 +1505,34 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 //	event.Skip();
 //}
 
-void cMain::TemplateAlterTask(int row, wxGrid* grid)
-{
-	grid_extract_parameters(row, grid);
-
-	if (grid->GetCellValue(row, 1).ToStdString() != "")
-	{
-		x_cord = std::to_string(std::stof(x_cord) + spin_x_offset->GetValue());
-		y_cord = std::to_string(std::stof(y_cord) + spin_y_offset->GetValue());
-	}
-
-	if (grid->GetCellValue(row, 3).ToStdString() != "")
-	{
-		if (amount == "All")
-		{
-			return;
-		}
-
-		if (spin_amount_offset->GetValue() != 0)
-		{
-			amount = std::to_string(std::stof(amount) + spin_amount_offset->GetValue());
-		}
-
-		if (spin_amount_multiplier->GetValue() != 0)
-		{
-			amount = std::to_string(std::stoi(amount) * spin_amount_multiplier->GetValue());
-		}
-	}
-}
+//void cMain::TemplateAlterTask(int row, wxGrid* grid)
+//{
+//	grid_extract_parameters(row, grid);
+//
+//	if (grid->GetCellValue(row, 1).ToStdString() != "")
+//	{
+//		x_cord = std::to_string(std::stof(x_cord) + spin_x_offset->GetValue());
+//		y_cord = std::to_string(std::stof(y_cord) + spin_y_offset->GetValue());
+//	}
+//
+//	if (grid->GetCellValue(row, 3).ToStdString() != "")
+//	{
+//		if (amount == "All")
+//		{
+//			return;
+//		}
+//
+//		if (spin_amount_offset->GetValue() != 0)
+//		{
+//			amount = std::to_string(std::stof(amount) + spin_amount_offset->GetValue());
+//		}
+//
+//		if (spin_amount_multiplier->GetValue() != 0)
+//		{
+//			amount = std::to_string(std::stoi(amount) * spin_amount_multiplier->GetValue());
+//		}
+//	}
+//}
 
 void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event)
 {
@@ -2002,7 +1989,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 			spin_y->SetValue(gridEntry->Y);
 			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
 			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(amount_of_buildings);
+			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
 			cmb_item->SetValue(gridEntry->Item);
 			txt_comment->SetValue(gridEntry->Comment);
 
@@ -2137,96 +2124,12 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 	}
 }
 
-std::string cMain::ExtractAmount()
-{
-	int amount = spin_amount->GetValue();
 
-	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_recipe->GetValue() || rbtn_pick_up->GetValue()))
-	{
-		return "1";
-	}
-
-	if (amount < 0 && rbtn_limit->GetValue())
-	{
-		return "0";
-	}
-
-	if (rbtn_filter->GetValue())
-	{
-		if (amount < 1)
-		{
-			return "1";
-		}
-
-		if (amount > 5)
-		{
-			return "5";
-		}
-	}
-
-	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue())
-	{
-		float speed = static_cast<float>(amount) / 100.0;
-		if (speed < 0.01)
-		{
-			return "0.01";
-		}
-
-		return std::to_string(speed);
-	}
-
-	if (amount < 1)
-	{
-		return "All";
-	}
-
-	return std::to_string(amount);
-}
-
-std::string cMain::ExtractComment()
-{
-	return txt_comment->GetValue().ToStdString();
-}
-
-std::string cMain::ExtractItem()
-{
-	return cmb_item->GetValue().ToStdString();
-}
-
-std::string cMain::ExtractFromInto()
-{
-	return cmb_from_into->GetValue().ToStdString();
-}
-
-std::string cMain::ExtractDirectionToBuild()
-{
-	return cmb_direction_to_build->GetValue().ToStdString();
-}
-
-std::string cMain::ExtractBuildingOrientation()
-{
-	return cmb_building_orientation->GetValue().ToStdString();
-}
-
-std::string cMain::ExtractTech()
-{
-	return cmb_item->GetValue().ToStdString();
-}
-
-std::string cMain::ExtractPriorityIn()
-{
-	return input_output[radio_input->GetSelection()];
-}
-
-std::string cMain::ExtractPriorityOut()
-{
-	return input_output[radio_output->GetSelection()];
-}
 
 // TODO: Do you want to show the item and orientation of the building rotated?
 void cMain::update_future_rotate_tasks()
 {
-	int total_rows = grid_tasks->GetNumberRows();
+	/*int total_rows = grid_tasks->GetNumberRows();
 
 	for (int i = row_num + 1; i < total_rows; i++)
 	{
@@ -2245,19 +2148,20 @@ void cMain::update_future_rotate_tasks()
 				tasks_data_to_save[i] = (task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + building_build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
 			}
 		}
-	}
+	}*/
 }
 
-void cMain::find_new_orientation()
+string cMain::find_new_orientation(string originalOrientaion, const int& rotateAmount)
 {
 	for (auto it = build_orientations.begin(); it < build_orientations.end(); it++)
 	{
-		if (building_build_orientation == *it)
+		if (originalOrientaion == *it)
 		{
-			building_build_orientation = build_orientations[((it - build_orientations.begin()) + std::stoi(amount)) % 4];
-			break;
+			return build_orientations[((it - build_orientations.begin()) + rotateAmount) % 4];
 		}
 	}
+
+	return originalOrientaion;
 }
 
 void cMain::malformed_saved_file_message()
@@ -2339,43 +2243,69 @@ bool cMain::SaveFile(bool save_as)
 
 StepParameters cMain::ExtractStepParameters()
 {
-	auto stepParameters = StepParameters(ExtractX(), ExtractY());
+	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
 
-	stepParameters.Task = extract_task();
+	stepParameters.Task = ExtractTask();
 	stepParameters.Amount = ExtractAmount();
-	stepParameters.Item = ExtractItem();
-	stepParameters.FromInto = ExtractFromInto();
-	stepParameters.Orientation = ExtractBuildingOrientation();
-	stepParameters.Direction = ExtractDirectionToBuild();
-	stepParameters.Size = ExtractBuildingSize();
-	stepParameters.Buildings = ExtractAmountOfBuildings();
-	stepParameters.PriorityIn = ExtractPriorityIn();
-	stepParameters.PriorityOut = ExtractPriorityOut();
-	stepParameters.Comment = ExtractComment();
+	stepParameters.Item = cmb_item->GetValue().ToStdString();
+	stepParameters.FromInto = cmb_from_into->GetValue().ToStdString();
+	stepParameters.Orientation = cmb_building_orientation->GetValue().ToStdString();
+	stepParameters.Direction = cmb_direction_to_build->GetValue().ToStdString();
+	stepParameters.Size = spin_building_size->GetValue();
+	stepParameters.Buildings = spin_building_amount->GetValue();
+	stepParameters.PriorityIn = input_output[radio_input->GetSelection()];
+	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
+	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
 	stepParameters.TaskEnum = TaskNames.find(stepParameters.Task)->second;
 
 	return stepParameters;
 }
 
-double cMain::ExtractX()
+std::string cMain::ExtractAmount()
 {
-	return spin_x->GetValue();
-}
+	int amount = spin_amount->GetValue();
 
-double cMain::ExtractY()
-{
-	return spin_y->GetValue();
-}
+	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_recipe->GetValue() || rbtn_pick_up->GetValue()))
+	{
+		return "1";
+	}
 
-int cMain::ExtractBuildingSize()
-{
-	return spin_building_size->GetValue();
-}
+	if (amount < 0 && rbtn_limit->GetValue())
+	{
+		return "0";
+	}
 
-int cMain::ExtractAmountOfBuildings()
-{
-	return spin_building_amount->GetValue();
+	if (rbtn_filter->GetValue())
+	{
+		if (amount < 1)
+		{
+			return "1";
+		}
+
+		if (amount > 5)
+		{
+			return "5";
+		}
+	}
+
+	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue())
+	{
+		float speed = static_cast<float>(amount) / 100.0;
+		if (speed < 0.01)
+		{
+			return "0.01";
+		}
+
+		return std::to_string(speed);
+	}
+
+	if (amount < 1)
+	{
+		return "All";
+	}
+
+	return std::to_string(amount);
 }
 
 GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
@@ -2407,9 +2337,9 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			break;
 
 		case e_mine:
-			if (mine_building_found)
+			if (stepParameters->BuildingIndex != 0)
 			{
-				gridEntry.Item = building; // This should be changed to something less convoluted 
+				gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex); 
 			}
 
 			gridEntry.X = std::to_string(stepParameters->X);
@@ -2418,12 +2348,11 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			break;
 
 		case e_rotate:
-			item = building;
 
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = stepParameters->Amount;
-			gridEntry.Item = item; // This should be changed to something less convoluted 
+			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);;
 			break;
 
 		case e_build:
@@ -2505,7 +2434,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 }
 
 // ensure that the variables are actually what they are supposed to be
-void cMain::new_update_tasks_grid(StepParameters* stepParameters)
+void cMain::UpdateStepGrid(StepParameters* stepParameters)
 {
 	GridEntry gridEntry = PrepareStepParametersForGrid(stepParameters);
 
@@ -2569,7 +2498,7 @@ int cMain::GenerateBuildingSnapShot(int end_row)
 	return buildingsInSnapShot;
 }
 
-GridEntry cMain::ExtractGridEntry(wxGrid* grid, int row)
+GridEntry cMain::ExtractGridEntry(wxGrid* grid, const int& row)
 {
 	GridEntry gridEntry{
 		.Task = grid->GetCellValue(row, 0),
@@ -2587,7 +2516,7 @@ GridEntry cMain::ExtractGridEntry(wxGrid* grid, int row)
 	return gridEntry;
 }
 
-bool cMain::ValidateStep(int row, StepParameters stepParameters, bool validateBuildSteps)
+bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool validateBuildSteps)
 {
 	// Cases where an association with a building isn't needed
 	switch (stepParameters.TaskEnum)
@@ -2663,7 +2592,7 @@ bool cMain::ValidateStep(int row, StepParameters stepParameters, bool validateBu
 	}
 }
 
-bool cMain::IsValidBuildStep(StepParameters stepParameters)
+bool cMain::IsValidBuildStep(StepParameters& stepParameters)
 {
 	if (!check_input(stepParameters.Item, all_buildings))
 	{
@@ -2686,7 +2615,7 @@ bool cMain::IsValidBuildStep(StepParameters stepParameters)
 	return true;
 }
 
-bool cMain::IsValidRecipeStep(StepParameters stepParameters)
+bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 {
 	switch (stepParameters.BuildingIndex)
 	{
@@ -2752,7 +2681,7 @@ bool cMain::IsValidRecipeStep(StepParameters stepParameters)
 	}
 }
 
-bool cMain::IsValidCraftStep(StepParameters stepParameters)
+bool cMain::IsValidCraftStep(StepParameters& stepParameters)
 {
 	if (!check_input(stepParameters.Item, handcrafted_list))
 	{
@@ -2763,7 +2692,7 @@ bool cMain::IsValidCraftStep(StepParameters stepParameters)
 	return true;
 }
 
-bool cMain::IsValidPutTakeStep(StepParameters stepParameters)
+bool cMain::IsValidPutTakeStep(StepParameters& stepParameters)
 {
 	if (!CheckTakePut(stepParameters))
 	{
@@ -2779,7 +2708,7 @@ bool cMain::IsValidPutTakeStep(StepParameters stepParameters)
 	return true;
 }
 
-bool cMain::IsValidTechnologyStep(StepParameters stepParameters)
+bool cMain::IsValidTechnologyStep(StepParameters& stepParameters)
 {
 	if (!check_input(stepParameters.Item, tech_list))
 	{
@@ -2790,7 +2719,7 @@ bool cMain::IsValidTechnologyStep(StepParameters stepParameters)
 	return true;
 }
 
-bool cMain::CheckTakePut(StepParameters stepParameters)
+bool cMain::CheckTakePut(StepParameters& stepParameters)
 {
 	std::string to_check = stepParameters.FromInto;
 	string_capitalized(to_check);
@@ -2896,7 +2825,7 @@ bool cMain::CheckTakePut(StepParameters stepParameters)
 }
 
 // TODO: It seems like this should be used somewhere.
-bool cMain::ExtraBuildingChecks(StepParameters stepParameters)
+bool cMain::ExtraBuildingChecks(StepParameters& stepParameters)
 {
 	auto buildingName = FindBuildingName(stepParameters.BuildingIndex);
 
