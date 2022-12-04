@@ -14,12 +14,9 @@
 using std::vector;
 using std::string;
 
-bool compare_task_strings(const wxString& str1, const string& str2);
+bool check_input(const string& item, const vector<string>& all_items);
 
-bool check_input(string& item, const vector<string>& all_items);
-
-void string_capitalized(string& string);
-void string_capitalized(wxString& string);
+string Capitalize(const wxString& stringToCapitalize, const bool isItem = false);
 
 void find_coordinates(string& x_cord, string& y_cord, string& direction, string& building_size);
 

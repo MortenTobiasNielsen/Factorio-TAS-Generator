@@ -9,15 +9,9 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	// Ensure that realocations shouldn't be needed for a long while.
 	BuildingsSnapShot.reserve(100000);
-	Building invalidBuilding{
-		.X = invalidBuildingX,
-		.Y = 0,
-		.Index = 0,
-	};
-
 	for (int i = 0; i < BuildingsSnapShot.capacity(); i++)
 	{
-		BuildingsSnapShot.push_back(invalidBuilding);
+		BuildingsSnapShot.emplace_back(invalidX);
 	}
 
 	part_assembly_recipes.insert(part_assembly_recipes.end(), handcrafted_list.begin(), handcrafted_list.end());
@@ -544,7 +538,6 @@ void cMain::AddTask(int row)
 			UpdateStepGrid(&stepParameters);
 
 			to_check = stepParameters.Item;
-			string_capitalized(to_check);
 
 			stepParameters.TaskEnum = e_put;
 			stepParameters.Task = struct_tasks_list.put;
@@ -580,7 +573,6 @@ void cMain::AddTask(int row)
 			UpdateStepGrid(&stepParameters);
 
 			to_check = stepParameters.Item;
-			string_capitalized(to_check);
 
 			if (check_recipe->IsChecked())
 			{
@@ -2247,10 +2239,10 @@ StepParameters cMain::ExtractStepParameters()
 
 	stepParameters.Task = ExtractTask();
 	stepParameters.Amount = ExtractAmount();
-	stepParameters.Item = cmb_item->GetValue().ToStdString();
-	stepParameters.FromInto = cmb_from_into->GetValue().ToStdString();
-	stepParameters.Orientation = cmb_building_orientation->GetValue().ToStdString();
-	stepParameters.Direction = cmb_direction_to_build->GetValue().ToStdString();
+	stepParameters.Item = Capitalize(cmb_item->GetValue(), true);
+	stepParameters.FromInto = Capitalize(cmb_from_into->GetValue());
+	stepParameters.Orientation = Capitalize(cmb_building_orientation->GetValue());
+	stepParameters.Direction = Capitalize(cmb_direction_to_build->GetValue());
 	stepParameters.Size = spin_building_size->GetValue();
 	stepParameters.Buildings = spin_building_amount->GetValue();
 	stepParameters.PriorityIn = input_output[radio_input->GetSelection()];
@@ -2326,8 +2318,11 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_stop:
 		case e_idle:
 		case e_pick_up:
+			gridEntry.Amount = stepParameters->Amount;
+
 		case e_craft:
 			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Item = stepParameters->Item;
 			break;
 
 		case e_walk:
@@ -2352,7 +2347,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = stepParameters->Amount;
-			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);;
+			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
 			break;
 
 		case e_build:
@@ -2722,7 +2717,6 @@ bool cMain::IsValidTechnologyStep(StepParameters& stepParameters)
 bool cMain::CheckTakePut(StepParameters& stepParameters)
 {
 	std::string to_check = stepParameters.FromInto;
-	string_capitalized(to_check);
 
 	if (to_check == "Wreck")
 	{

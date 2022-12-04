@@ -2,46 +2,26 @@
 
 #include "Functions.h"
 
-bool compare_task_strings(const wxString& str1, const std::string& str2)
+bool check_input(const string& item, const vector<string>& all_items)
 {
-	if (str1.length() != str2.length())
+	for (int i = 0; i < all_items.size(); i++)
 	{
-		return false;
-	}
-
-	for (int i = 0; i < str1.length(); i++)
-	{
-		if (str1[i] != str2[i])
+		if (item.length() != all_items[i].length())
 		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-bool check_input(string& item, const std::vector<std::string>& all_items)
-{
-	std::string item_lower = "";
-	for (unsigned int i = 0; i < item.size(); i++)
-	{
-		item_lower.push_back(std::tolower(item[i]));
-	}
-
-	for (auto it = all_items.begin(); it < all_items.end(); it++)
-	{
-
-		std::string check_item_lower = "";
-
-		for (unsigned int i = 0; i < (*it).size(); i++)
-		{
-			check_item_lower.push_back(std::tolower((*it)[i]));
+			continue;
 		}
 
-		if (item_lower == check_item_lower)
+		for (int j = 0; j < item.length(); j++)
 		{
-			item = *it;
-			return true;
+			if (item[j] != all_items[i][j])
+			{
+				break;
+			}
+
+			if (j == item.length() - 1)
+			{
+				return true;
+			}
 		}
 	}
 
@@ -71,28 +51,34 @@ void find_coordinates(std::string& x_cord, std::string& y_cord, std::string& dir
 	}
 }
 
-void string_capitalized(std::string& string)
+string Capitalize(const wxString& stringToCapitalize, const bool isItem)
 {
-	if (string != "")
+	if (stringToCapitalize == "")
 	{
-		string[0] = std::toupper(string[0]);
-		for (int i = 1; string[i] != '\0'; ++i)
-		{
-			string[i] = tolower(string[i]);
-		}
+		return stringToCapitalize.ToStdString();
 	}
-}
 
-void string_capitalized(wxString& string)
-{
-	if (string != "")
+	string capitalizedString = stringToCapitalize.ToStdString();
+	capitalizedString[0] = std::toupper(stringToCapitalize[0]);
+	for (int i = 1; i < capitalizedString.length(); ++i)
 	{
-		string[0] = std::toupper(string[0]);
-		for (int i = 1; string[i] != '\0'; ++i)
-		{
-			string[i] = tolower(string[i]);
-		}
+		capitalizedString[i] = tolower(stringToCapitalize[i]);
 	}
+
+	if (!isItem)
+	{
+		return capitalizedString;
+	}
+
+	int stringLength = capitalizedString.length();
+	if (stringLength > 3 &&  capitalizedString.substr(stringLength - 3, 3) == "mk2")
+	{
+		capitalizedString[stringLength - 3] = 'M';
+		capitalizedString[stringLength - 2] = 'K';
+		capitalizedString[stringLength - 1] = '2';
+	}
+
+	return capitalizedString;
 }
 
 bool is_number(const std::string& str)

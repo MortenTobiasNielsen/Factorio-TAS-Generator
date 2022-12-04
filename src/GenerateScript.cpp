@@ -156,8 +156,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_take:
-				from_into = convert_string(build_orientation);
-
 				if (from_into != struct_from_into_list.wreck)
 				{
 					SetBuildingAndOrientation(&steps[i]);
@@ -174,8 +172,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_put:
-				from_into = convert_string(build_orientation);
-
 				if (from_into != struct_from_into_list.wreck)
 				{
 					SetBuildingAndOrientation(&steps[i]);
@@ -187,6 +183,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				{
 					return;
 				}
+
 				row_put(currentStep, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
 				break;
 
@@ -210,8 +207,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_limit:
-				from_into = convert_string(build_orientation);
-
 				if (from_into != struct_from_into_list.wreck)
 				{
 					SetBuildingAndOrientation(&steps[i]);
@@ -420,8 +415,6 @@ string GenerateScript::convert_string(string input)
 		});
 	return input;
 }
-
-
 
 string GenerateScript::check_item_name(string item)
 {
@@ -1103,7 +1096,6 @@ void GenerateScript::limit(string step, string action, string x_cord, string y_c
 
 void GenerateScript::row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string orientation)
 {
-
 	limit(step, "1", x_cord, y_cord, amount, from, building, orientation);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)

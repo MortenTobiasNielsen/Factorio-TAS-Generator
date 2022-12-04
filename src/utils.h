@@ -10,7 +10,7 @@ using std::map;
 
 // it is important to go though all of the lists When changes to the game is implemented to ensure that the lists are still accurate
 
-static const double invalidBuildingX = 0.3543534;
+static const double invalidX = 0.3543534;
 
 static const int step_segment_size = 10;
 static const int step_segment_size_without_comment = 9;
@@ -662,10 +662,13 @@ static const std::vector<std::string> furnace_list = {
 	"Steel plate",
 	"Stone brick"};
 
-static const std::vector<std::string> assemply_level1_list = {
-	"Engine unit"};
+static const std::vector<std::string> assemply_level1_list =
+{
+	"Engine unit"
+};
 
-static const std::vector<std::string> assemply_level2_list = {
+static const std::vector<std::string> assemply_level2_list =
+{
 	"Express transport belt",
 	"Express underground belt",
 	"Express splitter",
@@ -680,92 +683,121 @@ static const std::vector<std::string> assemply_level2_list = {
 	"Fill lubricant barrel",
 	"Fill petroleum gas barrel",
 	"Fill sulfuric acid barrel",
-	"Fill water barrel"};
+	"Fill water barrel"
+};
 
-static const std::vector<std::string> assemply_level2_extra_list = {
+static const std::vector<std::string> assemply_level2_extra_list =
+{
 	"Empty crude oil barrel",
 	"Empty heavy oil barrel",
 	"Empty light oil barrel",
 	"Empty lubricant barrel",
 	"Empty petroleum gas barrel",
 	"Empty sulfuric acid barrel",
-	"Empty water barrel"};
+	"Empty water barrel"
+};
 
-static const std::vector<std::string> chemical_plant_list = {
+static const std::vector<std::string> chemical_plant_list =
+{
 	"Flamethrower ammo",
 	"Solid fuel",
 	"Plastic bar",
 	"Sulfur",
 	"Battery",
-	"Explosives"};
+	"Explosives"
+};
 
-static const std::vector<std::string> chemical_plant_extra_list = {
+static const std::vector<std::string> chemical_plant_extra_list =
+{
 	"Sulfuric acid",
 	"Lubricant",
 	"Heavy oil cracking",
-	"Light oil cracking"};
+	"Light oil cracking"
+};
 
-static const std::vector<std::string> centrifuge_list = {
+static const std::vector<std::string> centrifuge_list =
+{
 	"Nuclear fuel",
 	"Uranium processing",
 	"Nuclear fuel reprocessing",
-	"Kovarex enrichment process"};
+	"Kovarex enrichment process"
+};
 
-static const std::vector<std::string> oil_refinery_list = {
+static const std::vector<std::string> oil_refinery_list = 
+{
 	"Basic oil processing",
 	"Advanced oil processing",
-	"Coal liquefaction"};
+	"Coal liquefaction"
+};
 
-static const std::vector<std::string> rocket_silo_list = {
-	"Rocket part"};
+static const std::vector<std::string> rocket_silo_list = 
+{
+	"Rocket part"
+};
 
 
-static const std::vector<std::string> raw_resource_list = {
+static const std::vector<std::string> raw_resource_list = 
+{
 	"Wood",
 	"Coal",
 	"Stone",
 	"Iron ore",
 	"Copper ore",
 	"Uranium ore",
-	"Raw fish"};
+	"Raw fish"
+};
 
-static const std::vector<std::string> filter_take_put_drop_extra_list = {
+static const std::vector<std::string> filter_take_put_drop_extra_list = 
+{
 	"Nuclear fuel",
 	"Uranium-235",
 	"Uranium-238",
-	"Used-up uranium fuel cell"};
+	"Used-up uranium fuel cell"
+};
 
 
-static const std::vector<std::string> weapon_list = {
+static const std::vector<std::string> weapon_list = 
+{
 	"Pistol",
 	"Submachine gun",
 	"Shotgun",
 	"Combat shotgun",
 	"Flamethrower",
-	"Rocket launcher"};
+	"Rocket launcher"
+};
 
-static const std::vector<std::string> magazine_list = {
+static const std::vector<std::string> magazine_list = 
+{
 	"Firearm magazine",
 	"Piercing rounds magazine",
-	"Uranium rounds magazine"};
+	"Uranium rounds magazine"
+};
 
-static const std::vector<std::string> shotgun_shell_list = {
+static const std::vector<std::string> shotgun_shell_list = 
+{
 	"Shotgun shells",
-	"Piercing shotgun shells"};
+	"Piercing shotgun shells"
+};
 
-static const std::vector<std::string> rocket_list = {
+static const std::vector<std::string> rocket_list = 
+{
 	"Rocket",
 	"Explosive rocket",
-	"Atomic bomb"};
+	"Atomic bomb"
+};
 
-static const std::vector<std::string> flamethrower_fuel_list = {
-	"Flamethrower ammo"};
+static const std::vector<std::string> flamethrower_fuel_list = 
+{
+	"Flamethrower ammo"
+};
 
-static const std::vector<std::string> tank_shell_list = {
+static const std::vector<std::string> tank_shell_list = 
+{
 	"Cannon shell",
 	"Explosive cannon shell",
 	"Uranium cannon shell",
-	"Explosive uranium cannon shell"};
+	"Explosive uranium cannon shell"
+};
 
 static const std::vector<std::string> grenade_list = {};
 
@@ -773,16 +805,21 @@ static const std::vector<std::string> tank_shells = {};
 
 static const std::vector<std::string> tank_shells2 = {};
 
-static const std::vector<std::string> item_categories = {
+static const std::vector<std::string> item_categories = 
+{
 	"Logistics",
 	"Production",
 	"Intermediates",
-	"Combat"};
+	"Combat"
+};
 
-static const std::vector<std::string> item_categories_fuel = {
-	"Fuel"};
+static const std::vector<std::string> item_categories_fuel = 
+{
+	"Fuel"
+};
 
-static const std::vector<std::string> item_logistics = {
+static const std::vector<std::string> item_logistics = 
+{
 	"None",
 	"Wooden chest",
 	"Iron chest",
@@ -798,9 +835,11 @@ static const std::vector<std::string> item_logistics = {
 	"Small electric pole",
 	"Pipe", "Pipe to ground",
 	"Underground belt",
-	"Splitter"};
+	"Splitter"
+};
 
-static const std::vector<std::string> item_production = {
+static const std::vector<std::string> item_production = 
+{
 	"Boiler",
 	"Steam engine",
 	"Burner mining drill",
@@ -819,9 +858,11 @@ static const std::vector<std::string> item_production = {
 	"Efficiency module 3",
 	"Productivity module",
 	"Productivity module 2",
-	"Productivity module 3"};
+	"Productivity module 3"
+};
 
-static const std::vector<std::string> item_intermediates = {
+static const std::vector<std::string> item_intermediates = 
+{
 	"Wood",
 	"Coal",
 	"Stone",
@@ -832,38 +873,47 @@ static const std::vector<std::string> item_intermediates = {
 	"Iron gear wheel",
 	"Copper cable",
 	"Automation science pack",
-	"Electronic circuit"};
+	"Electronic circuit"
+};
 
-static const std::vector<std::string> item_combat = {
+static const std::vector<std::string> item_combat = 
+{
 	"Pistol",
 	"Submachine gun",
-	"Shotgun"};
+	"Shotgun"
+};
 
-static const std::vector<std::string> take_from = {
+static const std::vector<std::string> take_from = 
+{
 	"Input",
 	"Output",
 	"Fuel",
 	"Modules",
 	"Chest",
-	"Wreck"};
+	"Wreck"
+};
 
 enum INPUT_OUTPUT
 {
 	LEFT, NONE, RIGHT
 };
 
-static const std::vector<std::string> input_output = {
+static const std::vector<std::string> input_output = 
+{
 	"Left",
 	"None",
-	"Right"};
+	"Right"
+};
 
-static inline std::map<std::string, INPUT_OUTPUT> map_input_output = {
+static inline std::map<std::string, INPUT_OUTPUT> map_input_output = 
+{
 	{input_output[0], LEFT},
 	{input_output[1], NONE},
 	{input_output[2], RIGHT}
 };
 
-static const std::vector<std::string> module_list = {
+static const std::vector<std::string> module_list = 
+{
 	"Speed module",
 	"Speed module 2",
 	"Speed module 3",
@@ -872,9 +922,11 @@ static const std::vector<std::string> module_list = {
 	"Efficiency module 3",
 	"Productivity module",
 	"Productivity module 2",
-	"Productivity module 3"};
+	"Productivity module 3"
+};
 
-static const std::vector<std::string> build_orientations = {
+static const std::vector<std::string> build_orientations = 
+{
 	"North",
 	"East",
 	"South",
@@ -889,7 +941,8 @@ enum Orientation
 	West,
 };
 
-static inline std::map<std::string, Orientation> OrientationToIndex = {
+static inline std::map<std::string, Orientation> OrientationToIndex = 
+{
 	{build_orientations[North], North},
 	{build_orientations[East], East},
 	{build_orientations[South], South},
@@ -897,7 +950,7 @@ static inline std::map<std::string, Orientation> OrientationToIndex = {
 };
 
 
-static const std::vector<std::string> tech_list = 
+static const std::vector<std::string> tech_list =
 {
 	"Advanced electronics",
 	"Advanced electronics 2",
@@ -1089,7 +1142,7 @@ static const std::vector<std::string> tech_list =
 	"Speed module 3"
 };
 
-static const std::vector<std::string> drills_list = 
+static const std::vector<std::string> drills_list =
 {
 	"Electric mining drill",
 	"Pumpjack"
@@ -1123,12 +1176,12 @@ static const struct
 
 static const struct
 {
-	std::string input = "input";
-	std::string output = "output";
-	std::string fuel = "fuel";
-	std::string modules = "modules";
-	std::string chest = "chest";
-	std::string wreck = "wreck";
+	std::string input = "Input";
+	std::string output = "Output";
+	std::string fuel = "Fuel";
+	std::string modules = "Modules";
+	std::string chest = "Chest";
+	std::string wreck = "Wreck";
 } struct_from_into_list;
 
 static const struct
@@ -1166,17 +1219,6 @@ static const struct
 	std::string white_science = "space-science-pack";
 } struct_science_list;
 
-static const struct 
-{
-	std::string burner = "burner-mining-drill";
-	std::string electric = "electric-mining-drill";
-} drill_types;
-
-static const struct 
-{
-	std::string yellow_belt = "transport-belt";
-} transport_types;
-
 static const struct
 {
 	std::string chest = "defines.inventory.chest";
@@ -1189,74 +1231,7 @@ static const struct
 	std::string assembly_modules = "defines.inventory.assembling_machine_modules";
 } struct_take_put_list;
 
-static const struct 
-{
-	std::string iron = "iron-plate";
-	std::string copper = "copper-plate";
-} plate_types;
-
-static const struct 
-{
-	std::string stone = "stone";
-	std::string iron = "iron-ore";
-	std::string copper = "copper-ore";
-} ore_types;
-
-static const struct 
-{
-	std::string iron_gear_wheel = "iron-gear-wheel";
-	std::string copper_cable = "copper-cable";
-	std::string circuit_green = "electronic-circuit";
-} intermediate_types;
-
-static const struct 
-{
-	std::string pipe = "pipe";
-	std::string pipe_ground = "pipe-to-ground";
-} pipe_struct;
-
-static const struct 
-{
-	std::string boiler = "boiler";
-	std::string steam_engine = "steam-engine";
-	std::string pump = "offshore-pump";
-	std::string small_pole = "small-electric-pole";
-} power_structures_struct;
-
-static const struct 
-{
-	std::string wood = "wooden-chest";
-} chest_types;
-
-static const struct 
-{
-	std::string level_1 = "assembling-machine-1";
-	std::string level_2 = "assembling-machine-2";
-	std::string level_3 = "assembling-machine-3";
-} assembly_types;
-
-static const struct 
-{
-	float one = 9.8f;
-	float two = 8.8f;
-	float three = 6.8f;
-	float four = 5.8f;
-	float five = 3.8f;
-} build_distance_struct;
-
-
-// Observations. The middle of a normal mining path are x.5, y.5 So this should be the point used to calculate how close the player needs to be to mine it
-// The tip-over point from the game to choose one mining path over an adjacent seem to be at the x.0 mark, but this should be tested in the API with e.g. 1.00001 and see if it takes the patch at 0.5 or 1.5
-// It seems like the tip-over point for the player to reach something 3 tiles away is 0.269531 (very random)
-
-static const struct 
-{
-	float one = 2.65f;
-	float two = 1.65f;
-	float three = 0.65f;
-} mining_distance_struct;
-
-static const struct 
+static const struct
 {
 	std::string north = "defines.direction.north";
 	std::string south = "defines.direction.south";
@@ -1272,28 +1247,3 @@ static const struct
 	std::string west = "West";
 
 } struct_direction_list;
-
-static const struct 
-{
-	std::string yellow = "inserter";
-} inserter_types;
-
-static const struct 
-{
-	int small_building = 1;
-	int medium_building = 2;
-	int large_building = 3;
-	int very_large_building = 7;
-} building_size_struct;
-
-enum walk_direction
-{
-	north = 1,
-	northeast = 2,
-	northwest = 3,
-	south = 4,
-	southeast = 5,
-	southwest = 6,
-	east = 7,
-	west = 8
-};

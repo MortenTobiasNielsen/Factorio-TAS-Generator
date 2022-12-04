@@ -81,15 +81,9 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 	return_data.steps.reserve(total_lines);
 
 	buildingSnapshot.reserve(100000);
-	Building invalidBuilding{
-		.X = invalidBuildingX,
-		.Y = 0,
-		.Index = 0,
-	};
-
 	for (int i = 0; i < buildingSnapshot.capacity(); i++)
 	{
-		buildingSnapshot.push_back(invalidBuilding);
+		buildingSnapshot.emplace_back(invalidX);
 	}
 
 	int buildingsInSnapShot = 0;
@@ -101,7 +95,7 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 			return segments.size() == 1 && segments[0] == save_groups_indicator;
 		}
 
-		std::string comment = "";
+		string comment = "";
 		if (segments.size() == step_segment_size)
 		{
 			comment = segments[9];
@@ -127,11 +121,11 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 			step.Buildings = stoi(segments[8]);
 		}
 
-		step.Task = segments[0];
-		step.Amount = segments[3];
-		step.Item = segments[4];
-		step.Orientation = segments[5];
-		step.Direction = segments[6];
+		step.Task = Capitalize(segments[0]);
+		step.Amount = Capitalize(segments[3]);
+		step.Item = Capitalize(segments[4], true);
+		step.Orientation = Capitalize(segments[5]);
+		step.Direction = Capitalize(segments[6]);
 		step.Comment = comment;
 
 		step.TaskEnum = TaskNames.find(step.Task)->second;
@@ -250,11 +244,11 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Task = segments[1];
-		step.Amount = segments[4];
-		step.Item = segments[5];
-		step.Orientation = segments[6];
-		step.Direction = segments[7];
+		step.Task = Capitalize(segments[1]);
+		step.Amount = Capitalize(segments[4]);
+		step.Item = Capitalize(segments[5], true);
+		step.Orientation = Capitalize(segments[6]);
+		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
 		step.TaskEnum = TaskNames.find(step.Task)->second;
@@ -308,7 +302,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			steps = {};
 		}
 
-		std::string comment = "";
+		string comment = "";
 		if (segments.size() != group_segment_size)
 		{
 			comment = segments[10];
@@ -334,11 +328,11 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Task = segments[1];
-		step.Amount = segments[4];
-		step.Item = segments[5];
-		step.Orientation = segments[6];
-		step.Direction = segments[7];
+		step.Task = Capitalize(segments[1]);
+		step.Amount = Capitalize(segments[4]);
+		step.Item = Capitalize(segments[5], true);
+		step.Orientation = Capitalize(segments[6]);
+		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
 		step.TaskEnum = TaskNames.find(step.Task)->second;
