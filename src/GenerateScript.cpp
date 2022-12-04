@@ -156,12 +156,12 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_take:
-				if (from_into != struct_from_into_list.wreck)
+				if (steps[i].Orientation != struct_from_into_list.wreck)
 				{
 					SetBuildingAndOrientation(&steps[i]);
 				}
 
-				from_into = extract_define(from_into, building);
+				from_into = extract_define(steps[i].Orientation, building);
 
 				if (from_into == "Not Found")
 				{
@@ -172,12 +172,12 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_put:
-				if (from_into != struct_from_into_list.wreck)
+				if (steps[i].Orientation != struct_from_into_list.wreck)
 				{
 					SetBuildingAndOrientation(&steps[i]);
 				}
 
-				from_into = extract_define(from_into, building);
+				from_into = extract_define(steps[i].Orientation, building);
 
 				if (from_into == "Not Found")
 				{
@@ -207,12 +207,12 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_limit:
-				if (from_into != struct_from_into_list.wreck)
+				if (steps[i].Orientation != struct_from_into_list.wreck)
 				{
 					SetBuildingAndOrientation(&steps[i]);
 				}
 
-				from_into = extract_define(from_into, building);
+				from_into = extract_define(steps[i].Orientation, building);
 
 				if (from_into == "Not Found")
 				{
