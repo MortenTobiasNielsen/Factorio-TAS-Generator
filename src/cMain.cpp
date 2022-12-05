@@ -1360,7 +1360,7 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 		return;
 	}
 
-	auto rowsToAdd = grid_group->GetNumberRows();
+	auto rowsToAdd = grid_template->GetNumberRows();
 	if (grid_template->IsSelection())
 	{
 		if (!grid_template->GetSelectedRows().begin())
