@@ -1013,82 +1013,6 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event)
 	UpdateMapWithNewSteps(grid_group, cmb_choose_group, group_map);
 
 	event.Skip();
-
-	/*if (!grid_tasks->IsSelection())
-	{
-		wxMessageBox("No step is chosen - please select row(s) in the step list", "Cannot add step to group");
-		event.Skip();
-		return;
-	}
-
-	auto it = group_map.find(cmb_choose_group->GetValue().ToStdString());
-	if (it == group_map.end())
-	{
-		wxMessageBox("The group name doesn't exist - please add a new group before adding steps", "Cannot add step to group");
-		event.Skip();
-		return;
-	}
-
-	auto moveTo = grid_group->GetNumberRows();
-	if (grid_group->IsSelection())
-	{
-		if (!grid_group->GetSelectedRows().begin())
-		{
-			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
-			event.Skip();
-			return;
-		}
-
-		moveTo = *grid_group->GetSelectedRows().begin();
-	}
-
-	vector<StepParameters> steps = it->second;
-	if (grid_tasks->IsSelection())
-	{
-		for (const auto& block : grid_tasks->GetSelectedRowBlocks())
-		{
-			auto startRow = block.GetTopRow();
-			auto rowCount = block.GetBottomRow() - startRow + 1;
-
-			grid_group->InsertRows(moveTo, rowCount);
-
-			int rows = startRow + rowCount;
-
-			for (int i = startRow; i < rows; i++)
-			{
-				GridTransfer(grid_tasks, i, grid_group, moveTo);
-
-				BackgroundColorUpdate(grid_group, moveTo, StepGridData[i].TaskEnum);
-
-				auto it1 = steps.begin();
-				it1 += moveTo;
-
-				steps.insert(it1, StepGridData[i]);
-
-				moveTo += 1;
-			}
-		}
-
-		it->second = steps;
-		return;
-	}
-	
-	int rows = grid_tasks->GetNumberRows();
-	for (int i = 0; i < rows; i++)
-	{
-		GridTransfer(grid_tasks, i, grid_group, moveTo);
-
-		BackgroundColorUpdate(grid_group, moveTo, StepGridData[i].TaskEnum);
-
-		auto it1 = steps.begin();
-		it1 += moveTo;
-
-		steps.insert(it1, StepGridData[i]);
-
-		moveTo += 1;
-	}
-
-	it->second = steps;*/
 }
 
  //You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
@@ -1129,9 +1053,9 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
 		return;
 	}
 
-	int total_rows = grid_group->GetNumberRows();
+	int rows = grid_group->GetNumberRows();
 
-	for (int i = 0; i < total_rows; i++)
+	for (int i = 0; i < rows; i++)
 	{
 		StepParameters step = group_map[cmb_choose_group->GetValue().ToStdString()][i];
 
@@ -1140,20 +1064,6 @@ void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
 		moveTo += 1;
 	}
 }
-
-//void cMain::grid_extract_parameters(const int& row, wxGrid* grid)
-//{
-//	task = grid->GetCellValue(row, 0).ToStdString();
-//	x_cord = grid->GetCellValue(row, 1).ToStdString();
-//	y_cord = grid->GetCellValue(row, 2).ToStdString();
-//	amount = grid->GetCellValue(row, 3).ToStdString();
-//	item = grid->GetCellValue(row, 4).ToStdString();
-//	build_orientation = grid->GetCellValue(row, 5).ToStdString();
-//	direction_to_build = grid->GetCellValue(row, 6).ToStdString();
-//	building_size = grid->GetCellValue(row, 7).ToStdString();
-//	amount_of_buildings = grid->GetCellValue(row, 8).ToStdString();
-//	comment = grid->GetCellValue(row, 9).ToStdString();
-//}
 
 void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow)
 {
@@ -1328,62 +1238,6 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 	UpdateMapWithNewSteps(grid_template, cmb_choose_template, template_map);
 
 	event.Skip();
-
-	/*if (!grid_tasks->IsSelection())
-	{
-		wxMessageBox("No step is chosen - please select a row in the step list", "Cannot add step to template");
-		event.Skip();
-		return;
-	}
-
-	auto it = template_map.find(cmb_choose_template->GetValue().ToStdString());
-	if (it == template_map.end())
-	{
-		wxMessageBox("The template name doesn't exist - please add a new template before adding steps", "Cannot add step to template");
-		event.Skip();
-		return;
-	}
-
-	auto moveTo = grid_template->GetNumberRows();
-	if (grid_template->IsSelection())
-	{
-		if (!grid_template->GetSelectedRows().begin())
-		{
-			wxMessageBox("Please either select row(s) or nothing", "Template list selection not valid");
-			event.Skip();
-			return;
-		}
-
-		moveTo = *grid_template->GetSelectedRows().begin();
-	}
-
-	vector<StepParameters> steps = it->second;
-	for (const auto& block : grid_tasks->GetSelectedRowBlocks())
-	{
-		auto startRow = block.GetTopRow();
-		auto rowCount = block.GetBottomRow() - startRow + 1;
-
-		grid_template->InsertRows(moveTo, rowCount);
-
-		int total_rows = startRow + rowCount;
-
-		for (int i = startRow; i < total_rows; i++)
-		{
-			GridTransfer(grid_tasks, i, grid_template, moveTo);
-
-			BackgroundColorUpdate(grid_template, moveTo, StepGridData[i].TaskEnum);
-
-			auto it1 = steps.begin();
-			it1 += moveTo;
-
-			steps.insert(it1, StepGridData[i]);
-
-			moveTo += 1;
-		}
-	}
-
-	it->second = steps;
-	return;*/
 }
 
 void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
