@@ -127,7 +127,7 @@ protected:
 	void OnNewGroupClicked(wxCommandEvent& event);
 	void OnDeleteGroupClicked(wxCommandEvent& event);
 	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
-	//void OnGroupAddToTasksListClicked(wxCommandEvent& event);
+	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
 	void OnGroupChangeClicked(wxCommandEvent& event);
 	void OnGroupDeleteClicked(wxCommandEvent& event);
 	void OnGroupMoveUpClicked(wxCommandEvent& event);
@@ -233,6 +233,7 @@ private:
 
 	void BackgroundColorUpdate(wxGrid* grid, int row, TaskName task);
 
+	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
 	//void grid_extract_parameters(const int& row, wxGrid* grid);
 	//void grid_insert_data(const int& row, wxGrid* grid);
@@ -253,7 +254,7 @@ private:
 
 	void malformed_saved_file_message();
 
-	void UpdateStepGrid(StepParameters* stepParameters);
+	void UpdateStepGrid(int row, StepParameters* stepParameters);
 	GridEntry PrepareStepParametersForGrid(StepParameters* stepParameters);
 	StepParameters ExtractStepParameters();
 
