@@ -141,7 +141,7 @@ protected:
 	void OnNewTemplateClicked(wxCommandEvent& event);
 	void OnDeleteTemplateClicked(wxCommandEvent& event);
 	void OnTemplateAddFromTasksListClicked(wxCommandEvent& event);
-	//void OnTemplateAddToTasksListClicked(wxCommandEvent& event);
+	void OnTemplateAddToTasksListClicked(wxCommandEvent& event);
 	void OnTemplateChangeTaskClicked(wxCommandEvent& event);
 	void OnTemplateDeleteTaskClicked(wxCommandEvent& event);
 	void OnTemplateMoveUpClicked(wxCommandEvent& event);
@@ -152,6 +152,7 @@ protected:
 	void OnTemplateChosen(wxCommandEvent& event);
 
 	void TemplateAlterTask(int row, wxGrid* grid);
+	void NewTemplateAlterTask(StepParameters& step);
 
 	//Seach
 	void TaskSeachOnText(wxCommandEvent& event);

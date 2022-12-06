@@ -101,7 +101,7 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 			comment = segments[9];
 		}
 
-		StepParameters step(0, 0);
+		StepParameters step(invalidX, 0);
 
 		if (segments[1] != "")
 		{
@@ -224,7 +224,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			comment = segments[10];
 		}
 
-		StepParameters step(0, 0);
+		StepParameters step(invalidX, 0);
 
 		if (segments[2] != "")
 		{
@@ -308,7 +308,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			comment = segments[10];
 		}
 
-		StepParameters step(0, 0);
+		StepParameters step(invalidX, 0);
 
 		if (segments[2] != "")
 		{

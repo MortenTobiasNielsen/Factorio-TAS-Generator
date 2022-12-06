@@ -1271,6 +1271,8 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 		return;
 	}
 
+	vector<StepParameters> steps = template_map[cmb_choose_template->GetValue().ToStdString()];
+
 	cmb_choose_template->Clear();
 	template_choices.Add(name);
 	cmb_choose_template->Append(template_choices);
@@ -1298,11 +1300,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 
 	for (int i = rowNum; i < rowNum + rowCount; i++)
 	{
-		auto stepParameters = ExtractStepParameters();
-
-		template_list.push_back(stepParameters);
-
-		BackgroundColorUpdate(grid_template, i, stepParameters.TaskEnum);
+		template_list.push_back(steps[i]);
 	}
 
 	template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
@@ -1354,13 +1352,15 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 		return;
 	}
 
-	if (spin_amount_offset->GetValue() != 0 && spin_amount_multiplier->GetValue() != 0)
+	auto it = template_map.find(cmb_choose_group->GetValue().ToStdString());
+	if (it == template_map.end())
 	{
-		wxMessageBox("Please either use units-offset or units-multiplier", "Invalid use of template attributes");
+		wxMessageBox("The template name doesn't exist - please add a new template before adding steps", "Cannot add step to template");
+		event.Skip();
 		return;
 	}
 
-	auto rowsToAdd = grid_template->GetNumberRows();
+	auto moveTo = grid_template->GetNumberRows();
 	if (grid_template->IsSelection())
 	{
 		if (!grid_template->GetSelectedRows().begin())
@@ -1370,132 +1370,151 @@ void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
 			return;
 		}
 
-		rowsToAdd = *grid_template->GetSelectedRows().begin();
+		moveTo = *grid_template->GetSelectedRows().begin();
 	}
 
-	auto it = template_map.find(cmb_choose_group->GetValue().ToStdString());
-	bool TrasferToMap = it != template_map.end();
 	vector<StepParameters> steps = {};
 	for (const auto& block : grid_tasks->GetSelectedRowBlocks())
 	{
 		auto startRow = block.GetTopRow();
 		auto rowCount = block.GetBottomRow() - startRow + 1;
 
-		grid_template->InsertRows(rowsToAdd, rowCount);
+		grid_template->InsertRows(moveTo, rowCount);
 
 		int total_rows = startRow + rowCount;
 
 		for (int i = startRow; i < total_rows; i++)
 		{
-			GridTransfer(grid_tasks, i, grid_template, rowsToAdd);
+			GridTransfer(grid_tasks, i, grid_template, moveTo);
 
-			BackgroundColorUpdate(grid_template, rowsToAdd, ToTaskName(grid_tasks->GetCellValue(i, 0).ToStdString()));
+			BackgroundColorUpdate(grid_template, moveTo, StepGridData[i].TaskEnum);
 
-			rowsToAdd += 1;
+			moveTo += 1;
 
-			if (TrasferToMap)
-			{
-				steps.push_back(StepGridData[i]);
-			}
+			steps.push_back(StepGridData[i]);
 		}
 	}
 
-	if (TrasferToMap)
-	{
-		it->second = steps;
-	}
+	it->second = steps;
+	return;
 }
 
-// You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
-//void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
-//{
-//	if (!grid_tasks->IsSelection())
-//	{
-//		row_num = grid_tasks->GetNumberRows();
-//	}
-//	else
-//	{
-//		if (!grid_tasks->GetSelectedRows().begin())
-//		{
-//			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
-//			return;
-//		}
-//
-//		row_num = *grid_tasks->GetSelectedRows().begin();
-//	}
-//
-//	if (spin_amount_offset->GetValue() != 0 && spin_amount_multiplier->GetValue() != 0)
-//	{
-//		wxMessageBox("Please either use units-offset or units-multiplier", "Invalid use of template attributes");
-//		return;
-//	}
-//
-//	bool check = false;
-//
-//	for (const auto& block : grid_template->GetSelectedRowBlocks())
-//	{
-//		template_row_num = block.GetTopRow();
-//		template_row_count = block.GetBottomRow() - template_row_num + 1;
-//
-//		grid_tasks->InsertRows(row_num, template_row_count);
-//
-//		int total_rows = template_row_num + template_row_count;
-//
-//		for (int i = template_row_num; i < total_rows; i++)
-//		{
-//			grid_extract_parameters(i, grid_template);
-//
-//			TemplateAlterTask(i, grid_template);
-//
-//			grid_insert_data(row_num, grid_tasks);
-//
-//			BackgroundColorUpdate(grid_tasks, row_num, task);
-//
-//			it1 = tasks_data_to_save.begin();
-//			it1 += row_num;
-//
-//			check = true;
-//
-//			tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-//
-//			row_num += 1;
-//		}
-//	}
-//
-//	if (check)
-//	{
-//		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-//		event.Skip();
-//		return;
-//	}
-//
-//	template_row_count = grid_template->GetNumberRows();
-//
-//	grid_tasks->InsertRows(row_num, template_row_count);
-//
-//	for (int i = 0; i < template_row_count; i++)
-//	{
-//
-//		grid_extract_parameters(i, grid_template);
-//
-//		TemplateAlterTask(i, grid_template);
-//
-//		grid_insert_data(row_num, grid_tasks);
-//
-//		BackgroundColorUpdate(grid_tasks, row_num, task);
-//
-//		it1 = tasks_data_to_save.begin();
-//		it1 += row_num;
-//
-//		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-//
-//		row_num += 1;
-//	}
-//
-//	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
-//
-//	event.Skip();
-//}
+ //You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
+void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
+{
+	int moveTo = grid_tasks->GetNumberRows();;
+
+	if (grid_tasks->IsSelection())
+	{
+		if (!grid_tasks->GetSelectedRows().begin())
+		{
+			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			return;
+		}
+
+		moveTo = *grid_tasks->GetSelectedRows().begin();
+	}
+
+	if (spin_amount_offset->GetValue() != 0 && spin_amount_multiplier->GetValue() != 0)
+	{
+		wxMessageBox("Please either use units-offset or units-multiplier", "Invalid use of template attributes");
+		return;
+	}
+
+	bool check = false;
+
+	for (const auto& block : grid_template->GetSelectedRowBlocks())
+	{
+		int row = block.GetTopRow();
+		int rowCount = block.GetBottomRow() - row + 1;
+
+		grid_tasks->InsertRows(moveTo, rowCount);
+
+		int total_rows = row + rowCount;
+
+		for (int i = row; i < total_rows; i++)
+		{
+			StepParameters step = group_map[cmb_choose_template->GetValue().ToStdString()][i];
+
+			GridEntry gridEntry = ExtractGridEntry(grid_template, row);
+
+			NewTemplateAlterTask(step);
+
+			gridEntry.X = to_string(step.X);
+			gridEntry.Y = to_string(step.X);
+			gridEntry.Amount = step.Amount;
+
+			BackgroundColorUpdate(grid_tasks, moveTo, step.TaskEnum);
+
+			check = true;
+
+			auto it1 = StepGridData.begin();
+			it1 += moveTo;
+
+			StepGridData.insert(it1, step);
+
+			moveTo += 1;
+		}
+	}
+
+	/*if (check)
+	{
+		update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+		event.Skip();
+		return;
+	}
+
+	template_row_count = grid_template->GetNumberRows();
+
+	grid_tasks->InsertRows(moveTo, template_row_count);
+
+	for (int i = 0; i < template_row_count; i++)
+	{
+
+		grid_extract_parameters(i, grid_template);
+
+		TemplateAlterTask(i, grid_template);
+
+		grid_insert_data(moveTo, grid_tasks);
+
+		BackgroundColorUpdate(grid_tasks, moveTo, task);
+
+		it1 = tasks_data_to_save.begin();
+		it1 += moveTo;
+
+		tasks_data_to_save.insert(it1, task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
+
+		moveTo += 1;
+	}
+
+	update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
+
+	event.Skip();*/
+}
+
+void cMain::NewTemplateAlterTask(StepParameters& step)
+{
+	if (step.X != invalidX)
+	{
+		step.X += spin_x_offset->GetValue();
+		step.Y += spin_y_offset->GetValue();
+	}
+
+	if (step.Amount == "" || step.Amount == "All")
+	{
+		return;
+	}
+
+	if (spin_amount_offset->GetValue() != 0)
+	{
+		step.Amount = stoi(step.Amount) + spin_amount_offset->GetValue();
+	}
+
+	if (spin_amount_multiplier->GetValue() != 0)
+	{
+		step.Amount = stoi(step.Amount) * spin_amount_multiplier->GetValue();
+	}
+}
 
 //void cMain::TemplateAlterTask(int row, wxGrid* grid)
 //{
