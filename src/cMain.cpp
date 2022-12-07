@@ -708,6 +708,27 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 							break;
 						}
 
+						if (StepGridData[k].Buildings < 2)
+						{
+							grid_tasks->DeleteRows(k);
+							auto it1 = StepGridData.begin();
+							it1 += k + rowsDeleted;
+							StepGridData.erase(it1);
+
+							k--;
+							totalLines--;
+
+							continue;
+						}
+
+						for (int l = 0; l < StepGridData[k].Buildings; l++)
+						{
+							if (StepGridData[i].X == StepGridData[k].X && StepGridData[i].Y == StepGridData[k].Y)
+							{
+
+							}
+						}
+
 						grid_tasks->DeleteRows(k);
 						auto it1 = StepGridData.begin();
 						it1 += k + rowsDeleted;
