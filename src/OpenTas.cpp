@@ -128,7 +128,7 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 		step.Direction = Capitalize(segments[6]);
 		step.Comment = comment;
 
-		step.TaskEnum = TaskNames.find(step.Task)->second;
+		step.TaskEnum = MapTaskNameToTaskType.find(step.Task)->second;
 
 		switch (step.TaskEnum)
 		{
@@ -251,7 +251,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		step.TaskEnum = TaskNames.find(step.Task)->second;
+		step.TaskEnum = MapTaskNameToTaskType.find(step.Task)->second;
 
 		steps.push_back(step);
 
@@ -335,7 +335,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		step.TaskEnum = TaskNames.find(step.Task)->second;
+		step.TaskEnum = MapTaskNameToTaskType.find(step.Task)->second;
 
 		steps.push_back(step);
 

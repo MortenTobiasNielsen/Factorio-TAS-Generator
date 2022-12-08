@@ -231,7 +231,7 @@ private:
 	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	bool ChangeRow(wxGrid* grid, StepParameters step);
 
-	void BackgroundColorUpdate(wxGrid* grid, int row, TaskName task);
+	void BackgroundColorUpdate(wxGrid* grid, int row, TaskType task);
 
 	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);

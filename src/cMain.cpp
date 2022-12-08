@@ -255,7 +255,7 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 
 			GridTransfer(grid, row, grid, moveTo);
 
-			BackgroundColorUpdate(grid, moveTo, ToTaskName(grid->GetCellValue(moveTo, 0).ToStdString()));
+			BackgroundColorUpdate(grid, moveTo, ToTaskType(grid->GetCellValue(moveTo, 0).ToStdString()));
 
 			grid->DeleteRows(row);
 
@@ -286,7 +286,7 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 
 			grid->DeleteRows(row + 1);
 
-			BackgroundColorUpdate(grid, moveTo, ToTaskName(grid->GetCellValue(moveTo, 0).ToStdString()));
+			BackgroundColorUpdate(grid, moveTo, ToTaskType(grid->GetCellValue(moveTo, 0).ToStdString()));
 
 			auto it1 = StepGridData.begin();
 			it1 += row;
@@ -339,7 +339,7 @@ void cMain::GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<str
 
 		GridTransfer(grid, row, grid, rowNum + rowCount);
 
-		BackgroundColorUpdate(grid, rowNum + rowCount, ToTaskName(grid->GetCellValue(rowNum + rowCount, 0).ToStdString()));
+		BackgroundColorUpdate(grid, rowNum + rowCount, ToTaskType(grid->GetCellValue(rowNum + rowCount, 0).ToStdString()));
 
 		grid->DeleteRows(row);
 
@@ -456,7 +456,7 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 	return true;
 }
 
-void cMain::BackgroundColorUpdate(wxGrid* grid, int row, TaskName task)
+void cMain::BackgroundColorUpdate(wxGrid* grid, int row, TaskType task)
 {
 	switch (task)
 	{
@@ -1600,7 +1600,7 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event)
 
 void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 {
-	TaskName task = ToTaskName(gridEntry->Task.ToStdString());
+	TaskType task = ToTaskType(gridEntry->Task.ToStdString());
 
 	string orientation = "";
 	float speed;
@@ -1888,7 +1888,7 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
-	stepParameters.TaskEnum = TaskNames.find(stepParameters.Task)->second;
+	stepParameters.TaskEnum = MapTaskNameToTaskType.find(stepParameters.Task)->second;
 
 	return stepParameters;
 }
