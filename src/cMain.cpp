@@ -29,7 +29,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	all_recipes.insert(all_recipes.end(), full_chemical_plant_recipes.begin(), full_chemical_plant_recipes.end());
 	all_recipes.insert(all_recipes.end(), oil_refinery_list.begin(), oil_refinery_list.end());
 
-	for (auto s : all_recipes)
+	for (auto& s : all_recipes)
 	{
 		recipe_choices.Add(s);
 	}
@@ -47,37 +47,37 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 		all_buildings.push_back(it->first);
 	}
 
-	for (auto s : all_items)
+	for (auto& s : all_items)
 	{
 		item_choices.Add(s);
 	}
 
-	for (auto s : all_buildings)
+	for (auto& s : all_buildings)
 	{
 		building_choices.Add(s);
 	}
 
-	for (auto s : take_from)
+	for (auto& s : take_from)
 	{
 		take_from_choices.Add(s);
 	}
 
-	for (auto s : tech_list)
+	for (auto& s : tech_list)
 	{
 		tech_choices.Add(s);
 	}
 
-	for (auto s : build_orientations)
+	for (auto& s : build_orientations)
 	{
 		building_orientation_choices.Add(s);
 	}
 
-	for (auto s : input_output)
+	for (auto& s : input_output)
 	{
 		input_output_choices.Add(s);
 	}
 
-	for (auto s : handcrafted_list)
+	for (auto& s : handcrafted_list)
 	{
 		handcrafted_choices.Add(s);
 	}
@@ -401,7 +401,7 @@ bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepPara
 
 	auto rowsDeleted = 0;
 
-	for (auto selection : row_selections)
+	for (const auto& selection : row_selections)
 	{
 		long long pos = selection.find(",");
 
@@ -529,7 +529,7 @@ void cMain::AddTask(int row)
 		return;
 	};
 
-	std::string to_check;
+	string to_check;
 	switch (stepParameters.TaskEnum)
 	{
 		case e_build:
@@ -549,6 +549,7 @@ void cMain::AddTask(int row)
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
 				UpdateStepGrid(row, &stepParameters);
+				return;
 			}
 
 			if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler)
@@ -557,6 +558,7 @@ void cMain::AddTask(int row)
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
 				UpdateStepGrid(row, &stepParameters);
+				return;
 			}
 
 			if (check_lab->IsChecked() && to_check == struct_science_list.lab)
@@ -565,6 +567,7 @@ void cMain::AddTask(int row)
 				stepParameters.FromInto = struct_from_into_list.input;
 
 				UpdateStepGrid(row, &stepParameters);
+				return;
 			}
 
 			return;
@@ -576,14 +579,14 @@ void cMain::AddTask(int row)
 
 			if (check_recipe->IsChecked())
 			{
-				std::vector<std::string> recipe = recipes.find(to_check)->second;
+				vector<string> recipe = recipes.find(to_check)->second;
 
-				int multiplier = std::stoi(stepParameters.Amount);
+				int multiplier = stoi(stepParameters.Amount);
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
 					stepParameters.TaskEnum = e_put;
 					stepParameters.Task = struct_tasks_list.put;
-					stepParameters.Amount = std::to_string(stoi(recipe[i + 1]) * multiplier);
+					stepParameters.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = struct_from_into_list.input;
 
@@ -611,8 +614,10 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event)
 	int row = *grid_tasks->GetSelectedRows().begin();
 	if (StepGridData[row].TaskEnum == e_build)
 	{
-		wxMessageBox("It has turned out to be immensely difficult to ensure alignment when a build task is changed and it is therefore no longer supported.", "No longer supported");
-		return;
+		if (wxMessageBox("The row selected is a build task - are you sure you want to make this change?\nEnsure that you delete associated steps.", "The build task you are changing could be associated with future tasks", wxICON_WARNING | wxYES_NO, this) != wxYES)
+		{
+			return;
+		}
 	}
 
 	auto stepParameters = ExtractStepParameters();
@@ -661,25 +666,11 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 
 	counter--;
 
-	// If the last row of the block is also the last row of StepGridData then the rows are just deleted
-	if ((startRow + RowsToDelete) == StepGridData.size())
-	{
-		grid_tasks->DeleteRows(startRow, RowsToDelete);
-
-		if (startRow - 1 >= 0)
-		{
-			grid_tasks->SelectRow(startRow - 1);
-		}
-
-		return;
-	}
-
-	// Otherwise the rows are run through to see if at least one of the tasks is a build task
 	for (int i = startRow; i < (startRow + RowsToDelete); i++)
 	{
 		if (StepGridData[i].TaskEnum == e_build)
 		{
-			if (wxMessageBox("At least one of the rows selected is a build task - are you sure you want to delete the rows selected?\nAll future tasks associated with the building(s) will be removed to avoid issues.", "The build task(s) you are deleting could be associated with future tasks", wxICON_QUESTION | wxYES_NO, this) != wxYES)
+			if (wxMessageBox("At least one of the rows selected is a build task - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", "The build task(s) you are deleting could be associated with future tasks", wxICON_WARNING | wxYES_NO, this) != wxYES)
 			{
 				return;
 			}
@@ -688,68 +679,15 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 		}
 	}
 
-	int amountOfRowsToCheck = startRow + RowsToDelete;
-	int rowsDeleted = 0;
+	grid_tasks->DeleteRows(startRow, RowsToDelete);
 
-	for (int i = startRow; i < amountOfRowsToCheck; i++)
-	{
-		if (StepGridData[i].TaskEnum == e_build)
-		{
-			for (int j = 0; j < StepGridData[i].Buildings; j++)
-			{
-				int totalLines = StepGridData.size();
+	auto it1 = StepGridData.begin();
+	auto it2 = StepGridData.begin();
 
-				for (int k = (startRow + RowsToDelete - rowsDeleted); k < totalLines; k++)
-				{
-					if (StepGridData[i] == StepGridData[k])
-					{
-						if (StepGridData[k].TaskEnum == e_mine || StepGridData[k].TaskEnum == e_build)
-						{
-							break;
-						}
+	it1 += startRow;
+	it2 += startRow + RowsToDelete;
 
-						if (StepGridData[k].Buildings < 2)
-						{
-							grid_tasks->DeleteRows(k);
-							auto it1 = StepGridData.begin();
-							it1 += k + rowsDeleted;
-							StepGridData.erase(it1);
-
-							k--;
-							totalLines--;
-
-							continue;
-						}
-
-						for (int l = 0; l < StepGridData[k].Buildings; l++)
-						{
-							if (StepGridData[i].X == StepGridData[k].X && StepGridData[i].Y == StepGridData[k].Y)
-							{
-
-							}
-						}
-
-						grid_tasks->DeleteRows(k);
-						auto it1 = StepGridData.begin();
-						it1 += k + rowsDeleted;
-						StepGridData.erase(it1);
-
-						k--;
-						totalLines--;
-
-						continue;
-					}
-				}
-
-				StepGridData[i].Next();
-			}
-		}
-
-		grid_tasks->DeleteRows(i);
-		i--;
-		amountOfRowsToCheck--;
-		rowsDeleted++;
-	}
+	StepGridData.erase(it1, it2);
 
 	// The row after the deleted row(s) are selected if there were no other row blocks selected
 	if (counter == 1)
@@ -770,7 +708,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 
 		auto StartRow = 0;
 		auto rowCount = 0;
-		for (auto selection : row_selections)
+		for (const auto& selection : row_selections)
 		{
 			long long pos = selection.find(",");
 
@@ -786,61 +724,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 		}
 	}
 
-	auto it1 = StepGridData.begin();
-	auto it2 = StepGridData.begin();
-
-	it1 += startRow;
-	it2 += startRow + RowsToDelete;
-
-	StepGridData.erase(it1, it2);
-
 	event.Skip();
-}
-
-// TODO: Should this be used for something?
-void cMain::DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete)
-{
-	int amountOfRowsToCheck = startRow + RowsToDelete;
-	int rowsDeleted = 0;
-
-	for (int i = startRow; i < amountOfRowsToCheck; i++)
-	{
-		if (StepGridData[i].TaskEnum == e_build)
-		{
-			for (int j = 0; j < StepGridData[i].Buildings; j++)
-			{
-				int totalLines = StepGridData.size();
-
-				for (int k = (startRow + RowsToDelete - rowsDeleted); k < totalLines; k++)
-				{
-					if (StepGridData[i] == StepGridData[k])
-					{
-						if (StepGridData[k].TaskEnum == e_mine || StepGridData[k].TaskEnum == e_build)
-						{
-							break;
-						}
-
-						grid_tasks->DeleteRows(k);
-						auto it1 = StepGridData.begin();
-						it1 += k + rowsDeleted;
-						StepGridData.erase(it1);
-
-						k--;
-						totalLines--;
-
-						continue;
-					}
-				}
-
-				StepGridData[i].Next();
-			}
-		}
-
-		grid_tasks->DeleteRows(i);
-		i--;
-		amountOfRowsToCheck--;
-		rowsDeleted++;
-	}
 }
 
 void cMain::OnMoveUpClicked(wxCommandEvent& event)
@@ -851,7 +735,6 @@ void cMain::OnMoveUpClicked(wxCommandEvent& event)
 	}
 
 	MoveRow(grid_tasks, true);
-	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -863,7 +746,6 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event)
 	}
 
 	MoveRow(grid_tasks, false);
-	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -879,7 +761,6 @@ void cMain::OnMoveUpFiveClicked(wxMouseEvent& event)
 		MoveRow(grid_tasks, true);
 	}
 
-	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -895,7 +776,6 @@ void cMain::OnMoveDownFiveClicked(wxMouseEvent& event)
 		MoveRow(grid_tasks, false);
 	}
 
-	//update_buildings_grid_from_scratch(0, grid_tasks->GetNumberRows());
 	event.Skip();
 }
 
@@ -1036,7 +916,6 @@ void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event)
 	event.Skip();
 }
 
- //You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
 {
 	int moveTo = grid_tasks->GetNumberRows();
@@ -1100,7 +979,6 @@ void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int
 	to->SetCellValue(toRow, 9, from->GetCellValue(fromRow, 9));
 }
 
-// You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnGroupChangeClicked(wxCommandEvent& event)
 {
 	auto stepParameters = ExtractStepParameters();
@@ -1135,7 +1013,6 @@ void cMain::OnGroupDeleteClicked(wxCommandEvent& event)
 	event.Skip();
 }
 
-// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnGroupMoveUpClicked(wxCommandEvent& event)
 {
 	GroupTemplateMoveRow(grid_group, cmb_choose_group, true, group_map);
@@ -1143,7 +1020,6 @@ void cMain::OnGroupMoveUpClicked(wxCommandEvent& event)
 	event.Skip();
 }
 
-// You have chosen to not make checks when tasks are moved, given that it most likely would make the function very clunky to use
 void cMain::OnGroupMoveDownClicked(wxCommandEvent& event)
 {
 	GroupTemplateMoveRow(grid_group, cmb_choose_group, false, group_map);
@@ -1281,7 +1157,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 			{
 				StepParameters step = template_map[cmb_choose_template->GetValue().ToStdString()][i];
 
-				NewTemplateAlterTask(step);
+				TemplateAlterTask(step);
 
 				UpdateStepGrid(moveTo, &step);
 
@@ -1298,7 +1174,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 	{
 		StepParameters step = template_map[cmb_choose_template->GetValue().ToStdString()][i];
 
-		NewTemplateAlterTask(step);
+		TemplateAlterTask(step);
 
 		UpdateStepGrid(moveTo, &step);
 
@@ -1306,7 +1182,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 	}
 }
 
-void cMain::NewTemplateAlterTask(StepParameters& step)
+void cMain::TemplateAlterTask(StepParameters& step)
 {
 	if (step.X != invalidX)
 	{
@@ -1329,35 +1205,6 @@ void cMain::NewTemplateAlterTask(StepParameters& step)
 		step.Amount = to_string(stoi(step.Amount) * spin_amount_multiplier->GetValue());
 	}
 }
-
-//void cMain::TemplateAlterTask(int row, wxGrid* grid)
-//{
-//	grid_extract_parameters(row, grid);
-//
-//	if (grid->GetCellValue(row, 1).ToStdString() != "")
-//	{
-//		x_cord = std::to_string(std::stof(x_cord) + spin_x_offset->GetValue());
-//		y_cord = std::to_string(std::stof(y_cord) + spin_y_offset->GetValue());
-//	}
-//
-//	if (grid->GetCellValue(row, 3).ToStdString() != "")
-//	{
-//		if (amount == "All")
-//		{
-//			return;
-//		}
-//
-//		if (spin_amount_offset->GetValue() != 0)
-//		{
-//			amount = std::to_string(std::stof(amount) + spin_amount_offset->GetValue());
-//		}
-//
-//		if (spin_amount_multiplier->GetValue() != 0)
-//		{
-//			amount = std::to_string(std::stoi(amount) * spin_amount_multiplier->GetValue());
-//		}
-//	}
-//}
 
 void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event)
 {

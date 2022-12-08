@@ -152,7 +152,7 @@ protected:
 	void OnTemplateChosen(wxCommandEvent& event);
 
 	void TemplateAlterTask(int row, wxGrid* grid);
-	void NewTemplateAlterTask(StepParameters& step);
+	void TemplateAlterTask(StepParameters& step);
 
 	//Seach
 	void TaskSeachOnText(wxCommandEvent& event);
@@ -256,14 +256,10 @@ private:
 	GridEntry PrepareStepParametersForGrid(StepParameters* stepParameters);
 	StepParameters ExtractStepParameters();
 
-	bool new_find_building(int startRow, StepParameters stepParameters);
-	
-
 	int GenerateBuildingSnapShot(int end_row);
 	void PopulateStepGrid();
 
 	void AddTask(int row);
-	void DeleteStepsRelatedToBuilding(int startRow, int RowsToDelete);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
 	GridEntry ExtractGridEntry(wxGrid* grid, const int& row);
 
@@ -273,7 +269,6 @@ private:
 	bool IsValidCraftStep(StepParameters& stepParameters);
 	bool IsValidPutTakeStep(StepParameters& stepParameters);
 	bool IsValidTechnologyStep(StepParameters& stepParameters);
-	bool IsValidPriorityStep(StepParameters& stepParameters);
 
 	bool CheckTakePut(StepParameters& stepParameters);
 	bool ExtraBuildingChecks(StepParameters& stepParameters);
