@@ -133,8 +133,8 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 		switch (step.TaskEnum)
 		{
 			case e_build:
-				step.BuildingIndex = BuildingNameToIndex.find(step.Item)->second;
-				step.OrientationIndex = OrientationToIndex.find(step.Orientation)->second;
+				step.BuildingIndex = BuildingNameToType[step.Item];
+				step.orientation = OrientationToIndex[step.Orientation];
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;

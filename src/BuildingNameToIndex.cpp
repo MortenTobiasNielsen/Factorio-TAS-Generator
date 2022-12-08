@@ -2,13 +2,6 @@
 
 string FindBuildingName(int index)
 {
-	for (auto it = BuildingNameToIndex.begin(); it != BuildingNameToIndex.end(); ++it)
-	{
-		if (it->second == index)
-		{
-			return it->first;
-		}
-	}
-
-	return "N/A";
+	if (index < 1 || index > BuildingNames.size()) return "N/A";
+	else return BuildingNames[index];
 }
