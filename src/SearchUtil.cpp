@@ -27,7 +27,7 @@ vector<wxString> Search::Split(const string& s, char delim)
 	{
 		result.push_back(item);
 	}
-
+	if (result.empty()) result.push_back(s);
 	return result;
 }
 
@@ -42,7 +42,7 @@ tuple<wxString, wxString> Search::ExtractColon(const wxString& s)
 	return {s.substr(0, t), s.substr(t + 1, s.Length())};
 }
 
-tuple<vector<int>, wxString> Search::HandleColon(const wxString& s, bool isTaskGrid)
+tuple<vector<int>, wxString> Search::HandleColon(const wxString& s)
 {
 	auto [column, text] = ExtractColon(s);
 	vector<int> c; //casd
@@ -50,48 +50,28 @@ tuple<vector<int>, wxString> Search::HandleColon(const wxString& s, bool isTaskG
 	{
 		c.reserve(5);
 		double throwaway = 0;
-		if (isTaskGrid)
+		
+		if (text.ToDouble(&throwaway))
 		{
-			if (text.ToDouble(&throwaway))
-			{
-				c.push_back(1);
-				c.push_back(2);
-				c.push_back(3);
-				c.push_back(7);
-				c.push_back(8);
-			}
-			else
-			{
-				c.push_back(0);
-				c.push_back(4);
-				c.push_back(5);
-				c.push_back(6);
-				c.push_back(9);
-			}
+			c.push_back(1);
+			c.push_back(2);
+			c.push_back(3);
+			c.push_back(7);
+			c.push_back(8);
 		}
 		else
 		{
-			if (text.ToDouble(&throwaway))
-			{
-				c.push_back(0);
-				c.push_back(1);
-				c.push_back(4);
-			}
-			else
-			{
-				c.push_back(2);
-				c.push_back(3);
-				c.push_back(5);
-				c.push_back(6);
-				c.push_back(7);
-				c.push_back(8);
-			}
+			c.push_back(0);
+			c.push_back(4);
+			c.push_back(5);
+			c.push_back(6);
+			c.push_back(9);
 		}
 	}
 	else
 	{
 		for (int i = 0; i < column.Length(); i++) column[i] = std::tolower(column[i]); // convert custom column to lower case
-		vector<wxString> columns = isTaskGrid ? taskcolumns : buildingcolumns;
+		vector<wxString> columns = taskcolumns;
 		for (int i = 0; i < 10; i++)
 		{
 			if (columns[i].starts_with(column))
@@ -106,7 +86,7 @@ tuple<vector<int>, wxString> Search::HandleColon(const wxString& s, bool isTaskG
 	return {c, text};
 }
 
-vector<tuple<vector<int>, wxString>> Search::HandleSearchString(wxCommandEvent& event, bool isTaskGrid)
+vector<tuple<vector<int>, wxString>> Search::HandleSearchString(wxCommandEvent& event)
 {
 	vector<tuple<vector<int>, wxString>> searchterms = {};
 	auto str = event.GetString();
@@ -114,7 +94,7 @@ vector<tuple<vector<int>, wxString>> Search::HandleSearchString(wxCommandEvent& 
 	auto list = Split(str.ToStdString(), ';');
 	for (wxString item : list)
 	{
-		auto a = HandleColon(item, isTaskGrid);
+		auto a = HandleColon(item);
 		searchterms.push_back(a);
 	}
 	return searchterms;
@@ -195,9 +175,9 @@ bool Search::TrySelectNext(wxCommandEvent& event, wxGrid* grid, vector<tuple<vec
 	return false;
 }
 
-void Search::FindCurrentOrNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid)
+void Search::FindCurrentOrNext(wxCommandEvent& event, wxGrid* grid)
 {
-	vector<tuple<vector<int>, wxString>> searchTerms = HandleSearchString(event, isTaskGrid);
+	vector<tuple<vector<int>, wxString>> searchTerms = HandleSearchString(event);
 	if (TrySelectCurrent(grid, searchTerms))
 	{
 		return;
@@ -208,8 +188,8 @@ void Search::FindCurrentOrNext(wxCommandEvent& event, wxGrid* grid, bool isTaskG
 	}
 }
 
-void Search::FindNext(wxCommandEvent& event, wxGrid* grid, bool isTaskGrid)
+void Search::FindNext(wxCommandEvent& event, wxGrid* grid)
 {
-	vector<tuple<vector<int>, wxString>> searchTerms = HandleSearchString(event, isTaskGrid);
+	vector<tuple<vector<int>, wxString>> searchTerms = HandleSearchString(event);
 	TrySelectNext(event, grid, searchTerms);
 }
