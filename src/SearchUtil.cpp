@@ -49,9 +49,9 @@ tuple<vector<int>, wxString> Search::HandleColon(const wxString& s)
 	if (column == "any")
 	{
 		c.reserve(5);
-		double throwaway = 0;
+		double text_todouble_throwaway = 0;
 		
-		if (text.ToDouble(&throwaway))
+		if (text.ToDouble(&text_todouble_throwaway))
 		{
 			c.push_back(1);
 			c.push_back(2);
