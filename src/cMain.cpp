@@ -1079,20 +1079,6 @@ void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int
 	to->SetCellValue(toRow, 9, from->GetCellValue(fromRow, 9));
 }
 
-//void cMain::grid_insert_data(const int& row, wxGrid* grid)
-//{
-//	grid->SetCellValue(row, 0, task);
-//	grid->SetCellValue(row, 1, x_cord);
-//	grid->SetCellValue(row, 2, y_cord);
-//	grid->SetCellValue(row, 3, amount);
-//	grid->SetCellValue(row, 4, item);
-//	grid->SetCellValue(row, 5, build_orientation);
-//	grid->SetCellValue(row, 6, direction_to_build);
-//	grid->SetCellValue(row, 7, building_size);
-//	grid->SetCellValue(row, 8, amount_of_buildings);
-//	grid->SetCellValue(row, 9, comment);
-//}
-
 // You have chosen to exclude the checks normally made when adding a task to the task list, given the increased complexity of handling multiple tasks at once
 void cMain::OnGroupChangeClicked(wxCommandEvent& event)
 {

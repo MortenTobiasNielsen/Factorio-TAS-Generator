@@ -235,8 +235,6 @@ private:
 
 	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
-	//void grid_extract_parameters(const int& row, wxGrid* grid);
-	//void grid_insert_data(const int& row, wxGrid* grid);
 
 	void setup_paramters(std::vector<bool> parameters);
 
