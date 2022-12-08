@@ -548,7 +548,7 @@ void cMain::AddTask(int row)
 				stepParameters.Item = struct_fuel_list.coal;
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
-				UpdateStepGrid(row, &stepParameters);
+				UpdateStepGrid(row + 1, &stepParameters);
 				return;
 			}
 
@@ -557,7 +557,7 @@ void cMain::AddTask(int row)
 				stepParameters.Item = struct_fuel_list.coal;
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
-				UpdateStepGrid(row, &stepParameters);
+				UpdateStepGrid(row + 1, &stepParameters);
 				return;
 			}
 
@@ -566,7 +566,7 @@ void cMain::AddTask(int row)
 				stepParameters.Item = "Automation science pack";
 				stepParameters.FromInto = struct_from_into_list.input;
 
-				UpdateStepGrid(row, &stepParameters);
+				UpdateStepGrid(row + 1, &stepParameters);
 				return;
 			}
 
@@ -590,7 +590,7 @@ void cMain::AddTask(int row)
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = struct_from_into_list.input;
 
-					UpdateStepGrid(row, &stepParameters);
+					UpdateStepGrid(row + 1, &stepParameters);
 				}
 			}
 
@@ -1659,6 +1659,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 			OnRecipeMenuChosen(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
+			spin_amount->SetValue(gridEntry->Amount);
 			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
 			spin_building_size->SetValue(gridEntry->BuildingSize);
 			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
@@ -1796,54 +1797,12 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 	}
 }
 
-
-
-// TODO: Do you want to show the item and orientation of the building rotated?
-void cMain::update_future_rotate_tasks()
-{
-	/*int total_rows = grid_tasks->GetNumberRows();
-
-	for (int i = row_num + 1; i < total_rows; i++)
-	{
-
-		if (grid_tasks->GetCellValue(i, 0).ToStdString() == "Rotate")
-		{
-			if (grid_tasks->GetCellValue(i, 1).ToStdString() == x_cord && grid_tasks->GetCellValue(i, 2).ToStdString() == y_cord && grid_tasks->GetCellValue(i, 4).ToStdString() == building)
-			{
-
-				grid_extract_parameters(i, grid_tasks);
-
-				find_new_orientation();
-
-				grid_tasks->SetCellValue(i, 5, building_build_orientation);
-
-				tasks_data_to_save[i] = (task + ";" + x_cord + ";" + y_cord + ";" + amount + ";" + item + ";" + building_build_orientation + ";" + direction_to_build + ";" + building_size + ";" + amount_of_buildings + ";" + comment + ";");
-			}
-		}
-	}*/
-}
-
-string cMain::find_new_orientation(string originalOrientaion, const int& rotateAmount)
-{
-	for (auto it = build_orientations.begin(); it < build_orientations.end(); it++)
-	{
-		if (originalOrientaion == *it)
-		{
-			return build_orientations[((it - build_orientations.begin()) + rotateAmount) % 4];
-		}
-	}
-
-	return originalOrientaion;
-}
-
 void cMain::malformed_saved_file_message()
 {
 	ResetToNewWindow();
 	wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
 	dialog_progress_bar->set_button_enable(true);
 }
-
-
 
 bool cMain::SaveFile(bool save_as)
 {
@@ -2108,7 +2067,6 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 	return gridEntry;
 }
 
-// ensure that the variables are actually what they are supposed to be
 void cMain::UpdateStepGrid(int row, StepParameters* stepParameters)
 {
 	GridEntry gridEntry = PrepareStepParametersForGrid(stepParameters);

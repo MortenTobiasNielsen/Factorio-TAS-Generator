@@ -247,9 +247,6 @@ private:
 	string ExtractTask();
 	string ExtractAmount();
 
-	void update_future_rotate_tasks();
-	string find_new_orientation(string originalOrientaion, const int& rotateAmount);
-
 	void malformed_saved_file_message();
 
 	void UpdateStepGrid(int row, StepParameters* stepParameters);
