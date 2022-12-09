@@ -32,7 +32,7 @@ string GenerateScript::EndSteps()
 
 void GenerateScript::AddInfoFile(string& folder_location)
 {
-	auto software_version = "0.0.5";
+	auto software_version = "0.1.0";
 
 	std::ofstream saver;
 
@@ -45,7 +45,7 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver << "\n\t\"author\": \"" << "DunRaider" << "\",";
 	saver << "\n\t\"factorio_version\": \"" << "1.1" << "\",";
 	saver << "\n\t\"contact\": \"" << "" << "\",";
-	saver << "\n\t\"description\": \"" << "This run has been made with the help of EZRaiderz TAS helper" << "\",";
+	saver << "\n\t\"description\": \"" << "This run has been made with the help of EZRaiderz TAS helper" << "\"";
 	saver << "\n}";
 
 	saver.close();
