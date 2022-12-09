@@ -171,7 +171,7 @@
     <ClCompile Include="SaveTas.cpp" />
     <ClCompile Include="StepParameters.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
-    <ClCompile Include="TaskNameToEnum.cpp" />
+    <ClCompile Include="StepNameToEnum.cpp" />
     <ClCompile Include="TypePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,7 +184,7 @@
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="SearchUtil.h" />
     <ClInclude Include="SearchUtilities.h" />
-    <ClInclude Include="TaskNameToEnum.h" />
+    <ClInclude Include="StepNameToEnum.h" />
     <ClInclude Include="OpenTas.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SaveTas.h" />

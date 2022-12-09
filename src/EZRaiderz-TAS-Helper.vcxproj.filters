@@ -15,7 +15,7 @@
     <ClCompile Include="StepParameters.cpp">
       <Filter>Structs</Filter>
     </ClCompile>
-    <ClCompile Include="TaskNameToEnum.cpp">
+    <ClCompile Include="StepNameToEnum.cpp">
       <Filter>Maps</Filter>
     </ClCompile>
     <ClCompile Include="DialogProgressBar.cpp" />
@@ -47,7 +47,7 @@
     <ClInclude Include="BuildingNameToIndex.h">
       <Filter>Maps</Filter>
     </ClInclude>
-    <ClInclude Include="TaskNameToEnum.h">
+    <ClInclude Include="StepNameToEnum.h">
       <Filter>Maps</Filter>
     </ClInclude>
     <ClInclude Include="SearchUtil.h">

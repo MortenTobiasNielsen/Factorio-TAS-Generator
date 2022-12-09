@@ -109,8 +109,8 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 {
 	buildings[buildingsInSnapShot].X = stepParameters.X;
 	buildings[buildingsInSnapShot].Y = stepParameters.Y;
-	buildings[buildingsInSnapShot].Index = stepParameters.BuildingIndex;
-	buildings[buildingsInSnapShot].OrientationIndex = stepParameters.OrientationIndex;
+	buildings[buildingsInSnapShot].type = stepParameters.BuildingIndex;
+	buildings[buildingsInSnapShot].OrientationEnum = stepParameters.OrientationEnum;
 	buildingsInSnapShot++;
 
 	if (stepParameters.Buildings == 1)
@@ -124,8 +124,8 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 		
 		buildings[buildingsInSnapShot].X = stepParameters.X;
 		buildings[buildingsInSnapShot].Y = stepParameters.Y;
-		buildings[buildingsInSnapShot].Index = stepParameters.BuildingIndex;
-		buildings[buildingsInSnapShot].OrientationIndex = stepParameters.OrientationIndex;
+		buildings[buildingsInSnapShot].type = stepParameters.BuildingIndex;
+		buildings[buildingsInSnapShot].OrientationEnum = stepParameters.OrientationEnum;
 		buildingsInSnapShot++;
 	}
 
@@ -158,7 +158,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 			{
 				if (buildingsFound == 0)
 				{
-					firstOrientation = buildings[j].OrientationIndex;
+					firstOrientation = buildings[j].OrientationEnum;
 				}
 
 				buildingsFound++;
@@ -169,7 +169,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 		if (buildingsFound == stepParameters.Buildings)
 		{
 			stepParameters.Reset();
-			stepParameters.OrientationIndex = firstOrientation;
+			stepParameters.OrientationEnum = firstOrientation;
 			return true;
 		}
 
@@ -181,7 +181,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 
 void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry)
 {
-	grid->SetCellValue(row, 0, gridEntry->Task);
+	grid->SetCellValue(row, 0, gridEntry->Step);
 	grid->SetCellValue(row, 1, gridEntry->X);
 	grid->SetCellValue(row, 2, gridEntry->Y);
 	grid->SetCellValue(row, 3, gridEntry->Amount);

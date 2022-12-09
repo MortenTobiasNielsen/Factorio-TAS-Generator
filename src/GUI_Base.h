@@ -113,26 +113,26 @@ class GUI_Base : public wxFrame
 		wxComboBox* cmb_choose_group;
 		wxButton* btn_new_group;
 		wxButton* btn_group_delete;
-		wxButton* btn_group_change_task;
-		wxButton* btn_group_delete_task;
+		wxButton* btn_group_change_step;
+		wxButton* btn_group_delete_step;
 		wxButton* btn_group_move_up;
 		wxButton* btn_gorup_move_down;
 		wxStaticLine* m_staticline5;
-		wxButton* btn_group_add_to_tasks_list;
-		wxButton* btn_group_add_from_tasks_list;
+		wxButton* btn_group_add_to_steps_list;
+		wxButton* btn_group_add_from_steps_list;
 		wxGrid* grid_group;
 		wxPanel* template_panel;
 		wxStaticText* label_choose_template;
 		wxComboBox* cmb_choose_template;
 		wxButton* btn_template_new;
 		wxButton* btn_template_delete;
-		wxButton* btn_template_change_task;
-		wxButton* btn_template_delete_task;
-		wxButton* btn_template_move_up_task;
-		wxButton* btn_template_move_down_task;
+		wxButton* btn_template_change_step;
+		wxButton* btn_template_delete_step;
+		wxButton* btn_template_move_up_step;
+		wxButton* btn_template_move_down_step;
 		wxStaticLine* m_staticline51;
-		wxButton* btn_template_add_to_tasks_list1;
-		wxButton* btn_template_add_from_tasks_list1;
+		wxButton* btn_template_add_to_steps_list;
+		wxButton* btn_template_add_from_steps_list;
 		wxStaticText* label_template_amount_offset;
 		wxSpinCtrl* spin_amount_offset;
 		wxStaticText* label_template_amount_multiplier;
@@ -143,13 +143,13 @@ class GUI_Base : public wxFrame
 		wxSpinCtrl* spin_y_offset;
 		wxGrid* grid_template;
 		wxPanel* step_panel;
-		wxSearchCtrl* task_search_ctrl;
-		wxButton* btn_add_task11;
-		wxButton* btn_change_task11;
-		wxButton* btn_delete_task11;
-		wxButton* btn_move_up11;
-		wxButton* btn_move_down11;
-		wxGrid* grid_tasks;
+		wxSearchCtrl* step_search_ctrl;
+		wxButton* btn_add_step;
+		wxButton* btn_change_step;
+		wxButton* btn_delete_step;
+		wxButton* btn_move_up;
+		wxButton* btn_move_down;
+		wxGrid* grid_steps;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnApplicationClose( wxCloseEvent& event ) { event.Skip(); }
@@ -223,31 +223,31 @@ class GUI_Base : public wxFrame
 		virtual void OnGroupDeleteClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGroupMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGroupMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupAddToTasksListClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupAddFromTasksListClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGroupAddToStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGroupAddFromStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGroupGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTemplateChangeTaskClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTemplateDeleteTaskClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTemplateChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTemplateDeleteStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTemplateAddToTasksListClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTemplateAddFromTasksListClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTemplateAddToStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTemplateAddFromStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
-		virtual void TaskSeachOnCancelButton( wxCommandEvent& event ) { event.Skip(); }
-		virtual void TaskSeachOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
-		virtual void TaskSeachOnText( wxCommandEvent& event ) { event.Skip(); }
-		virtual void TaskSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnAddTaskClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnChangeTaskClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDeleteTaskClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void StepSeachOnCancelButton( wxCommandEvent& event ) { event.Skip(); }
+		virtual void StepSeachOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
+		virtual void StepSeachOnText( wxCommandEvent& event ) { event.Skip(); }
+		virtual void StepSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddStepClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeleteStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
-		virtual void OnTasksGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
+		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 
 
 	public:

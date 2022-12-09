@@ -7,8 +7,8 @@ StepParameters::StepParameters(double InitialX, double InitialY)
 	OriginalX = InitialX;
 	OriginalY = InitialY;
 
-	OrientationIndex = North;
-	TaskEnum = e_stop;
+	OrientationEnum = North;
+	StepEnum = e_stop;
 	Size = 1;
 	Buildings = 1;
 	BuildingIndex = 0;
@@ -49,56 +49,56 @@ void StepParameters::Next()
 
 string StepParameters::ToString()
 {
-	switch (TaskEnum)
+	switch (StepEnum)
 	{
 
 		case e_start:
 		case e_pause:
 		case e_save:
-			return Task + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+			return Step + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
 
 		case e_stop:
 		case e_game_speed:
 		case e_idle:
 		case e_pick_up:
-			return Task + ";" + ";" + ";" + Amount + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+			return Step + ";" + ";" + ";" + Amount + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
 
 		case e_build:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 
 		case e_craft:
-			return Task + ";" + ";" + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+			return Step + ";" + ";" + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
 
 		case e_recipe:
 		case e_filter:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 
 		case e_limit:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 
 		case e_rotate:
 		case e_mine:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
 
 		case e_priority:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 
 		case e_put:
 		case e_take:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 
 		case e_launch:
 		case e_walk:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";
 
 		case e_tech:
-			return Task + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
+			return Step + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";";
 
 		case e_drop:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 
 		default:
-			return Task + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";";
 	}
 }
 
@@ -106,8 +106,8 @@ bool StepParameters::operator==(const Building& toCompare)
 {
 	if (toCompare.X == X && toCompare.Y == Y)
 	{
-		BuildingIndex = toCompare.Index;
-		OrientationIndex = toCompare.OrientationIndex;
+		BuildingIndex = toCompare.type;
+		OrientationEnum = toCompare.OrientationEnum;
 		return true;
 	}
 

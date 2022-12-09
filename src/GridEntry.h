@@ -4,7 +4,7 @@
 
 struct GridEntry
 {
-	wxString Task;
+	wxString Step;
 	wxString X;
 	wxString Y;
 	wxString Amount;

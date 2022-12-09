@@ -6,56 +6,56 @@
 using std::string;
 
 /*
-Type panel is the second panel at the top, with a radio button for each tasktype
+Type panel is the second panel at the top, with a radio button for each steptype
 This file extends cMain.h to reduce the size of cMain.cpp
 */
 
-void TypePanel::SwitchTask(TASK_TYPE::task_type type)
+void TypePanel::SwitchStep(STEP_TYPE::step_type type)
 {
 	cMain* parent = ((cMain*)this->GetParent());
 	switch (type)
 	{
-		case TASK_TYPE::Take: parent->rbtn_take->SetValue(true);
+		case STEP_TYPE::Take: parent->rbtn_take->SetValue(true);
 			break;
-		case TASK_TYPE::Put: parent->rbtn_put->SetValue(true);
+		case STEP_TYPE::Put: parent->rbtn_put->SetValue(true);
 			break;
-		case TASK_TYPE::Game_Speed: parent->rbtn_game_speed->SetValue(true);
+		case STEP_TYPE::Game_Speed: parent->rbtn_game_speed->SetValue(true);
 			break;
-		case TASK_TYPE::Craft: parent->rbtn_craft->SetValue(true);
+		case STEP_TYPE::Craft: parent->rbtn_craft->SetValue(true);
 			break;
-		case TASK_TYPE::Walk: parent->rbtn_walk->SetValue(true);
+		case STEP_TYPE::Walk: parent->rbtn_walk->SetValue(true);
 			break;
-		case TASK_TYPE::Mine: parent->rbtn_mine->SetValue(true);
+		case STEP_TYPE::Mine: parent->rbtn_mine->SetValue(true);
 			break;
-		case TASK_TYPE::Start: parent->rbtn_start->SetValue(true);
+		case STEP_TYPE::Start: parent->rbtn_start->SetValue(true);
 			break;
-		case TASK_TYPE::Build: parent->rbtn_build->SetValue(true);
+		case STEP_TYPE::Build: parent->rbtn_build->SetValue(true);
 			break;
-		case TASK_TYPE::Recipe: parent->rbtn_recipe->SetValue(true);
+		case STEP_TYPE::Recipe: parent->rbtn_recipe->SetValue(true);
 			break;
-		case TASK_TYPE::Tech: parent->rbtn_tech->SetValue(true);
+		case STEP_TYPE::Tech: parent->rbtn_tech->SetValue(true);
 			break;
-		case TASK_TYPE::Limit: parent->rbtn_limit->SetValue(true);
+		case STEP_TYPE::Limit: parent->rbtn_limit->SetValue(true);
 			break;
-		case TASK_TYPE::Idle: parent->rbtn_idle->SetValue(true);
+		case STEP_TYPE::Idle: parent->rbtn_idle->SetValue(true);
 			break;
-		case TASK_TYPE::Filter: parent->rbtn_filter->SetValue(true);
+		case STEP_TYPE::Filter: parent->rbtn_filter->SetValue(true);
 			break;
-		case TASK_TYPE::Pause: parent->rbtn_pause->SetValue(true);
+		case STEP_TYPE::Pause: parent->rbtn_pause->SetValue(true);
 			break;
-		case TASK_TYPE::Priority: parent->rbtn_priority->SetValue(true);
+		case STEP_TYPE::Priority: parent->rbtn_priority->SetValue(true);
 			break;
-		case TASK_TYPE::Rotate: parent->rbtn_rotate->SetValue(true);
+		case STEP_TYPE::Rotate: parent->rbtn_rotate->SetValue(true);
 			break;
-		case TASK_TYPE::Pick_Up: parent->rbtn_pick_up->SetValue(true);
+		case STEP_TYPE::Pick_Up: parent->rbtn_pick_up->SetValue(true);
 			break;
-		case TASK_TYPE::Drop: parent->rbtn_drop->SetValue(true);
+		case STEP_TYPE::Drop: parent->rbtn_drop->SetValue(true);
 			break;
-		case TASK_TYPE::Launch: parent->rbtn_launch->SetValue(true);
+		case STEP_TYPE::Launch: parent->rbtn_launch->SetValue(true);
 			break;
-		case TASK_TYPE::Save: parent->rbtn_save->SetValue(true);
+		case STEP_TYPE::Save: parent->rbtn_save->SetValue(true);
 			break;
-		case TASK_TYPE::Stop: parent->rbtn_stop->SetValue(true);
+		case STEP_TYPE::Stop: parent->rbtn_stop->SetValue(true);
 			break;
 		default:
 			// ERROR: You have done something wrong
@@ -80,74 +80,74 @@ void cMain::setup_paramters(std::vector<bool> parameters)
 }
 
 // Finds the current radio button that is choosen, 
-// determines which task type that is and returns the task name
-string cMain::ExtractTask()
+// determines which step type that is and returns the step name
+string cMain::ExtractStep()
 {
 	//row 1
 	if (rbtn_take->GetValue())
-		return struct_tasks_list.take;
+		return struct_steps_list.take;
 
 	if (rbtn_put->GetValue())
-		return struct_tasks_list.put;
+		return struct_steps_list.put;
 
 	if (rbtn_game_speed->GetValue())
-		return struct_tasks_list.game_speed;
+		return struct_steps_list.game_speed;
 
 	if (rbtn_craft->GetValue())
-		return struct_tasks_list.craft;
+		return struct_steps_list.craft;
 
 	if (rbtn_walk->GetValue())
-		return struct_tasks_list.walk;
+		return struct_steps_list.walk;
 
 	if (rbtn_mine->GetValue())
-		return struct_tasks_list.mine;
+		return struct_steps_list.mine;
 
 	if (rbtn_start->GetValue())
-		return struct_tasks_list.start;
+		return struct_steps_list.start;
 
 	//row 2
 	if (rbtn_build->GetValue())
-		return struct_tasks_list.build;
+		return struct_steps_list.build;
 
 	if (rbtn_recipe->GetValue())
-		return struct_tasks_list.recipe;
+		return struct_steps_list.recipe;
 
 	if (rbtn_tech->GetValue())
-		return struct_tasks_list.tech;
+		return struct_steps_list.tech;
 
 	if (rbtn_limit->GetValue())
-		return struct_tasks_list.limit;
+		return struct_steps_list.limit;
 
 	if (rbtn_idle->GetValue())
-		return struct_tasks_list.idle;
+		return struct_steps_list.idle;
 
 	if (rbtn_filter->GetValue())
-		return struct_tasks_list.filter;
+		return struct_steps_list.filter;
 
 	if (rbtn_pause->GetValue())
-		return struct_tasks_list.pause;
+		return struct_steps_list.pause;
 
 	//row 3
 	if (rbtn_priority->GetValue())
-		return struct_tasks_list.priority;
+		return struct_steps_list.priority;
 
 	if (rbtn_rotate->GetValue())
-		return struct_tasks_list.rotate;
+		return struct_steps_list.rotate;
 
 	if (rbtn_pick_up->GetValue())
-		return struct_tasks_list.pick_up;
+		return struct_steps_list.pick_up;
 
 	if (rbtn_drop->GetValue())
-		return struct_tasks_list.drop;
+		return struct_steps_list.drop;
 
 	if (rbtn_launch->GetValue())
-		return struct_tasks_list.launch;
+		return struct_steps_list.launch;
 
 	if (rbtn_save->GetValue())
-		return struct_tasks_list.save;
+		return struct_steps_list.save;
 
 	if (rbtn_stop->GetValue())
-		return struct_tasks_list.stop;
+		return struct_steps_list.stop;
 
 	return "not found";
 }
@@ -183,7 +183,7 @@ void cMain::OnTakeChosen(wxCommandEvent& event)
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
-	cmb_from_into->SetValue(TypePanel::output); // set default to output on take task
+	cmb_from_into->SetValue(TypePanel::output); // set default to output on take step
 
 	label_item->SetLabelText(TypePanel::item);
 	label_from_into->SetLabelText(TypePanel::from);
@@ -203,7 +203,7 @@ void cMain::OnPutChosen(wxCommandEvent& event)
 	cmb_item->SetValue(*all_items.begin());
 	cmb_item->AutoComplete(item_choices);
 
-	cmb_from_into->SetValue(TypePanel::input); // set default to input on put task
+	cmb_from_into->SetValue(TypePanel::input); // set default to input on put step
 
 	label_item->SetLabelText(TypePanel::item);
 	label_from_into->SetLabelText(TypePanel::into);
@@ -378,7 +378,7 @@ void cMain::OnGameSpeedChosen(wxCommandEvent& event)
 #pragma region cMain Menu eventhandlers
 void cMain::OnWalkMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Walk);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Walk);
 	OnWalkChosen(event);
 
 	//// IMPORTANT -- This can be used to change the shortcuts of menuitems
@@ -389,140 +389,140 @@ void cMain::OnWalkMenuSelected(wxCommandEvent& event)
 
 void cMain::OnMineMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Mine);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Mine);
 	OnMineChosen(event);
 	event.Skip();
 }
 
 void cMain::OnGameSpeedMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Game_Speed);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Game_Speed);
 	OnGameSpeedChosen(event);
 	event.Skip();
 }
 
 void cMain::OnBuildMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Build);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Build);
 	OnBuildChosen(event);
 	event.Skip();
 }
 
 void cMain::OnTakeMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Take);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Take);
 	OnTakeChosen(event);
 	event.Skip();
 }
 
 void cMain::OnPutMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Put);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Put);
 	OnPutChosen(event);
 	event.Skip();
 }
 
 void cMain::OnCraftMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Craft);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Craft);
 	OnCraftChosen(event);
 	event.Skip();
 }
 
 void cMain::OnRecipeMenuChosen(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Recipe);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Recipe);
 	OnRecipeChosen(event);
 	event.Skip();
 }
 
 void cMain::OnRotateMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Rotate);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Rotate);
 	OnRotateChosen(event);
 	event.Skip();
 }
 
 void cMain::OnTechMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Tech);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Tech);
 	OnTechChosen(event);
 	event.Skip();
 }
 
 void cMain::OnPriorityMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Priority);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Priority);
 	OnPriorityChosen(event);
 	event.Skip();
 }
 
 void cMain::OnLimitMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Limit);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Limit);
 	OnLimitChosen(event);
 	event.Skip();
 }
 
 void cMain::OnFilterMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Filter);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Filter);
 	OnfilterChosen(event);
 	event.Skip();
 }
 
 void cMain::OnStopMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Stop);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Stop);
 	OnStopChosen(event);
 	event.Skip();
 }
 
 void cMain::OnIdleMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Idle);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Idle);
 	OnIdleChosen(event);
 	event.Skip();
 }
 
 void cMain::OnLaunchMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Launch);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Launch);
 	OnLaunchChosen(event);
 	event.Skip();
 }
 
 void cMain::OnDropMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Drop);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Drop);
 	OnDropChosen(event);
 	event.Skip();
 }
 
 void cMain::OnPickUpMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Pick_Up);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Pick_Up);
 	OnPickUpChosen(event);
 	event.Skip();
 }
 
 void cMain::OnSaveMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Save);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Save);
 	OnSaveChosen(event);
 	event.Skip();
 }
 
 void cMain::OnStartMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Start);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Start);
 	OnStartChosen(event);
 	event.Skip();
 }
 
 void cMain::OnPauseMenuSelected(wxCommandEvent& event)
 {
-	type_panel->SwitchTask(TypePanel::TASK_TYPE::Pause);
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Pause);
 	OnPauseChosen(event);
 	event.Skip();
 }

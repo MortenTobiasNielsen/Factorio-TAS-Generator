@@ -6,14 +6,14 @@ struct Building
 {
 	double X;
 	double Y;
-	int Index;
-	Orientation OrientationIndex;
+	int type;
+	Orientation OrientationEnum;
 
 	Building(double x)
 	{
 		X = x;
 		Y = 0;
-		Index = 0;
-		OrientationIndex = North;
+		type = 0;
+		OrientationEnum = North;
 	}
 };

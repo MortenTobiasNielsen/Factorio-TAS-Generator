@@ -121,20 +121,20 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 			step.Buildings = stoi(segments[8]);
 		}
 
-		step.Task = Capitalize(segments[0]);
+		step.Step = Capitalize(segments[0]);
 		step.Amount = Capitalize(segments[3]);
 		step.Item = Capitalize(segments[4], true);
 		step.Orientation = Capitalize(segments[5]);
 		step.Direction = Capitalize(segments[6]);
 		step.Comment = comment;
 
-		step.TaskEnum = TaskNames.find(step.Task)->second;
+		step.StepEnum = MapStepNameToStepType.find(step.Step)->second;
 
-		switch (step.TaskEnum)
+		switch (step.StepEnum)
 		{
 			case e_build:
-				step.BuildingIndex = BuildingNameToIndex.find(step.Item)->second;
-				step.OrientationIndex = OrientationToIndex.find(step.Orientation)->second;
+				step.BuildingIndex = BuildingNameToType[step.Item];
+				step.OrientationEnum = OrientationToEnum[step.Orientation];
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -244,14 +244,14 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Task = Capitalize(segments[1]);
+		step.Step = Capitalize(segments[1]);
 		step.Amount = Capitalize(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		step.TaskEnum = TaskNames.find(step.Task)->second;
+		step.StepEnum = MapStepNameToStepType.find(step.Step)->second;
 
 		steps.push_back(step);
 
@@ -328,14 +328,14 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Task = Capitalize(segments[1]);
+		step.Step = Capitalize(segments[1]);
 		step.Amount = Capitalize(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		step.TaskEnum = TaskNames.find(step.Task)->second;
+		step.StepEnum = MapStepNameToStepType.find(step.Step)->second;
 
 		steps.push_back(step);
 
