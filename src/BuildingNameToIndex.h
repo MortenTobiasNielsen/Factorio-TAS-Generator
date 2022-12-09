@@ -2,10 +2,18 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 using std::map;
 using std::string;
+using std::vector;
 
+
+/// <summary>
+/// Safe way to get a building name by index
+/// </summary>
+/// <param name="index">building type</param>
+/// <returns>Building name as string or "N/A" if index is out of bounds</returns>
 string FindBuildingName(int index);
 
 enum Assemblers
@@ -21,7 +29,108 @@ enum Assemblers
 	Centrifuge,
 };
 
-static const std::map<string, int> BuildingNameToIndex =
+static inline vector<string> BuildingNames = {
+	"NONE", // for alignment
+	"Wooden chest",
+	"Iron chest",
+	"Steel chest",
+	"Storage tank",
+	"Transport belt",
+	"Fast transport belt",
+	"Express transport belt",
+	"Underground belt",
+	"Fast underground belt",
+	"Express underground belt",
+	"Splitter",
+	"Fast splitter",
+	"Express splitter",
+	"Loader",
+	"Fast loader",
+	"Express loader",
+	"Burner inserter",
+	"Inserter",
+	"Long-handed inserter",
+	"Fast inserter",
+	"Filter inserter",
+	"Stack inserter",
+	"Stack filter inserter",
+	"Small electric pole",
+	"Medium electric pole",
+	"Big electric pole",
+	"Substation",
+	"Pipe",
+	"Pipe to ground",
+	"Pump",
+	"Curved rail",
+	"Straight rail",
+	"Train stop",
+	"Rail signal",
+	"Rail chain signal",
+	"Locomotive",
+	"Cargo wagon",
+	"Fluid wagon",
+	"Artillery wagon",
+	"Car",
+	"Tank",
+	"Spidertron",
+	"Active provider chest",
+	"Passive provider chest",
+	"Storage chest",
+	"Buffer chest",
+	"Requester chest",
+	"Roboport",
+	"Small lamp",
+	"Arithmetic combinator",
+	"Decider combinator",
+	"Constant combinator",
+	"Power switch",
+	"Programmable speaker",
+	"Boiler",
+	"Steam engine",
+	"Solar panel",
+	"Accumulator",
+	"Nuclear reactor",
+	"Heat pipe",
+	"Heat exchanger",
+	"Steam turbine",
+	"Burner mining drill",
+	"Electric mining drill",
+	"Offshore pump",
+	"Pumpjack",
+	"Stone furnace",
+	"Steel furnace",
+	"Electric furnace",
+	"Assembling machine 1",
+	"Assembling machine 2",
+	"Assembling machine 3",
+	"Oil refinery",
+	"Chemical plant",
+	"Centrifuge",
+	"Lab",
+	"Beacon",
+	"Rocket silo",
+	"Land mine",
+	"Stone wall",
+	"Gate",
+	"Gun turret",
+	"Laser turret",
+	"Flamethrower turret",
+	"Artillery turret",
+	"Radar",
+	"Item on ground",
+	"Rocket silo rocket",
+	"Tile ghost",
+	"Stone brick",
+	"Concrete",
+	"Hazard concrete left",
+	"Hazard concrete right",
+	"Refined concrete",
+	"Refined hazard concrete left",
+	"Refined hazard concrete right",
+	"Landfill"
+};
+
+static inline map<string, int> BuildingNameToType =
 {
 	{"Wooden chest", 1},
 	{"Iron chest", 2},

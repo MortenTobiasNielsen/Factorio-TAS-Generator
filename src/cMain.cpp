@@ -530,7 +530,7 @@ void cMain::AddStep(int row)
 	switch (stepParameters.StepEnum)
 	{
 		case e_build:
-			stepParameters.BuildingIndex = BuildingNameToIndex.find(stepParameters.Item)->second;
+			stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
 
 			UpdateStepGrid(row , &stepParameters);
 

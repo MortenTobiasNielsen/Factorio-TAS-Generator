@@ -336,7 +336,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 {
 	building = FindBuildingName(step->BuildingIndex);
-	build_orientation = build_orientations[step->OrientationIndex];
+	build_orientation = build_orientations[step->orientation];
 }
 
 void GenerateScript::TransferParameters(StepParameters& stepParameters)
