@@ -114,11 +114,11 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	cmb_from_into->SetValue(*take_from.begin());
 	cmb_from_into->AutoComplete(take_from_choices);
 
-	// set tasks grid formatting
-	grid_tasks->SetColFormatFloat(1, 4, 1);
-	grid_tasks->SetColFormatFloat(2, 4, 1);
-	grid_tasks->SetColFormatFloat(3, 4, 2);
-	grid_tasks->SetSelectionMode(grid_tasks->wxGridSelectRows);
+	// set steps grid formatting
+	grid_steps->SetColFormatFloat(1, 4, 1);
+	grid_steps->SetColFormatFloat(2, 4, 1);
+	grid_steps->SetColFormatFloat(3, 4, 2);
+	grid_steps->SetSelectionMode(grid_steps->wxGridSelectRows);
 
 	// set group grid formatting
 	grid_group->SetColFormatFloat(1, 4, 1);
@@ -135,43 +135,40 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	// Checking steel axe as a goal
 	menu_goals->GetMenuItems()[0]->Check();
 
-	// disabling Change shortcuts
-	menu_shortcuts->GetMenuItems()[0]->Enable(false);
-
 	// split steps into seperate panel
 	wxAuiNotebook* a = (wxAuiNotebook*)step_panel->GetParent();
 	a->Split(2, wxRIGHT);
 }
 
-void cMain::TaskSeachOnText(wxCommandEvent& event)
+void cMain::StepSeachOnText(wxCommandEvent& event)
 {
-	Search::FindCurrentOrNext(event, grid_tasks);
+	Search::FindCurrentOrNext(event, grid_steps);
 	event.Skip();
 }
 
-void cMain::TaskSeachOnTextEnter(wxCommandEvent& event)
+void cMain::StepSeachOnTextEnter(wxCommandEvent& event)
 {
-	TaskSeachOnText(event);//seems not to fire
+	StepSeachOnText(event);//seems not to fire
 }
 
-void cMain::TaskSeachOnSearchButton(wxCommandEvent& event)
+void cMain::StepSeachOnSearchButton(wxCommandEvent& event)
 {
-	Search::FindNext(event, grid_tasks);
+	Search::FindNext(event, grid_steps);
 	event.Skip();
 }
 
-void cMain::TaskSeachOnCancelButton(wxCommandEvent& event)
+void cMain::StepSeachOnCancelButton(wxCommandEvent& event)
 {
 	event.Skip();// do nothing, it will clear the search box
 }
 
 void cMain::ResetToNewWindow()
 {
-	if (grid_tasks->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
+	if (grid_steps->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
 	{
-		if (grid_tasks->GetNumberRows() > 0)
+		if (grid_steps->GetNumberRows() > 0)
 		{
-			grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
+			grid_steps->DeleteRows(0, grid_steps->GetNumberRows());
 		}
 
 		if (grid_group->GetNumberRows() > 0)
@@ -210,7 +207,7 @@ void cMain::ResetToNewWindow()
 
 bool cMain::CheckBeforeClose()
 {
-	if (grid_tasks->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
+	if (grid_steps->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
 	{
 		int answer = wxMessageBox("Do you want to save your changes?", "Ensure that you have saved what you need", wxICON_QUESTION | wxYES_NO | wxCANCEL, this);
 
@@ -255,7 +252,7 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 
 			GridTransfer(grid, row, grid, moveTo);
 
-			BackgroundColorUpdate(grid, moveTo, ToTaskName(grid->GetCellValue(moveTo, 0).ToStdString()));
+			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
 
 			grid->DeleteRows(row);
 
@@ -286,7 +283,7 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 
 			grid->DeleteRows(row + 1);
 
-			BackgroundColorUpdate(grid, moveTo, ToTaskName(grid->GetCellValue(moveTo, 0).ToStdString()));
+			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
 
 			auto it1 = StepGridData.begin();
 			it1 += row;
@@ -339,7 +336,7 @@ void cMain::GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<str
 
 		GridTransfer(grid, row, grid, rowNum + rowCount);
 
-		BackgroundColorUpdate(grid, rowNum + rowCount, ToTaskName(grid->GetCellValue(rowNum + rowCount, 0).ToStdString()));
+		BackgroundColorUpdate(grid, rowNum + rowCount, ToStepType(grid->GetCellValue(rowNum + rowCount, 0).ToStdString()));
 
 		grid->DeleteRows(row);
 
@@ -451,14 +448,14 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 
 	PopulateGrid(grid, rowNum, &gridEntry);
 
-	BackgroundColorUpdate(grid, rowNum, step.TaskEnum);
+	BackgroundColorUpdate(grid, rowNum, step.StepEnum);
 
 	return true;
 }
 
-void cMain::BackgroundColorUpdate(wxGrid* grid, int row, TaskName task)
+void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType Step)
 {
-	switch (task)
+	switch (Step)
 	{
 		case e_start:
 			grid->SetCellBackgroundColour(row, 0, *wxGREEN);
@@ -497,30 +494,30 @@ void cMain::UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
 
 		PopulateGrid(grid, i, &gridEntry);
 
-		BackgroundColorUpdate(grid, i, steps[i].TaskEnum);
+		BackgroundColorUpdate(grid, i, steps[i].StepEnum);
 	}
 }
 
-void cMain::OnAddTaskClicked(wxCommandEvent& event)
+void cMain::OnAddStepClicked(wxCommandEvent& event)
 {
-	if (grid_tasks->IsSelection())
+	if (grid_steps->IsSelection())
 	{
-		if (!grid_tasks->GetSelectedRows().begin())
+		if (!grid_steps->GetSelectedRows().begin())
 		{
 			return;
 		}
 
-		AddTask(*grid_tasks->GetSelectedRows().begin());
+		AddStep(*grid_steps->GetSelectedRows().begin());
 	}
 	else
 	{
-		AddTask(grid_tasks->GetNumberRows());
+		AddStep(grid_steps->GetNumberRows());
 	}
 	
 	event.Skip();
 }
 
-void cMain::AddTask(int row)
+void cMain::AddStep(int row)
 {
 	auto stepParameters = ExtractStepParameters();
 
@@ -530,7 +527,7 @@ void cMain::AddTask(int row)
 	};
 
 	string to_check;
-	switch (stepParameters.TaskEnum)
+	switch (stepParameters.StepEnum)
 	{
 		case e_build:
 			stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
@@ -539,8 +536,8 @@ void cMain::AddTask(int row)
 
 			to_check = stepParameters.Item;
 
-			stepParameters.TaskEnum = e_put;
-			stepParameters.Task = struct_tasks_list.put;
+			stepParameters.StepEnum = e_put;
+			stepParameters.Step = struct_steps_list.put;
 			stepParameters.Amount = "1";
 
 			if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel)
@@ -584,8 +581,8 @@ void cMain::AddTask(int row)
 				int multiplier = stoi(stepParameters.Amount);
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
-					stepParameters.TaskEnum = e_put;
-					stepParameters.Task = struct_tasks_list.put;
+					stepParameters.StepEnum = e_put;
+					stepParameters.Step = struct_steps_list.put;
 					stepParameters.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = struct_from_into_list.input;
@@ -602,19 +599,19 @@ void cMain::AddTask(int row)
 	}
 }
 
-void cMain::OnChangeTaskClicked(wxCommandEvent& event)
+void cMain::OnChangeStepClicked(wxCommandEvent& event)
 {
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
+	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
 	{
 		wxMessageBox("Please select a row to change", "Selection not valid");
 		event.Skip();
 		return;
 	}
 
-	int row = *grid_tasks->GetSelectedRows().begin();
-	if (StepGridData[row].TaskEnum == e_build)
+	int row = *grid_steps->GetSelectedRows().begin();
+	if (StepGridData[row].StepEnum == e_build)
 	{
-		if (wxMessageBox("The row selected is a build task - are you sure you want to make this change?\nEnsure that you delete associated steps.", "The build task you are changing could be associated with future tasks", wxICON_WARNING | wxYES_NO, this) != wxYES)
+		if (wxMessageBox("The row selected is a build step - are you sure you want to make this change?\nEnsure that you delete associated steps.", "The build step you are changing could be associated with future step", wxICON_WARNING | wxYES_NO, this) != wxYES)
 		{
 			return;
 		}
@@ -624,20 +621,20 @@ void cMain::OnChangeTaskClicked(wxCommandEvent& event)
 	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
 
 	StepGridData[row] = stepParameters;
-	PopulateGrid(grid_tasks, row, &gridEntry);
+	PopulateGrid(grid_steps, row, &gridEntry);
 
-	grid_tasks->SelectRow(row);
+	grid_steps->SelectRow(row);
 }
 
-void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
+void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 {
-	if (!grid_tasks->IsSelection())
+	if (!grid_steps->IsSelection())
 	{
 		wxMessageBox("Please select row(s) to be deleted", "Selection not valid");
 		return;
 	}
 
-	if (wxMessageBox("Are you sure you want to delete this task?", "Delete task", wxICON_QUESTION | wxYES_NO, this) != wxYES)
+	if (wxMessageBox("Are you sure you want to delete this step?", "Delete step", wxICON_QUESTION | wxYES_NO, this) != wxYES)
 	{
 		return;
 	}
@@ -649,7 +646,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 	int RowsToDelete = 0;
 
 	// Find the first block of rows selected - extract the first row and the amount of rows in the block
-	for (const auto& block : grid_tasks->GetSelectedRowBlocks())
+	for (const auto& block : grid_steps->GetSelectedRowBlocks())
 	{
 		if (counter == 1)
 		{
@@ -668,9 +665,9 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 
 	for (int i = startRow; i < (startRow + RowsToDelete); i++)
 	{
-		if (StepGridData[i].TaskEnum == e_build)
+		if (StepGridData[i].StepEnum == e_build)
 		{
-			if (wxMessageBox("At least one of the rows selected is a build task - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", "The build task(s) you are deleting could be associated with future tasks", wxICON_WARNING | wxYES_NO, this) != wxYES)
+			if (wxMessageBox("At least one of the rows selected is a build step - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", "The build step(s) you are deleting could be associated with future step", wxICON_WARNING | wxYES_NO, this) != wxYES)
 			{
 				return;
 			}
@@ -679,7 +676,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 		}
 	}
 
-	grid_tasks->DeleteRows(startRow, RowsToDelete);
+	grid_steps->DeleteRows(startRow, RowsToDelete);
 
 	auto it1 = StepGridData.begin();
 	auto it2 = StepGridData.begin();
@@ -692,19 +689,19 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 	// The row after the deleted row(s) are selected if there were no other row blocks selected
 	if (counter == 1)
 	{
-		if (startRow < grid_tasks->GetNumberRows())
+		if (startRow < grid_steps->GetNumberRows())
 		{
-			grid_tasks->SelectRow(startRow);
+			grid_steps->SelectRow(startRow);
 		}
 		else if(startRow - 1 >= 0)
 		{
-			grid_tasks->SelectRow(startRow - 1);
+			grid_steps->SelectRow(startRow - 1);
 		}
 	}
 	else
 	{
 		// Otherwise the other selections are selected once more
-		grid_tasks->ClearSelection();
+		grid_steps->ClearSelection();
 
 		auto StartRow = 0;
 		auto rowCount = 0;
@@ -719,7 +716,7 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 
 			for (int i = StartRow; i < total_rows; i++)
 			{
-				grid_tasks->SelectRow(i, true);
+				grid_steps->SelectRow(i, true);
 			}
 		}
 	}
@@ -729,36 +726,36 @@ void cMain::OnDeleteTaskClicked(wxCommandEvent& event)
 
 void cMain::OnMoveUpClicked(wxCommandEvent& event)
 {
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
+	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
-	MoveRow(grid_tasks, true);
+	MoveRow(grid_steps, true);
 	event.Skip();
 }
 
 void cMain::OnMoveDownClicked(wxCommandEvent& event)
 {
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
+	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
-	MoveRow(grid_tasks, false);
+	MoveRow(grid_steps, false);
 	event.Skip();
 }
 
 void cMain::OnMoveUpFiveClicked(wxMouseEvent& event)
 {
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
+	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
-		MoveRow(grid_tasks, true);
+		MoveRow(grid_steps, true);
 	}
 
 	event.Skip();
@@ -766,22 +763,22 @@ void cMain::OnMoveUpFiveClicked(wxMouseEvent& event)
 
 void cMain::OnMoveDownFiveClicked(wxMouseEvent& event)
 {
-	if (!grid_tasks->IsSelection() || !grid_tasks->GetSelectedRows().begin())
+	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
-		MoveRow(grid_tasks, false);
+		MoveRow(grid_steps, false);
 	}
 
 	event.Skip();
 }
 
-void cMain::OnTasksGridDoubleLeftClick(wxGridEvent& event)
+void cMain::OnStepsGridDoubleLeftClick(wxGridEvent& event)
 {
-	auto gridEntry = ExtractGridEntry(grid_tasks, event.GetRow());
+	auto gridEntry = ExtractGridEntry(grid_steps, event.GetRow());
 
 	UpdateParameters(&gridEntry, event);
 
@@ -856,7 +853,7 @@ void cMain::OnDeleteGroupClicked(wxCommandEvent& event)
 
 void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
 {
-	if (!grid_tasks->IsSelection())
+	if (!grid_steps->IsSelection())
 	{
 		wxMessageBox("No step is chosen - please select row(s) in the step list", "Cannot add step to group");
 		return;
@@ -882,7 +879,7 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 	}
 
 	vector<StepParameters> steps = it->second;
-	for (const auto& block : grid_tasks->GetSelectedRowBlocks())
+	for (const auto& block : grid_steps->GetSelectedRowBlocks())
 	{
 		auto startRow = block.GetTopRow();
 		auto rowCount = block.GetBottomRow() - startRow + 1;
@@ -893,9 +890,9 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 
 		for (int i = startRow; i < rows; i++)
 		{
-			GridTransfer(grid_tasks, i, grid, moveTo);
+			GridTransfer(grid_steps, i, grid, moveTo);
 
-			BackgroundColorUpdate(grid, moveTo, StepGridData[i].TaskEnum);
+			BackgroundColorUpdate(grid, moveTo, StepGridData[i].StepEnum);
 
 			auto it1 = steps.begin();
 			it1 += moveTo;
@@ -909,26 +906,26 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 	it->second = steps;
 }
 
-void cMain::OnGroupAddFromTasksListClicked(wxCommandEvent& event)
+void cMain::OnGroupAddFromStepsListClicked(wxCommandEvent& event)
 {
 	UpdateMapWithNewSteps(grid_group, cmb_choose_group, group_map);
 
 	event.Skip();
 }
 
-void cMain::OnGroupAddToTasksListClicked(wxCommandEvent& event)
+void cMain::OnGroupAddToStepsListClicked(wxCommandEvent& event)
 {
-	int moveTo = grid_tasks->GetNumberRows();
+	int moveTo = grid_steps->GetNumberRows();
 
-	if (grid_tasks->IsSelection())
+	if (grid_steps->IsSelection())
 	{
-		if (!grid_tasks->GetSelectedRows().begin())
+		if (!grid_steps->GetSelectedRows().begin())
 		{
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			wxMessageBox("Please either select row(s) or nothing", "Step list selection not valid");
 			return;
 		}
 
-		moveTo = *grid_tasks->GetSelectedRows().begin();
+		moveTo = *grid_steps->GetSelectedRows().begin();
 	}
 
 	if (grid_group->IsSelection())
@@ -1003,7 +1000,7 @@ void cMain::OnGroupChangeClicked(wxCommandEvent& event)
 
 void cMain::OnGroupDeleteClicked(wxCommandEvent& event)
 {
-	if (wxMessageBox("Are you sure you want to delete this group task?", "Delete group task", wxICON_QUESTION | wxYES_NO, this) != wxYES)
+	if (wxMessageBox("Are you sure you want to delete this group step?", "Delete group step", wxICON_QUESTION | wxYES_NO, this) != wxYES)
 	{
 		return;
 	}
@@ -1116,14 +1113,14 @@ void cMain::OnDeleteTemplateClicked(wxCommandEvent& event)
 	}
 }
 
-void cMain::OnTemplateAddFromTasksListClicked(wxCommandEvent& event)
+void cMain::OnTemplateAddFromStepsListClicked(wxCommandEvent& event)
 {
 	UpdateMapWithNewSteps(grid_template, cmb_choose_template, template_map);
 
 	event.Skip();
 }
 
-void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
+void cMain::OnTemplateAddToStepsListClicked(wxCommandEvent& event)
 {
 	if (spin_amount_offset->GetValue() != 0 && spin_amount_multiplier->GetValue() != 0)
 	{
@@ -1131,17 +1128,17 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 		return;
 	}
 
-	int moveTo = grid_tasks->GetNumberRows();
+	int moveTo = grid_steps->GetNumberRows();
 
-	if (grid_tasks->IsSelection())
+	if (grid_steps->IsSelection())
 	{
-		if (!grid_tasks->GetSelectedRows().begin())
+		if (!grid_steps->GetSelectedRows().begin())
 		{
-			wxMessageBox("Please either select row(s) or nothing", "Task list selection not valid");
+			wxMessageBox("Please either select row(s) or nothing", "Step list selection not valid");
 			return;
 		}
 
-		moveTo = *grid_tasks->GetSelectedRows().begin();
+		moveTo = *grid_steps->GetSelectedRows().begin();
 	}
 
 	if (grid_template->IsSelection())
@@ -1157,7 +1154,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 			{
 				StepParameters step = template_map[cmb_choose_template->GetValue().ToStdString()][i];
 
-				TemplateAlterTask(step);
+				TemplateAlterStep(step);
 
 				UpdateStepGrid(moveTo, &step);
 
@@ -1174,7 +1171,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 	{
 		StepParameters step = template_map[cmb_choose_template->GetValue().ToStdString()][i];
 
-		TemplateAlterTask(step);
+		TemplateAlterStep(step);
 
 		UpdateStepGrid(moveTo, &step);
 
@@ -1182,7 +1179,7 @@ void cMain::OnTemplateAddToTasksListClicked(wxCommandEvent& event)
 	}
 }
 
-void cMain::TemplateAlterTask(StepParameters& step)
+void cMain::TemplateAlterStep(StepParameters& step)
 {
 	if (step.X != invalidX)
 	{
@@ -1206,7 +1203,7 @@ void cMain::TemplateAlterTask(StepParameters& step)
 	}
 }
 
-void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event)
+void cMain::OnTemplateChangeStepClicked(wxCommandEvent& event)
 {
 	auto stepParameters = ExtractStepParameters();
 
@@ -1228,9 +1225,9 @@ void cMain::OnTemplateChangeTaskClicked(wxCommandEvent& event)
 	event.Skip();
 }
 
-void cMain::OnTemplateDeleteTaskClicked(wxCommandEvent& event)
+void cMain::OnTemplateDeleteStepClicked(wxCommandEvent& event)
 {
-	if (wxMessageBox("Are you sure you want to delete this template task?", "Delete template task", wxICON_QUESTION | wxYES_NO, this) != wxYES)
+	if (wxMessageBox("Are you sure you want to delete this template step?", "Delete template step", wxICON_QUESTION | wxYES_NO, this) != wxYES)
 	{
 		return;
 	}
@@ -1280,7 +1277,7 @@ void cMain::OnApplicationClose(wxCloseEvent& event)
 
 bool cMain::ChecksBeforeResetWindow()
 {
-	if (grid_tasks->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
+	if (grid_steps->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
 	{
 		return true;
 	}
@@ -1467,22 +1464,22 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 
 void cMain::PopulateStepGrid()
 {
-	if (grid_tasks->GetNumberRows() > 0)
+	if (grid_steps->GetNumberRows() > 0)
 	{
-		grid_tasks->DeleteRows(0, grid_tasks->GetNumberRows());
+		grid_steps->DeleteRows(0, grid_steps->GetNumberRows());
 	}
 
-	size_t amount_of_tasks = StepGridData.size();
+	size_t steps = StepGridData.size();
 
-	grid_tasks->InsertRows(0, amount_of_tasks);
+	grid_steps->InsertRows(0, steps);
 
-	for (int i = 0; i < amount_of_tasks; i++)
+	for (int i = 0; i < steps; i++)
 	{
 		GridEntry gridEntry = PrepareStepParametersForGrid(&StepGridData[i]);
 
-		PopulateGrid(grid_tasks, i, &gridEntry);
+		PopulateGrid(grid_steps, i, &gridEntry);
 
-		BackgroundColorUpdate(grid_tasks, i, StepGridData[i].TaskEnum);
+		BackgroundColorUpdate(grid_steps, i, StepGridData[i].StepEnum);
 	}
 }
 
@@ -1570,13 +1567,13 @@ void cMain::OnMenuAutoCloseSaveAsClicked(wxCommandEvent& event)
 
 void cMain::OnChangeMenuSelected(wxCommandEvent& event)
 {
-	OnChangeTaskClicked(event);
+	OnChangeStepClicked(event);
 	event.Skip();
 }
 
 void cMain::OnDeleteMenuSelected(wxCommandEvent& event)
 {
-	OnDeleteTaskClicked(event);
+	OnDeleteStepClicked(event);
 	event.Skip();
 }
 
@@ -1594,18 +1591,18 @@ void cMain::OnMoveDownMenuSelected(wxCommandEvent& event)
 
 void cMain::OnAddMenuSelected(wxCommandEvent& event)
 {
-	OnAddTaskClicked(event);
+	OnAddStepClicked(event);
 	event.Skip();
 }
 
 void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 {
-	TaskName task = ToTaskName(gridEntry->Task.ToStdString());
+	StepType step = ToStepType(gridEntry->Step.ToStdString());
 
 	string orientation = "";
 	float speed;
 	long long pos;
-	switch (task)
+	switch (step)
 	{
 		case e_start:
 			OnStartMenuSelected(event);
@@ -1876,7 +1873,7 @@ StepParameters cMain::ExtractStepParameters()
 {
 	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
 
-	stepParameters.Task = ExtractTask();
+	stepParameters.Step = ExtractStep();
 	stepParameters.Amount = ExtractAmount();
 	stepParameters.Item = Capitalize(cmb_item->GetValue(), true);
 	stepParameters.FromInto = Capitalize(cmb_from_into->GetValue());
@@ -1888,7 +1885,7 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
-	stepParameters.TaskEnum = TaskNames.find(stepParameters.Task)->second;
+	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;
 
 	return stepParameters;
 }
@@ -1942,11 +1939,11 @@ std::string cMain::ExtractAmount()
 GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 {
 	GridEntry gridEntry{
-		.Task = stepParameters->Task,
+		.Step = stepParameters->Step,
 		.Comment = stepParameters->Comment,
 	};
 
-	switch (stepParameters->TaskEnum)
+	switch (stepParameters->StepEnum)
 	{
 		case e_start:
 		case e_pause:
@@ -2071,11 +2068,11 @@ void cMain::UpdateStepGrid(int row, StepParameters* stepParameters)
 {
 	GridEntry gridEntry = PrepareStepParametersForGrid(stepParameters);
 
-	grid_tasks->InsertRows(row, 1);
+	grid_steps->InsertRows(row, 1);
 
-	PopulateGrid(grid_tasks, row, &gridEntry);
+	PopulateGrid(grid_steps, row, &gridEntry);
 
-	if (grid_tasks->IsSelection())
+	if (grid_steps->IsSelection())
 	{
 		auto it1 = StepGridData.begin();
 		it1 += row;
@@ -2087,7 +2084,7 @@ void cMain::UpdateStepGrid(int row, StepParameters* stepParameters)
 		StepGridData.push_back(*stepParameters);
 	}
 
-	BackgroundColorUpdate(grid_tasks, row, stepParameters->TaskEnum);
+	BackgroundColorUpdate(grid_steps, row, stepParameters->StepEnum);
 }
 
 int cMain::GenerateBuildingSnapShot(int end_row)
@@ -2096,7 +2093,7 @@ int cMain::GenerateBuildingSnapShot(int end_row)
 
 	for (int i = 0; i < end_row; i++)
 	{
-		switch (StepGridData[i].TaskEnum)
+		switch (StepGridData[i].StepEnum)
 		{
 			case e_build:
 				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, StepGridData[i]);
@@ -2118,7 +2115,7 @@ int cMain::GenerateBuildingSnapShot(int end_row)
 GridEntry cMain::ExtractGridEntry(wxGrid* grid, const int& row)
 {
 	GridEntry gridEntry{
-		.Task = grid->GetCellValue(row, 0),
+		.Step = grid->GetCellValue(row, 0),
 		.X = grid->GetCellValue(row, 1),
 		.Y = grid->GetCellValue(row, 2),
 		.Amount = grid->GetCellValue(row, 3),
@@ -2136,7 +2133,7 @@ GridEntry cMain::ExtractGridEntry(wxGrid* grid, const int& row)
 bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool validateBuildSteps)
 {
 	// Cases where an association with a building isn't needed
-	switch (stepParameters.TaskEnum)
+	switch (stepParameters.StepEnum)
 	{
 		case e_start:
 		case e_walk:
@@ -2167,12 +2164,12 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 	}
 
 	int amountOfBuildings = GenerateBuildingSnapShot(row);
-	switch (stepParameters.TaskEnum)
+	switch (stepParameters.StepEnum)
 	{
 		case e_recipe:
 			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
 			{
-				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
 			};
 
@@ -2191,7 +2188,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 
 			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
 			{
-				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
 			};
 
@@ -2201,7 +2198,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 
 			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
 			{
-				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this task before the Build task", "Please use the same coordinates");
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
 			};
 
@@ -2445,7 +2442,7 @@ bool cMain::ExtraBuildingChecks(StepParameters& stepParameters)
 {
 	auto buildingName = FindBuildingName(stepParameters.BuildingIndex);
 
-	switch (stepParameters.TaskEnum)
+	switch (stepParameters.StepEnum)
 	{
 		case e_limit:
 			return check_input(buildingName, chest_list);

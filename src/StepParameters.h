@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include "Building.h"
-#include "TaskNameToEnum.h"
+#include "StepNameToEnum.h"
 #include "utils.h"
 
 using std::string;
@@ -24,9 +24,9 @@ struct StepParameters
 	int BuildingIndex;
 
 	Orientation orientation;
-	TaskName TaskEnum;
+	StepType StepEnum;
 
-	string Task;
+	string Step;
 	string Amount;
 	string Item;
 	string FromInto;
