@@ -1,6 +1,6 @@
 #include "TaskNameToEnum.h"
 
-TaskName ToTaskName(string task)
+TaskType ToTaskType(string task)
 {
-	return TaskNames.find(task)->second;
+	return MapTaskNameToTaskType.find(task)->second;
 }
