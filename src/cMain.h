@@ -270,6 +270,8 @@ private:
 	bool CheckTakePut(StepParameters& stepParameters);
 	bool ExtraBuildingChecks(StepParameters& stepParameters);
 
+	bool ValidateAllSteps();
+
 	vector<string> all_buildings;
 	vector<string> all_items;
 	vector<string> part_assembly_recipes;

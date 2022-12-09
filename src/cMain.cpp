@@ -1534,6 +1534,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 		goal = "goal_any_percent.lua";
 	}
 
+	ValidateAllSteps();
+
 	GenerateScript generate_script;
 	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
 
@@ -2455,5 +2457,53 @@ bool cMain::ExtraBuildingChecks(StepParameters& stepParameters)
 
 		default:
 			return true;
+	}
+}
+
+bool cMain::ValidateAllSteps()
+{
+	int buildingsInSnapShot = 0;
+
+	for (int i = 0; i < StepGridData.size(); i++)
+	{
+		StepParameters& step = StepGridData[i];
+
+		switch (step.StepEnum)
+		{
+			case e_build:
+				step.BuildingIndex = BuildingNameToIndex.find(step.Item)->second;
+				step.OrientationIndex = OrientationToIndex.find(step.Orientation)->second;
+
+				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, step);
+				break;
+
+			case e_mine:
+				ProcessMiningStep(BuildingsSnapShot, buildingsInSnapShot, step);
+				break;
+
+			case e_recipe:
+			case e_filter:
+			case e_rotate:
+			case e_priority:
+			case e_launch:
+			case e_drop:
+				if (!BuildingExists(BuildingsSnapShot, buildingsInSnapShot, step))
+				{
+					return false;
+				}
+				break;
+
+			case e_limit:
+			case e_put:
+			case e_take:
+				if (step.Orientation != "Wreck" && !BuildingExists(BuildingsSnapShot, buildingsInSnapShot, step))
+				{
+					return false;
+				}
+
+				break;
+			default:
+				break;
+		}
 	}
 }
