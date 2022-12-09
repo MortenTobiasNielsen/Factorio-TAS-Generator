@@ -1172,7 +1172,7 @@ static const struct
 	std::string launch = "Launch";
 	std::string save = "Save";
 
-} struct_tasks_list;
+} struct_steps_list;
 
 static const struct
 {

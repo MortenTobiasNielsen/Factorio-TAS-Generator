@@ -58,7 +58,7 @@
             <property name="window_style">wxTAB_TRAVERSAL</property>
             <property name="xrc_skip_sizer">1</property>
             <event name="OnClose">OnApplicationClose</event>
-            <object class="wxMenuBar" expanded="0">
+            <object class="wxMenuBar" expanded="1">
                 <property name="bg"></property>
                 <property name="context_help"></property>
                 <property name="context_menu">1</property>
@@ -79,7 +79,7 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style"></property>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">File</property>
                     <property name="name">menu_file</property>
                     <property name="permission">protected</property>
@@ -154,7 +154,7 @@
                         <event name="OnMenuSelection">OnMenuExit</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Script</property>
                     <property name="name">menu_script</property>
                     <property name="permission">protected</property>
@@ -201,7 +201,7 @@
                         <event name="OnMenuSelection">OnOnlyGenerateSteps</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Shortcuts</property>
                     <property name="name">menu_shortcuts</property>
                     <property name="permission">protected</property>
@@ -506,8 +506,8 @@
                         <property name="help"></property>
                         <property name="id">wxID_ANY</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">Add Task</property>
-                        <property name="name">shortcut_add_task</property>
+                        <property name="label">Add Step</property>
+                        <property name="name">shortcut_add_step</property>
                         <property name="permission">none</property>
                         <property name="shortcut">Alt+A</property>
                         <property name="unchecked_bitmap"></property>
@@ -520,8 +520,8 @@
                         <property name="help"></property>
                         <property name="id">wxID_ANY</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">Change Task</property>
-                        <property name="name">shortcut_change_task</property>
+                        <property name="label">Change Step</property>
+                        <property name="name">shortcut_change_step</property>
                         <property name="permission">none</property>
                         <property name="shortcut">Alt+C</property>
                         <property name="unchecked_bitmap"></property>
@@ -534,8 +534,8 @@
                         <property name="help"></property>
                         <property name="id">wxID_ANY</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">Delete Task</property>
-                        <property name="name">shortcut_delete_task</property>
+                        <property name="label">Delete Step</property>
+                        <property name="name">shortcut_delete_step</property>
                         <property name="permission">none</property>
                         <property name="shortcut">Del</property>
                         <property name="unchecked_bitmap"></property>
@@ -570,7 +570,7 @@
                         <event name="OnMenuSelection">OnMoveDownMenuSelected</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Goal</property>
                     <property name="name">menu_goals</property>
                     <property name="permission">protected</property>
@@ -631,7 +631,7 @@
                         <event name="OnMenuSelection">OnMenuDebugClicked</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">Auto-close</property>
                     <property name="name">menu_auto_close</property>
                     <property name="permission">protected</property>
@@ -693,13 +693,13 @@
                     </object>
                 </object>
             </object>
-            <object class="wxPanel" expanded="0">
+            <object class="wxPanel" expanded="1">
                 <property name="BottomDockable">0</property>
                 <property name="LeftDockable">0</property>
                 <property name="RightDockable">0</property>
                 <property name="TopDockable">1</property>
                 <property name="aui_layer">1</property>
-                <property name="aui_name">TaskDetailPanel</property>
+                <property name="aui_name">StepDetailPanel</property>
                 <property name="aui_position"></property>
                 <property name="aui_row">1</property>
                 <property name="best_size">650,140</property>
@@ -2436,13 +2436,13 @@
                     </object>
                 </object>
             </object>
-            <object class="wxPanel" expanded="0">
+            <object class="wxPanel" expanded="1">
                 <property name="BottomDockable">0</property>
                 <property name="LeftDockable">0</property>
                 <property name="RightDockable">0</property>
                 <property name="TopDockable">1</property>
                 <property name="aui_layer">1</property>
-                <property name="aui_name">TaskTypePanel</property>
+                <property name="aui_name">StepTypePanel</property>
                 <property name="aui_position"></property>
                 <property name="aui_row">1</property>
                 <property name="best_size">620,140</property>
@@ -2487,7 +2487,7 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style">wxBORDER_NONE|wxTAB_TRAVERSAL</property>
-                <object class="wxBoxSizer" expanded="0">
+                <object class="wxBoxSizer" expanded="1">
                     <property name="minimum_size"></property>
                     <property name="name">bSizer18</property>
                     <property name="orient">wxVERTICAL</property>
@@ -4234,7 +4234,7 @@
                                     <property name="style"></property>
                                     <property name="subclass">; ; forward_declare</property>
                                     <property name="toolbar_pane">0</property>
-                                    <property name="tooltip">Adds a task to put coal into stone and steel furnaces</property>
+                                    <property name="tooltip">Adds a step to put coal into stone and steel furnaces</property>
                                     <property name="validator_data_type"></property>
                                     <property name="validator_style">wxFILTER_NONE</property>
                                     <property name="validator_type">wxDefaultValidator</property>
@@ -4298,7 +4298,7 @@
                                     <property name="style"></property>
                                     <property name="subclass">; ; forward_declare</property>
                                     <property name="toolbar_pane">0</property>
-                                    <property name="tooltip">Adds a task to put coal into Burner Mining Drills, Burner Inserters and Boilers</property>
+                                    <property name="tooltip">Adds a step to put coal into Burner Mining Drills, Burner Inserters and Boilers</property>
                                     <property name="validator_data_type"></property>
                                     <property name="validator_style">wxFILTER_NONE</property>
                                     <property name="validator_type">wxDefaultValidator</property>
@@ -4362,7 +4362,7 @@
                                     <property name="style"></property>
                                     <property name="subclass">; ; forward_declare</property>
                                     <property name="toolbar_pane">0</property>
-                                    <property name="tooltip">Adds a task to put automation science into the Lab</property>
+                                    <property name="tooltip">Adds a step to put automation science into the Lab</property>
                                     <property name="validator_data_type"></property>
                                     <property name="validator_style">wxFILTER_NONE</property>
                                     <property name="validator_type">wxDefaultValidator</property>
@@ -4426,7 +4426,7 @@
                                     <property name="style"></property>
                                     <property name="subclass">; ; forward_declare</property>
                                     <property name="toolbar_pane">0</property>
-                                    <property name="tooltip">Add tasks to put the items needed to craft that recipe</property>
+                                    <property name="tooltip">Add steps to put the items needed to craft that recipe</property>
                                     <property name="validator_data_type"></property>
                                     <property name="validator_style">wxFILTER_NONE</property>
                                     <property name="validator_type">wxDefaultValidator</property>
@@ -4563,20 +4563,20 @@
                                     <property name="name">bSizer114</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size">710,-1</property>
                                             <property name="name">bSizer118</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxALIGN_LEFT</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1261</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -4858,11 +4858,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxALIGN_LEFT</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer100</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -4915,7 +4915,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_group_change_task</property>
+                                                            <property name="name">btn_group_change_step</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -4989,7 +4989,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_group_delete_task</property>
+                                                            <property name="name">btn_group_delete_step</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -5225,11 +5225,11 @@
                                             <property name="window_style"></property>
                                         </object>
                                     </object>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag"></property>
                                         <property name="proportion">0</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer119</property>
                                             <property name="orient">wxVERTICAL</property>
@@ -5272,7 +5272,7 @@
                                                     <property name="gripper">0</property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="label">Add to tasks list</property>
+                                                    <property name="label">Add to steps list</property>
                                                     <property name="margins"></property>
                                                     <property name="markup">0</property>
                                                     <property name="max_size"></property>
@@ -5282,7 +5282,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">btn_group_add_to_tasks_list</property>
+                                                    <property name="name">btn_group_add_to_steps_list</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -5305,7 +5305,7 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnButtonClick">OnGroupAddToTasksListClicked</event>
+                                                    <event name="OnButtonClick">OnGroupAddToStepsListClicked</event>
                                                 </object>
                                             </object>
                                             <object class="sizeritem" expanded="0">
@@ -5346,7 +5346,7 @@
                                                     <property name="gripper">0</property>
                                                     <property name="hidden">0</property>
                                                     <property name="id">wxID_ANY</property>
-                                                    <property name="label">Add from tasks list</property>
+                                                    <property name="label">Add from steps list</property>
                                                     <property name="margins"></property>
                                                     <property name="markup">0</property>
                                                     <property name="max_size"></property>
@@ -5356,7 +5356,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">btn_group_add_from_tasks_list</property>
+                                                    <property name="name">btn_group_add_from_steps_list</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -5379,7 +5379,7 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnButtonClick">OnGroupAddFromTasksListClicked</event>
+                                                    <event name="OnButtonClick">OnGroupAddFromStepsListClicked</event>
                                                 </object>
                                             </object>
                                         </object>
@@ -5423,7 +5423,7 @@
                                             <property name="close_button">1</property>
                                             <property name="col_label_horiz_alignment">wxALIGN_CENTER</property>
                                             <property name="col_label_size"></property>
-                                            <property name="col_label_values">&quot;Task&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
+                                            <property name="col_label_values">&quot;Step&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
                                             <property name="col_label_vert_alignment">wxALIGN_CENTER</property>
                                             <property name="cols">10</property>
                                             <property name="column_sizes">75,59,59,50,150,70,70,50,60,140</property>
@@ -5553,25 +5553,25 @@
                                 <property name="border">5</property>
                                 <property name="flag">wxEXPAND</property>
                                 <property name="proportion">1</property>
-                                <object class="wxBoxSizer" expanded="0">
+                                <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
                                     <property name="name">bSizer102</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag"></property>
                                         <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size">612,-1</property>
                                             <property name="name">bSizer103</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxALIGN_LEFT</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer126</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5853,11 +5853,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxALIGN_LEFT</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1002</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5910,7 +5910,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_template_change_task</property>
+                                                            <property name="name">btn_template_change_step</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -5933,7 +5933,7 @@
                                                             <property name="window_extra_style"></property>
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
-                                                            <event name="OnButtonClick">OnTemplateChangeTaskClicked</event>
+                                                            <event name="OnButtonClick">OnTemplateChangeStepClicked</event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">
@@ -5984,7 +5984,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_template_delete_task</property>
+                                                            <property name="name">btn_template_delete_step</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -6007,7 +6007,7 @@
                                                             <property name="window_extra_style"></property>
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
-                                                            <event name="OnButtonClick">OnTemplateDeleteTaskClicked</event>
+                                                            <event name="OnButtonClick">OnTemplateDeleteStepClicked</event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">
@@ -6058,7 +6058,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_template_move_up_task</property>
+                                                            <property name="name">btn_template_move_up_step</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -6132,7 +6132,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_template_move_down_task</property>
+                                                            <property name="name">btn_template_move_down_step</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -6220,20 +6220,20 @@
                                             <property name="window_style"></property>
                                         </object>
                                     </object>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">0</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size">-1,-1</property>
                                             <property name="name">bSizer1041</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1051</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -6276,7 +6276,7 @@
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
-                                                            <property name="label">Add to tasks list</property>
+                                                            <property name="label">Add to steps list</property>
                                                             <property name="margins"></property>
                                                             <property name="markup">0</property>
                                                             <property name="max_size"></property>
@@ -6286,7 +6286,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_template_add_to_tasks_list1</property>
+                                                            <property name="name">btn_template_add_to_steps_list</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -6309,16 +6309,16 @@
                                                             <property name="window_extra_style"></property>
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
-                                                            <event name="OnButtonClick">OnTemplateAddToTasksListClicked</event>
+                                                            <event name="OnButtonClick">OnTemplateAddToStepsListClicked</event>
                                                         </object>
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1061</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -6361,7 +6361,7 @@
                                                             <property name="gripper">0</property>
                                                             <property name="hidden">0</property>
                                                             <property name="id">wxID_ANY</property>
-                                                            <property name="label">Add from tasks list</property>
+                                                            <property name="label">Add from steps list</property>
                                                             <property name="margins"></property>
                                                             <property name="markup">0</property>
                                                             <property name="max_size"></property>
@@ -6371,7 +6371,7 @@
                                                             <property name="minimize_button">0</property>
                                                             <property name="minimum_size"></property>
                                                             <property name="moveable">1</property>
-                                                            <property name="name">btn_template_add_from_tasks_list1</property>
+                                                            <property name="name">btn_template_add_from_steps_list</property>
                                                             <property name="pane_border">1</property>
                                                             <property name="pane_position"></property>
                                                             <property name="pane_size"></property>
@@ -6394,27 +6394,27 @@
                                                             <property name="window_extra_style"></property>
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
-                                                            <event name="OnButtonClick">OnTemplateAddFromTasksListClicked</event>
+                                                            <event name="OnButtonClick">OnTemplateAddFromStepsListClicked</event>
                                                         </object>
                                                     </object>
                                                 </object>
                                             </object>
                                         </object>
                                     </object>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag"></property>
                                         <property name="proportion">0</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size">-1,-1</property>
                                             <property name="name">bSizer1042</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1052</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -6544,11 +6544,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1062</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -6680,20 +6680,20 @@
                                             </object>
                                         </object>
                                     </object>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag"></property>
                                         <property name="proportion">0</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size">-1,-1</property>
                                             <property name="name">bSizer104</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer105</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -6823,11 +6823,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="0">
+                                            <object class="sizeritem" expanded="1">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="0">
+                                                <object class="wxBoxSizer" expanded="1">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer106</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -6998,7 +6998,7 @@
                                             <property name="close_button">1</property>
                                             <property name="col_label_horiz_alignment">wxALIGN_CENTER</property>
                                             <property name="col_label_size"></property>
-                                            <property name="col_label_values">&quot;Task&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
+                                            <property name="col_label_values">&quot;Step&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
                                             <property name="col_label_vert_alignment">wxALIGN_CENTER</property>
                                             <property name="cols">10</property>
                                             <property name="column_sizes">75,59,59,50,150,70,70,50,60,140</property>
@@ -7067,7 +7067,7 @@
                 <object class="auinotebookpage" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Steps</property>
-                    <property name="select">0</property>
+                    <property name="select">1</property>
                     <object class="wxPanel" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
@@ -7134,20 +7134,20 @@
                                     <property name="width">0</property>
                                 </object>
                             </object>
-                            <object class="sizeritem" expanded="0">
+                            <object class="sizeritem" expanded="1">
                                 <property name="border">5</property>
                                 <property name="flag">wxEXPAND</property>
                                 <property name="proportion">0</property>
-                                <object class="wxBoxSizer" expanded="0">
+                                <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
                                     <property name="name">bSizer1001</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer113</property>
                                             <property name="orient">wxHORIZONTAL</property>
@@ -7192,7 +7192,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">task_search_ctrl</property>
+                                                    <property name="name">step_search_ctrl</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -7215,10 +7215,10 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnCancelButton">TaskSeachOnCancelButton</event>
-                                                    <event name="OnSearchButton">TaskSeachOnSearchButton</event>
-                                                    <event name="OnText">TaskSeachOnText</event>
-                                                    <event name="OnTextEnter">TaskSeachOnTextEnter</event>
+                                                    <event name="OnCancelButton">StepSeachOnCancelButton</event>
+                                                    <event name="OnSearchButton">StepSeachOnSearchButton</event>
+                                                    <event name="OnText">StepSeachOnText</event>
+                                                    <event name="OnTextEnter">StepSeachOnTextEnter</event>
                                                 </object>
                                             </object>
                                             <object class="sizeritem" expanded="0">
@@ -7269,7 +7269,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">btn_add_task11</property>
+                                                    <property name="name">btn_add_step</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -7292,7 +7292,7 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnButtonClick">OnAddTaskClicked</event>
+                                                    <event name="OnButtonClick">OnAddStepClicked</event>
                                                 </object>
                                             </object>
                                             <object class="sizeritem" expanded="0">
@@ -7343,7 +7343,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">btn_change_task11</property>
+                                                    <property name="name">btn_change_step</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -7366,7 +7366,7 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnButtonClick">OnChangeTaskClicked</event>
+                                                    <event name="OnButtonClick">OnChangeStepClicked</event>
                                                 </object>
                                             </object>
                                             <object class="sizeritem" expanded="0">
@@ -7417,7 +7417,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">btn_delete_task11</property>
+                                                    <property name="name">btn_delete_step</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -7440,7 +7440,7 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
-                                                    <event name="OnButtonClick">OnDeleteTaskClicked</event>
+                                                    <event name="OnButtonClick">OnDeleteStepClicked</event>
                                                 </object>
                                             </object>
                                             <object class="sizeritem" expanded="0">
@@ -7491,7 +7491,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">btn_move_up11</property>
+                                                    <property name="name">btn_move_up</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -7566,7 +7566,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">btn_move_down11</property>
+                                                    <property name="name">btn_move_down</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -7634,7 +7634,7 @@
                                             <property name="close_button">1</property>
                                             <property name="col_label_horiz_alignment">wxALIGN_CENTER</property>
                                             <property name="col_label_size"></property>
-                                            <property name="col_label_values">&quot;Task&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
+                                            <property name="col_label_values">&quot;Step&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
                                             <property name="col_label_vert_alignment">wxALIGN_CENTER</property>
                                             <property name="cols">10</property>
                                             <property name="column_sizes">75,59,59,58,150,70,70,50,60,140</property>
@@ -7670,7 +7670,7 @@
                                             <property name="minimize_button">0</property>
                                             <property name="minimum_size">860,2500</property>
                                             <property name="moveable">1</property>
-                                            <property name="name">grid_tasks</property>
+                                            <property name="name">grid_steps</property>
                                             <property name="pane_border">1</property>
                                             <property name="pane_position"></property>
                                             <property name="pane_size"></property>
@@ -7692,7 +7692,7 @@
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
-                                            <event name="OnGridCellLeftDClick">OnTasksGridDoubleLeftClick</event>
+                                            <event name="OnGridCellLeftDClick">OnStepsGridDoubleLeftClick</event>
                                         </object>
                                     </object>
                                 </object>

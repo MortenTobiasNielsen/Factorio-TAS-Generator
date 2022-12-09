@@ -10,7 +10,7 @@ GenerateScript::GenerateScript()
 
 void GenerateScript::reset()
 {
-	clear_tasks();
+	ClearSteps();
 	player_x_cord = 0.0f;
 	player_y_cord = 0.0f;
 	target_x_cord = 0.0f;
@@ -19,13 +19,13 @@ void GenerateScript::reset()
 	y_building_size = 0.0f;
 }
 
-void GenerateScript::clear_tasks()
+void GenerateScript::ClearSteps()
 {
 	total_steps = 1;
 	step_list = "local step = {}\n\n";
 }
 
-string GenerateScript::end_tasks()
+string GenerateScript::EndSteps()
 {
 	return step_list + "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n" + "return step";
 }
@@ -79,13 +79,13 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-	size_t amountOfTasks = steps.size();
+	size_t amountOfSteps = steps.size();
 
 	size_t startStep = 0;
 
-	for (int i = amountOfTasks - 1; i > 0; i--)
+	for (int i = amountOfSteps - 1; i > 0; i--)
 	{
-		if (steps[i].TaskEnum == e_start)
+		if (steps[i].StepEnum == e_start)
 		{
 			startStep = i + 1;
 			break;
@@ -93,18 +93,18 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	}
 
 	string currentStep = "";
-	for (int i = startStep; i < amountOfTasks; i++)
+	for (int i = startStep; i < amountOfSteps; i++)
 	{
 		currentStep = std::to_string(i + 1);
 
 		if (i > 0 && i % 25 == 0)
 		{
-			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(amountOfTasks) * 100.0f - 1);
+			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(amountOfSteps) * 100.0f - 1);
 			wxYield();
 		}
 
 		TransferParameters(steps[i]);
-		switch (steps[i].TaskEnum)
+		switch (steps[i].StepEnum)
 		{
 			case e_game_speed:
 				speed(currentStep, amount);
@@ -318,7 +318,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	//generate step file
 	saver.open(folder_location + "\\steps.lua");
 
-	saver << end_tasks();
+	saver << EndSteps();
 
 	saver.close();
 

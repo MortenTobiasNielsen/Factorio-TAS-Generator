@@ -71,7 +71,7 @@ tuple<vector<int>, wxString> Search::HandleColon(const wxString& s)
 	else
 	{
 		for (int i = 0; i < column.Length(); i++) column[i] = std::tolower(column[i]); // convert custom column to lower case
-		vector<wxString> columns = taskcolumns;
+		vector<wxString> columns = StepColumns;
 		for (int i = 0; i < 10; i++)
 		{
 			if (columns[i].starts_with(column))

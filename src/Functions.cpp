@@ -181,7 +181,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 
 void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry)
 {
-	grid->SetCellValue(row, 0, gridEntry->Task);
+	grid->SetCellValue(row, 0, gridEntry->Step);
 	grid->SetCellValue(row, 1, gridEntry->X);
 	grid->SetCellValue(row, 2, gridEntry->Y);
 	grid->SetCellValue(row, 3, gridEntry->Amount);

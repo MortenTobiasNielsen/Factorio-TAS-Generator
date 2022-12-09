@@ -26,7 +26,7 @@
 #include "StepParameters.h"
 #include "SearchUtil.h"
 #include "DialogProgressBar.h"
-#include "TaskNameToEnum.h"
+#include "StepNameToEnum.h"
 #include "utils.h"
 
 #include "../icon.xpm"
@@ -112,22 +112,22 @@ protected:
 	void OnPauseChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
 
-	// Task
-	void OnAddTaskClicked(wxCommandEvent& event);
-	void OnChangeTaskClicked(wxCommandEvent& event);
-	void OnDeleteTaskClicked(wxCommandEvent& event);
+	// Step
+	void OnAddStepClicked(wxCommandEvent& event);
+	void OnChangeStepClicked(wxCommandEvent& event);
+	void OnDeleteStepClicked(wxCommandEvent& event);
 	void OnMoveUpClicked(wxCommandEvent& event);
 	void OnMoveDownClicked(wxCommandEvent& event);
 	void OnMoveUpFiveClicked(wxMouseEvent& event);
 	void OnMoveDownFiveClicked(wxMouseEvent& event);
 
-	void OnTasksGridDoubleLeftClick(wxGridEvent& event);
+	void OnStepsGridDoubleLeftClick(wxGridEvent& event);
 
 	// Group
 	void OnNewGroupClicked(wxCommandEvent& event);
 	void OnDeleteGroupClicked(wxCommandEvent& event);
-	void OnGroupAddFromTasksListClicked(wxCommandEvent& event);
-	void OnGroupAddToTasksListClicked(wxCommandEvent& event);
+	void OnGroupAddFromStepsListClicked(wxCommandEvent& event);
+	void OnGroupAddToStepsListClicked(wxCommandEvent& event);
 	void OnGroupChangeClicked(wxCommandEvent& event);
 	void OnGroupDeleteClicked(wxCommandEvent& event);
 	void OnGroupMoveUpClicked(wxCommandEvent& event);
@@ -140,10 +140,10 @@ protected:
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
 	void OnDeleteTemplateClicked(wxCommandEvent& event);
-	void OnTemplateAddFromTasksListClicked(wxCommandEvent& event);
-	void OnTemplateAddToTasksListClicked(wxCommandEvent& event);
-	void OnTemplateChangeTaskClicked(wxCommandEvent& event);
-	void OnTemplateDeleteTaskClicked(wxCommandEvent& event);
+	void OnTemplateAddFromStepsListClicked(wxCommandEvent& event);
+	void OnTemplateAddToStepsListClicked(wxCommandEvent& event);
+	void OnTemplateChangeStepClicked(wxCommandEvent& event);
+	void OnTemplateDeleteStepClicked(wxCommandEvent& event);
 	void OnTemplateMoveUpClicked(wxCommandEvent& event);
 	void OnTemplateMoveDownClicked(wxCommandEvent& event);
 
@@ -151,14 +151,14 @@ protected:
 
 	void OnTemplateChosen(wxCommandEvent& event);
 
-	void TemplateAlterTask(int row, wxGrid* grid);
-	void TemplateAlterTask(StepParameters& step);
+	void TemplateAlterStep(int row, wxGrid* grid);
+	void TemplateAlterStep(StepParameters& step);
 
 	//Seach
-	void TaskSeachOnText(wxCommandEvent& event);
-	void TaskSeachOnTextEnter(wxCommandEvent& event);
-	void TaskSeachOnSearchButton(wxCommandEvent& event);
-	void TaskSeachOnCancelButton(wxCommandEvent& event);
+	void StepSeachOnText(wxCommandEvent& event);
+	void StepSeachOnTextEnter(wxCommandEvent& event);
+	void StepSeachOnSearchButton(wxCommandEvent& event);
+	void StepSeachOnCancelButton(wxCommandEvent& event);
 
 private:
 	wxString window_title = "EZRaiderz TAS Helper";
@@ -231,7 +231,7 @@ private:
 	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	bool ChangeRow(wxGrid* grid, StepParameters step);
 
-	void BackgroundColorUpdate(wxGrid* grid, int row, TaskType task);
+	void BackgroundColorUpdate(wxGrid* grid, int row, StepType step);
 
 	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
@@ -244,7 +244,7 @@ private:
 
 	bool SaveFile(bool save_as);
 
-	string ExtractTask();
+	string ExtractStep();
 	string ExtractAmount();
 
 	void malformed_saved_file_message();
@@ -256,7 +256,7 @@ private:
 	int GenerateBuildingSnapShot(int end_row);
 	void PopulateStepGrid();
 
-	void AddTask(int row);
+	void AddStep(int row);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
 	GridEntry ExtractGridEntry(wxGrid* grid, const int& row);
 

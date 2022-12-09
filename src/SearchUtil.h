@@ -15,7 +15,7 @@ using std::stringstream;
 
 struct Search
 {
-	static inline const vector<wxString> taskcolumns = {"task", "x-cord", "y-cord", "units", "item", "orientation", "direction", "size", "amount", "comment"};
+	static inline const vector<wxString> StepColumns = {"step", "x-cord", "y-cord", "units", "item", "orientation", "direction", "size", "amount", "comment"};
 	static inline const vector<wxString> buildingcolumns = {"x-cord", "y-cord", "building", "orientation", "limit", "recipe", "prio in", "prio out", "filter"};
 
 	static bool StringContainsAny(const wxString& str, const string& chars);

@@ -7,9 +7,9 @@
 class TypePanel : public wxPanel
 {
 public:
-	const struct TASK_TYPE
+	const struct STEP_TYPE
 	{
-		enum task_type
+		enum step_type
 		{
 			Take, Put, Game_Speed, Craft, Walk, Mine, Start,
 			Build, Recipe, Tech, Limit, Idle, Filter, Pause,
@@ -29,8 +29,8 @@ public:
 		const wxString& name = wxASCII_STR(wxPanelNameStr)) : wxPanel(parent, winid, pos, size, style, name)
 	{}
 
-	// Takes a task_type and enables the corresponding radio button 
-	void SwitchTask(TASK_TYPE::task_type type);
+	// Takes a step_type and enables the corresponding radio button 
+	void SwitchStep(STEP_TYPE::step_type type);
 
 public:
 	// Modifier strings: used to manipulate step detail fields and labels

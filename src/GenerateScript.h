@@ -14,6 +14,7 @@
 #include "DialogProgressBar.h"
 #include "Functions.h"
 #include "StepParameters.h"
+#include "StepNameToEnum.h"
 #include "utils.h"
 
 using std::string;
@@ -55,8 +56,8 @@ private:
 	string last_walking_comment;
 
 	void reset();
-	void clear_tasks();
-	string end_tasks();
+	void ClearSteps();
+	string EndSteps();
 
 	void AddInfoFile(string& folder_location);
 
