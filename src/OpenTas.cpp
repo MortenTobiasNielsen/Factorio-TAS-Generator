@@ -134,7 +134,7 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.orientation = OrientationToIndex[step.Orientation];
+				step.OrientationEnum = OrientationToEnum[step.Orientation];
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;

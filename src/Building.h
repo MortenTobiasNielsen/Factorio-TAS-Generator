@@ -7,13 +7,13 @@ struct Building
 	double X;
 	double Y;
 	int type;
-	Orientation orientation;
+	Orientation OrientationEnum;
 
 	Building(double x)
 	{
 		X = x;
 		Y = 0;
 		type = 0;
-		orientation = North;
+		OrientationEnum = North;
 	}
 };

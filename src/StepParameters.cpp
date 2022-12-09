@@ -7,7 +7,7 @@ StepParameters::StepParameters(double InitialX, double InitialY)
 	OriginalX = InitialX;
 	OriginalY = InitialY;
 
-	orientation = North;
+	OrientationEnum = North;
 	StepEnum = e_stop;
 	Size = 1;
 	Buildings = 1;
@@ -107,7 +107,7 @@ bool StepParameters::operator==(const Building& toCompare)
 	if (toCompare.X == X && toCompare.Y == Y)
 	{
 		BuildingIndex = toCompare.type;
-		orientation = toCompare.orientation;
+		OrientationEnum = toCompare.OrientationEnum;
 		return true;
 	}
 

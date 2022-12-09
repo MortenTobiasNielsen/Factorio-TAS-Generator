@@ -639,9 +639,8 @@ void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 		return;
 	}
 
-	int counter = 1;
-
 	row_selections.clear();
+	int counter = 1;
 	int startRow = 0;
 	int RowsToDelete = 0;
 
@@ -1534,7 +1533,10 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 		goal = "goal_any_percent.lua";
 	}
 
-	ValidateAllSteps();
+	if (!ValidateAllSteps())
+	{
+		return;
+	};
 
 	GenerateScript generate_script;
 	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
@@ -1601,7 +1603,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 {
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 
-	string orientation = "";
+	string OrientationEnum = "";
 	float speed;
 	long long pos;
 	switch (step)
@@ -1705,11 +1707,11 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 			spin_building_size->SetValue(gridEntry->BuildingSize);
 			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
 
-			orientation = gridEntry->BuildingOrientation.ToStdString();
-			pos = orientation.find(",");
+			OrientationEnum = gridEntry->BuildingOrientation.ToStdString();
+			pos = OrientationEnum.find(",");
 
-			radio_input->Select(map_input_output[orientation.substr(0, pos)]);
-			radio_output->Select(map_input_output[orientation.substr(pos + 2)]);
+			radio_input->Select(map_input_output[OrientationEnum.substr(0, pos)]);
+			radio_output->Select(map_input_output[OrientationEnum.substr(pos + 2)]);
 
 			txt_comment->SetValue(gridEntry->Comment);
 
@@ -2471,8 +2473,8 @@ bool cMain::ValidateAllSteps()
 		switch (step.StepEnum)
 		{
 			case e_build:
-				step.BuildingIndex = BuildingNameToIndex.find(step.Item)->second;
-				step.OrientationIndex = OrientationToIndex.find(step.Orientation)->second;
+				step.BuildingIndex = BuildingNameToType.find(step.Item)->second;
+				step.OrientationEnum = OrientationToEnum.find(step.Orientation)->second;
 
 				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, step);
 				break;
@@ -2489,6 +2491,8 @@ bool cMain::ValidateAllSteps()
 			case e_drop:
 				if (!BuildingExists(BuildingsSnapShot, buildingsInSnapShot, step))
 				{
+					string message = "Step " + to_string(i + 1) + " is not connected to a building. Ensure that the step is not placed before the build step.";
+					wxMessageBox(message, "Step not connected to building");
 					return false;
 				}
 				break;
@@ -2498,6 +2502,8 @@ bool cMain::ValidateAllSteps()
 			case e_take:
 				if (step.Orientation != "Wreck" && !BuildingExists(BuildingsSnapShot, buildingsInSnapShot, step))
 				{
+					string message = "Step " + to_string(i + 1) + " is not connected to a building. Ensure that the step is not placed before the build step.";
+					wxMessageBox(message, "Step not connected to building");
 					return false;
 				}
 
@@ -2506,4 +2512,6 @@ bool cMain::ValidateAllSteps()
 				break;
 		}
 	}
+
+	return true;
 }

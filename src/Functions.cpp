@@ -110,7 +110,7 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 	buildings[buildingsInSnapShot].X = stepParameters.X;
 	buildings[buildingsInSnapShot].Y = stepParameters.Y;
 	buildings[buildingsInSnapShot].type = stepParameters.BuildingIndex;
-	buildings[buildingsInSnapShot].orientation = stepParameters.orientation;
+	buildings[buildingsInSnapShot].OrientationEnum = stepParameters.OrientationEnum;
 	buildingsInSnapShot++;
 
 	if (stepParameters.Buildings == 1)
@@ -125,7 +125,7 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 		buildings[buildingsInSnapShot].X = stepParameters.X;
 		buildings[buildingsInSnapShot].Y = stepParameters.Y;
 		buildings[buildingsInSnapShot].type = stepParameters.BuildingIndex;
-		buildings[buildingsInSnapShot].orientation = stepParameters.orientation;
+		buildings[buildingsInSnapShot].OrientationEnum = stepParameters.OrientationEnum;
 		buildingsInSnapShot++;
 	}
 
@@ -158,7 +158,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 			{
 				if (buildingsFound == 0)
 				{
-					firstOrientation = buildings[j].orientation;
+					firstOrientation = buildings[j].OrientationEnum;
 				}
 
 				buildingsFound++;
@@ -169,7 +169,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 		if (buildingsFound == stepParameters.Buildings)
 		{
 			stepParameters.Reset();
-			stepParameters.orientation = firstOrientation;
+			stepParameters.OrientationEnum = firstOrientation;
 			return true;
 		}
 

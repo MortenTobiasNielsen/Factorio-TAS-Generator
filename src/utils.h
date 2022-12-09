@@ -941,7 +941,7 @@ enum Orientation
 	West,
 };
 
-static inline std::map<std::string, Orientation> OrientationToIndex = 
+static inline std::map<std::string, Orientation> OrientationToEnum = 
 {
 	{build_orientations[North], North},
 	{build_orientations[East], East},

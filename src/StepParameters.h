@@ -23,7 +23,7 @@ struct StepParameters
 	int Buildings;
 	int BuildingIndex;
 
-	Orientation orientation;
+	Orientation OrientationEnum;
 	StepType StepEnum;
 
 	string Step;

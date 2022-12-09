@@ -336,7 +336,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 {
 	building = FindBuildingName(step->BuildingIndex);
-	build_orientation = build_orientations[step->orientation];
+	build_orientation = build_orientations[step->OrientationEnum];
 }
 
 void GenerateScript::TransferParameters(StepParameters& stepParameters)
@@ -528,7 +528,7 @@ void GenerateScript::check_mining_distance(string step, string action, string x_
 	}
 }
 
-void GenerateScript::check_interact_distance(string step, string action, string x_cord, string y_cord, string building_name, string orientation)
+void GenerateScript::check_interact_distance(string step, string action, string x_cord, string y_cord, string building_name, string OrientationEnum)
 {
 	//if comment is "old" then use old map and buffer = 0.37 until a comment of new
 	if (comment == "old" || comment == "Old" || comment == "old build" || comment == "Old build")
@@ -569,7 +569,7 @@ void GenerateScript::check_interact_distance(string step, string action, string 
 	float min_y_edge = y_target;
 	float max_y_edge = y_target;
 
-	if (orientation == "North" || orientation == "South")
+	if (OrientationEnum == "North" || OrientationEnum == "South")
 	{
 		min_x_edge -= (x_building_size / 2);
 		max_x_edge += (x_building_size / 2);
@@ -778,11 +778,11 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 	total_steps += 1;
 }
 
-void GenerateScript::mining(string step, string x_cord, string y_cord, string duration, string building_name, string orientation, bool is_building)
+void GenerateScript::mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building)
 {
 	if (is_building)
 	{
-		check_interact_distance(step, "1", x_cord, y_cord, building_name, orientation);
+		check_interact_distance(step, "1", x_cord, y_cord, building_name, OrientationEnum);
 	}
 	else
 	{
@@ -940,10 +940,10 @@ void GenerateScript::pick(string step, string amount)
 	total_steps += 1;
 }
 
-void GenerateScript::rotate(string step, string x_cord, string y_cord, string times, string item, string orientation)
+void GenerateScript::rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum)
 {
 
-	check_interact_distance(step, "1", x_cord, y_cord, item, orientation);
+	check_interact_distance(step, "1", x_cord, y_cord, item, OrientationEnum);
 
 	if (std::stoi(times) == 3)
 	{
@@ -960,59 +960,59 @@ void GenerateScript::rotate(string step, string x_cord, string y_cord, string ti
 	}
 }
 
-void GenerateScript::build(string step, string action, string x_cord, string y_cord, string item, string orientation)
+void GenerateScript::build(string step, string action, string x_cord, string y_cord, string item, string OrientationEnum)
 {
-	check_interact_distance(step, action, x_cord, y_cord, item, orientation);
+	check_interact_distance(step, action, x_cord, y_cord, item, OrientationEnum);
 
 	item = check_item_name(item);
 
-	if (orientation == "North")
+	if (OrientationEnum == "North")
 	{
-		orientation = build_direction_struct.north;
+		OrientationEnum = build_direction_struct.north;
 	}
-	else if (orientation == "South")
+	else if (OrientationEnum == "South")
 	{
-		orientation = build_direction_struct.south;
+		OrientationEnum = build_direction_struct.south;
 	}
-	else if (orientation == "East")
+	else if (OrientationEnum == "East")
 	{
-		orientation = build_direction_struct.east;
+		OrientationEnum = build_direction_struct.east;
 	}
-	else if (orientation == "West")
+	else if (OrientationEnum == "West")
 	{
-		orientation = build_direction_struct.west;
+		OrientationEnum = build_direction_struct.west;
 	}
 	else
 	{
 		return;
 	}
 
-	step_list += signature(step, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + orientation + "}\n";
+	step_list += signature(step, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + OrientationEnum + "}\n";
 	total_steps += 1;
 };
 
-void GenerateScript::row_build(string step, string x_cord, string y_cord, string item, string orientation, string direction, string number_of_buildings, string building_size)
+void GenerateScript::row_build(string step, string x_cord, string y_cord, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size)
 {
 
-	build(step, "1", x_cord, y_cord, item, orientation);
+	build(step, "1", x_cord, y_cord, item, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		build(step, std::to_string(i + 1), x_cord, y_cord, item, orientation);
+		build(step, std::to_string(i + 1), x_cord, y_cord, item, OrientationEnum);
 	}
 }
 
-void GenerateScript::take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string orientation)
+void GenerateScript::take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string OrientationEnum)
 {
-	if (orientation == "Wreck")
+	if (OrientationEnum == "Wreck")
 	{
-		check_interact_distance(step, action, x_cord, y_cord, orientation, "North");
+		check_interact_distance(step, action, x_cord, y_cord, OrientationEnum, "North");
 	}
 	else
 	{
-		check_interact_distance(step, action, x_cord, y_cord, building, orientation);
+		check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 	}
 
 	item = check_item_name(item);
@@ -1021,28 +1021,28 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 	total_steps += 1;
 }
 
-void GenerateScript::row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation)
+void GenerateScript::row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
 
-	take(step, "1", x_cord, y_cord, amount, item, from, building, orientation);
+	take(step, "1", x_cord, y_cord, amount, item, from, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		take(step, std::to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation);
+		take(step, std::to_string(i + 1), x_cord, y_cord, amount, item, from, building, OrientationEnum);
 	}
 }
 
-void GenerateScript::put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string orientation)
+void GenerateScript::put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string OrientationEnum)
 {
-	if (orientation == "Wreck")
+	if (OrientationEnum == "Wreck")
 	{
-		check_interact_distance(step, action, x_cord, y_cord, orientation, "North");
+		check_interact_distance(step, action, x_cord, y_cord, OrientationEnum, "North");
 	}
 	else
 	{
-		check_interact_distance(step, action, x_cord, y_cord, building, orientation);
+		check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 	}
 
 	item = check_item_name(item);
@@ -1051,21 +1051,21 @@ void GenerateScript::put(string step, string action, string x_cord, string y_cor
 	total_steps += 1;
 }
 
-void GenerateScript::row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string orientation)
+void GenerateScript::row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
-	put(step, "1", x_cord, y_cord, amount, item, from, building, orientation);
+	put(step, "1", x_cord, y_cord, amount, item, from, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		put(step, std::to_string(i + 1), x_cord, y_cord, amount, item, from, building, orientation);
+		put(step, std::to_string(i + 1), x_cord, y_cord, amount, item, from, building, OrientationEnum);
 	}
 }
 
-void GenerateScript::recipe(string step, string action, string x_cord, string y_cord, string item, string building, string orientation)
+void GenerateScript::recipe(string step, string action, string x_cord, string y_cord, string item, string building, string OrientationEnum)
 {
-	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
+	check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 
 	item = check_item_name(item);
 
@@ -1073,65 +1073,65 @@ void GenerateScript::recipe(string step, string action, string x_cord, string y_
 	total_steps += 1;
 }
 
-void GenerateScript::row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string orientation)
+void GenerateScript::row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string OrientationEnum)
 {
 
-	recipe(step, "1", x_cord, y_cord, item, building, orientation);
+	recipe(step, "1", x_cord, y_cord, item, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		recipe(step, std::to_string(i + 1), x_cord, y_cord, item, building, orientation);
+		recipe(step, std::to_string(i + 1), x_cord, y_cord, item, building, OrientationEnum);
 	}
 }
 
-void GenerateScript::limit(string step, string action, string x_cord, string y_cord, string amount, string from, string building, string orientation)
+void GenerateScript::limit(string step, string action, string x_cord, string y_cord, string amount, string from, string building, string OrientationEnum)
 {
-	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
+	check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 
 	step_list += signature(step, action) + "\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + "}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string orientation)
+void GenerateScript::row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
-	limit(step, "1", x_cord, y_cord, amount, from, building, orientation);
+	limit(step, "1", x_cord, y_cord, amount, from, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		limit(step, std::to_string(i + 1), x_cord, y_cord, amount, from, building, orientation);
+		limit(step, std::to_string(i + 1), x_cord, y_cord, amount, from, building, OrientationEnum);
 	}
 }
 
-void GenerateScript::priority(string step, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string orientation)
+void GenerateScript::priority(string step, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string OrientationEnum)
 {
-	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
+	check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 
 	step_list += signature(step, action) + "\"priority\", {" + x_cord + ", " + y_cord + "}, \"" + priority_in + "\", \"" + priority_out + "\"}\n";
 	total_steps += 1;
 }
 
-void GenerateScript::row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string orientation)
+void GenerateScript::row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
 	priority_in = convert_string(priority_in);
 	priority_out = convert_string(priority_out);
 
-	priority(step, "1", x_cord, y_cord, priority_in, priority_out, building, orientation);
+	priority(step, "1", x_cord, y_cord, priority_in, priority_out, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		priority(step, std::to_string(i + 1), x_cord, y_cord, priority_in, priority_out, building, orientation);;
+		priority(step, std::to_string(i + 1), x_cord, y_cord, priority_in, priority_out, building, OrientationEnum);;
 	}
 }
 
-void GenerateScript::filter(string step, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string orientation)
+void GenerateScript::filter(string step, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string OrientationEnum)
 {
-	check_interact_distance(step, action, x_cord, y_cord, building, orientation);
+	check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 
 	item = check_item_name(item);
 
@@ -1139,15 +1139,15 @@ void GenerateScript::filter(string step, string action, string x_cord, string y_
 	total_steps += 1;
 }
 
-void GenerateScript::row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction, string number_of_buildings, string building_size, string building, string orientation)
+void GenerateScript::row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
-	filter(step, "1", x_cord, y_cord, item, amount, type, building, orientation);
+	filter(step, "1", x_cord, y_cord, item, amount, type, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		filter(step, std::to_string(i + 1), x_cord, y_cord, item, amount, type, building, orientation);
+		filter(step, std::to_string(i + 1), x_cord, y_cord, item, amount, type, building, OrientationEnum);
 	}
 }
 
