@@ -158,7 +158,8 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 			case e_limit:
 			case e_put:
 			case e_take:
-				if (step.Orientation != "Wreck" && !BuildingExists(buildingSnapshot, buildingsInSnapShot, step))
+				step.FromInto = step.Orientation;
+				if (step.FromInto != "Wreck" && !BuildingExists(buildingSnapshot, buildingsInSnapShot, step))
 				{
 					return false;
 				}
