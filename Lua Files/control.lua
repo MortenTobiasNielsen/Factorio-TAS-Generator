@@ -22,6 +22,8 @@ local task
 local task_category
 local count
 local item
+local amount
+local slot
 local direction
 local input
 local output
@@ -31,6 +33,7 @@ local duration = 0
 local ticks_mining = 0
 local idled = 0
 local font_size = 0.15 --best guess estimate of fontsize for flying text
+local queued_save = nil
 
 local pos_pos = false
 local pos_neg = false
@@ -61,7 +64,7 @@ local on_player_created = function(event)
 end
 
 --Print message intended for viewers
-local function msg(msg) 
+local function msg(msg)
     player.print(msg)
 end
 
@@ -137,7 +140,7 @@ local function check_selection_reach()
 end
 
 -- Check that it is possible to get the inventory of the entity
-local function check_inventory() 
+local function check_inventory()
 	target_inventory = player_selection.get_inventory(slot)
 
 	if not target_inventory then
@@ -209,7 +212,7 @@ local function take()
 
 	if amount == -1 then 
 		amount = target_inventory.get_item_count(item)
-	else 
+	else
 		amount = math.min(target_inventory.get_item_count(item), amount)
 	end
 
@@ -217,7 +220,7 @@ local function take()
 		warning(string.format("Step: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
-	
+
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
@@ -226,7 +229,7 @@ local function take()
 	end
 
 	target_inventory.remove{name=item, count=amount}
-	
+
 	local text = string.format("+%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"+2 Iron plate (5)"
 	local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
 	player.play_sound{path="utility/inventory_move"}
@@ -263,7 +266,7 @@ local function craft()
             warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
             step_reached = step
 		end
-		
+
         return false
 	end
 end
@@ -391,16 +394,16 @@ local function build()
 				else
 					player.surface.set_tiles({{position = target_position, name = item}})
 				end
-	
+
 				if(item == "landfill") then
 					player.surface.play_sound{path="tile-build-small/landfill", position=target_position}
 				else
 					player.surface.play_sound{path="tile-build-small/concrete", position=target_position}
 				end
-	
+
 				player.remove_item({name = item, count = 1})
 				return true
-				
+
 			elseif not walking.walking then
 				warning(string.format("Step: %s, Action: %s, Step: %d - Build: %s not in reach", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
@@ -413,7 +416,7 @@ local function build()
 			if not walking.walking then
 				warning(string.format("Step: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
-	
+
 			return false
 		end
 	else
@@ -429,12 +432,12 @@ local function build()
 					return true
 				end
 			end
-	
-		else 
+
+		else
 			if not walking.walking then
 				warning(string.format("Step: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
-	
+
 			return false
 		end
 	end
@@ -625,7 +628,7 @@ local function rotate()
 
 	if rev then
 		r = player_selection.rotate({reverse = true})
-	else 
+	else
 		r = player_selection.rotate({reverse = false})
 	end
 
@@ -651,8 +654,8 @@ local function recipe()
 
 	local items_returned = player_selection.set_recipe(item)
 
-	for name, count in pairs (items_returned) do
-		player.insert{name = name, count = count}
+	for name, count_ in pairs (items_returned) do
+		player.insert{name = name, count = count_}
 	end
 
 	return true
@@ -669,6 +672,10 @@ local function pause()
 	return true
 end
 
+local function resume()
+	game.tick_paused = false
+end
+
 -- Set the gameplay speed. 1 is standard speed
 local function speed(speed)
 	game.speed = speed
@@ -682,7 +689,7 @@ local function limit()
 	if not check_selection_reach() then
 		return false
 	end
-	
+
 	if not check_inventory() then
 		return false
 	end
@@ -693,7 +700,7 @@ local function limit()
 end
 
 local function priority()
-	
+
 	if not check_selection_reach() then
 		return false
 	end
@@ -704,7 +711,7 @@ local function priority()
 	return true
 end
 
-local function filter() 
+local function filter()
 
 	if not check_selection_reach() then
 		return false
@@ -743,7 +750,7 @@ local function drop()
 								spill = true
 								}
 		return true
-	end	
+	end
 
 	return false
 end
@@ -761,123 +768,250 @@ end
 -- Routing function to perform one of the many available steps
 -- True: Indicates the calling function should advance the step. 
 -- False: Indicates the calling function should not advance step.
-local function doStep(steps)
-	if steps[2] == "craft" then
+local function doStep(current_step)
+	if current_step[2] == "craft" then
         task_category = "Craft"
-        task = steps[1]
-		count = steps[3]
-		item = steps[4]
+        task = current_step[1]
+		count = current_step[3]
+		item = current_step[4]
 
 		return craft()
 
-	elseif steps[2] == "build" then
+	elseif current_step[2] == "build" then
         task_category = "Build"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		direction = steps[5]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		direction = current_step[5]
 
 		return build()
 
-	elseif steps[2] == "take" then
+	elseif current_step[2] == "take" then
         task_category = "Take"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		amount = steps[5]
-		slot = steps[6]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		amount = current_step[5]
+		slot = current_step[6]
 
 		return take()
 
-	elseif steps[2] == "put" then
+	elseif current_step[2] == "put" then
         task_category = "Put"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		amount = steps[5]
-		slot = steps[6]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		amount = current_step[5]
+		slot = current_step[6]
 
 		return put()
 
-	elseif steps[2] == "rotate" then
+	elseif current_step[2] == "rotate" then
         task_category = "Rotate"
-        task = steps[1]
-		target_position = steps[3]
-		rev = steps[4]
+        task = current_step[1]
+		target_position = current_step[3]
+		rev = current_step[4]
 
 		return rotate()
 
-	elseif steps[2] == "tech" then
+	elseif current_step[2] == "tech" then
         task_category = "Tech"
-        task = steps[1]
-		item = steps[3]
+        task = current_step[1]
+		item = current_step[3]
 
 		return tech()
 
-	elseif steps[2] == "recipe" then
+	elseif current_step[2] == "recipe" then
         task_category = "Recipe"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
 
 		return recipe()
 
-	elseif steps[2] == "limit" then
+	elseif current_step[2] == "limit" then
         task_category = "limit"
-        task = steps[1]
-		target_position = steps[3]
-		amount = steps[4]
-		slot = steps[5]
+        task = current_step[1]
+		target_position = current_step[3]
+		amount = current_step[4]
+		slot = current_step[5]
 
 		return limit()
 
-	elseif steps[2] == "priority" then
+	elseif current_step[2] == "priority" then
         task_category = "priority"
-        task = steps[1]
-		target_position = steps[3]
-		input = steps[4]
-		output = steps[5]
+        task = current_step[1]
+		target_position = current_step[3]
+		input = current_step[4]
+		output = current_step[5]
 
 		return priority()
 
-	elseif steps[2] == "filter" then
+	elseif current_step[2] == "filter" then
         task_category = "filter"
-        task = steps[1]
-		target_position = steps[3]
-		item = steps[4]
-		slot = steps[5]
-		type = steps[6]
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		slot = current_step[5]
+		type = current_step[6]
 
 		return filter()
 
-    elseif steps[2] == "drop" then
-        task = steps[1]
-		drop_position = steps[3]
-		drop_item = steps[4]
+    elseif current_step[2] == "drop" then
+        task = current_step[1]
+		drop_position = current_step[3]
+		drop_item = current_step[4]
 		return drop()
 
-	elseif steps[2] == "pick" then
-		pickup_ticks = pickup_ticks + steps[3] - 1
-		player.picking_state = true
+	elseif current_step[2] == "idle" then
+		idle = current_step[3]
 		return true
 
-	elseif steps[2] == "idle" then
-		idle = steps[3]
-		return true
-
-	elseif steps[2] == "launch" then
+	elseif current_step[2] == "launch" then
 		task_category = "launch"
-        task = steps[1]
-		target_position = steps[3]
+        task = current_step[1]
+		target_position = current_step[3]
 
 		return launch()
 	end
 end
 
+local function handle_pretick()
+	if queued_save and walking.walking == false and idle < 1 then 
+		save(queued_save.task, queued_save.name)
+		if steps[step] then warning(string.format("Creating safe save file for task %s resulted in saving on step %s", task, steps[step][1][1])) end
+		queued_save = nil
+	end
+	--pretick sets step directly so it doesn't raise too many events
+	while run do
+		if steps[step] == nil then
+			debug_state = false
+			run = false
+			return
+		elseif (steps[step][2] == "speed") then
+			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+			speed(steps[step][3])
+			step = step + 1
+		elseif steps[step][2] == "save" then
+			if walking.walking == false and idle < 1 then
+				save(steps[step][1][1], steps[step][3])
+			else
+				queued_save = {task = steps[step][1][1], name = steps[step][3]}
+			end
+			step = step + 1
+		elseif steps[2] == "pick" then
+			pickup_ticks = pickup_ticks + steps[3] - 1
+			player.picking_state = true
+			change_step(1)
+		elseif (steps[step][2] == "pause") then
+			pause()
+			msg("Script paused")
+			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+			change_step(1)
+			debug_state = false
+		elseif(steps[step][2] == "walk" and walking.walking == false and idle < 1) then
+			use_old_walking_pattern = steps[step][4] == "old" --compatibility
+			if use_old_walking_pattern then return end --compatibility
+
+			update_destination_position(steps[step][3][1], steps[step][3][2])
+
+			find_walking_pattern()
+			walking = walk()
+			change_step(1)
+		else
+			return --no more to do, break loop
+		end
+	end
+end
+
+local function handle_ontick()
+	if pickup_ticks > 0 then
+		player.picking_state = true
+		pickup_ticks = pickup_ticks - 1
+	end
+	if walking.walking == false then
+		if idle > 0 then
+			idle = idle - 1
+			idled = idled + 1
+
+				debug(string.format("Step: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
+
+			if idle == 0 then
+				idled = 0
+			end
+		elseif steps[step][2] == "walk" then
+			update_destination_position(steps[step][3][1], steps[step][3][2])
+
+			find_walking_pattern()
+			walking = walk()
+
+			change_step(1)
+
+		elseif steps[step][2] == "mine" then
+
+			player.update_selected_entity(steps[step][3])
+
+			player.mining_state = {mining = true, position = steps[step][3]}
+
+			duration = steps[step][4]
+
+			ticks_mining = ticks_mining + 1
+
+			if ticks_mining >= duration then
+				player.mining_state = {mining = false, position = steps[step][3]}
+				change_step(1)
+				mining = 0
+				ticks_mining = 0
+			end
+
+			mining = mining + 1
+			if mining > 5 then
+				if player.character_mining_progress == 0 then
+					warning(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					debug_state = false
+				else
+					mining = 0
+				end
+			end
+
+		elseif doStep(steps[step]) then
+			-- Do step while standing still
+			change_step(1)
+
+		end
+	else
+		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
+			if doStep(steps[step]) then
+				-- Do step while walking
+				change_step(1)
+			end
+		end
+	end
+end
+
+--- handle end the run
+local function handle_posttick()
+	if not run then return end
+	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then --we have to finish the previous task before we end the run
+	elseif steps[step] == nil or steps[step][1] == "break" then
+		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
+		debug_state = false
+		run = false
+		return
+	elseif (steps[step][2] == "stop") then
+		speed(steps[step][3])
+		msg(string.format("Script stopped - Game speed: %d", steps[step][3]))
+		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		run = false
+		return
+	end
+end
+
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
-	if not run then return end
-    if not player then
+	if not run then return end --early end on console:release
+    if not player then --set some parameters on the first tick
 		player = game.players[1]
 		player.surface.always_day = true
 		player_position = player.position
@@ -886,114 +1020,20 @@ script.on_event(defines.events.on_tick, function(event)
 		update_destination_position(player_position.x, player_position.y)
 		player.force.research_queue_enabled = true
 		walking = {walking = false, direction = defines.direction.north}
-
-	elseif player.character ~= nil then
-		update_player_position()
-
-		if steps[step] == nil or steps[step][1] == "break" then
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-			debug_state = false
-			return
-		end
-
-		if (steps[step][2] == "pause") then
-			pause()
-			debug("Script paused")
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-			debug_state = false
-			return
-		end
-
-		if (steps[step][2] == "stop") then
-			speed(steps[step][3])
-			debug(string.format("Script stopped - Game speed: %d", steps[step][3]))
-			debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-			debug_state = false
-			return
-		end
-
-		if (steps[step][2] == "speed") then
-			debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
-			speed(steps[step][3])
-			change_step(1)
-		end
-
-		if steps[step][2] == "save" then
-			save(steps[step][1][1], steps[step][3])
-			change_step(1)
-		end
-
-		if(steps[step][2] == "walk") then
-			use_old_walking_pattern = steps[step][4] == "old"
-		end
-
-		if pickup_ticks > 0 then
-			player.picking_state = true
-			pickup_ticks = pickup_ticks - 1
-		end
-
-		walking = walk()
-		if walking.walking == false then
-			if idle > 0 then
-				idle = idle - 1
-				idled = idled + 1
-
-				debug(string.format("Step: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
-
-				if idle == 0 then
-					idled = 0
-				end
-			elseif steps[step][2] == "walk" then
-				update_destination_position(steps[step][3][1], steps[step][3][2])
-
-				find_walking_pattern()
-				walking = walk()
-
-				change_step(1)
-
-			elseif steps[step][2] == "mine" then
-
-				player.update_selected_entity(steps[step][3])
-
-				player.mining_state = {mining = true, position = steps[step][3]}
-
-				duration = steps[step][4]
-
-				ticks_mining = ticks_mining + 1
-
-				if ticks_mining >= duration then
-					player.mining_state = {mining = false, position = steps[step][3]}
-					change_step(1)
-					mining = 0
-					ticks_mining = 0
-				end
-
-				mining = mining + 1
-				if mining > 5 then
-					if player.character_mining_progress == 0 then
-						warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
-						debug_state = false
-					else
-						mining = 0
-					end
-				end
-
-			elseif doStep(steps[step]) then
-				-- Do step while standing still
-				change_step(1)
-
-			end
-		else
-			if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
-				if doStep(steps[step]) then
-					-- Do step while walking
-					change_step(1)
-				end
-			end
-		end
-
-		player.walking_state = walking
 	end
+	if player.character == nil then return end --early end if in god mode
+
+	update_player_position()
+
+	walking = walk()
+	handle_pretick()
+	if not run then return end --early end from pretick
+
+	handle_ontick()
+
+	handle_posttick()
+
+	player.walking_state = walking
 end)
 
 local function mining_event_replace(event, item_name, amount)
@@ -1066,10 +1106,12 @@ end
 --seperate functions in case we want it to trigger on other events
 local function set_quick_bar(event)
 	local player = game.players[event.player_index]
-	for i = 1, 10 do 
+	for i = 1, 10 do
 		local set = split_string(settings.global[settings_short..i].value)
-		for key,val in pairs(set) do
-			player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+		if set then
+			for key,val in pairs(set) do
+				player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+			end
 		end
 	end
 end
@@ -1108,3 +1150,5 @@ script.on_init(function()
         if freeplay["set_disable_crashsite"] then remote.call("freeplay", "set_disable_crashsite", true) end --Disable crashsite
     end
 end)
+
+commands.add_command("resume", nil, resume)
