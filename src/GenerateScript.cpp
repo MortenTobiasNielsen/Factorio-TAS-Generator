@@ -79,21 +79,10 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-	size_t amountOfSteps = steps.size();
-
-	size_t startStep = 0;
-
-	for (int i = amountOfSteps - 1; i > 0; i--)
-	{
-		if (steps[i].StepEnum == e_start)
-		{
-			startStep = i + 1;
-			break;
-		}
-	}
+	const size_t amountOfSteps = steps.size();
 
 	string currentStep = "";
-	for (int i = startStep; i < amountOfSteps; i++)
+	for (int i = 0; i < amountOfSteps; i++)
 	{
 		currentStep = std::to_string(i + 1);
 
@@ -101,6 +90,16 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 		{
 			dialog_progress_bar->set_progress(static_cast<float>(i) / static_cast<float>(amountOfSteps) * 100.0f - 1);
 			wxYield();
+		}
+
+		if (steps[i].StepEnum == e_start)
+		{
+			ClearSteps();
+		}
+
+		if (steps[i].StepEnum == e_stop)
+		{
+			break;
 		}
 
 		TransferParameters(steps[i]);
@@ -200,10 +199,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 			case e_pause:
 				pause(currentStep);
-				break;
-
-			case e_stop:
-				stop(currentStep, amount);
 				break;
 
 			case e_limit:
@@ -530,39 +525,26 @@ void GenerateScript::check_mining_distance(string step, string action, string x_
 
 void GenerateScript::check_interact_distance(string step, string action, string x_cord, string y_cord, string building_name, string OrientationEnum)
 {
-	//if comment is "old" then use old map and buffer = 0.37 until a comment of new
-	if (comment == "old" || comment == "Old" || comment == "old build" || comment == "Old build")
-	{// TODO remove
-		building_size_map_p = &old_building_size_list;
-	}
-	else if (comment == "new" || comment == "New" || comment == "new build" || comment == "New build")
-	{
-		building_size_map_p = &building_size_list;
-	}
+	float buffer = 0.06f;
 
-	if (building_name == "Wreck")
+	//if comment is "old" then use old map and buffer = 0.37 until a comment of new
+	if (last_walking_comment == "old")
 	{
-		x_building_size = 1;
-		y_building_size = 1;
+		x_building_size = old_building_size_list.find(building_name)->second[0];
+		y_building_size = old_building_size_list.find(building_name)->second[1];
+
+		buffer = 0.37f;
 	}
 	else
 	{
-		x_building_size = building_size_map_p->find(building_name)->second[0];
-		y_building_size = building_size_map_p->find(building_name)->second[1];
+		x_building_size = building_size_list.find(building_name)->second[0];
+		y_building_size = building_size_list.find(building_name)->second[1];
 	}
-	const float buffer = building_size_map_p == &old_building_size_list ? 0.37f : 0.05f; // TODO remove - can't be static
+	
 	static const float max_distance = 10.0f; //Default build distance
 
 	float x_target = std::stof(x_cord);
 	float y_target = std::stof(y_cord);
-
-	/* Input corrections removed
-	float x_target = floor(std::stof(x_cord));
-	if ((int)ceil(x_building_size) % 2 == 1) x_target += 0.5; //if a building is an uneven number of tiles wide, it will be placed at a half tile
-
-	float y_target = floor(std::stof(y_cord));
-	if ((int)ceil(y_building_size) % 2 == 1) y_target += 0.5; //if a building is an uneven number of tiles tall, it will be placed at a half tile
-	*/
 
 	float min_x_edge = x_target;
 	float max_x_edge = x_target;
@@ -907,12 +889,6 @@ void GenerateScript::speed(string step, string speed)
 void GenerateScript::pause(string step)
 {
 	step_list += signature(step, "1") + "\"pause\"" + "}\n";
-	total_steps += 1;
-}
-
-void GenerateScript::stop(string step, string speed)
-{
-	step_list += signature(step, "1") + "\"stop\", " + speed + "}\n";
 	total_steps += 1;
 }
 

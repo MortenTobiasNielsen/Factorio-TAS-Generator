@@ -193,7 +193,7 @@ private:
 		vector<bool> limit = {true, true, true, false, false, false, false, false, false, true, true, true};
 		vector<bool> Start = {false, false, false, false, false, false, false, false, false, false, false, false};
 		vector<bool> Pause = {false, false, false, false, false, false, false, false, false, false, false, false};
-		vector<bool> stop = {false, false, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> stop = {false, false, false, false, false, false, false, false, false, false, false, false};
 		vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};
 		vector<bool> pick = {false, false, true, false, false, false, false, false, false, false, false, false};
 		vector<bool> idle = {false, false, true, false, false, false, false, false, false, false, false, false};

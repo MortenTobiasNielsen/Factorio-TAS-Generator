@@ -1949,13 +1949,15 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 
 	switch (stepParameters->StepEnum)
 	{
+		case e_stop:
+			gridEntry.Comment = "";
+
 		case e_start:
 		case e_pause:
 		case e_save:
 			break;
 
 		case e_game_speed:
-		case e_stop:
 		case e_idle:
 		case e_pick_up:
 			gridEntry.Amount = stepParameters->Amount;

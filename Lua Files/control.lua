@@ -39,7 +39,7 @@ local pos_pos = false
 local pos_neg = false
 local neg_pos = false
 local neg_neg = false
-local use_old_walking_pattern = false;
+local compatibility_mode = false;
 
 local drop_item
 local drop_position
@@ -454,7 +454,7 @@ local function walk_pos_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -474,7 +474,7 @@ local function walk_pos_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -494,7 +494,7 @@ local function walk_neg_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -514,7 +514,7 @@ local function walk_neg_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -534,7 +534,7 @@ local function walk()
 		return walk_neg_neg()
 	end
 
-	if use_old_walking_pattern then
+	if compatibility_mode then
 		return {walking = false, direction = defines.direction.north}
 	else
 		return {walking = false, direction = walking.direction}
@@ -542,7 +542,7 @@ local function walk()
 end
 
 local function find_walking_pattern()
-	if use_old_walking_pattern then
+	if compatibility_mode then
 		if (player_position.x - destination.x >= 0) then
 			if (player_position.y - destination.y >= 0) then
 				pos_pos = true
@@ -601,7 +601,7 @@ end
 
 
 local function update_player_position()
-	if use_old_walking_pattern then
+	if compatibility_mode then
 		player_position = player.position
 		return
 	end
@@ -611,7 +611,7 @@ local function update_player_position()
 end
 
 local function update_destination_position(x, y)
-	if use_old_walking_pattern then
+	if compatibility_mode then
 		destination = { x = x, y = y }
 		return
 	end
@@ -670,10 +670,6 @@ end
 local function pause()
 	game.tick_paused = true
 	return true
-end
-
-local function resume()
-	game.tick_paused = false
 end
 
 -- Set the gameplay speed. 1 is standard speed
@@ -879,7 +875,7 @@ end
 local function handle_pretick()
 	if queued_save and walking.walking == false and idle < 1 then 
 		save(queued_save.task, queued_save.name)
-		if steps[step] then warning(string.format("Creating safe save file for task %s resulted in saving on step %s", task, steps[step][1][1])) end
+		if steps[step] then warning(string.format("Creating safe save file for step %s resulted in saving on step %s", task, steps[step][1][1])) end
 		queued_save = nil
 	end
 	--pretick sets step directly so it doesn't raise too many events
@@ -889,7 +885,7 @@ local function handle_pretick()
 			run = false
 			return
 		elseif (steps[step][2] == "speed") then
-			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+			debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
 			speed(steps[step][3])
 			step = step + 1
 		elseif steps[step][2] == "save" then
@@ -910,9 +906,6 @@ local function handle_pretick()
 			change_step(1)
 			debug_state = false
 		elseif(steps[step][2] == "walk" and walking.walking == false and idle < 1) then
-			use_old_walking_pattern = steps[step][4] == "old" --compatibility
-			if use_old_walking_pattern then return end --compatibility
-
 			update_destination_position(steps[step][3][1], steps[step][3][2])
 
 			find_walking_pattern()
@@ -967,7 +960,7 @@ local function handle_ontick()
 			mining = mining + 1
 			if mining > 5 then
 				if player.character_mining_progress == 0 then
-					warning(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 					debug_state = false
 				else
 					mining = 0
@@ -992,25 +985,126 @@ end
 --- handle end the run
 local function handle_posttick()
 	if not run then return end
-	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then --we have to finish the previous task before we end the run
+	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then --we have to finish the previous step before we end the run
 	elseif steps[step] == nil or steps[step][1] == "break" then
 		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
-		debug_state = false
-		run = false
-		return
-	elseif (steps[step][2] == "stop") then
-		speed(steps[step][3])
-		msg(string.format("Script stopped - Game speed: %d", steps[step][3]))
-		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 		debug_state = false
 		run = false
 		return
 	end
 end
 
+local function handle_tick()
+	walking = walk()
+	handle_pretick()
+
+	if not run then --early end from pretick
+		return
+	end
+
+	handle_ontick()
+
+	handle_posttick()
+end
+
+local function backwards_compatibility()
+	if steps[step] == nil or steps[step][1] == "break" then
+		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		return
+	end
+
+	if (steps[step][2] == "pause") then
+		pause()
+		debug("Script paused")
+		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		return
+	end
+
+	if (steps[step][2] == "speed") then
+		debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+		speed(steps[step][3])
+		change_step(1)
+	end
+
+	if steps[step][2] == "save" then
+		save(steps[step][1][1], steps[step][3])
+		change_step(1)
+	end
+
+	if pickup_ticks > 0 then
+		player.picking_state = true
+		pickup_ticks = pickup_ticks - 1
+	end
+
+	walking = walk()
+	if walking.walking == false then
+		if idle > 0 then
+			idle = idle - 1
+			idled = idled + 1
+
+			debug(string.format("Step: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
+
+			if idle == 0 then
+				idled = 0
+			end
+		elseif steps[step][2] == "walk" then
+			update_destination_position(steps[step][3][1], steps[step][3][2])
+
+			find_walking_pattern()
+			walking = walk()
+
+			change_step(1)
+
+		elseif steps[step][2] == "mine" then
+
+			player.update_selected_entity(steps[step][3])
+
+			player.mining_state = {mining = true, position = steps[step][3]}
+
+			duration = steps[step][4]
+
+			ticks_mining = ticks_mining + 1
+
+			if ticks_mining >= duration then
+				player.mining_state = {mining = false, position = steps[step][3]}
+				change_step(1)
+				mining = 0
+				ticks_mining = 0
+			end
+
+			mining = mining + 1
+			if mining > 5 then
+				if player.character_mining_progress == 0 then
+					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					debug_state = false
+				else
+					mining = 0
+				end
+			end
+
+		elseif doStep(steps[step]) then
+			-- Do step while standing still
+			change_step(1)
+
+		end
+	else
+		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
+			if doStep(steps[step]) then
+				-- Do step while walking
+				change_step(1)
+			end
+		end
+	end
+end
+
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
-	if not run then return end --early end on console:release
+	if not run then --early end on console:release
+		return
+	end
+
     if not player then --set some parameters on the first tick
 		player = game.players[1]
 		player.surface.always_day = true
@@ -1021,17 +1115,22 @@ script.on_event(defines.events.on_tick, function(event)
 		player.force.research_queue_enabled = true
 		walking = {walking = false, direction = defines.direction.north}
 	end
-	if player.character == nil then return end --early end if in god mode
+
+	if player.character == nil then --early end if in god mode
+		return
+	end
+
+	if(steps[step][2] == "walk") then
+		compatibility_mode = steps[step][4] == "old"
+	end
 
 	update_player_position()
 
-	walking = walk()
-	handle_pretick()
-	if not run then return end --early end from pretick
-
-	handle_ontick()
-
-	handle_posttick()
+	if compatibility_mode then
+		backwards_compatibility()
+	else
+		handle_tick()
+	end
 
 	player.walking_state = walking
 end)
@@ -1047,7 +1146,7 @@ end
 
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
-	if (steps[step][1] == "break" or steps[step][2] == "stop") then
+	if (steps[step][1] == "break") then
 		return
 	end
 
@@ -1078,13 +1177,6 @@ script.on_event(defines.events.on_game_created_from_scenario, function()
 
 	remote.call("freeplay", "set_skip_intro", true)
 
-end)
-
---release tas on writing "release" in console
-script.on_event(defines.events.on_console_chat, function(event)
-	if event.message and event.message == "release" then
-		run = false
-	end
 end)
 
 -- Triggered on script built
@@ -1151,4 +1243,20 @@ script.on_init(function()
     end
 end)
 
+local function release()
+	run = false
+end
+
+commands.add_command("release", nil, release)
+
+local function resume()
+	run = true
+end
+
 commands.add_command("resume", nil, resume)
+
+local function skip()
+	change_step(1)
+end
+
+commands.add_command("skip", nil, skip)

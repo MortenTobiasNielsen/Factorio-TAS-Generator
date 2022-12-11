@@ -383,7 +383,8 @@ static const map<string, vector<float>> building_size_list = {
 	{"Refined concrete", {1, 1}},
 	{"Refined hazard concrete left", {1, 1}},
 	{"Refined hazard concrete right", {1, 1}},
-	{"Landfill", {1, 1}}
+	{"Landfill", {1, 1}},
+	{"Wreck", {1, 1}}
 };
 
 static const map<string, vector<float>> old_building_size_list = {
@@ -479,9 +480,9 @@ static const map<string, vector<float>> old_building_size_list = {
 	{"Express splitter", {1, 1}},
 	{"Concrete", {1, 1}},
 	{"Refined concrete", {1, 1}},
-	{"Stone brick", {1, 1}}};
-
-static const std::map<std::string, std::vector<float>>* building_size_map_p = &building_size_list;
+	{"Stone brick", {1, 1}},
+	{"Wreck", {1, 1}}
+};
 
 static const std::vector<std::string> handcrafted_list = {
 	"Accumulator",

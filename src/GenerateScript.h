@@ -81,7 +81,6 @@ private:
 	void tech(string step, string tech_to_research);
 	void speed(string step, string speed);
 	void pause(string step);
-	void stop(string step, string speed);
 	void launch(string step, string x_cord, string y_cord);
 	void save(string step, string nameOfSaveGame);
 	void idle(string step, string amount);
