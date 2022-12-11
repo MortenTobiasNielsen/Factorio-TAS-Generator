@@ -257,27 +257,34 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_save:
-				if (i != 0 && last_walking_comment != "old")
+				if (i != 0 && i + 1 != amountOfSteps && last_walking_comment != "old")
 				{
 					// A save should be between two walk steps
-					if (steps[i - 1].StepEnum != e_walk || steps[i + 1].StepEnum != e_walk)
+					if (steps[i - 1].StepEnum == e_walk && steps[i + 1].StepEnum == e_walk)
 					{
-						wxMessageBox("A save step should be between two walk steps and the character has to be running straight (either X or Y of both walk steps should be same)", "Invalid Save", wxICON_WARNING);
-						dialog_progress_bar->Close();
-						return;
+						// The character should be running straight to ensure that the character doesn't start walking incorectly when the save is loaded.
+						if (steps[i - 1].X == steps[i + 1].X || steps[i - 1].Y == steps[i + 1].Y)
+						{
+							save(currentStep, comment);
+							break;
+						}
 					}
 
-					// The character should be running straight to ensure that the character doesn't start walking incorectly when the save is loaded.
-					if (steps[i - 1].X != steps[i + 1].X && steps[i - 1].Y != steps[i + 1].Y)
+					// Or the next step after the save needs to be a start step and the next after that should be a walk
+					if (i + 2 != amountOfSteps && steps[i + 1].StepEnum == e_start || steps[i + 2].StepEnum == e_walk)
 					{
-						wxMessageBox("A save step should be between two walk steps and the character has to be running straight (either X or Y of both walk steps should be same)", "Invalid Save", wxICON_WARNING);
-						dialog_progress_bar->Close();
-						return;
+						// The character should be running straight to ensure that the character doesn't start walking incorectly when the save is loaded.
+						if (steps[i - 1].X == steps[i + 2].X || steps[i - 1].Y == steps[i + 2].Y)
+						{
+							save(currentStep, comment);
+							break;
+						}
 					}
 				}
 
-				save(currentStep, comment);
-				break;
+				wxMessageBox("A save step should be between two walk steps and the character has to be running straight (either X or Y of both walk steps should be same)", "Invalid Save", wxICON_WARNING);
+				dialog_progress_bar->Close();
+				return;
 
 			case e_idle:
 				idle(currentStep, amount);
@@ -787,7 +794,20 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 		last_walking_comment = comment;
 	}
 
-	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\"}\n";
+	string stateOfX = "different_x";
+	string stateOfY = "different_y";
+
+	if (player_x_cord == std::stof(x_cord))
+	{
+		stateOfX = "same_x";
+	}
+
+	if (player_y_cord == std::stof(y_cord))
+	{
+		stateOfY = "same_y";
+	}
+
+	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\", \"" + stateOfX + "\", \"" + stateOfY +"\"}\n";
 	player_x_cord = std::stof(x_cord);
 	player_y_cord = std::stof(y_cord);
 	total_steps += 1;

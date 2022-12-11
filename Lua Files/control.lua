@@ -38,7 +38,9 @@ local pos_pos = false
 local pos_neg = false
 local neg_pos = false
 local neg_neg = false
-local compatibility_mode = false;
+local compatibility_mode = false
+local keep_x = false
+local keep_y = false
 
 local drop_item
 local drop_position
@@ -443,6 +445,22 @@ local function build()
 end
 
 local function walk_pos_pos()
+	if keep_x then
+		if player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.north}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x > destination.x then
+			return {walking = true, direction = defines.direction.west}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x > destination.x then
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northwest}
@@ -463,6 +481,22 @@ local function walk_pos_pos()
 end
 
 local function walk_pos_neg()
+	if keep_x then
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.south}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x > destination.x then
+			return {walking = true, direction = defines.direction.west}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x > destination.x then
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.southwest}
@@ -483,6 +517,22 @@ local function walk_pos_neg()
 end
 
 local function walk_neg_pos()
+	if keep_x then
+		if player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.north}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x < destination.x then
+			return {walking = true, direction = defines.direction.east}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x < destination.x then
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northeast}
@@ -503,6 +553,22 @@ local function walk_neg_pos()
 end
 
 local function walk_neg_neg()
+	if keep_x then
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.south}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x < destination.x then
+			return {walking = true, direction = defines.direction.east}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x < destination.x then
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.southeast}
@@ -576,13 +642,13 @@ local function find_walking_pattern()
 		if (player_position.x - destination.x >= 0) then
 			if (player_position.y - destination.y >= 0) then
 				pos_pos = true
-			elseif (player_position.y - destination.y < 0) then
+			else
 				pos_neg = true
 			end
 		else
 			if (player_position.y - destination.y >= 0) then
 				neg_pos = true
-			elseif (player_position.y - destination.y < 0) then
+			else
 				neg_neg = true
 			end
 		end
@@ -613,6 +679,17 @@ local function update_destination_position(x, y)
 	if compatibility_mode then
 		destination = { x = x, y = y }
 		return
+	end
+
+	keep_x = false
+	keep_y = false
+
+	if steps[step][5] == "same_x" then
+		keep_x = true
+	end
+
+	if steps[step][6] == "same_y" then
+		keep_y = true
 	end
 
 	destination.x = round(x)
@@ -905,10 +982,9 @@ local function handle_pretick()
 end
 
 local function handle_ontick()
-	step = step + 1
-
 	if steps[step][2] == "save" then
 		save(steps[step][1][1], steps[step][3])
+		step = step + 1
 		return
 	end
 
