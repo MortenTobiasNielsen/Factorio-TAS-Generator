@@ -176,6 +176,7 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 		stepParameters.Next();
 	}
 
+	stepParameters.Reset();
 	return false;
 }
 

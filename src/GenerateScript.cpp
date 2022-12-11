@@ -155,10 +155,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_take:
-				if (steps[i].FromInto != struct_from_into_list.wreck)
-				{
-					SetBuildingAndOrientation(&steps[i]);
-				}
+				SetBuildingAndOrientation(&steps[i]);
 
 				from_into = extract_define(steps[i].FromInto, building);
 
@@ -171,10 +168,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_put:
-				if (steps[i].FromInto != struct_from_into_list.wreck)
-				{
-					SetBuildingAndOrientation(&steps[i]);
-				}
+				SetBuildingAndOrientation(&steps[i]);
 
 				from_into = extract_define(steps[i].FromInto, building);
 
@@ -202,10 +196,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_limit:
-				if (steps[i].FromInto != struct_from_into_list.wreck)
-				{
-					SetBuildingAndOrientation(&steps[i]);
-				}
+				SetBuildingAndOrientation(&steps[i]);
 
 				from_into = extract_define(steps[i].FromInto, building);
 
@@ -330,6 +321,12 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 {
+	if (step->FromInto == struct_from_into_list.wreck)
+	{
+		building = struct_from_into_list.wreck;
+		return;
+	}
+
 	building = FindBuildingName(step->BuildingIndex);
 	build_orientation = build_orientations[step->OrientationEnum];
 }
@@ -507,15 +504,32 @@ string GenerateScript::check_item_name(string item)
 
 void GenerateScript::check_mining_distance(string step, string action, string x_cord, string y_cord)
 {
-	static const float buffer = 0.50f; // this should be set correctly when you get a better understanding of how it is actually calculated in the game
-	static const float max_distance = 2.7f;
+	std::vector<float> coordinates;
 
-	float min_x_edge = std::stof(x_cord) - 0.5f;
-	float max_x_edge = std::stof(x_cord) + 0.5f;
-	float min_y_edge = std::stof(y_cord) - 0.5f;
-	float max_y_edge = std::stof(y_cord) + 0.5f;
+	if (last_walking_comment == "old")
+	{
+		static const float buffer = 0.50f;
+		static const float max_distance = 2.7f;
 
-	std::vector<float> coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
+		float min_x_edge = std::stof(x_cord) - 0.5f;
+		float max_x_edge = std::stof(x_cord) + 0.5f;
+		float min_y_edge = std::stof(y_cord) - 0.5f;
+		float max_y_edge = std::stof(y_cord) + 0.5f;
+
+		coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
+	}
+	else
+	{
+		static const float buffer = 0.15f;
+		static const float max_distance = 3.0f;
+
+		float min_x_edge = std::stof(x_cord);
+		float max_x_edge = std::stof(x_cord);
+		float min_y_edge = std::stof(y_cord);
+		float max_y_edge = std::stof(y_cord);
+
+		coordinates = find_walk_location(min_x_edge, max_x_edge, min_y_edge, max_y_edge, buffer, max_distance);
+	}
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1])
 	{

@@ -875,7 +875,11 @@ end
 local function handle_pretick()
 	if queued_save and walking.walking == false and idle < 1 then 
 		save(queued_save.task, queued_save.name)
-		if steps[step] then warning(string.format("Creating safe save file for step %s resulted in saving on step %s", task, steps[step][1][1])) end
+
+		if steps[step] then
+			warning(string.format("Creating safe save file for step %s resulted in saving on step %s", task, steps[step][1][1])) 
+		end
+
 		queued_save = nil
 	end
 	--pretick sets step directly so it doesn't raise too many events
@@ -931,6 +935,15 @@ local function handle_ontick()
 
 			if idle == 0 then
 				idled = 0
+
+				if steps[step][2] == "walk" then
+					update_destination_position(steps[step][3][1], steps[step][3][2])
+
+					find_walking_pattern()
+					walking = walk()
+
+					change_step(1)
+				end
 			end
 		elseif steps[step][2] == "walk" then
 			update_destination_position(steps[step][3][1], steps[step][3][2])
@@ -984,8 +997,12 @@ end
 
 --- handle end the run
 local function handle_posttick()
-	if not run then return end
-	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then --we have to finish the previous step before we end the run
+	if not run then
+		return
+	end
+
+	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then
+		-- we wait to finish the previous step before we end the run
 	elseif steps[step] == nil or steps[step][1] == "break" then
 		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
 		debug_state = false
@@ -1168,6 +1185,15 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 		change_step(1)
 	end
 
+	if run and steps[step] and steps[step][2] and steps[step][2] == "walk" then
+		update_destination_position(steps[step][3][1], steps[step][3][2])
+
+		find_walking_pattern()
+		walking = walk()
+
+		change_step(1)
+	end
+
 	mining = 0
 	ticks_mining = 0
 end)
@@ -1243,20 +1269,18 @@ script.on_init(function()
     end
 end)
 
-local function release()
-	run = false
-end
+script.on_event(defines.events.on_console_chat, function(event)
+	if event.message then
+		if event.message == "release" then
+			run = false
+		end
 
-commands.add_command("release", nil, release)
+		if event.message == "resume" then
+			run = true
+		end
 
-local function resume()
-	run = true
-end
-
-commands.add_command("resume", nil, resume)
-
-local function skip()
-	change_step(1)
-end
-
-commands.add_command("skip", nil, skip)
+		if event.message == "skip" then
+			change_step(1)
+		end
+	end
+end)
