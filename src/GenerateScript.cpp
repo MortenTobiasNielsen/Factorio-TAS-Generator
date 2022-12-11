@@ -257,6 +257,25 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_save:
+				if (i != 0 && last_walking_comment != "old")
+				{
+					// A save should be between two walk steps
+					if (steps[i - 1].StepEnum != e_walk || steps[i + 1].StepEnum != e_walk)
+					{
+						wxMessageBox("A save step should be between two walk steps and the character has to be running straight (either X or Y of both walk steps should be same)", "Invalid Save", wxICON_WARNING);
+						dialog_progress_bar->Close();
+						return;
+					}
+
+					// The character should be running straight to ensure that the character doesn't start walking incorectly when the save is loaded.
+					if (steps[i - 1].X != steps[i + 1].X && steps[i - 1].Y != steps[i + 1].Y)
+					{
+						wxMessageBox("A save step should be between two walk steps and the character has to be running straight (either X or Y of both walk steps should be same)", "Invalid Save", wxICON_WARNING);
+						dialog_progress_bar->Close();
+						return;
+					}
+				}
+
 				save(currentStep, comment);
 				break;
 
