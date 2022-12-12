@@ -932,11 +932,11 @@ local function doStep(current_step)
 end
 
 local function handle_pretick()
-	if queued_save and walking.walking == false and idle < 1 then 
+	if queued_save and walking.walking == false and idle < 1 and pickup_ticks < 1 then
 		save(queued_save.task, queued_save.name)
 
 		if steps[step] then
-			warning(string.format("Creating safe save file for step %s resulted in saving on step %s", task, steps[step][1][1])) 
+			warning(string.format("Creating safe save file for step %s resulted in saving on step %s", queued_save.task, steps[step][1][1])) 
 		end
 
 		queued_save = nil
@@ -952,14 +952,14 @@ local function handle_pretick()
 			speed(steps[step][3])
 			step = step + 1
 		elseif steps[step][2] == "save" then
-			if walking.walking == false and idle < 1 then
+			if walking.walking == false and idle < 1 and pickup_ticks < 1 then
 				save(steps[step][1][1], steps[step][3])
 			else
 				queued_save = {task = steps[step][1][1], name = steps[step][3]}
 			end
 			step = step + 1
-		elseif steps[2] == "pick" then
-			pickup_ticks = pickup_ticks + steps[3] - 1
+		elseif steps[step][2] == "pick" then
+			pickup_ticks = pickup_ticks + steps[step][3] - 1
 			player.picking_state = true
 			change_step(1)
 		elseif (steps[step][2] == "pause") then
