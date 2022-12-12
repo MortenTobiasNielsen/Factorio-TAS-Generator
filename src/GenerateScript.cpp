@@ -51,6 +51,22 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver.close();
 }
 
+int seek_start = 0;
+string save_walk = "";
+void inline GenerateScript::SeekStart(){
+	if (seek_start <= 0) 
+		return;
+	seek_start = 0;
+	if (save_walk != "")
+	{
+		total_steps = 2;
+		step_list = save_walk;
+		save_walk = "";
+	}
+	else
+		ClearSteps();
+}
+
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
 {
 	reset();
@@ -80,12 +96,12 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	dialog_progress_bar->Show();
 
 	const size_t amountOfSteps = steps.size();
-	int seek_start = 0;
 
 	string currentStep = "";
 	for (int i = 0; i < amountOfSteps; i++)
 	{
 		currentStep = std::to_string(i + 1);
+		seek_start--;
 
 		if (i > 0 && i % 25 == 0)
 		{
@@ -112,10 +128,20 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_walk:
+				if (seek_start > 1)
+				{
+					seek_start = 2;
+					ClearSteps();
+					walk(currentStep, "1", x_cord, y_cord, comment);
+					save_walk = step_list;
+					break;
+				}
+
 				walk(currentStep, "1", x_cord, y_cord, comment);
 				break;
 
 			case e_mine:
+				SeekStart();
 				if (amount == "All")
 				{
 					amount = "1000";
@@ -142,18 +168,22 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				SetBuildingAndOrientation(&steps[i]);
 
 				rotate(currentStep, x_cord, y_cord, amount, item, build_orientation);
+				SeekStart();
 				break;
 
 			case e_craft:
 				craft(currentStep, amount == "All" ? "-1" : amount, item);
+				SeekStart();
 				break;
 
 			case e_tech:
 				tech(currentStep, item);
+				SeekStart();
 				break;
 
 			case e_build:
 				row_build(currentStep, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
+				SeekStart();
 				break;
 
 			case e_take:
@@ -167,6 +197,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				}
 
 				row_take(currentStep, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				SeekStart();
 				break;
 
 			case e_put:
@@ -180,6 +211,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				}
 
 				row_put(currentStep, x_cord, y_cord, amount == "All" ? "-1" : amount, item, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				SeekStart();
 				break;
 
 			case e_recipe:
@@ -191,6 +223,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				SetBuildingAndOrientation(&steps[i]);
 
 				row_recipe(currentStep, x_cord, y_cord, item, direction_to_build, building_size, amount_of_buildings, building, build_orientation);
+				SeekStart();
 				break;
 
 			case e_pause:
@@ -208,6 +241,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				}
 
 				row_limit(currentStep, x_cord, y_cord, amount, from_into, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				SeekStart();
 				break;
 
 			case e_priority:
@@ -226,6 +260,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			SetBuildingAndOrientation(&steps[i]);
 
 			row_priority(currentStep, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+			SeekStart();
 			break;
 
 			case e_filter:
@@ -237,6 +272,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				SetBuildingAndOrientation(&steps[i]);
 
 				row_filter(currentStep, x_cord, y_cord, item, amount, check_input(building, splitter_list) ? "splitter" : "inserter", direction_to_build, amount_of_buildings, building_size, building, build_orientation);
+				SeekStart();
 				break;
 
 			case e_drop:
@@ -248,14 +284,17 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				SetBuildingAndOrientation(&steps[i]);
 
 				row_drop(currentStep, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size, building);
+				SeekStart();
 				break;
 
 			case e_pick_up:
+				SeekStart();
 				pick(currentStep, amount);
 				break;
 
 			case e_launch:
 				launch(currentStep, x_cord, y_cord);
+				SeekStart();
 				break;
 
 			case e_save:
@@ -263,6 +302,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_idle:
+				SeekStart();
 				idle(currentStep, amount);
 				break;
 		}

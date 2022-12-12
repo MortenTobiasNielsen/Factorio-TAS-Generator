@@ -25,6 +25,7 @@ class GenerateScript
 {
 public:
 	GenerateScript();
+	void SeekStart();
 	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal);
 
 private:
