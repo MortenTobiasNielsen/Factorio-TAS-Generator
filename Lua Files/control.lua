@@ -655,29 +655,14 @@ local function find_walking_pattern()
 	end
 end
 
----comment rounds value to nearest first decimal
----@param value number
----@return number
-local function round(value)
-	local precision = 10
-	local round = 0.05
-	return math.floor((value + round) * precision) / precision
-end
-
-
 local function update_player_position()
-	if compatibility_mode then
-		player_position = player.position
-		return
-	end
-
-	player_position.x = round(player.position.x)
-	player_position.y = round(player.position.y)
+	player_position = player.position
 end
 
 local function update_destination_position(x, y)
+	destination = { x = x, y = y }
+
 	if compatibility_mode then
-		destination = { x = x, y = y }
 		return
 	end
 
@@ -691,9 +676,6 @@ local function update_destination_position(x, y)
 	if steps[step][6] == "same_y" then
 		keep_y = true
 	end
-
-	destination.x = round(x)
-	destination.y = round(y)
 end
 
 local function rotate()

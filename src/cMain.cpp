@@ -115,20 +115,20 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	cmb_from_into->AutoComplete(take_from_choices);
 
 	// set steps grid formatting
-	grid_steps->SetColFormatFloat(1, 4, 1);
-	grid_steps->SetColFormatFloat(2, 4, 1);
+	grid_steps->SetColFormatFloat(1, 4, 2);
+	grid_steps->SetColFormatFloat(2, 4, 2);
 	grid_steps->SetColFormatFloat(3, 4, 2);
 	grid_steps->SetSelectionMode(grid_steps->wxGridSelectRows);
 
 	// set group grid formatting
-	grid_group->SetColFormatFloat(1, 4, 1);
-	grid_group->SetColFormatFloat(2, 4, 1);
+	grid_group->SetColFormatFloat(1, 4, 2);
+	grid_group->SetColFormatFloat(2, 4, 2);
 	grid_group->SetColFormatFloat(3, 4, 2);
 	grid_group->SetSelectionMode(grid_group->wxGridSelectRows);
 
 	// set group grid formatting
-	grid_template->SetColFormatFloat(1, 4, 1);
-	grid_template->SetColFormatFloat(2, 4, 1);
+	grid_template->SetColFormatFloat(1, 4, 2);
+	grid_template->SetColFormatFloat(2, 4, 2);
 	grid_template->SetColFormatFloat(3, 4, 2);
 	grid_template->SetSelectionMode(grid_group->wxGridSelectRows);
 
