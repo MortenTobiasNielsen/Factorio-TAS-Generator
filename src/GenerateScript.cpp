@@ -80,6 +80,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	dialog_progress_bar->Show();
 
 	const size_t amountOfSteps = steps.size();
+	int seek_start = 0;
 
 	string currentStep = "";
 	for (int i = 0; i < amountOfSteps; i++)
@@ -95,13 +96,14 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 		if (steps[i].StepEnum == e_start)
 		{
 			ClearSteps();
+			seek_start = 30;
 		}
 
 		if (steps[i].StepEnum == e_stop)
 		{
 			break;
 		}
-
+		
 		TransferParameters(steps[i]);
 		switch (steps[i].StepEnum)
 		{
