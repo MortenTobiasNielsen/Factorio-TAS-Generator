@@ -249,14 +249,17 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Step = Capitalize(segments[0]);
+		step.Step = Capitalize(segments[1]);
 		step.Amount = Capitalize(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		step.StepEnum = MapStepNameToStepType.find(step.Step)->second;
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end())
+			return false;
+		step.StepEnum = mappedtype->second;
 
 		steps.push_back(step);
 
