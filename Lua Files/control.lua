@@ -41,6 +41,7 @@ local neg_neg = false
 local compatibility_mode = false
 local keep_x = false
 local keep_y = false
+local diagonal = false
 
 local drop_item
 local drop_position
@@ -461,6 +462,14 @@ local function walk_pos_pos()
 		end
 	end
 
+	if diagonal then
+		if player_position.x > destination.x or player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.northwest}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x > destination.x then
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northwest}
@@ -492,6 +501,14 @@ local function walk_pos_neg()
 	if keep_y then
 		if player_position.x > destination.x then
 			return {walking = true, direction = defines.direction.west}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if diagonal then
+		if player_position.x > destination.x or player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.southwest}
 		else
 			return {walking = false, direction = walking.direction}
 		end
@@ -533,6 +550,14 @@ local function walk_neg_pos()
 		end
 	end
 
+	if diagonal then
+		if player_position.x < destination.x or player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.northeast}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x < destination.x then
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northeast}
@@ -564,6 +589,14 @@ local function walk_neg_neg()
 	if keep_y then
 		if player_position.x < destination.x then
 			return {walking = true, direction = defines.direction.east}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if diagonal then
+		if player_position.x < destination.x or player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.southeast}
 		else
 			return {walking = false, direction = walking.direction}
 		end
@@ -668,6 +701,7 @@ local function update_destination_position(x, y)
 
 	keep_x = false
 	keep_y = false
+	diagonal = false
 
 	if steps[step][5] == "same_x" then
 		keep_x = true
@@ -675,6 +709,10 @@ local function update_destination_position(x, y)
 
 	if steps[step][6] == "same_y" then
 		keep_y = true
+	end
+
+	if steps[step][5] == "diagonal" then
+		diagonal = true
 	end
 end
 

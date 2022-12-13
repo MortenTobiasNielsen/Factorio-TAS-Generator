@@ -807,6 +807,12 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 		stateOfY = "same_y";
 	}
 
+	if (round(abs(player_x_cord - std::stof(x_cord)) * 1000) / 1000 == round(abs(player_y_cord - std::stof(y_cord)) * 1000) / 1000)
+	{
+		stateOfX = "diagonal";
+		stateOfY = "diagonal";
+	}
+
 	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\", \"" + stateOfX + "\", \"" + stateOfY +"\"}\n";
 	player_x_cord = std::stof(x_cord);
 	player_y_cord = std::stof(y_cord);
