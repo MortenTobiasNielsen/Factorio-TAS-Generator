@@ -1220,7 +1220,7 @@ script.on_event(defines.events.on_tick, function(event)
 		walking = {walking = false, direction = defines.direction.north}
 	end
 
-	if player.character == nil then --early end if in god mode
+	if player == nil or player.character == nil then --early end if in god mode
 		return
 	end
 
@@ -1249,6 +1249,10 @@ local function mining_event_replace(event, item_name, amount)
 end
 
 script.on_event(defines.events.on_player_mined_entity, function(event)
+
+	if player == nil or player.character == nil then --early end if in god mode
+		return
+	end
 
 	if (steps[step][1] == "break") then
 		return
