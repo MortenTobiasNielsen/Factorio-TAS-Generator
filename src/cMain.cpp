@@ -1961,6 +1961,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_idle:
 		case e_pick_up:
 			gridEntry.Amount = stepParameters->Amount;
+			break;
 
 		case e_craft:
 			gridEntry.Amount = stepParameters->Amount;
