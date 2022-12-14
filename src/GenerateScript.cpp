@@ -51,22 +51,6 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver.close();
 }
 
-int seek_start = 0;
-string save_walk = "";
-void inline GenerateScript::SeekStart(){
-	if (seek_start <= 0) 
-		return;
-	seek_start = 0;
-	if (save_walk != "")
-	{
-		total_steps = 2;
-		step_list = save_walk;
-		save_walk = "";
-	}
-	else
-		ClearSteps();
-}
-
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
 {
 	reset();
@@ -101,7 +85,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	for (int i = 0; i < amountOfSteps; i++)
 	{
 		currentStep = std::to_string(i + 1);
-		seek_start--;
 
 		if (i > 0 && i % 25 == 0)
 		{
@@ -112,7 +95,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 		if (steps[i].StepEnum == e_start)
 		{
 			ClearSteps();
-			seek_start = 30;
 			continue;
 		}
 
@@ -125,25 +107,14 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 		switch (steps[i].StepEnum)
 		{
 			case e_game_speed:
-				seek_start++;
 				speed(currentStep, amount);
 				break;
 
 			case e_walk:
-				if (seek_start > 1)
-				{
-					seek_start = 2;
-					ClearSteps();
-					walk(currentStep, "1", x_cord, y_cord, comment);
-					save_walk = step_list;
-					break;
-				}
-
 				walk(currentStep, "1", x_cord, y_cord, comment);
 				break;
 
 			case e_mine:
-				SeekStart();
 				if (amount == "All")
 				{
 					amount = "1000";
@@ -170,23 +141,18 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				SetBuildingAndOrientation(&steps[i]);
 
 				rotate(currentStep, x_cord, y_cord, amount, item, build_orientation);
-				SeekStart();
 				break;
 
 			case e_craft:
-				seek_start++;
 				craft(currentStep, amount == "All" ? "-1" : amount, item);
-				SeekStart();
 				break;
 
 			case e_tech:
 				tech(currentStep, item);
-				SeekStart();
 				break;
 
 			case e_build:
 				row_build(currentStep, x_cord, y_cord, item, build_orientation, direction_to_build, amount_of_buildings, building_size);
-				SeekStart();
 				break;
 
 			case e_take:
@@ -227,7 +193,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_pause:
-				seek_start++;
 				pause(currentStep);
 				break;
 
@@ -285,22 +250,18 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_pick_up:
-				SeekStart();
 				pick(currentStep, amount);
 				break;
 
 			case e_launch:
 				launch(currentStep, x_cord, y_cord);
-				SeekStart();
 				break;
 
 			case e_save:
-				seek_start++;
 				save(currentStep, comment);
 				break;
 
 			case e_idle:
-				SeekStart();
 				idle(currentStep, amount);
 				break;
 		}
@@ -1072,9 +1033,8 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 
 void GenerateScript::row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
-
 	take(step, "1", x_cord, y_cord, amount, item, from, building, OrientationEnum);
-	SeekStart();
+
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
@@ -1103,7 +1063,6 @@ void GenerateScript::put(string step, string action, string x_cord, string y_cor
 void GenerateScript::row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
 	put(step, "1", x_cord, y_cord, amount, item, from, building, OrientationEnum);
-	SeekStart();
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
@@ -1125,9 +1084,8 @@ void GenerateScript::recipe(string step, string action, string x_cord, string y_
 
 void GenerateScript::row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string OrientationEnum)
 {
-
 	recipe(step, "1", x_cord, y_cord, item, building, OrientationEnum);
-	SeekStart();
+
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
@@ -1147,7 +1105,7 @@ void GenerateScript::limit(string step, string action, string x_cord, string y_c
 void GenerateScript::row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
 	limit(step, "1", x_cord, y_cord, amount, from, building, OrientationEnum);
-	SeekStart();
+
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
@@ -1170,7 +1128,7 @@ void GenerateScript::row_priority(string step, string x_cord, string y_cord, str
 	priority_out = convert_string(priority_out);
 
 	priority(step, "1", x_cord, y_cord, priority_in, priority_out, building, OrientationEnum);
-	SeekStart();
+
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
@@ -1192,7 +1150,7 @@ void GenerateScript::filter(string step, string action, string x_cord, string y_
 void GenerateScript::row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
 	filter(step, "1", x_cord, y_cord, item, amount, type, building, OrientationEnum);
-	SeekStart();
+
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
@@ -1214,7 +1172,7 @@ void GenerateScript::drop(string step, string action, string x_cord, string y_co
 void GenerateScript::row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building_size, string building)
 {
 	drop(step, "1", x_cord, y_cord, item, building);
-	SeekStart();
+
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
