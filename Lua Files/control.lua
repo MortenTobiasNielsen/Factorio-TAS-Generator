@@ -41,7 +41,7 @@ local neg_neg
 local compatibility_mode
 local keep_x
 local keep_y
-local diagonal = false
+local diagonal
 
 local drop_item
 local drop_position
@@ -674,7 +674,7 @@ local function walk()
 	if compatibility_mode then
 		return {walking = false, direction = defines.direction.north}
 	else
-		return {walking = false, direction = defines.direction.north}
+		return {walking = false, direction = walking.direction}
 	end
 end
 
@@ -1407,6 +1407,7 @@ local function create_tas_global_state()
 		duration = 0,
 		ticks_mining = 0,
 		idled = 0,
+		diagonal = false,
 	}
 	
 end
