@@ -311,7 +311,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		string comment = "";
-		if (segments.size() != group_segment_size)
+		if (segments.size() == group_segment_size)
 		{
 			comment = segments[10];
 		}
