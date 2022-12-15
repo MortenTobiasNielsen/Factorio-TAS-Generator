@@ -1015,6 +1015,7 @@ local function handle_pretick()
 			run = false
 			return
 		elseif (steps[step][2] == "speed") then
+			if steps[step].comment then msg(steps[step].comment) end
 			debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
 			speed(steps[step][3])
 			step = step + 1
@@ -1022,6 +1023,7 @@ local function handle_pretick()
 			queued_save = {name = steps[step][1][1], step = steps[step][3]}
 			step = step + 1
 		elseif steps[step][2] == "pick" then
+			if steps[step].comment then msg(steps[step].comment) end
 			pickup_ticks = pickup_ticks + steps[step][3] - 1
 			player.picking_state = true
 			change_step(1)
@@ -1057,6 +1059,7 @@ local function handle_ontick()
 
 			if idle == 0 then
 				idled = 0
+				if steps[step].comment then msg(steps[step].comment) end
 
 				if steps[step][2] == "walk" then
 					update_destination_position(steps[step][3][1], steps[step][3][2])
@@ -1068,11 +1071,12 @@ local function handle_ontick()
 				end
 			end
 		elseif steps[step][2] == "walk" then
+			if steps[step].comment then msg(steps[step].comment) end
 			update_destination_position(steps[step][3][1], steps[step][3][2])
-
+			
 			find_walking_pattern()
 			walking = walk()
-
+			
 			change_step(1)
 
 		elseif steps[step][2] == "mine" then
@@ -1090,11 +1094,13 @@ local function handle_ontick()
 				change_step(1)
 				mining = 0
 				ticks_mining = 0
+				if steps[step].comment then msg(steps[step].comment) end
 			end
 
 			mining = mining + 1
 			if mining > 5 then
 				if player.character_mining_progress == 0 then
+					if steps[step].comment then msg(steps[step].comment) end
 					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 					debug_state = false
 				else
@@ -1105,13 +1111,14 @@ local function handle_ontick()
 		elseif doStep(steps[step]) then
 			-- Do step while standing still
 			change_step(1)
-
+			if steps[step].comment then msg(steps[step].comment) end
 		end
 	else
 		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
 			if doStep(steps[step]) then
 				-- Do step while walking
 				change_step(1)
+				if steps[step].comment then msg(steps[step].comment) end
 			end
 		end
 	end
@@ -1131,7 +1138,7 @@ local function handle_posttick()
 	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then
 		-- we wait to finish the previous step before we end the run
 	elseif steps[step] == nil or steps[step][1] == "break" then
-		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
+		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 		debug_state = false
 		run = false
 		return
