@@ -502,6 +502,25 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::OnAddStepRightClicked(wxMouseEvent& event)
+{
+	if (grid_steps->IsSelection())
+	{
+		if (!grid_steps->GetSelectedRows().Last())
+		{
+			return;
+		}
+
+		AddStep(grid_steps->GetSelectedRows().Last() + 1);
+	}
+	else
+	{
+		AddStep(grid_steps->GetNumberRows());
+	}
+
+	event.Skip();
+}
+
 void cMain::AddStep(int row)
 {
 	auto stepParameters = ExtractStepParameters();
