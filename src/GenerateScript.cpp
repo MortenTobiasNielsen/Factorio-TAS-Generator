@@ -754,7 +754,7 @@ string GenerateScript::Comment(string comment)
 
 string GenerateScript::Step(string step, string action, string details, string comment = "")
 {
-	return signature(step, action) + "{" + details + Comment(comment) + "}}\n";
+	return signature(step, action) + details + Comment(comment) + "}\n";
 }
 
 void GenerateScript::walk(string step, string action, string x_cord, string y_cord, string comment)

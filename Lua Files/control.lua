@@ -1055,7 +1055,7 @@ local function handle_ontick()
 			idle = idle - 1
 			idled = idled + 1
 
-				debug(string.format("Step: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
+			debug(string.format("Step: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
 
 			if idle == 0 then
 				idled = 0
@@ -1080,7 +1080,7 @@ local function handle_ontick()
 			change_step(1)
 
 		elseif steps[step][2] == "mine" then
-
+			if steps[step].comment then msg(steps[step].comment) end
 			player.update_selected_entity(steps[step][3])
 
 			player.mining_state = {mining = true, position = steps[step][3]}
@@ -1094,13 +1094,11 @@ local function handle_ontick()
 				change_step(1)
 				mining = 0
 				ticks_mining = 0
-				if steps[step].comment then msg(steps[step].comment) end
 			end
 
 			mining = mining + 1
 			if mining > 5 then
 				if player.character_mining_progress == 0 then
-					if steps[step].comment then msg(steps[step].comment) end
 					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 					debug_state = false
 				else
