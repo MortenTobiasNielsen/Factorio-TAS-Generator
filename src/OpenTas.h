@@ -25,7 +25,6 @@ struct open_file_return_data
 	bool success = false;
 	string goal;
 	vector<StepParameters> steps;
-	map<string, vector<StepParameters>> group_map;
 	map<string, vector<StepParameters>> template_map;
 	string save_file_location;
 	string generate_code_folder_location;
@@ -39,6 +38,13 @@ struct open_file_return_data
 	bool auto_put_burner = false;
 	bool auto_put_lab = false;
 	bool auto_put_recipe = false;
+};
+
+enum Category
+{
+	Invalid,
+	Group,
+	Template
 };
 
 class OpenTas
@@ -60,7 +66,7 @@ private:
 
 	bool extract_total_steps(std::ifstream& file);
 	bool extract_goal(std::ifstream& file);
-	bool extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
+	Category extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
 	bool extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
 	bool extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
 	bool extract_save_location(std::ifstream& file);

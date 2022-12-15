@@ -25,7 +25,6 @@ public:
 		bool save_as,
 		vector<bool> auto_list,
 		vector<StepParameters> steps,
-		map<string, vector<StepParameters>> maps,
 		map<string, vector<StepParameters>> templates,
 		string folder_location,
 		string folder_location_generate,

@@ -123,20 +123,6 @@ protected:
 
 	void OnStepsGridDoubleLeftClick(wxGridEvent& event);
 
-	// Group
-	void OnNewGroupClicked(wxCommandEvent& event);
-	void OnDeleteGroupClicked(wxCommandEvent& event);
-	void OnGroupAddFromStepsListClicked(wxCommandEvent& event);
-	void OnGroupAddToStepsListClicked(wxCommandEvent& event);
-	void OnGroupChangeClicked(wxCommandEvent& event);
-	void OnGroupDeleteClicked(wxCommandEvent& event);
-	void OnGroupMoveUpClicked(wxCommandEvent& event);
-	void OnGroupMoveDownClicked(wxCommandEvent& event);
-
-	void OnGroupGridDoubleLeftClick(wxGridEvent& event);
-
-	void OnGroupChosen(wxCommandEvent& event);
-
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
 	void OnDeleteTemplateClicked(wxCommandEvent& event);
@@ -210,7 +196,6 @@ private:
 	wxArrayString tech_choices;
 	wxArrayString building_orientation_choices;
 	wxArrayString direction_to_build_choices;
-	wxArrayString group_choices;
 	wxArrayString template_choices;
 	wxArrayString input_output_choices;
 	wxArrayString handcrafted_choices;
@@ -218,8 +203,6 @@ private:
 	wxArrayString filter_take_put_drop_choices;
 	wxArrayString building_choices;
 
-	// For group and template strucktures
-	map<string, vector<StepParameters>> group_map;
 	map<string, vector<StepParameters>> template_map;
 
 	void ResetToNewWindow();
@@ -227,14 +210,14 @@ private:
 	bool CheckBeforeClose();
 
 	void MoveRow(wxGrid* grid, bool up = false);
-	void GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map);
+	void TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map);
 	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	bool ChangeRow(wxGrid* grid, StepParameters step);
 
 	void BackgroundColorUpdate(wxGrid* grid, int row, StepType step);
 
 	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
-	void UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
+	void UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
 
 	void setup_paramters(std::vector<bool> parameters);
 

@@ -120,24 +120,18 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	grid_steps->SetColFormatFloat(3, 4, 2);
 	grid_steps->SetSelectionMode(grid_steps->wxGridSelectRows);
 
-	// set group grid formatting
-	grid_group->SetColFormatFloat(1, 4, 2);
-	grid_group->SetColFormatFloat(2, 4, 2);
-	grid_group->SetColFormatFloat(3, 4, 2);
-	grid_group->SetSelectionMode(grid_group->wxGridSelectRows);
-
-	// set group grid formatting
+	// set template grid formatting
 	grid_template->SetColFormatFloat(1, 4, 2);
 	grid_template->SetColFormatFloat(2, 4, 2);
 	grid_template->SetColFormatFloat(3, 4, 2);
-	grid_template->SetSelectionMode(grid_group->wxGridSelectRows);
+	grid_template->SetSelectionMode(grid_template->wxGridSelectRows);
 
 	// Checking steel axe as a goal
 	menu_goals->GetMenuItems()[0]->Check();
 
 	// split steps into seperate panel
 	wxAuiNotebook* a = (wxAuiNotebook*)step_panel->GetParent();
-	a->Split(2, wxRIGHT);
+	a->Split(1, wxRIGHT);
 }
 
 void cMain::StepSeachOnText(wxCommandEvent& event)
@@ -164,18 +158,13 @@ void cMain::StepSeachOnCancelButton(wxCommandEvent& event)
 
 void cMain::ResetToNewWindow()
 {
-	if (grid_steps->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
+	if (grid_steps->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
 	{
 		if (grid_steps->GetNumberRows() > 0)
 		{
 			grid_steps->DeleteRows(0, grid_steps->GetNumberRows());
 		}
-
-		if (grid_group->GetNumberRows() > 0)
-		{
-			grid_group->DeleteRows(0, grid_group->GetNumberRows());
-		}
-
+		
 		if (grid_template->GetNumberRows() > 0)
 		{
 			grid_template->DeleteRows(0, grid_template->GetNumberRows());
@@ -184,10 +173,6 @@ void cMain::ResetToNewWindow()
 
 	rbtn_walk->SetValue(true);
 	setup_paramters(parameter_choices.walk);
-
-	group_map.clear();
-	cmb_choose_group->Clear();
-	group_choices = {};
 
 	template_map.clear();
 	cmb_choose_template->Clear();
@@ -207,7 +192,7 @@ void cMain::ResetToNewWindow()
 
 bool cMain::CheckBeforeClose()
 {
-	if (grid_steps->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
+	if (grid_steps->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
 	{
 		int answer = wxMessageBox("Do you want to save your changes?", "Ensure that you have saved what you need", wxICON_QUESTION | wxYES_NO | wxCANCEL, this);
 
@@ -298,7 +283,7 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 	}
 }
 
-void cMain::GroupTemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map)
+void cMain::TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map)
 {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin())
 	{
@@ -479,7 +464,7 @@ void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType Step)
 	}
 }
 
-void cMain::UpdateGroupTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
+void cMain::UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
 {
 	if (grid->GetNumberRows() > 0)
 	{
@@ -784,84 +769,18 @@ void cMain::OnStepsGridDoubleLeftClick(wxGridEvent& event)
 	event.Skip();
 }
 
-void cMain::OnNewGroupClicked(wxCommandEvent& event)
-{
-	int rowCount = cmb_choose_group->GetCount();
-	string name = cmb_choose_group->GetValue().ToStdString();
-
-	if (name == "")
-	{
-		wxMessageBox("Please write a group name", "Group name cannot be blank");
-		event.Skip();
-		return;
-	}
-
-	for (int i = 0; i < rowCount; i++)
-	{
-		if (name == cmb_choose_group->GetString(i).ToStdString())
-		{
-			wxMessageBox("Group names have to be unique - please write a new name in the Choose Group field", "Group names should be unique");
-			event.Skip();
-			return;
-		}
-	}
-
-	cmb_choose_group->Clear();
-	group_choices.Add(name);
-	cmb_choose_group->Append(group_choices);
-	cmb_choose_group->SetValue(name);
-	
-	vector<StepParameters> groupSteps = {};
-	group_map.insert(pair<string, vector<StepParameters>>(name, groupSteps));
-	
-	UpdateGroupTemplateGrid(grid_group, group_map[name]);
-
-	event.Skip();
-}
-
-void cMain::OnDeleteGroupClicked(wxCommandEvent& event)
-{
-	if (wxMessageBox("Are you sure you want to delete this group?", "Delete group", wxICON_QUESTION | wxYES_NO, this) != wxYES)
-	{
-		return;
-	}
-
-	auto name = cmb_choose_group->GetValue().ToStdString();
-	if (group_map.find(name) == group_map.end())
-	{
-		return;
-	}
-
-	group_map.erase(name);
-	group_choices.Remove(name);
-	cmb_choose_group->Clear();
-	cmb_choose_group->Append(group_choices);
-
-	if (group_choices.size())
-	{
-		cmb_choose_group->SetValue(*group_choices.begin());
-		OnGroupChosen(event);
-		return;
-	}
-
-	if (grid_group->GetNumberRows())
-	{
-		grid_group->DeleteRows(0, grid_group->GetNumberRows());
-	}
-}
-
 void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
 {
 	if (!grid_steps->IsSelection())
 	{
-		wxMessageBox("No step is chosen - please select row(s) in the step list", "Cannot add step to group");
+		wxMessageBox("No step is chosen - please select row(s) in the step list", "Cannot add step to template");
 		return;
 	}
 
 	auto it = map.find(cmb->GetValue().ToStdString());
 	if (it == map.end())
 	{
-		wxMessageBox("The group name doesn't exist - please add a new group before adding steps", "Cannot add step to group");
+		wxMessageBox("The template name doesn't exist - please add a new template before adding steps", "Cannot add step to template");
 		return;
 	}
 
@@ -870,7 +789,7 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 	{
 		if (!grid->GetSelectedRows().begin())
 		{
-			wxMessageBox("Please either select row(s) or nothing", "Group list selection not valid");
+			wxMessageBox("Please either select row(s) or nothing", "template list selection not valid");
 			return;
 		}
 
@@ -905,62 +824,6 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 	it->second = steps;
 }
 
-void cMain::OnGroupAddFromStepsListClicked(wxCommandEvent& event)
-{
-	UpdateMapWithNewSteps(grid_group, cmb_choose_group, group_map);
-
-	event.Skip();
-}
-
-void cMain::OnGroupAddToStepsListClicked(wxCommandEvent& event)
-{
-	int moveTo = grid_steps->GetNumberRows();
-
-	if (grid_steps->IsSelection())
-	{
-		if (!grid_steps->GetSelectedRows().begin())
-		{
-			wxMessageBox("Please either select row(s) or nothing", "Step list selection not valid");
-			return;
-		}
-
-		moveTo = *grid_steps->GetSelectedRows().begin();
-	}
-
-	if (grid_group->IsSelection())
-	{
-		for (const auto& block : grid_group->GetSelectedRowBlocks())
-		{
-			int row = block.GetTopRow();
-			int rowCount = block.GetBottomRow() - row + 1;
-
-			int total_rows = row + rowCount;
-
-			for (int i = row; i < total_rows; i++)
-			{
-				StepParameters step = group_map[cmb_choose_group->GetValue().ToStdString()][i];
-
-				UpdateStepGrid(moveTo, &step);
-
-				moveTo += 1;
-			}
-		}
-
-		return;
-	}
-
-	int rows = grid_group->GetNumberRows();
-
-	for (int i = 0; i < rows; i++)
-	{
-		StepParameters step = group_map[cmb_choose_group->GetValue().ToStdString()][i];
-
-		UpdateStepGrid(moveTo, &step);
-
-		moveTo += 1;
-	}
-}
-
 void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow)
 {
 	to->SetCellValue(toRow, 0, from->GetCellValue(fromRow, 0));
@@ -975,72 +838,9 @@ void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int
 	to->SetCellValue(toRow, 9, from->GetCellValue(fromRow, 9));
 }
 
-void cMain::OnGroupChangeClicked(wxCommandEvent& event)
-{
-	auto stepParameters = ExtractStepParameters();
-	
-	if (!ChangeRow(grid_group, stepParameters))
-	{
-		return;
-	}
-
-	auto name = cmb_choose_group->GetValue().ToStdString();
-	if (group_map.find(name) == group_map.end())
-	{
-		return;
-	}
-	
-	auto rowNum = *grid_group->GetSelectedRows().begin();
-
-	group_map[name][rowNum] = stepParameters;
-
-	event.Skip();
-}
-
-void cMain::OnGroupDeleteClicked(wxCommandEvent& event)
-{
-	if (wxMessageBox("Are you sure you want to delete this group step?", "Delete group step", wxICON_QUESTION | wxYES_NO, this) != wxYES)
-	{
-		return;
-	}
-
-	DeleteRow(grid_group, cmb_choose_group, group_map);
-
-	event.Skip();
-}
-
-void cMain::OnGroupMoveUpClicked(wxCommandEvent& event)
-{
-	GroupTemplateMoveRow(grid_group, cmb_choose_group, true, group_map);
-
-	event.Skip();
-}
-
-void cMain::OnGroupMoveDownClicked(wxCommandEvent& event)
-{
-	GroupTemplateMoveRow(grid_group, cmb_choose_group, false, group_map);
-
-	event.Skip();
-}
-
-void cMain::OnGroupGridDoubleLeftClick(wxGridEvent& event)
-{
-	auto gridEntry = ExtractGridEntry(grid_group, event.GetRow());
-
-	UpdateParameters(&gridEntry, event);
-
-	event.Skip();
-}
-
-void cMain::OnGroupChosen(wxCommandEvent& event)
-{
-	UpdateGroupTemplateGrid(grid_group, group_map[cmb_choose_group->GetValue().ToStdString()]);
-	event.Skip();
-}
-
 void cMain::OnTemplateChosen(wxCommandEvent& event)
 {
-	UpdateGroupTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
+	UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
 	event.Skip();
 }
 
@@ -1074,7 +874,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 	vector<StepParameters> template_list = {};
 	template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
 	
-	UpdateGroupTemplateGrid(grid_template, template_map[name]);
+	UpdateTemplateGrid(grid_template, template_map[name]);
 
 	event.Skip();
 }
@@ -1238,14 +1038,14 @@ void cMain::OnTemplateDeleteStepClicked(wxCommandEvent& event)
 
 void cMain::OnTemplateMoveUpClicked(wxCommandEvent& event)
 {
-	GroupTemplateMoveRow(grid_template, cmb_choose_template, true, template_map);
+	TemplateMoveRow(grid_template, cmb_choose_template, true, template_map);
 
 	event.Skip();
 }
 
 void cMain::OnTemplateMoveDownClicked(wxCommandEvent& event)
 {
-	GroupTemplateMoveRow(grid_template, cmb_choose_template, false, template_map);
+	TemplateMoveRow(grid_template, cmb_choose_template, false, template_map);
 
 	event.Skip();
 }
@@ -1276,12 +1076,12 @@ void cMain::OnApplicationClose(wxCloseEvent& event)
 
 bool cMain::ChecksBeforeResetWindow()
 {
-	if (grid_steps->GetNumberRows() > 0 || grid_group->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
+	if (grid_steps->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
 	{
 		return true;
 	}
 
-	if (group_map.size() > 0 || template_map.size() > 0)
+	if (template_map.size() > 0)
 	{
 		return true;
 	}
@@ -1348,7 +1148,6 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 		}
 
 		StepGridData = result->steps;
-		group_map = result->group_map;
 		template_map = result->template_map;
 		save_file_location = result->save_file_location;
 		generate_code_folder_location = result->generate_code_folder_location;
@@ -1396,26 +1195,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 
 		dialog_progress_bar->set_progress(100.0f - 35);
 		wxYield();
-
-		if (result->group_map.size())
-		{
-			vector<string> keys = get_keys(result->group_map);
-
-			for (int i = 0; i < keys.size(); i++)
-			{
-				group_choices.Add(keys[i]);
-			}
-
-			cmb_choose_group->Clear();
-
-			if (group_choices.size())
-			{
-				cmb_choose_group->Append(group_choices);
-				cmb_choose_group->SetValue(*group_choices.begin());
-				OnGroupChosen(event);
-			}
-		}
-
+		
 		dialog_progress_bar->set_progress(100.0f - 25);
 		wxYield();
 
@@ -1860,7 +1640,6 @@ bool cMain::SaveFile(bool save_as)
 		save_as,
 		auto_list,
 		StepGridData,
-		group_map,
 		template_map,
 		save_file_location,
 		generate_code_folder_location,

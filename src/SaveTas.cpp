@@ -8,13 +8,12 @@ bool SaveTas::Save(
 	bool save_as,
 	vector<bool> auto_list,
 	vector<StepParameters> steps,
-	map<string, vector<StepParameters>> maps,
 	map<string, vector<StepParameters>> templates,
 	string folder_location,
 	string folder_location_generate,
 	string goal)
 {
-	int total_lines = steps.size() + maps.size() + templates.size();
+	int total_lines = steps.size() + templates.size();
 	int lines_processed = 0;
 
 	if (!dialog_progress_bar)
@@ -47,26 +46,6 @@ bool SaveTas::Save(
 		{
 			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
 			wxYield();
-		}
-	}
-
-	myfile << save_groups_indicator << std::endl;
-	if (maps.size())
-	{
-		for (auto element : maps)
-		{
-			for (auto value : element.second)
-			{
-				myfile << element.first + ";" + value.ToString() << std::endl;
-
-				lines_processed++;
-
-				if (lines_processed > 0 && lines_processed % 25 == 0)
-				{
-					dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
-					wxYield();
-				}
-			}
 		}
 	}
 
