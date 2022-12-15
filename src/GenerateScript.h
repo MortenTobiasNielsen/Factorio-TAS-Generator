@@ -74,6 +74,8 @@ private:
 	vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, const float& max_distance);
 
 	string signature(string step, string action);
+	string Comment(string comment);
+	string Step(string step, string action, string details, string comment);
 
 	void walk(string step, string action, string x_cord, string y_cord, string comment);
 	void mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment);

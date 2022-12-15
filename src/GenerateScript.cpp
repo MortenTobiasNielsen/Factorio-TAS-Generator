@@ -747,6 +747,16 @@ string GenerateScript::signature(string step, string action)
 	return "step[" + std::to_string(total_steps) + "] = {{" + step + "," + action + "}, ";
 }
 
+string GenerateScript::Comment(string comment)
+{
+	return comment == "" ? "" : ", comment = \"" + comment + "\"";
+}
+
+string GenerateScript::Step(string step, string action, string details, string comment = "")
+{
+	return signature(step, action) + "{" + details + Comment(comment) + "}\n";
+}
+
 void GenerateScript::walk(string step, string action, string x_cord, string y_cord, string comment)
 {
 	if (comment == "old" || comment == "Old")
@@ -781,7 +791,7 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 		stateOfY = "diagonal";
 	}
 
-	step_list += signature(step, action) + "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\", \"" + stateOfX + "\", \"" + stateOfY + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\", \"" + stateOfX + "\", \"" + stateOfY + "\"", comment);
 	player_x_cord = std::stof(x_cord);
 	player_y_cord = std::stof(y_cord);
 	total_steps += 1;
@@ -806,7 +816,7 @@ void GenerateScript::craft(string step, string amount, string item, string comme
 {
 	item = check_item_name(item);
 
-	step_list += signature(step, "1") + "\"craft\", " + amount + ", \"" + item + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, "1", "\"craft\", " + amount + ", \"" + item + "\"", comment);
 	total_steps += 1;
 };
 
@@ -903,43 +913,43 @@ void GenerateScript::tech(string step, string tech_to_research, string comment)
 		tech_to_research = "battery equipment";
 	}
 
-	step_list += signature(step, "1") + "\"tech\", \"" + tech_to_research + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, "1", "\"tech\", \"" + tech_to_research + "\"", comment);
 	total_steps += 1;
 }
 
 void GenerateScript::speed(string step, string speed, string comment)
 {
-	step_list += signature(step, "1") + "\"speed\", " + speed + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, "1", "\"speed\", " + speed + "\"", comment);
 	total_steps += 1;
 }
 
 void GenerateScript::pause(string step, string comment)
 {
-	step_list += signature(step, "1") + "\"pause\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, "1", "\"pause\"", comment);
 	total_steps += 1;
 }
 
 void GenerateScript::launch(string step, string x_cord, string y_cord, string comment)
 {
-	step_list += signature(step, "1") + "\"launch\", {" + x_cord + ", " + y_cord + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, "1", "\"launch\", {" + x_cord + ", " + y_cord + "\"" , comment);
 	total_steps += 1;
 }
 
 void GenerateScript::save(string step, string nameOfSaveGame)
 {
-	step_list += signature(step, "1") + "\"save\", \"" + nameOfSaveGame + "\"}\n";
+	step_list += Step(step, "1", "\"save\", \"" + nameOfSaveGame + "\"");
 	total_steps += 1;
 }
 
 void GenerateScript::idle(string step, string amount, string comment)
 {
-	step_list += signature(step, "1") + "\"idle\", " + amount + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, "1", "\"idle\", " + amount + "\"", comment);
 	total_steps += 1;
 }
 
 void GenerateScript::pick(string step, string amount, string comment)
 {
-	step_list += signature(step, "1") + "\"pick\", \"" + amount + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, "1", "\"pick\", \"" + amount + "\"", comment);
 	total_steps += 1;
 }
 
@@ -950,14 +960,14 @@ void GenerateScript::rotate(string step, string x_cord, string y_cord, string ti
 
 	if (std::stoi(times) == 3)
 	{
-		step_list += signature(step, "1") + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true, comment = \"" + comment + "\"}\n";
+		step_list += Step(step, "1", "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true", comment);
 		total_steps += 1;
 	}
 	else
 	{
 		for (int i = 0; i < std::stoi(times); i++)
 		{
-			step_list += signature(step, std::to_string(i + 1)) + "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false, comment = \"" + comment + "\"}\n";
+			step_list += Step(step, std::to_string(i + 1), "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false", comment);
 			total_steps += 1;
 		}
 	}
@@ -990,7 +1000,7 @@ void GenerateScript::build(string step, string action, string x_cord, string y_c
 		return;
 	}
 
-	step_list += signature(step, action) + "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + OrientationEnum + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + OrientationEnum + "\"", comment);
 	total_steps += 1;
 };
 
@@ -1020,7 +1030,7 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from + "\"", comment);
 	total_steps += 1;
 }
 
@@ -1049,7 +1059,7 @@ void GenerateScript::put(string step, string action, string x_cord, string y_cor
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into + "\"", comment);
 	total_steps += 1;
 }
 
@@ -1071,7 +1081,7 @@ void GenerateScript::recipe(string step, string action, string x_cord, string y_
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"recipe\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"", comment);
 	total_steps += 1;
 }
 
@@ -1091,7 +1101,7 @@ void GenerateScript::limit(string step, string action, string x_cord, string y_c
 {
 	check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 
-	step_list += signature(step, action) + "\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"limit\", {" + x_cord + ", " + y_cord + "}, " + amount + ", " + from + "\"", comment);
 	total_steps += 1;
 }
 
@@ -1111,7 +1121,7 @@ void GenerateScript::priority(string step, string action, string x_cord, string 
 {
 	check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
 
-	step_list += signature(step, action) + "\"priority\", {" + x_cord + ", " + y_cord + "}, \"" + priority_in + "\", \"" + priority_out + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"priority\", {" + x_cord + ", " + y_cord + "}, \"" + priority_in + "\", \"" + priority_out + "\"", comment);
 	total_steps += 1;
 }
 
@@ -1136,7 +1146,7 @@ void GenerateScript::filter(string step, string action, string x_cord, string y_
 
 	item = check_item_name(item);
 
-	step_list += signature(step, action) + "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ",  \"" + type + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"filter\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ",  \"" + type + "\"", comment);
 	total_steps += 1;
 }
 
@@ -1158,7 +1168,7 @@ void GenerateScript::drop(string step, string action, string x_cord, string y_co
 
 	convert_string(item);
 
-	step_list += signature(step, action) + "\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", comment = \"" + comment + "\"}\n";
+	step_list += Step(step, action, "\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"", comment);
 	total_steps += 1;
 }
 
