@@ -114,6 +114,7 @@ protected:
 
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);
+	void OnAddStepRightClicked(wxMouseEvent & event);
 	void OnChangeStepClicked(wxCommandEvent& event);
 	void OnDeleteStepClicked(wxCommandEvent& event);
 	void OnMoveUpClicked(wxCommandEvent& event);

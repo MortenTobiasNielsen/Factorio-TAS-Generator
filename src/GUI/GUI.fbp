@@ -6298,6 +6298,7 @@
                                                     <property name="window_name"></property>
                                                     <property name="window_style"></property>
                                                     <event name="OnButtonClick">OnAddStepClicked</event>
+                                                    <event name="OnRightDown">OnAddStepRightClicked</event>
                                                 </object>
                                             </object>
                                             <object class="sizeritem" expanded="0">
