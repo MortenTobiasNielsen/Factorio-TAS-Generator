@@ -108,19 +108,6 @@ class GUI_Base : public wxFrame
 		wxCheckBox* check_lab;
 		wxCheckBox* check_recipe;
 		wxAuiNotebook* m_auinotebook1;
-		wxPanel* group_panel;
-		wxStaticText* label_choose_group;
-		wxComboBox* cmb_choose_group;
-		wxButton* btn_new_group;
-		wxButton* btn_group_delete;
-		wxButton* btn_group_change_step;
-		wxButton* btn_group_delete_step;
-		wxButton* btn_group_move_up;
-		wxButton* btn_gorup_move_down;
-		wxStaticLine* m_staticline5;
-		wxButton* btn_group_add_to_steps_list;
-		wxButton* btn_group_add_from_steps_list;
-		wxGrid* grid_group;
 		wxPanel* template_panel;
 		wxStaticText* label_choose_template;
 		wxComboBox* cmb_choose_template;
@@ -216,16 +203,6 @@ class GUI_Base : public wxFrame
 		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnNewGroupClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDeleteGroupClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupChangeClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupDeleteClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupAddToStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupAddFromStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGroupGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTemplateClicked( wxCommandEvent& event ) { event.Skip(); }

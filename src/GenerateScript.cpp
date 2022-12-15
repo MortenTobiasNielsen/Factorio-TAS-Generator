@@ -285,7 +285,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 	if (!only_generate_script)
 	{
-
 		//add locale directory
 		fs::create_directories(folder_location + "\\locale\\en");
 		fs::copy_file("..\\Lua Files\\locale.cfg", folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);

@@ -20,12 +20,37 @@ open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-	if (extract_total_steps(file) &&
-		extract_goal(file) &&
-		extract_steps(file, dialog_progress_bar) &&
-		extract_groups(file, dialog_progress_bar) &&
-		extract_templates(file, dialog_progress_bar) &&
-		extract_save_location(file) &&
+	if (!extract_total_steps(file) || !extract_goal(file))
+	{
+		return &return_data;
+	}
+
+	Category category = extract_steps(file, dialog_progress_bar);
+	switch (category)
+	{
+		case Invalid:
+			return &return_data;
+
+		case Group:
+			if (!extract_groups(file, dialog_progress_bar))
+			{
+				return &return_data;
+			}
+
+			// fallthrough so tamplate is also done, if groups are in the save file
+		case Template:
+			if (!extract_templates(file, dialog_progress_bar))
+			{
+				return &return_data;
+			}
+
+			break;
+
+		default:
+			break;
+	}
+
+	if (extract_save_location(file) &&
 		extract_script_location(file) &&
 		extract_auto_close(file) &&
 		extract_auto_put(file))
@@ -71,11 +96,11 @@ bool OpenTas::extract_goal(std::ifstream& file)
 	return true;
 }
 
-bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
+Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
 	if (!update_segment(file) || (segments[0] != steps_indicator && segments[0] != "Tasks:"))
 	{
-		return false;
+		return Invalid;
 	}
 
 	return_data.steps.reserve(total_lines);
@@ -92,7 +117,17 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 	{
 		if (segments.size() != step_segment_size && segments.size() != step_segment_size_without_comment)
 		{
-			return segments.size() == 1 && segments[0] == save_groups_indicator;
+			if (segments[0] == save_templates_indicator)
+			{
+				return Template;
+			}
+
+			if (segments.size() == 1 && (segments[0] == save_groups_indicator))
+			{
+				return Group;
+			}
+
+			return Invalid;
 		}
 
 		string comment = "";
@@ -129,8 +164,10 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 		step.Comment = comment;
 
 		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end()) 
-			return false;
+		if (mappedtype == MapStepNameToStepType.end())
+		{
+			return Invalid;
+		}
 
 		step.StepEnum = mappedtype->second;
 
@@ -153,21 +190,16 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 			case e_priority:
 			case e_launch:
 			case e_drop:
-				if (!BuildingExists(buildingSnapshot, buildingsInSnapShot, step))
-				{
-					return false;
-				}
+				// Only here to populate extra parameters in step. Actual validation will be done on script generation
+				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
 
 			case e_limit:
 			case e_put:
 			case e_take:
 				step.FromInto = step.Orientation;
-				if (step.FromInto != "Wreck" && !BuildingExists(buildingSnapshot, buildingsInSnapShot, step))
-				{
-					return false;
-				}
-
+				// Only here to populate extra parameters in step. Actual validation will be done on script generation
+				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
 			default:
 				break;
@@ -184,7 +216,7 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 		}
 	}
 
-	return false;
+	return Invalid;
 }
 
 bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
@@ -192,99 +224,12 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 	vector<StepParameters> steps = {};
 	string name = "";
 
+	// Groups are obsolete and have been moved to template. This is here for backwards compatibility. 
 	while (update_segment(file))
 	{
 		if (segments.size() != group_segment_size && segments.size() != group_segment_size_without_comment)
 		{
 			if (segments.size() == 1 && segments[0] == save_templates_indicator)
-			{
-				if (name != "")
-				{
-					return_data.group_map.insert(pair<string, vector<StepParameters>>(name, steps));
-				}
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (name == "")
-		{
-			name = segments[0];
-			steps = {};
-
-		}
-		else if (name != segments[0])
-		{
-			return_data.group_map.insert(pair<string, vector<StepParameters>>(name, steps));
-
-			name = segments[0];
-			steps = {};
-		}
-
-		string comment = "";
-		if (segments.size() == group_segment_size)
-		{
-			comment = segments[10];
-		}
-
-		StepParameters step(invalidX, 0);
-
-		if (segments[2] != "")
-		{
-			step.X = stod(segments[2]);
-			step.OriginalX = stod(segments[2]);
-			step.Y = stod(segments[3]);
-			step.OriginalY = stod(segments[3]);
-		}
-
-		if (segments[8] != "")
-		{
-			step.Size = stoi(segments[8]);
-		}
-
-		if (segments[9] != "")
-		{
-			step.Buildings = stoi(segments[9]);
-		}
-
-		step.Step = Capitalize(segments[1]);
-		step.Amount = Capitalize(segments[4]);
-		step.Item = Capitalize(segments[5], true);
-		step.Orientation = Capitalize(segments[6]);
-		step.Direction = Capitalize(segments[7]);
-		step.Comment = comment;
-
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
-			return false;
-		step.StepEnum = mappedtype->second;
-
-		steps.push_back(step);
-
-		lines_processed++;
-
-		if (lines_processed > 0 && lines_processed % 25 == 0)
-		{
-			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 47);
-			wxYield();
-		}
-	}
-
-	return false;
-}
-
-bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
-{
-	vector<StepParameters> steps = {};
-	string name = "";
-
-	while (update_segment(file))
-	{
-		if (segments.size() != template_segment_size && segments.size() != template_segment_size_without_comment)
-		{
-			if (segments.size() == 1 && segments[0] == save_file_indicator)
 			{
 				if (name != "")
 				{
@@ -301,6 +246,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		{
 			name = segments[0];
 			steps = {};
+
 		}
 		else if (name != segments[0])
 		{
@@ -343,7 +289,113 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		step.StepEnum = MapStepNameToStepType.find(step.Step)->second;
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end())
+		{
+			return false;
+		}
+
+		step.StepEnum = mappedtype->second;
+
+		steps.push_back(step);
+
+		lines_processed++;
+
+		if (lines_processed > 0 && lines_processed % 25 == 0)
+		{
+			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 47);
+			wxYield();
+		}
+	}
+
+	return false;
+}
+
+bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
+{
+	vector<StepParameters> steps = {};
+	string name = "";
+
+	while (update_segment(file))
+	{
+		if (segments.size() != template_segment_size && segments.size() != template_segment_size_without_comment)
+		{
+			if (segments.size() == 1 && segments[0] == save_file_indicator)
+			{
+				if (name != "")
+				{
+					if (return_data.template_map.find(name) != return_data.template_map.end())
+					{
+						name += "_Template";
+					}
+
+					return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		if (name == "")
+		{
+			name = segments[0];
+			steps = {};
+		}
+		else if (name != segments[0])
+		{
+			if (return_data.template_map.find(name) != return_data.template_map.end())
+			{
+				name += "_Template";
+			}
+
+			return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
+
+			name = segments[0];
+			steps = {};
+		}
+
+		string comment = "";
+		if (segments.size() == template_segment_size)
+		{
+			comment = segments[10];
+		}
+
+		StepParameters step(invalidX, 0);
+
+		if (segments[2] != "")
+		{
+			step.X = stod(segments[2]);
+			step.OriginalX = stod(segments[2]);
+			step.Y = stod(segments[3]);
+			step.OriginalY = stod(segments[3]);
+		}
+
+		if (segments[8] != "")
+		{
+			step.Size = stoi(segments[8]);
+		}
+
+		if (segments[9] != "")
+		{
+			step.Buildings = stoi(segments[9]);
+		}
+
+		step.Step = Capitalize(segments[1]);
+		step.Amount = Capitalize(segments[4]);
+		step.Item = Capitalize(segments[5], true);
+		step.Orientation = Capitalize(segments[6]);
+		step.Direction = Capitalize(segments[7]);
+		step.Comment = comment;
+
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end())
+		{
+			return false;
+		}
+
+		step.StepEnum = mappedtype->second;
 
 		steps.push_back(step);
 

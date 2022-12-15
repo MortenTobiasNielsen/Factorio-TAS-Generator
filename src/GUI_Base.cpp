@@ -680,134 +680,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_auinotebook1 = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TAB_EXTERNAL_MOVE|wxAUI_NB_TAB_MOVE|wxAUI_NB_TAB_SPLIT|wxAUI_NB_TOP|wxAUI_NB_WINDOWLIST_BUTTON|wxBORDER_RAISED );
 	m_mgr.AddPane( m_auinotebook1, wxAuiPaneInfo() .Name( wxT("DataBook") ).Center() .Caption( wxT("Book") ).CaptionVisible( false ).CloseButton( false ).MaximizeButton( true ).MinimizeButton( true ).PinButton( true ).Dock().Resizable().FloatingSize( wxDefaultSize ).Row( 2 ).MinSize( wxSize( 500,500 ) ).Layer( 2 ).CentrePane() );
 
-	group_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer561;
-	bSizer561 = new wxBoxSizer( wxVERTICAL );
-
-	wxBoxSizer* bSizer114;
-	bSizer114 = new wxBoxSizer( wxHORIZONTAL );
-
-	wxBoxSizer* bSizer118;
-	bSizer118 = new wxBoxSizer( wxVERTICAL );
-
-	bSizer118->SetMinSize( wxSize( 710,-1 ) );
-	wxBoxSizer* bSizer1261;
-	bSizer1261 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_choose_group = new wxStaticText( group_panel, wxID_ANY, wxT("Choose Group:"), wxDefaultPosition, wxSize( 95,-1 ), wxALIGN_LEFT );
-	label_choose_group->Wrap( -1 );
-	bSizer1261->Add( label_choose_group, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	cmb_choose_group = new wxComboBox( group_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
-	cmb_choose_group->SetMinSize( wxSize( 150,-1 ) );
-
-	bSizer1261->Add( cmb_choose_group, 0, wxALIGN_CENTER|wxALL, 5 );
-
-	btn_new_group = new wxButton( group_panel, wxID_ANY, wxT("New Group"), wxDefaultPosition, wxSize( 105,-1 ), 0 );
-	bSizer1261->Add( btn_new_group, 0, wxALL, 5 );
-
-	btn_group_delete = new wxButton( group_panel, wxID_ANY, wxT("Delete Group"), wxDefaultPosition, wxSize( 105,-1 ), 0 );
-	bSizer1261->Add( btn_group_delete, 0, wxALL, 5 );
-
-
-	bSizer118->Add( bSizer1261, 1, wxALIGN_LEFT, 5 );
-
-	wxBoxSizer* bSizer100;
-	bSizer100 = new wxBoxSizer( wxHORIZONTAL );
-
-	btn_group_change_step = new wxButton( group_panel, wxID_ANY, wxT("Change"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer100->Add( btn_group_change_step, 0, wxALL, 5 );
-
-	btn_group_delete_step = new wxButton( group_panel, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer100->Add( btn_group_delete_step, 0, wxALL, 5 );
-
-	btn_group_move_up = new wxButton( group_panel, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer100->Add( btn_group_move_up, 0, wxALL, 5 );
-
-	btn_gorup_move_down = new wxButton( group_panel, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer100->Add( btn_gorup_move_down, 0, wxALL, 5 );
-
-
-	bSizer118->Add( bSizer100, 1, wxALIGN_LEFT, 5 );
-
-
-	bSizer114->Add( bSizer118, 1, wxEXPAND, 5 );
-
-	m_staticline5 = new wxStaticLine( group_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-	bSizer114->Add( m_staticline5, 0, wxEXPAND | wxALL, 5 );
-
-	wxBoxSizer* bSizer119;
-	bSizer119 = new wxBoxSizer( wxVERTICAL );
-
-	btn_group_add_to_steps_list = new wxButton( group_panel, wxID_ANY, wxT("Add to steps list"), wxDefaultPosition, wxSize( 125,-1 ), 0 );
-	bSizer119->Add( btn_group_add_to_steps_list, 0, wxALL, 5 );
-
-	btn_group_add_from_steps_list = new wxButton( group_panel, wxID_ANY, wxT("Add from steps list"), wxDefaultPosition, wxSize( 125,-1 ), 0 );
-	bSizer119->Add( btn_group_add_from_steps_list, 0, wxALIGN_CENTER|wxALL, 5 );
-
-
-	bSizer114->Add( bSizer119, 0, 0, 5 );
-
-
-	bSizer561->Add( bSizer114, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer50;
-	bSizer50 = new wxBoxSizer( wxVERTICAL );
-
-	grid_group = new wxGrid( group_panel, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), 0 );
-
-	// Grid
-	grid_group->CreateGrid( 0, 10 );
-	grid_group->EnableEditing( false );
-	grid_group->EnableGridLines( true );
-	grid_group->EnableDragGridSize( false );
-	grid_group->SetMargins( 0, 0 );
-
-	// Columns
-	grid_group->SetColSize( 0, 75 );
-	grid_group->SetColSize( 1, 59 );
-	grid_group->SetColSize( 2, 59 );
-	grid_group->SetColSize( 3, 50 );
-	grid_group->SetColSize( 4, 150 );
-	grid_group->SetColSize( 5, 70 );
-	grid_group->SetColSize( 6, 70 );
-	grid_group->SetColSize( 7, 50 );
-	grid_group->SetColSize( 8, 60 );
-	grid_group->SetColSize( 9, 140 );
-	grid_group->EnableDragColMove( false );
-	grid_group->EnableDragColSize( true );
-	grid_group->SetColLabelValue( 0, wxT("Step") );
-	grid_group->SetColLabelValue( 1, wxT("X-cord") );
-	grid_group->SetColLabelValue( 2, wxT("Y-cord") );
-	grid_group->SetColLabelValue( 3, wxT("Amount") );
-	grid_group->SetColLabelValue( 4, wxT("Item") );
-	grid_group->SetColLabelValue( 5, wxT("Orientation") );
-	grid_group->SetColLabelValue( 6, wxT("Direction") );
-	grid_group->SetColLabelValue( 7, wxT("Size") );
-	grid_group->SetColLabelValue( 8, wxT("Buildings") );
-	grid_group->SetColLabelValue( 9, wxT("Comment") );
-	grid_group->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
-
-	// Rows
-	grid_group->EnableDragRowSize( false );
-	grid_group->SetRowLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
-
-	// Label Appearance
-
-	// Cell Defaults
-	grid_group->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
-	grid_group->SetMinSize( wxSize( 860,1500 ) );
-
-	bSizer50->Add( grid_group, 1, wxALL|wxEXPAND, 5 );
-
-
-	bSizer561->Add( bSizer50, 1, wxEXPAND, 5 );
-
-
-	group_panel->SetSizer( bSizer561 );
-	group_panel->Layout();
-	bSizer561->Fit( group_panel );
-	m_auinotebook1->AddPage( group_panel, wxT("Groups"), false, wxNullBitmap );
 	template_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer( wxVERTICAL );
@@ -822,12 +694,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer126;
 	bSizer126 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_choose_template = new wxStaticText( template_panel, wxID_ANY, wxT("Choose Template:"), wxDefaultPosition, wxSize( 95,-1 ), 0 );
+	label_choose_template = new wxStaticText( template_panel, wxID_ANY, wxT("Template:"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	label_choose_template->Wrap( -1 );
 	bSizer126->Add( label_choose_template, 0, wxALIGN_CENTER|wxALL, 5 );
 
 	cmb_choose_template = new wxComboBox( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	cmb_choose_template->SetMinSize( wxSize( 150,-1 ) );
+	cmb_choose_template->SetMinSize( wxSize( 195,-1 ) );
 
 	bSizer126->Add( cmb_choose_template, 0, wxALIGN_CENTER|wxALL, 5 );
 
@@ -1011,7 +883,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	template_panel->SetSizer( bSizer5612 );
 	template_panel->Layout();
 	bSizer5612->Fit( template_panel );
-	m_auinotebook1->AddPage( template_panel, wxT("Templates"), false, wxNullBitmap );
+	m_auinotebook1->AddPage( template_panel, wxT("Templates"), true, wxNullBitmap );
 	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
@@ -1114,7 +986,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->SetSizer( bSizer5611 );
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
-	m_auinotebook1->AddPage( step_panel, wxT("Steps"), true, wxNullBitmap );
+	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
 
 
 	m_mgr.Update();
@@ -1185,16 +1057,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_launch->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
 	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	rbtn_stop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
-	cmb_choose_group->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnGroupChosen ), NULL, this );
-	btn_new_group->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewGroupClicked ), NULL, this );
-	btn_group_delete->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteGroupClicked ), NULL, this );
-	btn_group_change_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupChangeClicked ), NULL, this );
-	btn_group_delete_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupDeleteClicked ), NULL, this );
-	btn_group_move_up->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupMoveUpClicked ), NULL, this );
-	btn_gorup_move_down->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupMoveDownClicked ), NULL, this );
-	btn_group_add_to_steps_list->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupAddToStepsListClicked ), NULL, this );
-	btn_group_add_from_steps_list->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupAddFromStepsListClicked ), NULL, this );
-	grid_group->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnGroupGridDoubleLeftClick ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	btn_template_new->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
 	btn_template_delete->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTemplateClicked ), NULL, this );
@@ -1244,16 +1106,6 @@ GUI_Base::~GUI_Base()
 	rbtn_launch->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
 	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	rbtn_stop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
-	cmb_choose_group->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnGroupChosen ), NULL, this );
-	btn_new_group->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewGroupClicked ), NULL, this );
-	btn_group_delete->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteGroupClicked ), NULL, this );
-	btn_group_change_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupChangeClicked ), NULL, this );
-	btn_group_delete_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupDeleteClicked ), NULL, this );
-	btn_group_move_up->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupMoveUpClicked ), NULL, this );
-	btn_gorup_move_down->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupMoveDownClicked ), NULL, this );
-	btn_group_add_to_steps_list->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupAddToStepsListClicked ), NULL, this );
-	btn_group_add_from_steps_list->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnGroupAddFromStepsListClicked ), NULL, this );
-	grid_group->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnGroupGridDoubleLeftClick ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	btn_template_new->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
 	btn_template_delete->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTemplateClicked ), NULL, this );
