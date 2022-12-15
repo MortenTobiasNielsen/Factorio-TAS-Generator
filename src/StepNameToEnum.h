@@ -13,7 +13,7 @@ using std::vector;
 /// </summary>
 enum StepType
 {
-	e_start = 1, e_stop, e_build, e_craft, e_game_speed, e_pause, e_save, e_recipe, e_limit, e_filter, e_rotate, e_priority, e_put, e_take, e_mine, e_launch, e_walk, e_tech, e_drop, e_pick_up, e_idle
+	e_stop = 1, e_build, e_craft, e_game_speed, e_pause, e_save, e_recipe, e_limit, e_filter, e_rotate, e_priority, e_put, e_take, e_mine, e_launch, e_walk, e_tech, e_drop, e_pick_up, e_idle
 };
 
 /// <summary>
@@ -24,7 +24,7 @@ enum StepType
 /// </note>
 static const vector<string> StepNames{
 	"None", 
-	"Start", "Stop", "Build", "Craft", "Game Speed", "Pause", "Save",
+	"Stop", "Build", "Craft", "Game Speed", "Pause", "Save",
 	"Recipe", "Limit", "Filter", "Rotate", "Priority", "Put", "Take", "Mine", "Launch",
 	"Walk", "Tech", "Drop", "Pick up", "Idle"
 };
@@ -32,7 +32,7 @@ static const vector<string> StepNames{
 /// <summary>
 /// Maps StepName(string) to StepType(enum)
 /// </summary>
-static const map<string, StepType> MapStepNameToStepType = {{"Start", e_start}, {"Stop", e_stop}, {"Build", e_build}, {"Craft", e_craft}, {"Game speed", e_game_speed}, {"Pause", e_pause}, {"Save", e_save},
+static const map<string, StepType> MapStepNameToStepType = {{"Stop", e_stop}, {"Build", e_build}, {"Craft", e_craft}, {"Game speed", e_game_speed}, {"Pause", e_pause}, {"Save", e_save},
 	{"Recipe", e_recipe}, {"Limit", e_limit}, {"Filter", e_filter}, {"Rotate", e_rotate}, {"Priority", e_priority}, {"Put", e_put}, {"Take", e_take}, {"Mine", e_mine}, {"Launch", e_launch},
 	{"Walk", e_walk}, {"Tech", e_tech}, {"Drop", e_drop}, {"Pick up", e_pick_up}, {"Idle", e_idle}};
 

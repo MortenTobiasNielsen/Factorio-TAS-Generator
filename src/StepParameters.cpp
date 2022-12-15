@@ -52,7 +52,6 @@ string StepParameters::ToString()
 	switch (StepEnum)
 	{
 
-		case e_start:
 		case e_pause:
 		case e_save:
 			return Step + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";";

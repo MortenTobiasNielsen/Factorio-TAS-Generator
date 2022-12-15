@@ -163,6 +163,11 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Direction = Capitalize(segments[6]);
 		step.Comment = comment;
 
+		if (step.Step == "Start")
+		{
+			continue; // Ignore start steps, given that they are obsolete.
+		}
+
 		auto mappedtype = MapStepNameToStepType.find(step.Step);
 		if (mappedtype == MapStepNameToStepType.end())
 		{
@@ -289,6 +294,11 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
+		if (step.Step == "Start")
+		{
+			continue; // Ignore start steps, given that they are obsolete.
+		}
+
 		auto mappedtype = MapStepNameToStepType.find(step.Step);
 		if (mappedtype == MapStepNameToStepType.end())
 		{
@@ -388,6 +398,11 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
+
+		if (step.Step == "Start")
+		{
+			continue; // Ignore start steps, given that they are obsolete.
+		}
 
 		auto mappedtype = MapStepNameToStepType.find(step.Step);
 		if (mappedtype == MapStepNameToStepType.end())

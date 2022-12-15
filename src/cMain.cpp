@@ -442,9 +442,6 @@ void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType Step)
 {
 	switch (Step)
 	{
-		case e_start:
-			grid->SetCellBackgroundColour(row, 0, *wxGREEN);
-			return;
 		case e_stop:
 			grid->SetCellBackgroundColour(row, 0, *wxRED);
 			return;
@@ -1388,15 +1385,8 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 	long long pos;
 	switch (step)
 	{
-		case e_start:
-			OnStartMenuSelected(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
-			return;
 		case e_stop:
 			OnStopMenuSelected(event);
-			speed = stof(gridEntry->Amount.ToStdString()) * 100.0;
-			spin_amount->SetValue(speed);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
@@ -1427,7 +1417,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_pause:
-			OnStopMenuSelected(event);
+			OnPauseMenuSelected(event);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
@@ -1731,7 +1721,6 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_stop:
 			gridEntry.Comment = "";
 
-		case e_start:
 		case e_pause:
 		case e_save:
 			break;
@@ -1921,7 +1910,6 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 	// Cases where an association with a building isn't needed
 	switch (stepParameters.StepEnum)
 	{
-		case e_start:
 		case e_walk:
 		case e_game_speed:
 		case e_pause:

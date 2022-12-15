@@ -80,7 +80,6 @@ protected:
 	void OnDropMenuSelected(wxCommandEvent& event);
 	void OnPickUpMenuSelected(wxCommandEvent& event);
 	void OnSaveMenuSelected(wxCommandEvent& event);
-	void OnStartMenuSelected(wxCommandEvent& event);
 	void OnPauseMenuSelected(wxCommandEvent& event);
 
 	// Auto-close menu items
@@ -108,7 +107,6 @@ protected:
 	void OnIdleChosen(wxCommandEvent& event);
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
-	void OnStartChosen(wxCommandEvent& event);
 	void OnPauseChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
 
@@ -177,7 +175,6 @@ private:
 		vector<bool> save = {false, false, false, false, false, false, false, false, false, false, false, false};
 		vector<bool> priority = {true, true, false, false, false, false, true, true, false, true, true, true};
 		vector<bool> limit = {true, true, true, false, false, false, false, false, false, true, true, true};
-		vector<bool> Start = {false, false, false, false, false, false, false, false, false, false, false, false};
 		vector<bool> Pause = {false, false, false, false, false, false, false, false, false, false, false, false};
 		vector<bool> stop = {false, false, false, false, false, false, false, false, false, false, false, false};
 		vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};

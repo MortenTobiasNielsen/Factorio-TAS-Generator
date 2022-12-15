@@ -92,12 +92,6 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			wxYield();
 		}
 
-		if (steps[i].StepEnum == e_start)
-		{
-			ClearSteps();
-			continue;
-		}
-
 		if (steps[i].StepEnum == e_stop)
 		{
 			break;
