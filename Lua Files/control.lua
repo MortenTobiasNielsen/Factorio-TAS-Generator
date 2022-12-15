@@ -62,6 +62,7 @@ local function save_global()
 	global.tas.compatibility_mode = compatibility_mode
 	global.tas.keep_x = keep_x
 	global.tas.keep_y = keep_y
+	global.tas.diagonal = diagonal
 	global.tas.player_selection = player_selection
 	global.tas.destination = destination
 	global.tas.target_position = target_position
@@ -81,7 +82,6 @@ local function save_global()
 	global.tas.duration = duration
 	global.tas.ticks_mining = ticks_mining
 	global.tas.idled = idled
-	global.tas.diagonal = diagonal
 
 	global.tas.player = player
 end
@@ -1404,12 +1404,11 @@ local function create_tas_global_state()
  		compatibility_mode = false,
  		keep_x = false,
  		keep_y = false,
+		diagonal = false,
 		duration = 0,
 		ticks_mining = 0,
 		idled = 0,
-		diagonal = false,
 	}
-	
 end
 
 local function migrate_global()
@@ -1426,6 +1425,7 @@ local function migrate_global()
 	compatibility_mode = global.tas.compatibility_mode
 	keep_x = global.tas.keep_x
 	keep_y = global.tas.keep_y
+	diagonal = global.tas.diagonal
 	player_selection = global.tas.player_selection
 	destination = global.tas.destination
 	target_position = global.tas.target_position
