@@ -95,13 +95,14 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 		if (steps[i].StepEnum == e_start)
 		{
 			ClearSteps();
+			continue;
 		}
 
 		if (steps[i].StepEnum == e_stop)
 		{
 			break;
 		}
-
+		
 		TransferParameters(steps[i]);
 		switch (steps[i].StepEnum)
 		{
@@ -257,34 +258,8 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_save:
-				if (i != 0 && i + 1 != amountOfSteps && last_walking_comment != "old")
-				{
-					// A save should be between two walk steps
-					if (steps[i - 1].StepEnum == e_walk && steps[i + 1].StepEnum == e_walk)
-					{
-						// The character should be running straight to ensure that the character doesn't start walking incorectly when the save is loaded.
-						if (steps[i - 1].X == steps[i + 1].X || steps[i - 1].Y == steps[i + 1].Y)
-						{
-							save(currentStep, comment);
-							break;
-						}
-					}
-
-					// Or the next step after the save needs to be a start step and the next after that should be a walk
-					if (i + 2 != amountOfSteps && steps[i + 1].StepEnum == e_start || steps[i + 2].StepEnum == e_walk)
-					{
-						// The character should be running straight to ensure that the character doesn't start walking incorectly when the save is loaded.
-						if (steps[i - 1].X == steps[i + 2].X || steps[i - 1].Y == steps[i + 2].Y)
-						{
-							save(currentStep, comment);
-							break;
-						}
-					}
-				}
-
-				wxMessageBox("A save step should be between two walk steps and the character has to be running straight (either X or Y of both walk steps should be same)", "Invalid Save", wxICON_WARNING);
-				dialog_progress_bar->Close();
-				return;
+				save(currentStep, comment);
+				break;
 
 			case e_idle:
 				idle(currentStep, amount);
@@ -1058,7 +1033,6 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 
 void GenerateScript::row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum)
 {
-
 	take(step, "1", x_cord, y_cord, amount, item, from, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
@@ -1110,7 +1084,6 @@ void GenerateScript::recipe(string step, string action, string x_cord, string y_
 
 void GenerateScript::row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string OrientationEnum)
 {
-
 	recipe(step, "1", x_cord, y_cord, item, building, OrientationEnum);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)

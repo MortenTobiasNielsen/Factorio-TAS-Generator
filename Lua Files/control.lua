@@ -5,11 +5,11 @@ local steps = require("steps")
 local debug_state = require("goal")
 local run = true
 
-local step = 1
+local step
 local step_reached = 0
-local idle = 0
-local pickup_ticks = 0
-local mining = 0
+local idle
+local pickup_ticks
+local mining
 
 local player
 local player_selection
@@ -29,24 +29,62 @@ local input
 local output
 local type
 local rev
-local duration = 0
-local ticks_mining = 0
-local idled = 0
+local duration
+local ticks_mining
+local idled
 local font_size = 0.15 --best guess estimate of fontsize for flying text
 
-local pos_pos = false
-local pos_neg = false
-local neg_pos = false
-local neg_neg = false
-local compatibility_mode = false
-local keep_x = false
-local keep_y = false
-local diagonal = false
+local pos_pos
+local pos_neg
+local neg_pos
+local neg_neg
+local compatibility_mode
+local keep_x
+local keep_y
+local diagonal
 
 local drop_item
 local drop_position
 
+local queued_save
 local tas_step_change = script.generate_event_name()
+
+local function save_global()
+	--if not global.tas then return end
+	global.tas.step = step
+	global.tas.idle = idle
+	global.tas.pickup_ticks = pickup_ticks
+	global.tas.mining = mining
+	global.tas.pos_pos = pos_pos
+	global.tas.pos_neg = pos_neg
+	global.tas.neg_pos = neg_pos
+	global.tas.neg_neg = neg_neg
+	global.tas.compatibility_mode = compatibility_mode
+	global.tas.keep_x = keep_x
+	global.tas.keep_y = keep_y
+	global.tas.player_selection = player_selection
+	global.tas.destination = destination
+	global.tas.target_position = target_position
+	global.tas.target_inventory = target_inventory
+	global.tas.walking = walking
+	global.tas.task = task
+	global.tas.task_category = task_category
+	global.tas.count = count
+	global.tas.item = item
+	global.tas.amount = amount
+	global.tas.slot = slot
+	global.tas.direction = direction
+	global.tas.input = input
+	global.tas.output = output
+	global.tas.type = type
+	global.tas.rev = rev
+	global.tas.duration = duration
+	global.tas.ticks_mining = ticks_mining
+	global.tas.idled = idled
+	global.tas.diagonal = diagonal
+
+	global.tas.player = player
+end
 
 --recreate crash site
 local on_player_created = function(event)
@@ -102,6 +140,7 @@ local function change_step(by)
 end
 
 local function save(task, nameOfSaveGame)
+	save_global()
 	if game.is_multiplayer() then
 		debug(string.format("Step: %s, saving game as %s", task, nameOfSaveGame))
 		game.server_save(nameOfSaveGame)
@@ -979,8 +1018,11 @@ local function handle_pretick()
 			debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
 			speed(steps[step][3])
 			step = step + 1
-		elseif steps[2] == "pick" then
-			pickup_ticks = pickup_ticks + steps[3] - 1
+		elseif steps[step][2] == "save" then
+			queued_save = {name = steps[step][1][1], step = steps[step][3]}
+			step = step + 1
+		elseif steps[step][2] == "pick" then
+			pickup_ticks = pickup_ticks + steps[step][3] - 1
 			player.picking_state = true
 			change_step(1)
 		elseif (steps[step][2] == "pause") then
@@ -1002,17 +1044,10 @@ local function handle_pretick()
 end
 
 local function handle_ontick()
-	if steps[step][2] == "save" then
-		save(steps[step][1][1], steps[step][3])
-		step = step + 1
-		return
-	end
-
 	if pickup_ticks > 0 then
 		player.picking_state = true
 		pickup_ticks = pickup_ticks - 1
 	end
-
 	if walking.walking == false then
 		if idle > 0 then
 			idle = idle - 1
@@ -1086,6 +1121,11 @@ end
 local function handle_posttick()
 	if not run then
 		return
+	end
+
+	if queued_save then
+		save(queued_save.name, queued_save.step)
+		queued_save = nil
 	end
 
 	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then
@@ -1351,14 +1391,78 @@ script.on_event(defines.events.on_player_created, function(event)
 	on_player_created(event)
 end)
 
+local function create_tas_global_state()
+	global.tas = {
+		step = 1,
+		idle = 0,
+		pickup_ticks = 0,
+		mining = 0,
+		pos_pos = false,
+		pos_neg = false,
+		neg_pos = false,
+ 		neg_neg = false,
+ 		compatibility_mode = false,
+ 		keep_x = false,
+ 		keep_y = false,
+		duration = 0,
+		ticks_mining = 0,
+		idled = 0,
+		diagonal = false,
+	}
+	
+end
+
+local function migrate_global()
+	if not global.tas then return end
+	step = global.tas.step
+	idle = global.tas.idle
+	pickup_ticks = global.tas.pickup_ticks
+	mining = global.tas.mining
+	pos_pos = global.tas.pos_pos
+	pos_neg = global.tas.pos_neg
+	neg_pos = global.tas.neg_pos
+	neg_neg = global.tas.neg_neg
+	diagonal = global.tas.diagonal
+	compatibility_mode = global.tas.compatibility_mode
+	keep_x = global.tas.keep_x
+	keep_y = global.tas.keep_y
+	player_selection = global.tas.player_selection
+	destination = global.tas.destination
+	target_position = global.tas.target_position
+	target_inventory = global.tas.target_inventory
+	walking = global.tas.walking
+	task = global.tas.task
+	task_category = global.tas.task_category
+	count = global.tas.count
+	item = global.tas.item
+	amount = global.tas.amount
+	slot = global.tas.slot
+	direction = global.tas.direction
+	input = global.tas.input
+	output = global.tas.output
+	type = global.tas.type
+	rev = global.tas.rev
+	duration = global.tas.duration
+	ticks_mining = global.tas.ticks_mining
+	idled = global.tas.idled
+
+	player = global.tas.player
+	if player then
+		player_position = player.position
+	end
+end
 
 script.on_init(function()
-    local freeplay = remote.interfaces["freeplay"]
+    local freeplay = remote.interfaces["freeplay"] --Setup tas interface
     if freeplay then
 		if freeplay["set_skip_intro"] then remote.call("freeplay", "set_skip_intro", true) end -- Disable freeplay popup-message
         if freeplay["set_disable_crashsite"] then remote.call("freeplay", "set_disable_crashsite", true) end --Disable crashsite
     end
+	create_tas_global_state()
+	migrate_global()
 end)
+
+script.on_load(migrate_global)
 
 script.on_event(defines.events.on_console_chat, function(event)
 	if event.message then

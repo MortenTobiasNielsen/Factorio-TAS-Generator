@@ -128,7 +128,11 @@ bool OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progr
 		step.Direction = Capitalize(segments[6]);
 		step.Comment = comment;
 
-		step.StepEnum = MapStepNameToStepType.find(step.Step)->second;
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end()) 
+			return false;
+
+		step.StepEnum = mappedtype->second;
 
 		switch (step.StepEnum)
 		{
@@ -220,7 +224,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		}
 
 		string comment = "";
-		if (segments.size() != group_segment_size)
+		if (segments.size() == group_segment_size)
 		{
 			comment = segments[10];
 		}
@@ -252,7 +256,10 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		step.StepEnum = MapStepNameToStepType.find(step.Step)->second;
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end())
+			return false;
+		step.StepEnum = mappedtype->second;
 
 		steps.push_back(step);
 
@@ -304,7 +311,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		string comment = "";
-		if (segments.size() != group_segment_size)
+		if (segments.size() == group_segment_size)
 		{
 			comment = segments[10];
 		}
