@@ -27,8 +27,6 @@ void TypePanel::SwitchStep(STEP_TYPE::step_type type)
 			break;
 		case STEP_TYPE::Mine: parent->rbtn_mine->SetValue(true);
 			break;
-		case STEP_TYPE::Start: parent->rbtn_start->SetValue(true);
-			break;
 		case STEP_TYPE::Build: parent->rbtn_build->SetValue(true);
 			break;
 		case STEP_TYPE::Recipe: parent->rbtn_recipe->SetValue(true);
@@ -102,8 +100,8 @@ string cMain::ExtractStep()
 	if (rbtn_mine->GetValue())
 		return struct_steps_list.mine;
 
-	if (rbtn_start->GetValue())
-		return struct_steps_list.start;
+	if (rbtn_pause->GetValue())
+		return struct_steps_list.pause;
 
 	//row 2
 	if (rbtn_build->GetValue())
@@ -124,8 +122,8 @@ string cMain::ExtractStep()
 	if (rbtn_filter->GetValue())
 		return struct_steps_list.filter;
 
-	if (rbtn_pause->GetValue())
-		return struct_steps_list.pause;
+	if (rbtn_stop->GetValue())
+		return struct_steps_list.stop;
 
 	//row 3
 	if (rbtn_priority->GetValue())
@@ -145,9 +143,6 @@ string cMain::ExtractStep()
 
 	if (rbtn_save->GetValue())
 		return struct_steps_list.save;
-
-	if (rbtn_stop->GetValue())
-		return struct_steps_list.stop;
 
 	return "not found";
 }
@@ -338,12 +333,6 @@ void cMain::OnDropChosen(wxCommandEvent& event)
 	event.Skip();
 }
 
-void cMain::OnStartChosen(wxCommandEvent& event)
-{
-	setup_paramters(parameter_choices.Start);
-	event.Skip();
-}
-
 void cMain::OnPauseChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.Pause);
@@ -510,13 +499,6 @@ void cMain::OnSaveMenuSelected(wxCommandEvent& event)
 {
 	type_panel->SwitchStep(TypePanel::STEP_TYPE::Save);
 	OnSaveChosen(event);
-	event.Skip();
-}
-
-void cMain::OnStartMenuSelected(wxCommandEvent& event)
-{
-	type_panel->SwitchStep(TypePanel::STEP_TYPE::Start);
-	OnStartChosen(event);
 	event.Skip();
 }
 

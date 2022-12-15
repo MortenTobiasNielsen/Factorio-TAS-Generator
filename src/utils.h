@@ -1161,7 +1161,6 @@ static const struct
 	std::string put = "Put";
 	std::string tech = "Tech";
 	std::string recipe = "Recipe";
-	std::string start = "Start";
 	std::string pause = "Pause";
 	std::string stop = "Stop";
 	std::string limit = "Limit";

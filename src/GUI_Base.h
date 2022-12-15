@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
+// C++ code generated with wxFormBuilder (version 3.10.1-234-gd93c9fc0)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -87,21 +87,20 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_craft;
 		wxRadioButton* rbtn_walk;
 		wxRadioButton* rbtn_mine;
-		wxRadioButton* rbtn_start;
+		wxRadioButton* rbtn_pause;
 		wxRadioButton* rbtn_build;
 		wxRadioButton* rbtn_recipe;
 		wxRadioButton* rbtn_tech;
 		wxRadioButton* rbtn_limit;
 		wxRadioButton* rbtn_idle;
 		wxRadioButton* rbtn_filter;
-		wxRadioButton* rbtn_pause;
+		wxRadioButton* rbtn_stop;
 		wxRadioButton* rbtn_priority;
 		wxRadioButton* rbtn_rotate;
 		wxRadioButton* rbtn_pick_up;
 		wxRadioButton* rbtn_drop;
 		wxRadioButton* rbtn_launch;
 		wxRadioButton* rbtn_save;
-		wxRadioButton* rbtn_stop;
 		wxPanel* m_panel23;
 		wxCheckBox* check_furnace;
 		wxCheckBox* check_burner;
@@ -167,7 +166,6 @@ class GUI_Base : public wxFrame
 		virtual void OnDropMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLaunchMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnStartMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPauseMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnChangeMenuSelected( wxCommandEvent& event ) { event.Skip(); }
@@ -188,21 +186,20 @@ class GUI_Base : public wxFrame
 		virtual void OnCraftChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWalkChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMineChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnStartChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnBuildChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRecipeChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTechChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLimitChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnIdleChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnfilterChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPriorityChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRotateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPickUpChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDropChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -218,6 +215,7 @@ class GUI_Base : public wxFrame
 		virtual void StepSeachOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void StepSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddStepClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddStepRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -229,7 +227,7 @@ class GUI_Base : public wxFrame
 
 	public:
 
-		GUI_Base( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio Scripting Helper"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1840,1080 ), long style = wxDEFAULT_FRAME_STYLE|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
+		GUI_Base( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio TAS Generator"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1840,1080 ), long style = wxDEFAULT_FRAME_STYLE|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
 		wxAuiManager m_mgr;
 
 		~GUI_Base();
