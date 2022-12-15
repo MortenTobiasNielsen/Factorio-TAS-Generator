@@ -402,10 +402,6 @@ string GenerateScript::convert_string(string input)
 	return input;
 }
 
-string GenerateScript::signature(string step, string action) {
-	return "step[" + to_string(total_steps) + "] = {{" + step + "," + action + "}, ";
-}
-
 /// <summary>
 /// Applies a translation to an item. Either the specific translation from map_translation or the common way
 /// </summary>

@@ -88,9 +88,6 @@ private:
 		{"Efficiency module 3", "effectivity-module-3"}
 	};
 
-	void reset();
-	void clear_tasks();
-	void extract_parameters(const string& task_reference);
 	string extract_define(string from_into, string building);
 	string convert_string(string input);
 	string check_item_name(string item);
