@@ -1109,15 +1109,15 @@ local function handle_ontick()
 
 		elseif doStep(steps[step]) then
 			-- Do step while standing still
-			change_step(1)
 			if steps[step].comment then msg(steps[step].comment) end
+			change_step(1)
 		end
 	else
 		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
 			if doStep(steps[step]) then
 				-- Do step while walking
-				change_step(1)
 				if steps[step].comment then msg(steps[step].comment) end
+				change_step(1)
 			end
 		end
 	end
@@ -1270,8 +1270,14 @@ script.on_event(defines.events.on_tick, function(event)
 		return
 	end
 
-	if(steps[step][2] == "walk") then
-		compatibility_mode = steps[step][4] == "old"
+	if steps[step][2] == "walk" then
+		if steps[step][4] == "old" then
+			compatibility_mode = true
+		end
+
+		if steps[step].comment == "new" then
+			compatibility_mode = false
+		end
 	end
 
 	update_player_position()
