@@ -624,6 +624,8 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 	StepGridData[row] = stepParameters;
 	PopulateGrid(grid_steps, row, &gridEntry);
 
+	BackgroundColorUpdate(grid_steps, row, stepParameters.StepEnum);
+
 	grid_steps->SelectRow(row);
 }
 
