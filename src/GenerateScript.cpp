@@ -402,98 +402,15 @@ string GenerateScript::convert_string(string input)
 	return input;
 }
 
-string GenerateScript::check_item_name(string item)
-{
-	if (item == "Passive provider chest")
-	{
-		return item = "logistic-chest-passive-provider";
-	}
-	else if (item == "Active provider chest")
-	{
-		return item = "logistic-chest-active-provider";
-	}
-	else if (item == "Storage chest")
-	{
-		return item = "logistic-chest-storage";
-	}
-	else if (item == "Buffer chest")
-	{
-		return item = "logistic-chest-buffer";
-	}
-	else if (item == "Requester chest")
-	{
-		return item = "logistic-chest-requester";
-	}
-	else if (item == "Wall")
-	{
-		return item = "stone-wall";
-	}
-	else if (item == "Discharge defense")
-	{
-		return item = "discharge-defense-equipment";
-	}
-	else if (item == "Exoskeleton")
-	{
-		return item = "exoskeleton-equipment";
-	}
-	else if (item == "Personal roboport")
-	{
-		return item = "personal-roboport-equipment";
-	}
-	else if (item == "Personal roboport MK2")
-	{
-		return item = "personal-roboport-mk2-equipment";
-	}
-	else if (item == "Nightvision")
-	{
-		return item = "night-vision-equipment";
-	}
-	else if (item == "Personal battery")
-	{
-		return item = "battery-equipment";
-	}
-	else if (item == "Personal battery MK2")
-	{
-		return item = "battery-mk2-equipment";
-	}
-	else if (item == "Portable solar panel")
-	{
-		return item = "solar-panel-equipment";
-	}
-	else if (item == "Personal laser defense")
-	{
-		return item = "personal-laser-defense-equipment";
-	}
-	else if (item == "Energy shield")
-	{
-		return item = "energy-shield-equipment";
-	}
-	else if (item == "Energy shield MK2")
-	{
-		return item = "energy-shield-mk2-equipment";
-	}
-	else if (item == "Portable fusion reactor")
-	{
-		return item = "fusion-reactor-equipment";
-	}
-	else if (item == "Efficiency module")
-	{
-		return item = "effectivity-module";
-	}
-	else if (item == "Efficiency module 2")
-	{
-		return item = "effectivity-module-2";
-	}
-	else if (item == "Efficiency module 3")
-	{
-		return item = "effectivity-module-3";
-	}
-	else
-	{
+/// <summary>
+/// Applies a translation to an item. Either the specific translation from map_translation or the common way
+/// </summary>
+string GenerateScript::check_item_name(string item) {
+	if (auto search = map_translation.find(item); search != map_translation.end()) {
+		return item = search->second; 
+	} else {	
 		return item = convert_string(item);
 	}
-
-	return "Not a known item";
 }
 
 void GenerateScript::check_mining_distance(string step, string action, string x_cord, string y_cord)
