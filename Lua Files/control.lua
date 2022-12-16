@@ -742,15 +742,15 @@ local function update_destination_position(x, y)
 	keep_y = false
 	diagonal = false
 
-	if steps[step][5] == "same_x" then
+if steps[step] and steps[step][5] and steps[step][5] == "same_x" then
 		keep_x = true
 	end
 
-	if steps[step][6] == "same_y" then
+	if steps[step] and steps[step][6] and steps[step][6] == "same_y" then
 		keep_y = true
 	end
 
-	if steps[step][5] == "diagonal" then
+	if steps[step] and steps[step][5] and steps[step][5] == "diagonal" then
 		diagonal = true
 	end
 end
