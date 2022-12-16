@@ -1676,6 +1676,9 @@ bool cMain::SaveFile(bool save_as)
 
 StepParameters cMain::ExtractStepParameters()
 {
+	spin_y->SetFocus();
+	spin_x->SetFocus();
+
 	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
 
 	stepParameters.Step = ExtractStep();
