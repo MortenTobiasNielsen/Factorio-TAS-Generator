@@ -1151,7 +1151,7 @@ static const std::vector<std::string> drills_list =
 
 static const struct
 {
-	std::string game_speed = "Game Speed";
+	std::string game_speed = "Game speed";
 	std::string walk = "Walk";
 	std::string mine = "Mine";
 	std::string rotate = "Rotate";

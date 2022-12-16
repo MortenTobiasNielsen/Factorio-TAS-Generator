@@ -56,7 +56,7 @@
     <ClInclude Include="SearchUtilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="EZRaiderz-TAS-Helper.rc" />
+    <ResourceCompile Include="Factorio-TAS-Generator.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon.ico" />

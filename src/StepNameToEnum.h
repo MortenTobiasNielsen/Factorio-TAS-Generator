@@ -24,7 +24,7 @@ enum StepType
 /// </note>
 static const vector<string> StepNames{
 	"None", 
-	"Stop", "Build", "Craft", "Game Speed", "Pause", "Save",
+	"Stop", "Build", "Craft", "Game speed", "Pause", "Save",
 	"Recipe", "Limit", "Filter", "Rotate", "Priority", "Put", "Take", "Mine", "Launch",
 	"Walk", "Tech", "Drop", "Pick up", "Idle"
 };
