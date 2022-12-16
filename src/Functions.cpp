@@ -81,6 +81,30 @@ string Capitalize(const wxString& stringToCapitalize, const bool isItem)
 	return capitalizedString;
 }
 
+bool equals_ignore_case(const std::string_view& lhs, const std::string_view& rhs)
+{
+	auto to_lower{std::ranges::views::transform(std::tolower)};
+	return std::ranges::equal(lhs | to_lower, rhs | to_lower);
+}
+
+bool starts_with_ignore_case(const std::string& base, const std::string& start)
+{
+	if (base.size() < start.size()) return false;
+	for (int i = 0; i < start.size(); i++)
+		if (toupper(base[i]) != toupper(start[i]))
+			return false;
+	return true;
+}
+
+bool starts_with_ignore_case(const wxString& base, const wxString& start)
+{
+	if (base.size() < start.size()) return false;
+	for (int i = 0; i < start.size(); i++)
+		if (toupper(base[i]) != toupper(start[i]))
+			return false;
+	return true;
+}
+
 bool is_number(const std::string& str)
 {
 	for (auto s : str)
