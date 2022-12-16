@@ -1109,15 +1109,15 @@ local function handle_ontick()
 
 		elseif doStep(steps[step]) then
 			-- Do step while standing still
-			change_step(1)
 			if steps[step].comment then msg(steps[step].comment) end
+			change_step(1)
 		end
 	else
 		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
 			if doStep(steps[step]) then
 				-- Do step while walking
-				change_step(1)
 				if steps[step].comment then msg(steps[step].comment) end
+				change_step(1)
 			end
 		end
 	end
