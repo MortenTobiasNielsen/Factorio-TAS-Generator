@@ -1270,8 +1270,14 @@ script.on_event(defines.events.on_tick, function(event)
 		return
 	end
 
-	if(steps[step][2] == "walk") then
-		compatibility_mode = steps[step][4] == "old"
+	if steps[step][2] == "walk" then
+		if steps[step][4] == "old" then
+			compatibility_mode = true
+		end
+
+		if steps[step].comment == "new" then
+			compatibility_mode = false
+		end
 	end
 
 	update_player_position()
