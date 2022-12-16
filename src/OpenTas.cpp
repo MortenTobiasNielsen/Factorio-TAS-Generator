@@ -112,6 +112,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 	}
 
 	int buildingsInSnapShot = 0;
+	int position = 0;
 
 	while (update_segment(file))
 	{
@@ -189,10 +190,19 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				ProcessMiningStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
 
+			case e_priority:
+				position = step.Orientation.find(",");
+				step.PriorityIn = step.Orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+				step.Orientation = "";
+				
+				// Only here to populate extra parameters in step. Actual validation will be done on script generation
+				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
+				break;
+
 			case e_recipe:
 			case e_filter:
 			case e_rotate:
-			case e_priority:
 			case e_launch:
 			case e_drop:
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation

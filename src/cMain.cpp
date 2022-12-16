@@ -619,6 +619,17 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 	}
 
 	auto stepParameters = ExtractStepParameters();
+
+	if (!ValidateStep(row, stepParameters))
+	{
+		return;
+	};
+
+	if (stepParameters.StepEnum == e_build)
+	{
+		stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
+	};
+
 	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
 
 	StepGridData[row] = stepParameters;
@@ -1502,7 +1513,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 			pos = OrientationEnum.find(",");
 
 			radio_input->Select(map_input_output[OrientationEnum.substr(0, pos)]);
-			radio_output->Select(map_input_output[OrientationEnum.substr(pos + 2)]);
+			radio_output->Select(map_input_output[OrientationEnum.substr(pos + 1)]);
 
 			txt_comment->SetValue(gridEntry->Comment);
 
@@ -1998,7 +2009,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 				return false;
 			};
 
-			return true;
+			return ExtraBuildingChecks(stepParameters);
 	}
 }
 
@@ -2233,7 +2244,6 @@ bool cMain::CheckTakePut(StepParameters& stepParameters)
 	return false;
 }
 
-// TODO: It seems like this should be used somewhere.
 bool cMain::ExtraBuildingChecks(StepParameters& stepParameters)
 {
 	auto buildingName = FindBuildingName(stepParameters.BuildingIndex);
@@ -2241,13 +2251,31 @@ bool cMain::ExtraBuildingChecks(StepParameters& stepParameters)
 	switch (stepParameters.StepEnum)
 	{
 		case e_limit:
-			return check_input(buildingName, chest_list);
+			if (check_input(buildingName, chest_list))
+			{
+				return true;
+			}
+
+			wxMessageBox(buildingName + " isn't a chest type and limit can therefore not be used.");
+			return false;
 
 		case e_priority:
-			return check_input(buildingName, splitter_list);
+			if (check_input(buildingName, splitter_list))
+			{
+				return true;
+			}
+
+			wxMessageBox(buildingName + " isn't a splitter type and priority can therefore not used.");
+			return false;
 
 		case e_filter:
-			return check_input(buildingName, splitter_list) && check_input(buildingName, filter_inserter_list);
+			if (check_input(buildingName, splitter_list) || check_input(buildingName, filter_inserter_list))
+			{
+				return true;
+			}
+
+			wxMessageBox(buildingName + " isn't a splitter or filter inserter type and filter can therefore not be used.");
+			return false;
 
 		default:
 			return true;
