@@ -1,36 +1,5 @@
 #include "SearchUtil.h"
 
-bool Search::StringContainsAny(const wxString& str, const string& chars)
-{
-	for (int i = 0; i < str.size(); i++)
-	{
-		for (int j = 0; j < chars.size(); j++)
-		{
-			if (str[i] == str[j])
-			{
-				return true;
-			}
-
-		}
-	}
-
-	return false;
-}
-
-vector<wxString> Search::Split(const string& s, char delim)
-{
-	vector<wxString> result;
-	stringstream ss;
-	string item;
-
-	while (std::getline(ss, item, delim))
-	{
-		result.push_back(item);
-	}
-	if (result.empty()) result.push_back(s);
-	return result;
-}
-
 tuple<wxString, wxString> Search::ExtractColon(const wxString& s)
 {
 	size_t t = s.find_first_of(':');

@@ -193,3 +193,34 @@ void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry)
 	grid->SetCellValue(row, 8, gridEntry->AmountOfBuildings);
 	grid->SetCellValue(row, 9, gridEntry->Comment);
 }
+
+bool StringContainsAny(const wxString& str, const string& chars)
+{
+	for (int i = 0; i < str.size(); i++)
+	{
+		for (int j = 0; j < chars.size(); j++)
+		{
+			if (str[i] == str[j])
+			{
+				return true;
+			}
+
+		}
+	}
+
+	return false;
+}
+
+vector<wxString> Split(const string& s, char delim)
+{
+	vector<wxString> result;
+	stringstream ss;
+	string item;
+
+	while (std::getline(ss, item, delim))
+	{
+		result.push_back(item);
+	}
+	if (result.empty()) result.push_back(s);
+	return result;
+}

@@ -3,6 +3,7 @@
 #include <wx/wx.h>
 #include <wx/grid.h>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <map>
 #include <ranges>
@@ -13,6 +14,7 @@
 
 using std::vector;
 using std::string;
+using std::stringstream;
 
 bool check_input(const string& item, const vector<string>& all_items);
 
@@ -28,3 +30,6 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
 bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
 void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry);
+
+bool StringContainsAny(const wxString& str, const string& chars);
+vector<wxString> Split(const string& s, char delim);
