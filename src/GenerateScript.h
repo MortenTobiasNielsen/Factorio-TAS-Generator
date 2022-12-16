@@ -98,40 +98,42 @@ private:
 	vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, const float& max_distance);
 
 	string signature(string step, string action);
+	string Comment(string comment);
+	string Step(string step, string action, string details, string comment);
 
 	void walk(string step, string action, string x_cord, string y_cord, string comment);
-	void mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building);
-	void craft(string step, string amount, string item);
-	void tech(string step, string tech_to_research);
-	void speed(string step, string speed);
-	void pause(string step);
-	void launch(string step, string x_cord, string y_cord);
+	void mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment);
+	void craft(string step, string amount, string item, string comment);
+	void tech(string step, string tech_to_research, string comment);
+	void speed(string step, string speed, string comment);
+	void pause(string step, string comment);
+	void launch(string step, string x_cord, string y_cord, string comment);
 	void save(string step, string nameOfSaveGame);
-	void idle(string step, string amount);
-	void rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum);
-	void pick(string step, string amount);
+	void idle(string step, string amount, string comment);
+	void rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment);
+	void pick(string step, string amount, string comment);
 
-	void build(string step, string action, string x_cord, string y_cord, string item, string OrientationEnum);
-	void row_build(string step, string x_cord, string y_cord, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size);
+	void build(string step, string action, string x_cord, string y_cord, string item, string OrientationEnum, string comment = "");
+	void row_build(string step, string x_cord, string y_cord, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment);
 
-	void take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string OrientationEnum);
-	void row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum);
+	void take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string OrientationEnum, string comment = "");
+	void row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string OrientationEnum);
-	void row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum);
+	void put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string OrientationEnum, string comment = "");
+	void row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void recipe(string step, string action, string x_cord, string y_cord, string item, string building, string OrientationEnum);
-	void row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string OrientationEnum);
+	void recipe(string step, string action, string x_cord, string y_cord, string item, string building, string OrientationEnum, string comment = "");
+	void row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string OrientationEnum, string comment);
 
-	void limit(string step, string action, string x_cord, string y_cord, string amount, string from, string building, string OrientationEnum);
-	void row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum);
+	void limit(string step, string action, string x_cord, string y_cord, string amount, string from, string building, string OrientationEnum, string comment = "");
+	void row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void priority(string step, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string OrientationEnum);
-	void row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum);
+	void priority(string step, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string OrientationEnum, string comment = "");
+	void row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void filter(string step, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string OrientationEnum);
-	void row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction_to_build, string number_of_buildings, string building_size, string building, string OrientationEnum);
+	void filter(string step, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string OrientationEnum, string comment = "");
+	void row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction_to_build, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void drop(string step, string action, string x_cord, string y_cord, string item, string building);
-	void row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building, string building_size);
+	void drop(string step, string action, string x_cord, string y_cord, string item, string building, string comment = "");
+	void row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building, string building_size, string comment);
 };
