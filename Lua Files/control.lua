@@ -1080,7 +1080,8 @@ local function handle_ontick()
 			change_step(1)
 
 		elseif steps[step][2] == "mine" then
-			if steps[step].comment then msg(steps[step].comment) end
+			if duration and duration == 0 and steps[step].comment then msg(steps[step].comment) end
+			
 			player.update_selected_entity(steps[step][3])
 
 			player.mining_state = {mining = true, position = steps[step][3]}
