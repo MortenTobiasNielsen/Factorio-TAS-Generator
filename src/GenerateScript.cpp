@@ -204,22 +204,16 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_priority:
-			{
-				long long pos = build_orientation.find(",");
 
-				priority_in = build_orientation.substr(0, pos);
-				priority_out = build_orientation.substr(pos + 2);
-			}
+				if (steps[i].BuildingIndex == 0)
+				{
+					return;
+				}
 
-			if (steps[i].BuildingIndex == 0)
-			{
-				return;
-			}
+				SetBuildingAndOrientation(&steps[i]);
 
-			SetBuildingAndOrientation(&steps[i]);
-
-			row_priority(currentStep, x_cord, y_cord, priority_in, priority_out, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
-			break;
+				row_priority(currentStep, x_cord, y_cord, steps[i].PriorityIn, steps[i].PriorityOut, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
+				break;
 
 			case e_filter:
 				if (steps[i].BuildingIndex == 0)

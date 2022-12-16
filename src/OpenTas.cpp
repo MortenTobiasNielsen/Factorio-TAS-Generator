@@ -194,6 +194,12 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				position = step.Orientation.find(",");
 				step.PriorityIn = step.Orientation.substr(0, position);
 				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+
+				if (step.PriorityOut[0] == ' ' )
+				{
+					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
+				}
+
 				step.Orientation = "";
 				
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
