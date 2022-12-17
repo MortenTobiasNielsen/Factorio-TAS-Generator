@@ -897,6 +897,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 
 	cmb_choose_template->Clear();
 	template_choices.Add(name);
+	template_choices.Sort();
 	cmb_choose_template->Append(template_choices);
 	cmb_choose_template->SetValue(name);
 
