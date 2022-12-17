@@ -195,13 +195,13 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				step.PriorityIn = step.Orientation.substr(0, position);
 				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
 
-				if (step.PriorityOut[0] == ' ' )
+				if (step.PriorityOut[0] == ' ')
 				{
 					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
 				}
 
 				step.Orientation = "";
-				
+
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -244,6 +244,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 {
 	vector<StepParameters> steps = {};
 	string name = "";
+	int position = 0;
 
 	// Groups are obsolete and have been moved to template. This is here for backwards compatibility. 
 	while (update_segment(file))
@@ -323,6 +324,35 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 
 		step.StepEnum = mappedtype->second;
 
+		switch (step.StepEnum)
+		{
+			case e_build:
+				step.BuildingIndex = BuildingNameToType[step.Item];
+				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				break;
+
+			case e_priority:
+				position = step.Orientation.find(",");
+				step.PriorityIn = step.Orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+
+				if (step.PriorityOut[0] == ' ')
+				{
+					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
+				}
+
+				step.Orientation = "";
+				break;
+
+			case e_limit:
+			case e_put:
+			case e_take:
+				step.FromInto = step.Orientation;
+				break;
+			default:
+				break;
+		}
+
 		steps.push_back(step);
 
 		lines_processed++;
@@ -341,6 +371,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 {
 	vector<StepParameters> steps = {};
 	string name = "";
+	int position = 0;
 
 	while (update_segment(file))
 	{
@@ -427,6 +458,35 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		step.StepEnum = mappedtype->second;
+
+		switch (step.StepEnum)
+		{
+			case e_build:
+				step.BuildingIndex = BuildingNameToType[step.Item];
+				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				break;
+
+			case e_priority:
+				position = step.Orientation.find(",");
+				step.PriorityIn = step.Orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+
+				if (step.PriorityOut[0] == ' ')
+				{
+					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
+				}
+
+				step.Orientation = "";
+				break;
+
+			case e_limit:
+			case e_put:
+			case e_take:
+				step.FromInto = step.Orientation;
+				break;
+			default:
+				break;
+		}
 
 		steps.push_back(step);
 

@@ -30,6 +30,12 @@ string GenerateScript::EndSteps()
 	return step_list + "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n" + "return step";
 }
 
+void GenerateScript::UnexpectedError(DialogProgressBar* dialog_progress_bar)
+{
+	wxMessageBox("Please make an issue at our repository on github with step by step of what happened.", "Unexpected error");
+	dialog_progress_bar->Close();
+}
+
 void GenerateScript::AddInfoFile(string& folder_location)
 {
 	auto software_version = "0.1.0";
@@ -96,7 +102,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 		{
 			break;
 		}
-		
+
 		TransferParameters(steps[i]);
 		switch (steps[i].StepEnum)
 		{
@@ -129,6 +135,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_rotate:
 				if (steps[i].BuildingIndex == 0)
 				{
+					UnexpectedError(dialog_progress_bar);
 					return;
 				}
 
@@ -156,6 +163,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 				if (from_into == "Not Found")
 				{
+					UnexpectedError(dialog_progress_bar);
 					return;
 				}
 
@@ -169,6 +177,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 				if (from_into == "Not Found")
 				{
+					UnexpectedError(dialog_progress_bar);
 					return;
 				}
 
@@ -197,6 +206,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 				if (from_into == "Not Found")
 				{
+					UnexpectedError(dialog_progress_bar);
 					return;
 				}
 
@@ -207,6 +217,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 				if (steps[i].BuildingIndex == 0)
 				{
+					UnexpectedError(dialog_progress_bar);
 					return;
 				}
 
@@ -218,6 +229,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_filter:
 				if (steps[i].BuildingIndex == 0)
 				{
+					UnexpectedError(dialog_progress_bar);
 					return;
 				}
 
@@ -229,6 +241,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_drop:
 				if (steps[i].BuildingIndex == 0)
 				{
+					UnexpectedError(dialog_progress_bar);
 					return;
 				}
 
@@ -286,7 +299,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	}
 
 	AddInfoFile(folder_location);
-	
+
 	std::ofstream saver;
 
 	//generate step file
@@ -399,10 +412,14 @@ string GenerateScript::convert_string(string input)
 /// <summary>
 /// Applies a translation to an item. Either the specific translation from map_translation or the common way
 /// </summary>
-string GenerateScript::check_item_name(string item) {
-	if (auto search = map_translation.find(item); search != map_translation.end()) {
-		return item = search->second; 
-	} else {	
+string GenerateScript::check_item_name(string item)
+{
+	if (auto search = map_translation.find(item); search != map_translation.end())
+	{
+		return item = search->second;
+	}
+	else
+	{
 		return item = convert_string(item);
 	}
 }
@@ -459,7 +476,7 @@ void GenerateScript::check_interact_distance(string step, string action, string 
 		x_building_size = building_size_list.find(building_name)->second[0];
 		y_building_size = building_size_list.find(building_name)->second[1];
 	}
-	
+
 	static const float max_distance = 10.0f; //Default build distance
 
 	float x_target = std::stof(x_cord);
