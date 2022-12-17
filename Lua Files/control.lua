@@ -804,6 +804,7 @@ end
 
 local function pause()
 	game.tick_paused = true
+	run = false
 	return true
 end
 
@@ -1328,6 +1329,13 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 		change_step(1)
 	end
 
+	mining = 0
+	ticks_mining = 0
+
+	if compatibility_mode then
+		return
+	end
+
 	if run and steps[step] and steps[step][2] and steps[step][2] == "walk" then
 		update_destination_position(steps[step][3][1], steps[step][3][2])
 
@@ -1336,9 +1344,6 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 
 		change_step(1)
 	end
-
-	mining = 0
-	ticks_mining = 0
 end)
 
 -- Skips the freeplay intro

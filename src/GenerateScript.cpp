@@ -830,7 +830,7 @@ void GenerateScript::tech(string step, string tech_to_research, string comment)
 
 void GenerateScript::speed(string step, string speed, string comment)
 {
-	step_list += Step(step, "1", "\"speed\", " + speed + "\"", comment);
+	step_list += Step(step, "1", "\"speed\", " + speed, comment);
 	total_steps += 1;
 }
 
@@ -842,7 +842,7 @@ void GenerateScript::pause(string step, string comment)
 
 void GenerateScript::launch(string step, string x_cord, string y_cord, string comment)
 {
-	step_list += Step(step, "1", "\"launch\", {" + x_cord + ", " + y_cord + "\"" , comment);
+	step_list += Step(step, "1", "\"launch\", {" + x_cord + ", " + y_cord + "}", comment);
 	total_steps += 1;
 }
 
@@ -854,7 +854,7 @@ void GenerateScript::save(string step, string nameOfSaveGame)
 
 void GenerateScript::idle(string step, string amount, string comment)
 {
-	step_list += Step(step, "1", "\"idle\", " + amount + "\"", comment);
+	step_list += Step(step, "1", "\"idle\", " + amount, comment);
 	total_steps += 1;
 }
 
