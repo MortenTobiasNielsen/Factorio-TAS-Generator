@@ -1,36 +1,5 @@
 #include "SearchUtil.h"
 
-bool Search::StringContainsAny(const wxString& str, const string& chars)
-{
-	for (int i = 0; i < str.size(); i++)
-	{
-		for (int j = 0; j < chars.size(); j++)
-		{
-			if (str[i] == str[j])
-			{
-				return true;
-			}
-
-		}
-	}
-
-	return false;
-}
-
-vector<wxString> Search::Split(const string& s, char delim)
-{
-	vector<wxString> result;
-	stringstream ss;
-	string item;
-
-	while (std::getline(ss, item, delim))
-	{
-		result.push_back(item);
-	}
-	if (result.empty()) result.push_back(s);
-	return result;
-}
-
 tuple<wxString, wxString> Search::ExtractColon(const wxString& s)
 {
 	size_t t = s.find_first_of(':');
@@ -110,7 +79,7 @@ bool Search::TrySelectCurrent(wxGrid* grid, vector<tuple<vector<int>, wxString>>
 		{
 			for (auto c : columns)
 			{ //any column contains term
-				if (grid->GetCellValue(id, c).starts_with(term))
+				if (starts_with_ignore_case(grid->GetCellValue(id, c),term))
 				{
 					a++;
 					break;
@@ -152,11 +121,11 @@ bool Search::TrySelectNext(wxCommandEvent& event, wxGrid* grid, vector<tuple<vec
 	{
 
 		int a = 0, c;
-		for (auto [columns, term] : searchTerms)
+		for (auto& [columns, term] : searchTerms)
 		{
 			for (c = 0; c < columns.size(); c++)
 			{ //any column contains term
-				if (grid->GetCellValue(i, columns[c]).starts_with(term))
+				if (starts_with_ignore_case(grid->GetCellValue(i, columns[c]), term))
 				{
 					a++;
 					break;
