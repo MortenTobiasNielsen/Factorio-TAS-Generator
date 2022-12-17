@@ -79,7 +79,7 @@ bool Search::TrySelectCurrent(wxGrid* grid, vector<tuple<vector<int>, wxString>>
 		{
 			for (auto c : columns)
 			{ //any column contains term
-				if (grid->GetCellValue(id, c).starts_with(term))
+				if (starts_with_ignore_case(grid->GetCellValue(id, c),term))
 				{
 					a++;
 					break;
