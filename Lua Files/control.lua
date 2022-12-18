@@ -5,11 +5,11 @@ local steps = require("steps")
 local debug_state = require("goal")
 local run = true
 
-local step = 1
+local step
 local step_reached = 0
-local idle = 0
-local pickup_ticks = 0
-local mining = 0
+local idle
+local pickup_ticks
+local mining
 
 local player
 local player_selection
@@ -29,22 +29,62 @@ local input
 local output
 local type
 local rev
-local duration = 0
-local ticks_mining = 0
-local idled = 0
+local duration
+local ticks_mining
+local idled
 local font_size = 0.15 --best guess estimate of fontsize for flying text
-local queued_save = nil
 
-local pos_pos = false
-local pos_neg = false
-local neg_pos = false
-local neg_neg = false
-local use_old_walking_pattern = false;
+local pos_pos
+local pos_neg
+local neg_pos
+local neg_neg
+local compatibility_mode
+local keep_x
+local keep_y
+local diagonal
 
 local drop_item
 local drop_position
 
+local queued_save
 local tas_step_change = script.generate_event_name()
+
+local function save_global()
+	--if not global.tas then return end
+	global.tas.step = step
+	global.tas.idle = idle
+	global.tas.pickup_ticks = pickup_ticks
+	global.tas.mining = mining
+	global.tas.pos_pos = pos_pos
+	global.tas.pos_neg = pos_neg
+	global.tas.neg_pos = neg_pos
+	global.tas.neg_neg = neg_neg
+	global.tas.compatibility_mode = compatibility_mode
+	global.tas.keep_x = keep_x
+	global.tas.keep_y = keep_y
+	global.tas.diagonal = diagonal
+	global.tas.player_selection = player_selection
+	global.tas.destination = destination
+	global.tas.target_position = target_position
+	global.tas.target_inventory = target_inventory
+	global.tas.walking = walking
+	global.tas.task = task
+	global.tas.task_category = task_category
+	global.tas.count = count
+	global.tas.item = item
+	global.tas.amount = amount
+	global.tas.slot = slot
+	global.tas.direction = direction
+	global.tas.input = input
+	global.tas.output = output
+	global.tas.type = type
+	global.tas.rev = rev
+	global.tas.duration = duration
+	global.tas.ticks_mining = ticks_mining
+	global.tas.idled = idled
+
+	global.tas.player = player
+end
 
 --recreate crash site
 local on_player_created = function(event)
@@ -100,13 +140,14 @@ local function change_step(by)
 end
 
 local function save(task, nameOfSaveGame)
+	save_global()
 	if game.is_multiplayer() then
-		debug(string.format("Task: %s, saving game as %s", task, nameOfSaveGame))
+		debug(string.format("Step: %s, saving game as %s", task, nameOfSaveGame))
 		game.server_save(nameOfSaveGame)
 		return true
 	end
 
-	debug(string.format("Task: %s, saving game as _autosave-%s", task, nameOfSaveGame))
+	debug(string.format("Step: %s, saving game as _autosave-%s", task, nameOfSaveGame))
 	game.auto_save(nameOfSaveGame)
 	return true;
 end
@@ -122,7 +163,7 @@ local function check_selection_reach()
 
 	if not player_selection then
 		if not walking.walking then
-			warning(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot select entity", task[1], task[2], step, task_category))
+			warning(string.format("Step: %s, Action: %s, Step: %d - %s: Cannot select entity", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -130,7 +171,7 @@ local function check_selection_reach()
 
 	if not player.can_reach_entity(player_selection) then
 		if not walking.walking then
-			warning(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot reach entity", task[1], task[2], step, task_category))
+			warning(string.format("Step: %s, Action: %s, Step: %d - %s: Cannot reach entity", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -145,7 +186,7 @@ local function check_inventory()
 
 	if not target_inventory then
 		if not walking.walking then
-			warning(string.format("Task: %s, Action: %s, Step: %d - %s: Cannot get entity inventory", task[1], task[2], step, task_category))
+			warning(string.format("Step: %s, Action: %s, Step: %d - %s: Cannot get entity inventory", task[1], task[2], step, task_category))
 		end
 
 		return false
@@ -174,14 +215,14 @@ local function put()
 	end
 
     if amount == 0 then
-		warning(string.format("Task: %s, Action: %s, Step: %d - Put: Nothing to put", task[1], task[2], step))
+		warning(string.format("Step: %s, Action: %s, Step: %d - Put: Nothing to put", task[1], task[2], step))
 		return true
 	end
 
 	amount = target_inventory.insert{name=item, count=amount}
 
 	if amount == 0 then
-		warning(string.format("Task: %s, Action: %s, Step: %d - Put: Entity is already full", task[1], task[2], step))
+		warning(string.format("Step: %s, Action: %s, Step: %d - Put: Entity is already full", task[1], task[2], step))
 		return true
 	end
 
@@ -217,14 +258,14 @@ local function take()
 	end
 
 	if amount == 0 then
-		warning(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
+		warning(string.format("Step: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
 
 	amount = player.insert{name=item, count=amount}
 
 	if amount == 0 then
-		warning(string.format("Task: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
+		warning(string.format("Step: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
 		return true
 	end
 
@@ -244,7 +285,7 @@ end
 local function craft()
 	if not player.force.recipes[item].enabled then
 		if(step > step_reached) then
-			warning(string.format("Task: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - It needs to be researched first.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - It needs to be researched first.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			step_reached = step
 		end
 
@@ -263,7 +304,7 @@ local function craft()
 		return true
     else
         if(step > step_reached) then 
-            warning(string.format("Task: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+            warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
             step_reached = step
 		end
 
@@ -376,7 +417,7 @@ local function build()
 	if player.get_item_count(item) == 0 then
 		if(step > step_reached) then
 			if walking.walking == false then
-				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s not available", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				warning(string.format("Step: %s, Action: %s, Step: %d - Build: %s not available", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 				step_reached = step
 			end
 		end
@@ -405,7 +446,7 @@ local function build()
 				return true
 
 			elseif not walking.walking then
-				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s not in reach", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				warning(string.format("Step: %s, Action: %s, Step: %d - Build: %s not in reach", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
 
 			return false
@@ -414,7 +455,7 @@ local function build()
 			return create_entity_replace()
 		else 
 			if not walking.walking then
-				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				warning(string.format("Step: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
 
 			return false
@@ -435,7 +476,7 @@ local function build()
 
 		else
 			if not walking.walking then
-				warning(string.format("Task: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				warning(string.format("Step: %s, Action: %s, Step: %d - Build: %s cannot be placed", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			end
 
 			return false
@@ -444,6 +485,30 @@ local function build()
 end
 
 local function walk_pos_pos()
+	if keep_x then
+		if player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.north}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x > destination.x then
+			return {walking = true, direction = defines.direction.west}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if diagonal then
+		if player_position.x > destination.x or player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.northwest}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x > destination.x then
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northwest}
@@ -454,7 +519,7 @@ local function walk_pos_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -464,6 +529,30 @@ local function walk_pos_pos()
 end
 
 local function walk_pos_neg()
+	if keep_x then
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.south}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x > destination.x then
+			return {walking = true, direction = defines.direction.west}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if diagonal then
+		if player_position.x > destination.x or player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.southwest}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x > destination.x then
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.southwest}
@@ -474,7 +563,7 @@ local function walk_pos_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -484,6 +573,30 @@ local function walk_pos_neg()
 end
 
 local function walk_neg_pos()
+	if keep_x then
+		if player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.north}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x < destination.x then
+			return {walking = true, direction = defines.direction.east}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if diagonal then
+		if player_position.x < destination.x or player_position.y > destination.y then
+			return {walking = true, direction = defines.direction.northeast}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x < destination.x then
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.northeast}
@@ -494,7 +607,7 @@ local function walk_neg_pos()
 		if player_position.y > destination.y then
 			return {walking = true, direction = defines.direction.north}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -504,6 +617,30 @@ local function walk_neg_pos()
 end
 
 local function walk_neg_neg()
+	if keep_x then
+		if player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.south}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if keep_y then
+		if player_position.x < destination.x then
+			return {walking = true, direction = defines.direction.east}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
+	if diagonal then
+		if player_position.x < destination.x or player_position.y < destination.y then
+			return {walking = true, direction = defines.direction.southeast}
+		else
+			return {walking = false, direction = walking.direction}
+		end
+	end
+
 	if player_position.x < destination.x then
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.southeast}
@@ -514,7 +651,7 @@ local function walk_neg_neg()
 		if player_position.y < destination.y then
 			return {walking = true, direction = defines.direction.south}
 		else
-			if use_old_walking_pattern then
+			if compatibility_mode then
 				return {walking = false, direction = defines.direction.north}
 			else
 				return {walking = false, direction = walking.direction}
@@ -534,7 +671,7 @@ local function walk()
 		return walk_neg_neg()
 	end
 
-	if use_old_walking_pattern then
+	if compatibility_mode then
 		return {walking = false, direction = defines.direction.north}
 	else
 		return {walking = false, direction = walking.direction}
@@ -542,7 +679,7 @@ local function walk()
 end
 
 local function find_walking_pattern()
-	if use_old_walking_pattern then
+	if compatibility_mode then
 		if (player_position.x - destination.x >= 0) then
 			if (player_position.y - destination.y >= 0) then
 				pos_pos = true
@@ -577,47 +714,45 @@ local function find_walking_pattern()
 		if (player_position.x - destination.x >= 0) then
 			if (player_position.y - destination.y >= 0) then
 				pos_pos = true
-			elseif (player_position.y - destination.y < 0) then
+			else
 				pos_neg = true
 			end
 		else
 			if (player_position.y - destination.y >= 0) then
 				neg_pos = true
-			elseif (player_position.y - destination.y < 0) then
+			else
 				neg_neg = true
 			end
 		end
 	end
 end
 
----comment rounds value to nearest first decimal
----@param value number
----@return number
-local function round(value)
-	local precision = 10
-	local round = 0.05
-	return math.floor((value + round) * precision) / precision
-end
-
-
 local function update_player_position()
-	if use_old_walking_pattern then
-		player_position = player.position
-		return
-	end
-
-	player_position.x = round(player.position.x)
-	player_position.y = round(player.position.y)
+	player_position = player.position
 end
 
 local function update_destination_position(x, y)
-	if use_old_walking_pattern then
-		destination = { x = x, y = y }
+	destination = { x = x, y = y }
+
+	if compatibility_mode then
 		return
 	end
 
-	destination.x = round(x)
-	destination.y = round(y)
+	keep_x = false
+	keep_y = false
+	diagonal = false
+
+if steps[step] and steps[step][5] and steps[step][5] == "same_x" then
+		keep_x = true
+	end
+
+	if steps[step] and steps[step][6] and steps[step][6] == "same_y" then
+		keep_y = true
+	end
+
+	if steps[step] and steps[step][5] and steps[step][5] == "diagonal" then
+		diagonal = true
+	end
 end
 
 local function rotate()
@@ -645,7 +780,7 @@ local function recipe()
 
 	if not player.force.recipes[item].enabled then
 		if(step > step_reached) then
-			warning(string.format("Task: %s, Action: %s, Step: %d - Recipe: It is not possible to set recipe %s - It needs to be researched first.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			warning(string.format("Step: %s, Action: %s, Step: %d - Recipe: It is not possible to set recipe %s - It needs to be researched first.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 			step_reached = step
 		end
 
@@ -669,11 +804,8 @@ end
 
 local function pause()
 	game.tick_paused = true
+	run = false
 	return true
-end
-
-local function resume()
-	game.tick_paused = false
 end
 
 -- Set the gameplay speed. 1 is standard speed
@@ -877,11 +1009,6 @@ local function doStep(current_step)
 end
 
 local function handle_pretick()
-	if queued_save and walking.walking == false and idle < 1 then 
-		save(queued_save.task, queued_save.name)
-		if steps[step] then warning(string.format("Creating safe save file for task %s resulted in saving on step %s", task, steps[step][1][1])) end
-		queued_save = nil
-	end
 	--pretick sets step directly so it doesn't raise too many events
 	while run do
 		if steps[step] == nil then
@@ -889,18 +1016,16 @@ local function handle_pretick()
 			run = false
 			return
 		elseif (steps[step][2] == "speed") then
-			debug(string.format("Task: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+			if steps[step].comment then msg(steps[step].comment) end
+			debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
 			speed(steps[step][3])
 			step = step + 1
 		elseif steps[step][2] == "save" then
-			if walking.walking == false and idle < 1 then
-				save(steps[step][1][1], steps[step][3])
-			else
-				queued_save = {task = steps[step][1][1], name = steps[step][3]}
-			end
+			queued_save = {name = steps[step][1][1], step = steps[step][3]}
 			step = step + 1
-		elseif steps[2] == "pick" then
-			pickup_ticks = pickup_ticks + steps[3] - 1
+		elseif steps[step][2] == "pick" then
+			if steps[step].comment then msg(steps[step].comment) end
+			pickup_ticks = pickup_ticks + steps[step][3] - 1
 			player.picking_state = true
 			change_step(1)
 		elseif (steps[step][2] == "pause") then
@@ -910,9 +1035,6 @@ local function handle_pretick()
 			change_step(1)
 			debug_state = false
 		elseif(steps[step][2] == "walk" and walking.walking == false and idle < 1) then
-			use_old_walking_pattern = steps[step][4] == "old" --compatibility
-			if use_old_walking_pattern then return end --compatibility
-
 			update_destination_position(steps[step][3][1], steps[step][3][2])
 
 			find_walking_pattern()
@@ -934,7 +1056,146 @@ local function handle_ontick()
 			idle = idle - 1
 			idled = idled + 1
 
-			debug(string.format("Task: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
+			debug(string.format("Step: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
+
+			if idle == 0 then
+				idled = 0
+				if steps[step].comment then msg(steps[step].comment) end
+
+				if steps[step][2] == "walk" then
+					update_destination_position(steps[step][3][1], steps[step][3][2])
+
+					find_walking_pattern()
+					walking = walk()
+
+					change_step(1)
+				end
+			end
+		elseif steps[step][2] == "walk" then
+			if steps[step].comment then msg(steps[step].comment) end
+			update_destination_position(steps[step][3][1], steps[step][3][2])
+			
+			find_walking_pattern()
+			walking = walk()
+			
+			change_step(1)
+
+		elseif steps[step][2] == "mine" then
+			if duration and duration == 0 and steps[step].comment then msg(steps[step].comment) end
+			
+			player.update_selected_entity(steps[step][3])
+
+			player.mining_state = {mining = true, position = steps[step][3]}
+
+			duration = steps[step][4]
+
+			ticks_mining = ticks_mining + 1
+
+			if ticks_mining >= duration then
+				player.mining_state = {mining = false, position = steps[step][3]}
+				change_step(1)
+				mining = 0
+				ticks_mining = 0
+			end
+
+			mining = mining + 1
+			if mining > 5 then
+				if player.character_mining_progress == 0 then
+					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					debug_state = false
+				else
+					mining = 0
+				end
+			end
+
+		elseif doStep(steps[step]) then
+			-- Do step while standing still
+			if steps[step].comment then msg(steps[step].comment) end
+			change_step(1)
+		end
+	else
+		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
+			if doStep(steps[step]) then
+				-- Do step while walking
+				if steps[step].comment then msg(steps[step].comment) end
+				change_step(1)
+			end
+		end
+	end
+end
+
+--- handle end the run
+local function handle_posttick()
+	if not run then
+		return
+	end
+
+	if queued_save then
+		save(queued_save.name, queued_save.step)
+		queued_save = nil
+	end
+
+	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then
+		-- we wait to finish the previous step before we end the run
+	elseif steps[step] == nil or steps[step][1] == "break" then
+		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		run = false
+		return
+	end
+end
+
+local function handle_tick()
+	walking = walk()
+	handle_pretick()
+
+	if not run then --early end from pretick
+		return
+	end
+
+	handle_ontick()
+
+	handle_posttick()
+end
+
+local function backwards_compatibility()
+	if steps[step] == nil or steps[step][1] == "break" then
+		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		return
+	end
+
+	if (steps[step][2] == "pause") then
+		pause()
+		debug("Script paused")
+		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		return
+	end
+
+	if (steps[step][2] == "speed") then
+		debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+		speed(steps[step][3])
+		change_step(1)
+	end
+
+	if steps[step][2] == "save" then
+		save(steps[step][1][1], steps[step][3])
+		change_step(1)
+	end
+
+	if pickup_ticks > 0 then
+		player.picking_state = true
+		pickup_ticks = pickup_ticks - 1
+	end
+
+	walking = walk()
+	if walking.walking == false then
+		if idle > 0 then
+			idle = idle - 1
+			idled = idled + 1
+
+			debug(string.format("Step: %s, Action: %s, Step: %s - idled for %d", steps[step][1][1]-1, steps[step][1][2], step-1, idled))
 
 			if idle == 0 then
 				idled = 0
@@ -967,7 +1228,7 @@ local function handle_ontick()
 			mining = mining + 1
 			if mining > 5 then
 				if player.character_mining_progress == 0 then
-					warning(string.format("Task: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 					debug_state = false
 				else
 					mining = 0
@@ -980,7 +1241,7 @@ local function handle_ontick()
 
 		end
 	else
-		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
+		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" and steps[step][2] ~= "pick" then
 			if doStep(steps[step]) then
 				-- Do step while walking
 				change_step(1)
@@ -989,28 +1250,12 @@ local function handle_ontick()
 	end
 end
 
---- handle end the run
-local function handle_posttick()
-	if not run then return end
-	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then --we have to finish the previous task before we end the run
-	elseif steps[step] == nil or steps[step][1] == "break" then
-		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))	
-		debug_state = false
-		run = false
-		return
-	elseif (steps[step][2] == "stop") then
-		speed(steps[step][3])
-		msg(string.format("Script stopped - Game speed: %d", steps[step][3]))
-		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
-		debug_state = false
-		run = false
-		return
-	end
-end
-
 -- Main per-tick event handler
 script.on_event(defines.events.on_tick, function(event)
-	if not run then return end --early end on console:release
+	if not run then --early end on console:release
+		return
+	end
+
     if not player then --set some parameters on the first tick
 		player = game.players[1]
 		player.surface.always_day = true
@@ -1021,17 +1266,28 @@ script.on_event(defines.events.on_tick, function(event)
 		player.force.research_queue_enabled = true
 		walking = {walking = false, direction = defines.direction.north}
 	end
-	if player.character == nil then return end --early end if in god mode
+
+	if player == nil or player.character == nil then --early end if in god mode
+		return
+	end
+
+	if steps[step][2] == "walk" then
+		if steps[step][4] == "old" then
+			compatibility_mode = true
+		end
+
+		if steps[step].comment == "new" then
+			compatibility_mode = false
+		end
+	end
 
 	update_player_position()
 
-	walking = walk()
-	handle_pretick()
-	if not run then return end --early end from pretick
-
-	handle_ontick()
-
-	handle_posttick()
+	if compatibility_mode then
+		backwards_compatibility()
+	else
+		handle_tick()
+	end
 
 	player.walking_state = walking
 end)
@@ -1047,7 +1303,11 @@ end
 
 script.on_event(defines.events.on_player_mined_entity, function(event)
 
-	if (steps[step][1] == "break" or steps[step][2] == "stop") then
+	if player == nil or player.character == nil then --early end if in god mode
+		return
+	end
+
+	if (steps[step][1] == "break") then
 		return
 	end
 
@@ -1071,6 +1331,19 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	mining = 0
 	ticks_mining = 0
+
+	if compatibility_mode then
+		return
+	end
+
+	if run and steps[step] and steps[step][2] and steps[step][2] == "walk" then
+		update_destination_position(steps[step][3][1], steps[step][3][2])
+
+		find_walking_pattern()
+		walking = walk()
+
+		change_step(1)
+	end
 end)
 
 -- Skips the freeplay intro
@@ -1078,13 +1351,6 @@ script.on_event(defines.events.on_game_created_from_scenario, function()
 
 	remote.call("freeplay", "set_skip_intro", true)
 
-end)
-
---release tas on writing "release" in console
-script.on_event(defines.events.on_console_chat, function(event)
-	if event.message and event.message == "release" then
-		run = false
-	end
 end)
 
 -- Triggered on script built
@@ -1142,13 +1408,91 @@ script.on_event(defines.events.on_player_created, function(event)
 	on_player_created(event)
 end)
 
+local function create_tas_global_state()
+	global.tas = {
+		step = 1,
+		idle = 0,
+		pickup_ticks = 0,
+		mining = 0,
+		pos_pos = false,
+		pos_neg = false,
+		neg_pos = false,
+ 		neg_neg = false,
+ 		compatibility_mode = false,
+ 		keep_x = false,
+ 		keep_y = false,
+		diagonal = false,
+		duration = 0,
+		ticks_mining = 0,
+		idled = 0,
+	}
+end
+
+local function migrate_global()
+	if not global.tas then return end
+	step = global.tas.step
+	idle = global.tas.idle
+	pickup_ticks = global.tas.pickup_ticks
+	mining = global.tas.mining
+	pos_pos = global.tas.pos_pos
+	pos_neg = global.tas.pos_neg
+	neg_pos = global.tas.neg_pos
+	neg_neg = global.tas.neg_neg
+	diagonal = global.tas.diagonal
+	compatibility_mode = global.tas.compatibility_mode
+	keep_x = global.tas.keep_x
+	keep_y = global.tas.keep_y
+	diagonal = global.tas.diagonal
+	player_selection = global.tas.player_selection
+	destination = global.tas.destination
+	target_position = global.tas.target_position
+	target_inventory = global.tas.target_inventory
+	walking = global.tas.walking
+	task = global.tas.task
+	task_category = global.tas.task_category
+	count = global.tas.count
+	item = global.tas.item
+	amount = global.tas.amount
+	slot = global.tas.slot
+	direction = global.tas.direction
+	input = global.tas.input
+	output = global.tas.output
+	type = global.tas.type
+	rev = global.tas.rev
+	duration = global.tas.duration
+	ticks_mining = global.tas.ticks_mining
+	idled = global.tas.idled
+
+	player = global.tas.player
+	if player then
+		player_position = player.position
+	end
+end
 
 script.on_init(function()
-    local freeplay = remote.interfaces["freeplay"]
+    local freeplay = remote.interfaces["freeplay"] --Setup tas interface
     if freeplay then
 		if freeplay["set_skip_intro"] then remote.call("freeplay", "set_skip_intro", true) end -- Disable freeplay popup-message
         if freeplay["set_disable_crashsite"] then remote.call("freeplay", "set_disable_crashsite", true) end --Disable crashsite
     end
+	create_tas_global_state()
+	migrate_global()
 end)
 
-commands.add_command("resume", nil, resume)
+script.on_load(migrate_global)
+
+script.on_event(defines.events.on_console_chat, function(event)
+	if event.message then
+		if event.message == "release" then
+			run = false
+		end
+
+		if event.message == "resume" then
+			run = true
+		end
+
+		if event.message == "skip" then
+			change_step(1)
+		end
+	end
+end)

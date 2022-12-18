@@ -4,22 +4,21 @@
 
 bool SaveTas::Save(
 	wxWindow* parent,
-	dialog_progress_bar_base* dialog_progress_bar,
+	DialogProgressBar* dialog_progress_bar,
 	bool save_as,
-	std::vector<bool> auto_list,
-	std::vector<std::string> steps,
-	std::map<std::string, std::vector<std::string>> maps,
-	std::map<std::string, std::vector<std::string>> templates,
-	std::string folder_location,
-	std::string folder_location_generate,
-	std::string goal)
+	vector<bool> auto_list,
+	vector<StepParameters> steps,
+	map<string, vector<StepParameters>> templates,
+	string folder_location,
+	string folder_location_generate,
+	string goal)
 {
-	int total_lines = steps.size() + maps.size() + templates.size();
+	int total_lines = steps.size() + templates.size();
 	int lines_processed = 0;
 
 	if (!dialog_progress_bar)
 	{
-		dialog_progress_bar = new dialog_progress_bar_base(parent, wxID_ANY, "Processing request");
+		dialog_progress_bar = new DialogProgressBar(parent, wxID_ANY, "Processing request");
 	}
 
 	dialog_progress_bar->set_text("Saving file");
@@ -36,11 +35,10 @@ bool SaveTas::Save(
 	myfile << goal_indicator << std::endl;
 	myfile << goal << std::endl;
 
-
 	myfile << steps_indicator << std::endl;
 	for (auto it = steps.begin(); it < steps.end(); it++)
 	{
-		myfile << *it << std::endl;
+		myfile << (*it).ToString() << std::endl;
 
 		lines_processed++;
 
@@ -51,26 +49,6 @@ bool SaveTas::Save(
 		}
 	}
 
-	myfile << save_groups_indicator << std::endl;
-	if (maps.size())
-	{
-		for (auto element : maps)
-		{
-			for (auto value : element.second)
-			{
-				myfile << element.first + ";" + value << std::endl;
-
-				lines_processed++;
-
-				if (lines_processed > 0 && lines_processed % 25 == 0)
-				{
-					dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 1);
-					wxYield();
-				}
-			}
-		}
-	}
-
 	myfile << save_templates_indicator << std::endl;
 	if (templates.size())
 	{
@@ -78,7 +56,7 @@ bool SaveTas::Save(
 		{
 			for (auto value : element.second)
 			{
-				myfile << element.first + ";" + value << std::endl;
+				myfile << element.first + ";" + value.ToString() << std::endl;
 
 				lines_processed++;
 
