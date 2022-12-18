@@ -238,7 +238,7 @@ bool StringContainsAny(const wxString& str, const string& chars)
 vector<wxString> Split(const string& s, char delim)
 {
 	vector<wxString> result;
-	stringstream ss;
+	stringstream ss(s);
 	string item;
 
 	while (std::getline(ss, item, delim))
