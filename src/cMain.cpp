@@ -1992,16 +1992,17 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 
 		case e_put:
 		case e_take:
-			if (!IsValidPutTakeStep(stepParameters))
-			{
-				return false;
-			}
-
 			if (stepParameters.FromInto != "Wreck" && !BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
 			{
 				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
 			};
+
+			if (!IsValidPutTakeStep(stepParameters))
+			{
+				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
+				return false;
+			}
 
 			return true;
 
