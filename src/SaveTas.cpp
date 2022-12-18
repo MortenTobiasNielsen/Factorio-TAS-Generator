@@ -13,7 +13,13 @@ bool SaveTas::Save(
 	string folder_location_generate,
 	string goal)
 {
-	int total_lines = steps.size() + templates.size();
+	int total_lines = steps.size();
+
+	for (auto& t : templates)
+	{
+		total_lines += t.second.size();
+	}
+
 	int lines_processed = 0;
 
 	if (!dialog_progress_bar)
