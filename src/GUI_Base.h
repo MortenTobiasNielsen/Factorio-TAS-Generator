@@ -35,8 +35,8 @@
 #include <wx/aui/auibook.h>
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
-#include <wx/gauge.h>
 #include <wx/dialog.h>
+#include <wx/gauge.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -147,6 +147,7 @@ class GUI_Base : public wxFrame
 		virtual void OnChooseLocation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGenerateScript( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnOnlyGenerateSteps( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeShortcutMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCraftMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWalkMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGameSpeedMenuSelected( wxCommandEvent& event ) { event.Skip(); }
@@ -231,6 +232,35 @@ class GUI_Base : public wxFrame
 		wxAuiManager m_mgr;
 
 		~GUI_Base();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class Shortcut_changer
+///////////////////////////////////////////////////////////////////////////////
+class Shortcut_changer : public wxDialog
+{
+	private:
+
+	protected:
+		wxBoxSizer* sc_vertical_sizer;
+		wxStaticText* sc_help_label;
+		wxGridSizer* sc_grid_sizer;
+		wxButton* sc_reset_button;
+		wxButton* sc_save_button;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCloseShortcutChanger( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnInitDialogShortcutChanger( wxInitDialogEvent& event ) { event.Skip(); }
+		virtual void OnButtonClickSCReset( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnButtonClickSCSave( wxCommandEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		Shortcut_changer( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Change shortcuts"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxCLOSE_BOX|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSTAY_ON_TOP|wxBORDER_RAISED|wxTAB_TRAVERSAL );
+
+		~Shortcut_changer();
 
 };
 

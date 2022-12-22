@@ -130,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX20_CISO646_REMOVED_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(WXWIN)\include; $(WXWIN)\include\msvc</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -171,6 +171,7 @@
     <ClCompile Include="GUI_Base.cpp" />
     <ClCompile Include="OpenTas.cpp" />
     <ClCompile Include="SaveTas.cpp" />
+    <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="StepParameters.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
     <ClCompile Include="StepNameToEnum.cpp" />
@@ -184,8 +185,10 @@
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
+    <ClInclude Include="nlohmann\json.hpp" />
     <ClInclude Include="SearchUtil.h" />
     <ClInclude Include="SearchUtilities.h" />
+    <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="StepNameToEnum.h" />
     <ClInclude Include="OpenTas.h" />
     <ClInclude Include="resource.h" />
