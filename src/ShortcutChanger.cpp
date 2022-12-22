@@ -4,9 +4,9 @@ using json = nlohmann::json;
 
 void ShortcutChanger::extract(json savedata)
 {
-	for (auto& [key, value] : savedata["shortcuts"].items())
+	for (auto& [key, value] : savedata[shortcuts].items())
 	{
-		state["shortcuts"][key] = value;
+		state[shortcuts][key] = value;
 	}
 }
 
@@ -21,14 +21,14 @@ void ShortcutChanger::Build(wxMenu* menu)
 	{
 		try { 
 			json data = json::parse(file);
-			if (data["shortcuts"].is_object())
+			if (data[shortcuts].is_object())
 				extract(data);
 		} catch (...) { }
 		file.close();
 	}
 
 	//create grid entry for each shortcut
-	for (auto& [key, value] : state["shortcuts"].items())
+	for (auto& [key, value] : state[shortcuts].items())
 	{
 		wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 		wxStaticText* label = new wxStaticText(this, wxID_ANY, wxString(key), wxDefaultPosition, wxSize(80, -1), 0);
@@ -51,7 +51,7 @@ json ShortcutChanger::DefaultShortcuts()
 		auto b = wxSplit(a->GetItemLabel(), wxT('\t'));
 		if (b.empty()) continue;
 
-		j["shortcuts"][b[0].ToStdString()] = b.size() > 1 ? b[1].ToStdString() : "";
+		j[shortcuts][b[0].ToStdString()] = b.size() > 1 ? b[1].ToStdString() : "";
 	}
 	return j;
 }
@@ -65,14 +65,14 @@ void ShortcutChanger::OnCloseShortcutChanger(wxCloseEvent& event)
 	if (!file.is_open())
 	{
 		file.open(filename, fstream::in | fstream::out | fstream::app);
-		data["shortcuts"] = {};
+		data[shortcuts] = {};
 	}
 	else
 	{
 		try {
 			data = json::parse(file); 
 		} catch (...) {
-			data["shortcuts"] = {};
+			data[shortcuts] = {};
 		}
 		
 	}
@@ -83,7 +83,7 @@ void ShortcutChanger::OnCloseShortcutChanger(wxCloseEvent& event)
 	o.open(GetFile());
 	if (o.is_open())
 	{
-		data["shortcuts"] = state["shortcuts"];
+		data[shortcuts] = state[shortcuts];
 		auto dump = data.dump(4);
 		o << dump << std::endl;
 		o.close();
@@ -100,7 +100,7 @@ void ShortcutChanger::OnInitDialogShortcutChanger(wxInitDialogEvent& event)
 void ShortcutChanger::OnButtonClickSCReset(wxCommandEvent& event)
 {
 	json j = state = DefaultShortcuts();
-	for (auto& [key, value] : j["shortcuts"].items())
+	for (auto& [key, value] : j[shortcuts].items())
 	{
 		auto a = std::string(value);
 		wxTextCtrl* input = mapCtrl[key];
@@ -112,11 +112,11 @@ void ShortcutChanger::OnButtonClickSCReset(wxCommandEvent& event)
 void ShortcutChanger::OnButtonClickSCSave(wxCommandEvent& event)
 {
 	json j = state;
-	for (auto& [key, value] : j["shortcuts"].items())
+	for (auto& [key, value] : j[shortcuts].items())
 	{
 		wxTextCtrl* input = mapCtrl[key];
 		if (input == nullptr) continue;
-		state["shortcuts"][key] = input->GetValue().ToStdString();
+		state[shortcuts][key] = input->GetValue().ToStdString();
 		for (auto& a : menu->GetMenuItems())
 		{
 			if (a->GetItemLabel().StartsWith(key))
