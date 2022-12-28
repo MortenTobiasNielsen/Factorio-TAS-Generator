@@ -312,6 +312,28 @@ local function craft()
 	end
 end
 
+-- Cancels a handcraft a recipe
+local function cancel_crafting()
+	local queue = player.crafting_queue
+
+	for i = 1, #queue do
+		if queue[i].recipe == item then
+			if count == -1 then
+				player.cancel_crafting{index = i}
+				return true
+			elseif queue[i].count >= count then
+				player.cancel_crafting{index = i, count = count}
+				return true
+			else
+				warning(string.format("Step: %s, Action: %s, Step: %d - Cancel craft: It is not possible to cancel %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+				return false
+			end
+		end
+	end
+	warning(string.format("Step: %s, Action: %s, Step: %d - Cancel craft: It is not possible to cancel %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+	return false
+end
+
 local function item_is_tile(item)
 	if item == "stone-brick"
 	or item == "concrete"
@@ -908,6 +930,14 @@ local function doStep(current_step)
 		item = current_step[4]
 
 		return craft()
+
+	elseif current_step[2] == "cancel crafting" then
+        task_category = "Cancel craft"
+        task = current_step[1]
+		count = current_step[3]
+		item = current_step[4]
+
+		return cancel_crafting()
 
 	elseif current_step[2] == "build" then
         task_category = "Build"
