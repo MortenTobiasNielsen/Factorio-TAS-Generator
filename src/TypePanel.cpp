@@ -55,6 +55,8 @@ void TypePanel::SwitchStep(STEP_TYPE::step_type type)
 			break;
 		case STEP_TYPE::Stop: parent->rbtn_stop->SetValue(true);
 			break;
+		case STEP_TYPE::Cancel_Crafting: parent->rbtn_cancel_crafting->SetValue(true);
+			break;
 		default:
 			// ERROR: You have done something wrong
 			break;
@@ -143,6 +145,9 @@ string cMain::ExtractStep()
 
 	if (rbtn_save->GetValue())
 		return struct_steps_list.save;
+
+	if (rbtn_cancel_crafting->GetValue())
+		return struct_steps_list.cancel_crafting;
 
 	return "not found";
 }
@@ -292,6 +297,12 @@ void cMain::OnSaveChosen(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::OnCancelCraftingChosen(wxCommandEvent& event)
+{
+	setup_paramters(parameter_choices.cancel_crafting);
+	event.Skip();
+}
+
 void cMain::OnPriorityChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.priority);
@@ -415,6 +426,13 @@ void cMain::OnCraftMenuSelected(wxCommandEvent& event)
 {
 	type_panel->SwitchStep(TypePanel::STEP_TYPE::Craft);
 	OnCraftChosen(event);
+	event.Skip();
+}
+
+void cMain::OnCancelCraftingMenuSelected(wxCommandEvent& event)
+{
+	type_panel->SwitchStep(TypePanel::STEP_TYPE::Cancel_Crafting);
+	OnCancelCraftingChosen(event);
 	event.Skip();
 }
 

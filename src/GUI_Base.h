@@ -101,6 +101,7 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_drop;
 		wxRadioButton* rbtn_launch;
 		wxRadioButton* rbtn_save;
+		wxRadioButton* rbtn_cancel_crafting;
 		wxPanel* m_panel23;
 		wxCheckBox* check_furnace;
 		wxCheckBox* check_burner;
@@ -172,6 +173,7 @@ class GUI_Base : public wxFrame
 		virtual void OnDeleteMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancelCraftingMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuSteelAxeClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuGOTLAPClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAnyPercentClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -200,6 +202,7 @@ class GUI_Base : public wxFrame
 		virtual void OnDropChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCancelCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
