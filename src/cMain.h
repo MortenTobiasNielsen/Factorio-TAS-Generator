@@ -47,6 +47,7 @@ protected:
 
 	// File menu items
 	void OnMenuNew(wxCommandEvent& event);
+	void Open(std::ifstream *);
 	void OnMenuOpen(wxCommandEvent& event);
 	void OnMenuSave(wxCommandEvent& event);
 	void OnMenuSaveAs(wxCommandEvent& event);

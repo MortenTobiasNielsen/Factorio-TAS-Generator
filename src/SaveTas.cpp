@@ -119,6 +119,8 @@ bool SaveTas::Save(
 		}
 	}
 
+	SaveLastTas(folder_location);
+
 	return true;
 }
 
