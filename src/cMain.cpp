@@ -1013,7 +1013,9 @@ void cMain::TemplateAlterStep(StepParameters& step)
 	if (step.X != invalidX)
 	{
 		step.X += spin_x_offset->GetValue();
+		step.OriginalX += spin_x_offset->GetValue();
 		step.Y += spin_y_offset->GetValue();
+		step.OriginalY += spin_y_offset->GetValue();
 	}
 
 	if (step.Amount == "" || step.Amount == "All")
@@ -1781,7 +1783,8 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_mine:
 			if (stepParameters->BuildingIndex != 0)
 			{
-				gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex); 
+				gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
+				stepParameters->Item = gridEntry.Item;
 			}
 
 			gridEntry.X = std::to_string(stepParameters->X);
@@ -1795,6 +1798,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = stepParameters->Amount;
 			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
+			stepParameters->Item = gridEntry.Item;
 			break;
 
 		case e_build:
