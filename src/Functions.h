@@ -1,19 +1,40 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <wx/grid.h>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <map>
 #include <ranges>
+#include <algorithm>
 
-bool compare_task_strings(const wxString& str1, const std::string& str2);
+#include "Building.h"
+#include "GridEntry.h"
+#include "StepParameters.h"
 
-bool check_input(std::string& item, const std::vector<std::string>& all_items);
+using std::vector;
+using std::string;
+using std::stringstream;
 
-void string_capitalized(std::string& string);
+bool check_input(const string& item, const vector<string>& all_items);
 
-void find_coordinates(std::string& x_cord, std::string& y_cord, std::string& direction, std::string& building_size);
+string Capitalize(const wxString& stringToCapitalize, const bool isItem = false);
 
-bool is_number(const std::string& s);
+bool equals_ignore_case(const std::string_view& lhs, const std::string_view& rhs);
+bool starts_with_ignore_case(const std::string& base, const std::string& start);
+bool starts_with_ignore_case(const wxString& base, const wxString& start);
 
-std::vector<std::string> get_keys(std::map<std::string, std::vector<std::string>> map);
+void find_coordinates(string& x_cord, string& y_cord, string& direction, string& building_size);
+
+bool is_number(const string& s);
+
+vector<string> get_keys(map<string, vector<StepParameters>> map);
+
+int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
+void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
+bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
+void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry);
+
+bool StringContainsAny(const wxString& str, const string& chars);
+vector<wxString> Split(const string& s, char delim);

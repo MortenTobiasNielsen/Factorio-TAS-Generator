@@ -2,23 +2,16 @@
 
 #include "OpenTas.h"
 
-
 void OpenTas::reset()
 {
-	seglist.reserve(100);
-
-	group_name = "";
-	group_list = {};
-
-	template_name = "";
-	template_list = {};
+	segments.reserve(100);
 
 	return_data = {};
 
 	return_data.success = false;
 }
 
-open_file_return_data OpenTas::Open(dialog_progress_bar_base* dialog_progress_bar, std::ifstream& file)
+open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std::ifstream& file)
 {
 	reset();
 
@@ -27,12 +20,37 @@ open_file_return_data OpenTas::Open(dialog_progress_bar_base* dialog_progress_ba
 	dialog_progress_bar->set_progress(0);
 	dialog_progress_bar->Show();
 
-	if (extract_total_steps(file) &&
-		extract_goal(file) &&
-		extract_steps(file, dialog_progress_bar) &&
-		extract_groups(file, dialog_progress_bar) &&
-		extract_templates(file, dialog_progress_bar) &&
-		extract_save_location(file) &&
+	if (!extract_total_steps(file) || !extract_goal(file))
+	{
+		return &return_data;
+	}
+
+	Category category = extract_steps(file, dialog_progress_bar);
+	switch (category)
+	{
+		case Invalid:
+			return &return_data;
+
+		case Group:
+			if (!extract_groups(file, dialog_progress_bar))
+			{
+				return &return_data;
+			}
+
+			// fallthrough so tamplate is also done, if groups are in the save file
+		case Template:
+			if (!extract_templates(file, dialog_progress_bar))
+			{
+				return &return_data;
+			}
+
+			break;
+
+		default:
+			break;
+	}
+
+	if (extract_save_location(file) &&
 		extract_script_location(file) &&
 		extract_auto_close(file) &&
 		extract_auto_put(file))
@@ -40,67 +58,175 @@ open_file_return_data OpenTas::Open(dialog_progress_bar_base* dialog_progress_ba
 		return_data.success = true;
 	}
 
-	return return_data;
+	return &return_data;
 }
 
 bool OpenTas::extract_total_steps(std::ifstream& file)
 {
 
-	if (!update_segment(file) || seglist[0] != total_steps_indicator)
+	if (!update_segment(file) || segments[0] != total_steps_indicator)
 	{
 		return false;
 	}
 
-	if (!update_segment(file) || !is_number(seglist[0]))
+	if (!update_segment(file) || !is_number(segments[0]))
 	{
 		return false;
 	}
 
-	total_lines = std::stoi(seglist[0]);
+	total_lines = std::stoi(segments[0]);
 
 	return true;
 }
 
 bool OpenTas::extract_goal(std::ifstream& file)
 {
-	if (!update_segment(file) || seglist[0] != goal_indicator)
+	if (!update_segment(file) || segments[0] != goal_indicator)
 	{
 		return false;
 	}
 
-	if (!update_segment(file) || seglist.size() != 1)
+	if (!update_segment(file) || segments.size() != 1)
 	{
 		return false;
 	}
 
-	return_data.goal = seglist[0];
+	return_data.goal = segments[0];
 
 	return true;
 }
 
-bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar)
+Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
-	if (!update_segment(file) || (seglist[0] != steps_indicator && seglist[0] != "Tasks:"))
+	if (!update_segment(file) || (segments[0] != steps_indicator && segments[0] != "Tasks:"))
 	{
-		return false;
+		return Invalid;
 	}
 
 	return_data.steps.reserve(total_lines);
 
+	buildingSnapshot.reserve(100000);
+	for (int i = 0; i < buildingSnapshot.capacity(); i++)
+	{
+		buildingSnapshot.emplace_back(invalidX);
+	}
+
+	int buildingsInSnapShot = 0;
+	int position = 0;
+
 	while (update_segment(file))
 	{
-		if (seglist.size() != step_segment_size && seglist.size() != step_segment_size_without_comment)
+		if (segments.size() != step_segment_size && segments.size() != step_segment_size_without_comment)
 		{
-			return seglist.size() == 1 && seglist[0] == save_groups_indicator;
+			if (segments[0] == save_templates_indicator)
+			{
+				return Template;
+			}
+
+			if (segments.size() == 1 && (segments[0] == save_groups_indicator))
+			{
+				return Group;
+			}
+
+			return Invalid;
 		}
 
-		std::string comment = "";
-		if (seglist.size() == step_segment_size)
+		string comment = "";
+		if (segments.size() == step_segment_size)
 		{
-			comment = seglist[9];
+			comment = segments[9];
 		}
 
-		return_data.steps.push_back(seglist[0] + ";" + seglist[1] + ";" + seglist[2] + ";" + seglist[3] + ";" + seglist[4] + ";" + seglist[5] + ";" + seglist[6] + ";" + seglist[7] + ";" + seglist[8] + ";" + comment + ";");
+		StepParameters step(invalidX, 0);
+
+		if (segments[1] != "")
+		{
+			step.X = stod(segments[1]);
+			step.OriginalX = stod(segments[1]);
+			step.Y = stod(segments[2]);
+			step.OriginalY = stod(segments[2]);
+		}
+
+		if (segments[7] != "")
+		{
+			step.Size = stoi(segments[7]);
+		}
+
+		if (segments[8] != "")
+		{
+			step.Buildings = stoi(segments[8]);
+		}
+
+		step.Step = Capitalize(segments[0]);
+		step.Amount = Capitalize(segments[3]);
+		step.Item = Capitalize(segments[4], true);
+		step.Orientation = Capitalize(segments[5]);
+		step.Direction = Capitalize(segments[6]);
+		step.Comment = comment;
+
+		if (step.Step == "Start")
+		{
+			continue; // Ignore start steps, given that they are obsolete.
+		}
+
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end())
+		{
+			return Invalid;
+		}
+
+		step.StepEnum = mappedtype->second;
+
+		switch (step.StepEnum)
+		{
+			case e_build:
+				step.BuildingIndex = BuildingNameToType[step.Item];
+				step.OrientationEnum = OrientationToEnum[step.Orientation];
+
+				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
+				break;
+
+			case e_mine:
+				ProcessMiningStep(buildingSnapshot, buildingsInSnapShot, step);
+				break;
+
+			case e_priority:
+				position = step.Orientation.find(",");
+				step.PriorityIn = step.Orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+
+				if (step.PriorityOut[0] == ' ')
+				{
+					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
+				}
+
+				step.Orientation = "";
+
+				// Only here to populate extra parameters in step. Actual validation will be done on script generation
+				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
+				break;
+
+			case e_recipe:
+			case e_filter:
+			case e_rotate:
+			case e_launch:
+			case e_drop:
+				// Only here to populate extra parameters in step. Actual validation will be done on script generation
+				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
+				break;
+
+			case e_limit:
+			case e_put:
+			case e_take:
+				step.FromInto = step.Orientation;
+				// Only here to populate extra parameters in step. Actual validation will be done on script generation
+				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
+				break;
+			default:
+				break;
+		}
+
+		return_data.steps.push_back(step);
 
 		lines_processed++;
 
@@ -111,20 +237,25 @@ bool OpenTas::extract_steps(std::ifstream& file, dialog_progress_bar_base* dialo
 		}
 	}
 
-	return false;
+	return Invalid;
 }
 
-bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar)
+bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
+	vector<StepParameters> steps = {};
+	string name = "";
+	int position = 0;
+
+	// Groups are obsolete and have been moved to template. This is here for backwards compatibility. 
 	while (update_segment(file))
 	{
-		if (seglist.size() != group_segment_size && seglist.size() != group_segment_size_without_comment)
+		if (segments.size() != group_segment_size && segments.size() != group_segment_size_without_comment)
 		{
-			if (seglist.size() == 1 && seglist[0] == save_templates_indicator)
+			if (segments.size() == 1 && segments[0] == save_templates_indicator)
 			{
-				if (group_name != "")
+				if (name != "")
 				{
-					return_data.group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+					return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
 				}
 
 				return true;
@@ -133,27 +264,96 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 			return false;
 		}
 
-		if (group_name == "")
+		if (name == "")
 		{
-			group_name = seglist[0];
-			group_list = {};
+			name = segments[0];
+			steps = {};
 
 		}
-		else if (group_name != seglist[0])
+		else if (name != segments[0])
 		{
-			return_data.group_map.insert(std::pair<std::string, std::vector<std::string>>(group_name, group_list));
+			return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
 
-			group_name = seglist[0];
-			group_list = {};
+			name = segments[0];
+			steps = {};
 		}
 
-		std::string comment = "";
-		if (seglist.size() != group_segment_size)
+		string comment = "";
+		if (segments.size() == group_segment_size)
 		{
-			comment = seglist[10];
+			comment = segments[10];
 		}
 
-		group_list.push_back(seglist[1] + ";" + seglist[2] + ";" + seglist[3] + ";" + seglist[4] + ";" + seglist[5] + ";" + seglist[6] + ";" + seglist[7] + ";" + seglist[8] + ";" + seglist[9] + ";" + comment + ";");
+		StepParameters step(invalidX, 0);
+
+		if (segments[2] != "")
+		{
+			step.X = stod(segments[2]);
+			step.OriginalX = stod(segments[2]);
+			step.Y = stod(segments[3]);
+			step.OriginalY = stod(segments[3]);
+		}
+
+		if (segments[8] != "")
+		{
+			step.Size = stoi(segments[8]);
+		}
+
+		if (segments[9] != "")
+		{
+			step.Buildings = stoi(segments[9]);
+		}
+
+		step.Step = Capitalize(segments[1]);
+		step.Amount = Capitalize(segments[4]);
+		step.Item = Capitalize(segments[5], true);
+		step.Orientation = Capitalize(segments[6]);
+		step.Direction = Capitalize(segments[7]);
+		step.Comment = comment;
+
+		if (step.Step == "Start")
+		{
+			continue; // Ignore start steps, given that they are obsolete.
+		}
+
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end())
+		{
+			return false;
+		}
+
+		step.StepEnum = mappedtype->second;
+
+		switch (step.StepEnum)
+		{
+			case e_build:
+				step.BuildingIndex = BuildingNameToType[step.Item];
+				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				break;
+
+			case e_priority:
+				position = step.Orientation.find(",");
+				step.PriorityIn = step.Orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+
+				if (step.PriorityOut[0] == ' ')
+				{
+					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
+				}
+
+				step.Orientation = "";
+				break;
+
+			case e_limit:
+			case e_put:
+			case e_take:
+				step.FromInto = step.Orientation;
+				break;
+			default:
+				break;
+		}
+
+		steps.push_back(step);
 
 		lines_processed++;
 
@@ -167,18 +367,26 @@ bool OpenTas::extract_groups(std::ifstream& file, dialog_progress_bar_base* dial
 	return false;
 }
 
-bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* dialog_progress_bar)
+bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
+	vector<StepParameters> steps = {};
+	string name = "";
+	int position = 0;
 
 	while (update_segment(file))
 	{
-		if (seglist.size() != template_segment_size && seglist.size() != template_segment_size_without_comment)
+		if (segments.size() != template_segment_size && segments.size() != template_segment_size_without_comment)
 		{
-			if (seglist.size() == 1 && seglist[0] == save_file_indicator)
+			if (segments.size() == 1 && segments[0] == save_file_indicator)
 			{
-				if (template_name != "")
+				if (name != "")
 				{
-					return_data.template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+					if (return_data.template_map.find(name) != return_data.template_map.end())
+					{
+						name += "_Template";
+					}
+
+					return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
 				}
 
 				return true;
@@ -187,26 +395,100 @@ bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* d
 			return false;
 		}
 
-		if (template_name == "")
+		if (name == "")
 		{
-			template_name = seglist[0];
-			template_list = {};
+			name = segments[0];
+			steps = {};
 		}
-		else if (template_name != seglist[0])
+		else if (name != segments[0])
 		{
-			return_data.template_map.insert(std::pair<std::string, std::vector<std::string>>(template_name, template_list));
+			if (return_data.template_map.find(name) != return_data.template_map.end())
+			{
+				name += "_Template";
+			}
 
-			template_name = seglist[0];
-			template_list = {};
+			return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
+
+			name = segments[0];
+			steps = {};
 		}
 
-		std::string comment = "";
-		if (seglist.size() != group_segment_size)
+		string comment = "";
+		if (segments.size() == template_segment_size)
 		{
-			comment = seglist[10];
+			comment = segments[10];
 		}
 
-		template_list.push_back(seglist[1] + ";" + seglist[2] + ";" + seglist[3] + ";" + seglist[4] + ";" + seglist[5] + ";" + seglist[6] + ";" + seglist[7] + ";" + seglist[8] + ";" + seglist[9] + ";" + comment + ";");
+		StepParameters step(invalidX, 0);
+
+		if (segments[2] != "")
+		{
+			step.X = stod(segments[2]);
+			step.OriginalX = stod(segments[2]);
+			step.Y = stod(segments[3]);
+			step.OriginalY = stod(segments[3]);
+		}
+
+		if (segments[8] != "")
+		{
+			step.Size = stoi(segments[8]);
+		}
+
+		if (segments[9] != "")
+		{
+			step.Buildings = stoi(segments[9]);
+		}
+
+		step.Step = Capitalize(segments[1]);
+		step.Amount = Capitalize(segments[4]);
+		step.Item = Capitalize(segments[5], true);
+		step.Orientation = Capitalize(segments[6]);
+		step.Direction = Capitalize(segments[7]);
+		step.Comment = comment;
+
+		if (step.Step == "Start")
+		{
+			continue; // Ignore start steps, given that they are obsolete.
+		}
+
+		auto mappedtype = MapStepNameToStepType.find(step.Step);
+		if (mappedtype == MapStepNameToStepType.end())
+		{
+			return false;
+		}
+
+		step.StepEnum = mappedtype->second;
+
+		switch (step.StepEnum)
+		{
+			case e_build:
+				step.BuildingIndex = BuildingNameToType[step.Item];
+				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				break;
+
+			case e_priority:
+				position = step.Orientation.find(",");
+				step.PriorityIn = step.Orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+
+				if (step.PriorityOut[0] == ' ')
+				{
+					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
+				}
+
+				step.Orientation = "";
+				break;
+
+			case e_limit:
+			case e_put:
+			case e_take:
+				step.FromInto = step.Orientation;
+				break;
+			default:
+				break;
+		}
+
+		steps.push_back(step);
 
 		lines_processed++;
 
@@ -222,121 +504,122 @@ bool OpenTas::extract_templates(std::ifstream& file, dialog_progress_bar_base* d
 
 bool OpenTas::extract_save_location(std::ifstream& file)
 {
-	if (!update_segment(file) || seglist.size() != 1)
+	if (!update_segment(file) || segments.size() != 1)
 	{
 		return false;
 	}
 
-	return_data.save_file_location = seglist[0];
+	return_data.save_file_location = segments[0];
 	return true;
 }
 
 bool OpenTas::extract_script_location(std::ifstream& file)
 {
-	if (!update_segment(file) || seglist[0] != code_file_indicator && seglist[0] != "Task folder location:")
+	if (!update_segment(file) || segments[0] != code_file_indicator && segments[0] != "Task folder location:")
 	{
 		return false;
 	}
 
-	if (!update_segment(file) || seglist.size() != 1)
+	if (!update_segment(file) || segments.size() != 1)
 	{
 		return false;
 	}
 
-	return_data.generate_code_folder_location = seglist[0];
+	return_data.generate_code_folder_location = segments[0];
 	return true;
 }
 
 bool OpenTas::extract_auto_close(std::ifstream& file)
 {
-	if (!update_segment(file) || seglist[0] != auto_close_indicator)
+	if (!update_segment(file) || segments[0] != auto_close_indicator)
 	{
 		return false;
 	}
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_generate_script_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_close_generate_script_text)
 	{
 		return false;
 	}
 
-	return_data.auto_close_generate_script = seglist[1] == "true";
+	return_data.auto_close_generate_script = segments[1] == "true";
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_open_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_close_open_text)
 	{
 		return false;
 	}
 
-	return_data.auto_close_open = seglist[1] == "true";
+	return_data.auto_close_open = segments[1] == "true";
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_save_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_close_save_text)
 	{
 		return false;
 	}
 
-	return_data.auto_close_save = seglist[1] == "true";
+	return_data.auto_close_save = segments[1] == "true";
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_close_save_as_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_close_save_as_text)
 	{
 		return false;
 	}
 
-	return_data.auto_close_save_as = seglist[1] == "true";
+	return_data.auto_close_save_as = segments[1] == "true";
 
 	return true;
 }
 
 bool OpenTas::extract_auto_put(std::ifstream& file)
 {
-	if (!update_segment(file) || seglist[0] != auto_put_indicator)
+	if (!update_segment(file) || segments[0] != auto_put_indicator)
 	{
 		return false;
 	}
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_put_furnace_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_put_furnace_text)
 	{
 		return false;
 	}
 
-	return_data.auto_put_furnace = seglist[1] == "true";
+	return_data.auto_put_furnace = segments[1] == "true";
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_put_burner_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_put_burner_text)
 	{
 		return false;
 	}
 
-	return_data.auto_put_burner = seglist[1] == "true";
+	return_data.auto_put_burner = segments[1] == "true";
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_put_lab_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_put_lab_text)
 	{
 		return false;
 	}
 
-	return_data.auto_put_lab = seglist[1] == "true";
+	return_data.auto_put_lab = segments[1] == "true";
 
-	if (!update_segment(file) || seglist.size() != 2 || seglist[0] != auto_put_recipe_text)
+	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_put_recipe_text)
 	{
 		return false;
 	}
 
-	return_data.auto_put_recipe = seglist[1] == "true";
+	return_data.auto_put_recipe = segments[1] == "true";
 
 	return true;
 }
 
 bool OpenTas::update_segment(std::ifstream& file)
 {
-	std::string line;
+	string line;
+	string segment;
 	std::stringstream data_line;
 
 	if (std::getline(file, line))
 	{
 		data_line.str(line);
 
-		seglist = {};
+		segments = {};
 
 		while (std::getline(data_line, segment, ';'))
 		{
-			seglist.push_back(segment);
+			segments.push_back(segment);
 		}
 
 		return true;

@@ -10,18 +10,25 @@
 #include <filesystem>
 #include <map>
 
-#include "ScriptProgressBar.h"
+#include "BuildingNameToIndex.h"
+#include "DialogProgressBar.h"
+#include "Functions.h"
+#include "StepParameters.h"
+#include "StepNameToEnum.h"
+#include "utils.h"
+
+using std::string;
+using std::vector;
+using std::to_string;
 
 class GenerateScript
 {
 public:
 	GenerateScript();
-	void generate(wxWindow* parent, wxGrid* grid, dialog_progress_bar_base* dialog_progress_bar, std::vector<std::string> steps, std::string& folder_location, bool auto_close, bool only_generate_script, std::string goal_chosen);
+	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal);
 
 private:
-	std::string software_version;
-
-	std::string step_list;
+	string step_list;
 	float player_x_cord;
 	float player_y_cord;
 	float target_x_cord;
@@ -29,152 +36,105 @@ private:
 	float x_building_size;
 	float y_building_size;
 
-	std::string current_step;
+	string current_step;
 	int total_steps;
-	std::string segment;
-	std::vector<std::string> step_segments;
 
-	std::string task;
-	std::string x_cord;
-	std::string y_cord;
-	std::string amount;
-	std::string item;
-	std::string build_orientation;
-	std::string direction_to_build;
-	std::string building_size;
-	std::string amount_of_buildings;
-	std::string comment;
-	std::string from_into;
-	std::string priority_in;
-	std::string priority_out;
+	string x_cord;
+	string y_cord;
+	string amount;
+	string item;
+	string build_orientation;
+	string direction_to_build;
+	string building_size;
+	string amount_of_buildings;
+	string comment;
+	string from_into;
+	string priority_in;
+	string priority_out;
+	string building;
 
-	std::string building;
-	std::string building_x_cord;
-	std::string building_y_cord;
-	std::string building_units;
-	std::string building_build_orientation;
-	std::string building_direction_to_build;
-	std::string building_building_size;
-	std::string building_amount_of_buildings;
-	std::string building_priority_in;
-	std::string building_priority_out;
-	std::string building_comment;
-
-	std::string last_walking_comment;
-
-	enum step_name
-	{
-		step_start = 1,
-		step_stop,
-		step_build,
-		step_craft,
-		step_game_speed,
-		step_pause,
-		step_save,
-		step_recipe,
-		step_limit,
-		step_filter,
-		step_rotate,
-		step_priority,
-		step_put,
-		step_take,
-		step_mine,
-		step_launch,
-		step_walk,
-		step_tech,
-		step_drop,
-		step_pick_up,
-		step_idle
-	};
-
-	std::map<std::string, step_name> map_step_names = {
-		{"Start", step_start},
-		{"Stop", step_stop},
-		{"Build", step_build},
-		{"Craft", step_craft},
-		{"Game Speed", step_game_speed},
-		{"Pause", step_pause},
-		{"Save", step_save},
-		{"Recipe", step_recipe},
-		{"Limit", step_limit},
-		{"Filter", step_filter},
-		{"Rotate", step_rotate},
-		{"Priority", step_priority},
-		{"Put", step_put},
-		{"Take", step_take},
-		{"Mine", step_mine},
-		{"Launch", step_launch},
-		{"Walk", step_walk},
-		{"Tech", step_tech},
-		{"Drop", step_drop},
-		{"Pick up", step_pick_up},
-		{"Idle", step_idle}
-	};
+	string last_walking_comment;
 
 	void reset();
-	void clear_tasks();
-	void extract_parameters(const std::string& task_reference);
-	std::string extract_define(std::string from_into, std::string building);
-	void split_task(const std::string& task_reference);
-	bool find_building(int& row, wxGrid* grid, std::vector<std::string>& steps);
+	void ClearSteps();
+	string EndSteps();
+	void UnexpectedError(DialogProgressBar* dialog_progress_bar);
 
-	std::string convert_string(std::string input);
+	void AddInfoFile(string& folder_location);
 
-	std::string end_tasks();
-	std::string signature(std::string task, std::string action);
+	void SetBuildingAndOrientation(StepParameters* stepParameters);
+	void TransferParameters(StepParameters& stepParameters);
 
-	std::string check_item_name(std::string item);
-	void check_mining_distance(std::string task, std::string action, std::string x_cord, std::string y_cord);
-	void check_interact_distance(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string building_name, std::string orientation);
+	const map<string, string> map_translation{
+		{"Passive provider chest", "logistic-chest-passive-provider"},
+		{"Active provider chest", "logistic-chest-active-provider"},
+		{"Storage chest", "logistic-chest-storage"},
+		{"Buffer chest", "logistic-chest-buffer"},
+		{"Requester chest", "logistic-chest-requester"},
+		{"Wall", "stone-wall"},
+		{"Discharge defense", "discharge-defense-equipment"},
+		{"Exoskeleton", "exoskeleton-equipment"},
+		{"Personal roboport", "personal-roboport-equipment"},
+		{"Personal roboport MK2", "personal-roboport-mk2-equipment"},
+		{"Night vision", "night-vision-equipment"},
+		{"Personal battery", "battery-equipment"},
+		{"Personal battery MK2", "battery-mk2-equipment"},
+		{"Portable solar panel", "solar-panel-equipment"},
+		{"Personal laser defence", "personal-laser-defence-equipment"},
+		{"Energy shield", "energy-shield-equipment"},
+		{"Energy shield MK2", "energy-shield-mk2-equipment"},
+		{"Portable fusion reactor", "fusion-reactor-equipment"},
+		{"Efficiency module", "effectivity-module"},
+		{"Efficiency module 2", "effectivity-module-2"},
+		{"Efficiency module 3", "effectivity-module-3"}
+	};
 
+	string extract_define(string from_into, string building);
+	string convert_string(string input);
+	string check_item_name(string item);
+
+	void check_mining_distance(string step, string action, string x_cord, string y_cord);
+	void check_interact_distance(string step, string action, string x_cord, string y_cord, string building_name, string OrientationEnum);
 	double find_min_distance(float& new_x_cord, float& new_y_cord);
-	std::vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, const float& max_distance);
+	vector<float> find_walk_location(float& min_x_edge, float& max_x_edge, float& min_y_edge, float& max_y_edge, const float& buffer, const float& max_distance);
 
-	void walk(std::string step, std::string action, std::string x_cord, std::string y_cord, std::string comment);
+	string signature(string step, string action);
+	string Comment(string comment);
+	string Step(string step, string action, string details, string comment);
 
-	void mining(std::string task, std::string x_cord, std::string y_cord, std::string duration, std::string building_name, std::string orientation, bool is_building);
+	void walk(string step, string action, string x_cord, string y_cord, string comment);
+	void mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment);
+	void craft(string step, string amount, string item, string comment);
+	void tech(string step, string tech_to_research, string comment);
+	void speed(string step, string speed, string comment);
+	void pause(string step, string comment);
+	void launch(string step, string x_cord, string y_cord, string comment);
+	void save(string step, string nameOfSaveGame);
+	void idle(string step, string amount, string comment);
+	void rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment);
+	void pick(string step, string amount, string comment);
 
-	void craft(std::string task, std::string amount, std::string item);
+	void build(string step, string action, string x_cord, string y_cord, string item, string OrientationEnum, string comment = "");
+	void row_build(string step, string x_cord, string y_cord, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment);
 
-	void tech(std::string task, std::string tech_to_research);
+	void take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string OrientationEnum, string comment = "");
+	void row_take(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void speed(std::string task, std::string speed);
+	void put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string OrientationEnum, string comment = "");
+	void row_put(string step, string x_cord, string y_cord, string amount, string item, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void pause(std::string task);
+	void recipe(string step, string action, string x_cord, string y_cord, string item, string building, string OrientationEnum, string comment = "");
+	void row_recipe(string step, string x_cord, string y_cord, string item, string direction, string building_size, string number_of_buildings, string building, string OrientationEnum, string comment);
 
-	void stop(std::string task, std::string speed);
+	void limit(string step, string action, string x_cord, string y_cord, string amount, string from, string building, string OrientationEnum, string comment = "");
+	void row_limit(string step, string x_cord, string y_cord, string amount, string from, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void launch(std::string task, std::string x_cord, std::string y_cord);
+	void priority(string step, string action, string x_cord, string y_cord, string priority_in, string priority_out, string building, string OrientationEnum, string comment = "");
+	void row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void save(std::string task, std::string nameOfSaveGame);
+	void filter(string step, string action, string x_cord, string y_cord, string item, string amount, string type, string building, string OrientationEnum, string comment = "");
+	void row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction_to_build, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
-	void idle(std::string task, std::string amount);
-
-	void rotate(std::string task, std::string x_cord, std::string y_cord, std::string times, std::string item, std::string orientation);
-
-	void pick(std::string step, std::string amount);
-
-	void build(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string orientation);
-	void row_build(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string orientation, std::string direction, std::string number_of_buildings, std::string building_size);
-
-	void take(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string building, std::string orientation);
-	void row_take(std::string task, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
-
-	void put(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string into, std::string building, std::string orientation);
-	void row_put(std::string task, std::string x_cord, std::string y_cord, std::string amount, std::string item, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
-
-	void recipe(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building, std::string orientation);
-	void row_recipe(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string building_size, std::string number_of_buildings, std::string building, std::string orientation);
-
-	void limit(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string building, std::string orientation);
-	void row_limit(std::string task, std::string x_cord, std::string y_cord, std::string amount, std::string from, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
-
-	void priority(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string building, std::string orientation);
-	void row_priority(std::string task, std::string x_cord, std::string y_cord, std::string priority_in, std::string priority_out, std::string direction, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
-
-	void filter(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string type, std::string building, std::string orientation);
-	void row_filter(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string amount, std::string type, std::string direction_to_build, std::string number_of_buildings, std::string building_size, std::string building, std::string orientation);
-
-	void drop(std::string task, std::string action, std::string x_cord, std::string y_cord, std::string item, std::string building);
-	void row_drop(std::string task, std::string x_cord, std::string y_cord, std::string item, std::string direction, std::string number_of_buildings, std::string building, std::string building_size);
+	void drop(string step, string action, string x_cord, string y_cord, string item, string building, string comment = "");
+	void row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building, string building_size, string comment);
 };
