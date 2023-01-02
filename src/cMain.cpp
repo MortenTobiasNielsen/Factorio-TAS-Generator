@@ -136,6 +136,12 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	//set shortcuts from settings file
 	ShortcutChanger::UpdateShortcutsFromFile(menu_shortcuts);
+	std::string tas_file_string = OpenTas::LoadLastTas(this);
+	if (tas_file_string != "")
+	{
+		std::ifstream tas_file(tas_file_string);
+		Open(&tas_file);
+	}
 }
 
 void cMain::StepSeachOnText(wxCommandEvent& event)
@@ -1139,6 +1145,114 @@ void cMain::OnMenuNew(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::Open(std::ifstream * file)
+{
+	if (!dialog_progress_bar)
+	{
+		dialog_progress_bar = new DialogProgressBar(this, wxID_ANY, "Processing request");
+	}
+
+	OpenTas open;
+	open_file_return_data* result = open.Open(dialog_progress_bar, *file);
+
+	if (!result->success)
+	{
+		malformed_saved_file_message();
+		return;
+	}
+
+	StepGridData = result->steps;
+	template_map = result->template_map;
+	save_file_location = result->save_file_location;
+	generate_code_folder_location = result->generate_code_folder_location;
+
+	if (result->goal == goal_steelaxe_text)
+	{
+		menu_goals->GetMenuItems()[0]->Check();
+	}
+	else if (result->goal == goal_GOTLAP_text)
+	{
+		menu_goals->GetMenuItems()[1]->Check();
+	}
+	else if (result->goal == goal_any_percent_text)
+	{
+		menu_goals->GetMenuItems()[2]->Check();
+	}
+	else if (result->goal == goal_debug_text)
+	{
+		menu_goals->GetMenuItems()[3]->Check();
+	}
+	else
+	{
+		malformed_saved_file_message();
+		return;
+	}
+
+	menu_auto_close->GetMenuItems()[0]->Check(result->auto_close_generate_script);
+	auto_close_generate_script = result->auto_close_generate_script;
+
+	menu_auto_close->GetMenuItems()[1]->Check(result->auto_close_open);
+	auto_close_open = result->auto_close_open;
+
+	menu_auto_close->GetMenuItems()[2]->Check(result->auto_close_save);
+	auto_close_save = result->auto_close_save;
+
+	menu_auto_close->GetMenuItems()[3]->Check(result->auto_close_save_as);
+	auto_close_save_as = result->auto_close_save_as;
+
+	check_furnace->SetValue(result->auto_put_furnace);
+	check_burner->SetValue(result->auto_put_burner);
+	check_lab->SetValue(result->auto_put_lab);
+	check_recipe->SetValue(result->auto_put_recipe);
+
+	PopulateStepGrid();
+
+	dialog_progress_bar->set_progress(100.0f - 35);
+	wxYield();
+
+	dialog_progress_bar->set_progress(100.0f - 25);
+	wxYield();
+
+	if (result->template_map.size())
+	{
+		std::vector<std::string> keys = get_keys(result->template_map);
+
+		for (int i = 0; i < keys.size(); i++)
+		{
+			template_choices.Add(keys[i]);
+		}
+
+		cmb_choose_template->Clear();
+
+		if (template_choices.size())
+		{
+			cmb_choose_template->Append(template_choices);
+			cmb_choose_template->SetValue(*template_choices.begin());
+			UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
+		}
+	}
+
+	file->close();
+
+	dialog_progress_bar->set_progress(100.0f - 20);
+	wxYield();
+
+	std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
+
+	SetLabel(window_title + " - " + file_name);
+
+	dialog_progress_bar->set_progress(100);
+	if (auto_close_open)
+	{
+		dialog_progress_bar->Close();
+	}
+	else
+	{
+		dialog_progress_bar->set_button_enable(true);
+	}
+
+}
+
 void cMain::OnMenuOpen(wxCommandEvent& event)
 {
 	wxFileDialog dlg(this, "Open saved file", "", "", ".txt files (*.txt) | *.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -1168,110 +1282,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 				return;
 			}
 		}
-
-		if (!dialog_progress_bar)
-		{
-			dialog_progress_bar = new DialogProgressBar(this, wxID_ANY, "Processing request");
-		}
-
-		OpenTas open;
-		open_file_return_data* result = open.Open(dialog_progress_bar, file);
-
-		if (!result->success)
-		{
-			malformed_saved_file_message();
-			return;
-		}
-
-		StepGridData = result->steps;
-		template_map = result->template_map;
-		save_file_location = result->save_file_location;
-		generate_code_folder_location = result->generate_code_folder_location;
-
-		if (result->goal == goal_steelaxe_text)
-		{
-			menu_goals->GetMenuItems()[0]->Check();
-		}
-		else if (result->goal == goal_GOTLAP_text)
-		{
-			menu_goals->GetMenuItems()[1]->Check();
-		}
-		else if (result->goal == goal_any_percent_text)
-		{
-			menu_goals->GetMenuItems()[2]->Check();
-		}
-		else if (result->goal == goal_debug_text)
-		{
-			menu_goals->GetMenuItems()[3]->Check();
-		}
-		else
-		{
-			malformed_saved_file_message();
-			return;
-		}
-
-		menu_auto_close->GetMenuItems()[0]->Check(result->auto_close_generate_script);
-		auto_close_generate_script = result->auto_close_generate_script;
-
-		menu_auto_close->GetMenuItems()[1]->Check(result->auto_close_open);
-		auto_close_open = result->auto_close_open;
-
-		menu_auto_close->GetMenuItems()[2]->Check(result->auto_close_save);
-		auto_close_save = result->auto_close_save;
-
-		menu_auto_close->GetMenuItems()[3]->Check(result->auto_close_save_as);
-		auto_close_save_as = result->auto_close_save_as;
-
-		check_furnace->SetValue(result->auto_put_furnace);
-		check_burner->SetValue(result->auto_put_burner);
-		check_lab->SetValue(result->auto_put_lab);
-		check_recipe->SetValue(result->auto_put_recipe);
-
-		PopulateStepGrid();
-
-		dialog_progress_bar->set_progress(100.0f - 35);
-		wxYield();
-		
-		dialog_progress_bar->set_progress(100.0f - 25);
-		wxYield();
-
-		if (result->template_map.size())
-		{
-			std::vector<std::string> keys = get_keys(result->template_map);
-
-			for (int i = 0; i < keys.size(); i++)
-			{
-				template_choices.Add(keys[i]);
-			}
-
-			cmb_choose_template->Clear();
-
-			if (template_choices.size())
-			{
-				cmb_choose_template->Append(template_choices);
-				cmb_choose_template->SetValue(*template_choices.begin());
-				OnTemplateChosen(event);
-			}
-		}
-
-		file.close();
-
-		dialog_progress_bar->set_progress(100.0f - 20);
-		wxYield();
-
-		std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
-
-		SetLabel(window_title + " - " + file_name);
-
-		dialog_progress_bar->set_progress(100);
-		if (auto_close_open)
-		{
-			dialog_progress_bar->Close();
-		}
-		else
-		{
-			dialog_progress_bar->set_button_enable(true);
-		}
+		Open(&file);
 	}
 
 	event.Skip();
