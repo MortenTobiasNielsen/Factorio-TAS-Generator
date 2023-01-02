@@ -215,14 +215,14 @@ local function put()
 
 	if removalable_items == 0 or insertable_items == 0 then
 		if removalable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % is not available in your inventory", task[1], task[2], step, item))
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s is not available in your inventory", task[1], task[2], step, item))
 		end
 		if insertable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % can't be put into target inventory", task[1], task[2], step, item))
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can't be put into target inventory", task[1], task[2], step, item))
 		end
 		return false
-	elseif amount < removalable_items or amount < insertable_items then
-		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % can be transferred", task[1], task[2], step, item))
+	elseif amount > removalable_items or amount > insertable_items then
+		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % scan be transferred", task[1], task[2], step, item))
 		return false
 	end
 
@@ -254,27 +254,27 @@ local function take()
 	end
 
 	local removalable_items = target_inventory.get_item_count(item)
-	local insertable_items = player.get_insertable_count(item)
+	local insertable_items = player.get_main_inventory().get_insertable_count(item)
 	if amount < 1 then
 		amount = math.min(removalable_items, insertable_items)
 	end
 
 	if removalable_items == 0 or insertable_items == 0 then
 		if removalable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % is not available from the inventory", task[1], task[2], step, item))
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s is not available from the inventory", task[1], task[2], step, item))
 		end
 		if insertable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % can't be put into your inventory", task[1], task[2], step, item))
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can't be put into your inventory", task[1], task[2], step, item))
 		end
 		return false
-	elseif amount < removalable_items or amount < insertable_items then
-		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % can be transferred", task[1], task[2], step, item))
+	elseif amount > removalable_items or amount > insertable_items then
+		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough %s can be transferred", task[1], task[2], step, item))
 		return false
 	end
 
 	amount = player.insert{
 		name=item,
-		count=target_inventory.remove_item{name=item, count=amount}
+		count=target_inventory.remove{name=item, count=amount}
 	}
 
 	local text = string.format("+%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"+2 Iron plate (5)"
