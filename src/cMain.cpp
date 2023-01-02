@@ -1353,6 +1353,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 	GenerateScript generate_script;
 	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
 
+	AutoSave();
+
 	event.Skip();
 }
 
@@ -1610,23 +1612,8 @@ void cMain::malformed_saved_file_message()
 	dialog_progress_bar->set_button_enable(true);
 }
 
-bool cMain::SaveFile(bool save_as)
+bool cMain::Save(string filename, bool save_as)
 {
-
-	if (save_file_location == "" || save_as)
-	{
-		wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-		if (dlg.ShowModal() == wxID_OK)
-		{
-			save_file_location = dlg.GetPath().ToStdString();
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 	std::vector<bool> auto_list{
 		menu_auto_close->GetMenuItems()[0]->IsChecked(),
 		menu_auto_close->GetMenuItems()[1]->IsChecked(),
@@ -1659,22 +1646,55 @@ bool cMain::SaveFile(bool save_as)
 	}
 
 	SaveTas save;
-	save.Save(
+	return save.Save(
 		this,
 		dialog_progress_bar,
 		save_as,
 		auto_list,
 		StepGridData,
 		template_map,
-		save_file_location,
+		filename,
 		generate_code_folder_location,
 		goal);
+}
+
+bool cMain::AutoSave()
+{
+	using std::to_string;
+	if (save_file_location == "" || !save_file_location.ends_with(".txt"))
+		return false; //don't autosave if location is not set or it doesn't point to txt file
+	static int autosave_count = 0;
+	if (++autosave_count > 10) 
+		autosave_count = 1; //make files from 1 to 10
+	string filename = save_file_location.substr(0, save_file_location.size() - 4) + "_temp_" + to_string(autosave_count) + ".txt";
+
+	return Save(filename, false);
+}
+
+bool cMain::SaveFile(bool save_as)
+{
+
+	if (save_file_location == "" || save_as)
+	{
+		wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+		if (dlg.ShowModal() == wxID_OK)
+		{
+			save_file_location = dlg.GetPath().ToStdString();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool save = Save(save_file_location, save_as);
 
 	std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
 
 	SetLabel(window_title + " - " + file_name);
 
-	return true;
+	return save;
 }
 
 StepParameters cMain::ExtractStepParameters()

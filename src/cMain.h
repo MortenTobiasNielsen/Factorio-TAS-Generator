@@ -223,6 +223,8 @@ private:
 
 	bool CheckTakePut(std::string& item);
 
+	bool Save(string filename, bool save_as);
+	bool AutoSave();
 	bool SaveFile(bool save_as);
 
 	string ExtractStep();
