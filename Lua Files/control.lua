@@ -216,10 +216,10 @@ local function put()
 	if removalable_items == 0 or insertable_items == 0 then
 		if removalable_items == 0 then
 			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % is not available in your inventory", task[1], task[2], step, item))
-	end
+		end
 		if insertable_items == 0 then
 			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % can't be put into target inventory", task[1], task[2], step, item))
-	end
+		end
 		return false
 	elseif amount < removalable_items or amount < insertable_items then
 		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % can be transferred", task[1], task[2], step, item))
@@ -262,10 +262,10 @@ local function take()
 	if removalable_items == 0 or insertable_items == 0 then
 		if removalable_items == 0 then
 			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % is not available from the inventory", task[1], task[2], step, item))
-	end
+		end
 		if insertable_items == 0 then
 			warning(string.format("Step: %s, Action: %s, Step: %d - Put: % can't be put into your inventory", task[1], task[2], step, item))
-	end
+		end
 		return false
 	elseif amount < removalable_items or amount < insertable_items then
 		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % can be transferred", task[1], task[2], step, item))
@@ -312,7 +312,7 @@ local function craft()
 
 		return true
     else
-        if(step > step_reached) then 
+        if(step > step_reached) then
             warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
             step_reached = step
 		end
@@ -879,8 +879,7 @@ end
 
 -- Drop items on the ground (like pressing the 'z' key)
 local function drop()
-
-	if player.can_place_entity{name = drop_item, position = drop_position} then
+	if player.get_item_count(drop_item) > 0 and player.can_place_entity{name = drop_item, position = drop_position} then
 		player.surface.create_entity{name = "item-on-ground",
 								stack = {
 									name = drop_item,
@@ -890,6 +889,7 @@ local function drop()
 								force = "player",
 								spill = true
 								}
+		player.remove_item({name = drop_item})
 		return true
 	end
 
