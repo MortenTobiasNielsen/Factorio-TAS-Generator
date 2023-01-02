@@ -56,6 +56,7 @@ protected:
 	void OnChooseLocation(wxCommandEvent& event);
 	void OnGenerateScript(wxCommandEvent& event);
 
+	void OnChangeShortcutMenuSelected(wxCommandEvent & event);
 	void OnWalkMenuSelected(wxCommandEvent& event);
 	void OnMineMenuSelected(wxCommandEvent& event);
 	void OnGameSpeedMenuSelected(wxCommandEvent& event);

@@ -342,3 +342,4 @@ healthchecksdb
 /noname.h
 /.vscode
 /CppProperties.json
+/src/generator-settings.json

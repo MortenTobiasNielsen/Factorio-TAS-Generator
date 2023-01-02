@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cMain.h"
+#include "ShortcutChanger.h"
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950))
 {
@@ -132,6 +133,9 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	// split steps into seperate panel
 	wxAuiNotebook* a = (wxAuiNotebook*)step_panel->GetParent();
 	a->Split(1, wxRIGHT);
+
+	//set shortcuts from settings file
+	ShortcutChanger::UpdateShortcutsFromFile(menu_shortcuts);
 }
 
 void cMain::StepSeachOnText(wxCommandEvent& event)
@@ -1354,6 +1358,26 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
 
 	AutoSave();
+
+	event.Skip();
+}
+
+void cMain::OnChangeShortcutMenuSelected(wxCommandEvent& event)
+{
+	// open state file
+	// create changer
+	// send file & menu items to changer
+
+	ShortcutChanger * sc = new ShortcutChanger(this, 
+		wxID_ANY,
+		wxT("Change shortcuts"), 
+		wxDefaultPosition,
+		wxDefaultSize, 
+		wxCAPTION | wxCLOSE_BOX | wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP | wxBORDER_DEFAULT);
+
+	sc->Build(menu_shortcuts);	
+
+	sc->Show();
 
 	event.Skip();
 }
