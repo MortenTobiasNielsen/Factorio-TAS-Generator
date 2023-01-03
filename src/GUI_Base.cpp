@@ -622,7 +622,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizerCancelCrafting;
 	bSizerCancelCrafting = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_cancel_crafting = new wxRadioButton( type_panel, wxID_ANY, wxT("Cancel Crafting"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_cancel_crafting = new wxRadioButton( type_panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_cancel_crafting->SetToolTip( wxT("Cancels items in the players crafting queue, \nreturning the ingredients to your hand") );
 
 	bSizerCancelCrafting->Add( rbtn_cancel_crafting, 0, wxALL, 5 );
