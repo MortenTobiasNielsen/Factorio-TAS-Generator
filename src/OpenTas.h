@@ -71,7 +71,12 @@ public:
 	{
 		return (std::filesystem::current_path() / filename).string();
 	}
-	static inline std::string LoadLastTas(wxWindow * window)
+
+	/// <summary>
+	/// Opens the settings file and gets the path to last tas
+	/// </summary>
+	/// <returns>The path to the last tas file or an empty string</returns>
+	static inline std::string LoadLastTas()
 	{
 		using std::fstream;
 		fstream file(GetFile(), fstream::in);
@@ -82,9 +87,10 @@ public:
 			string path = data.value(__setting, "");
 			return path;
 		}
-		catch (...)
+		catch (...) // ignore all errors and return an empty string
 		{
-		} // ignore all errors
+			return "";
+		} 
 	}
 
 private:

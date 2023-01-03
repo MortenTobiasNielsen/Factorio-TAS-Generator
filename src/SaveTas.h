@@ -49,16 +49,28 @@ public:
 	{
 		return (std::filesystem::current_path() / filename).string();
 	}
+
+	/// <summary>
+	/// Saves the last tas file location in the settings file
+	/// </summary>
+	/// <param name="path">to the last tas location</param>
 	static inline void SaveLastTas(string path)
 	{
 		using std::fstream;
-		fstream file(GetFile(), fstream::in);
+		json data;
 		try
 		{
-			json data = json::parse(file);
+			fstream file(GetFile(), fstream::in);
+			data = json::parse(file);
 			file.close();
-			data[__setting] = path;
+		}
+		catch (...) // ignore all errors
+		{ }
 
+		data[__setting] = path;
+
+		try
+		{
 			std::ofstream o;
 			o.open(GetFile());
 			if (o.is_open())
@@ -68,9 +80,8 @@ public:
 				o.close();
 			}
 		}
-		catch (...)
-		{
-		} // ignore all errors
+		catch (...) // ignore all errors
+		{ } 
 	}
 
 private:
