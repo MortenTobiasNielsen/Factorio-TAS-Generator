@@ -222,7 +222,7 @@ local function put()
 		end
 		return false
 	elseif amount > removalable_items or amount > insertable_items then
-		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % scan be transferred", task[1], task[2], step, item))
+		warning(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % scan be transferred", task[1], task[2], step, item))
 		return false
 	end
 
@@ -268,7 +268,7 @@ local function take()
 		end
 		return false
 	elseif amount > removalable_items or amount > insertable_items then
-		debug(string.format("Step: %s, Action: %s, Step: %d - Put: not enough %s can be transferred", task[1], task[2], step, item))
+		warning(string.format("Step: %s, Action: %s, Step: %d - Put: not enough %s can be transferred", task[1], task[2], step, item))
 		return false
 	end
 
@@ -306,7 +306,7 @@ local function craft()
 		elseif count <= amount then
 			player.begin_crafting{count = count, recipe = item}
 		else
-			debug(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %d of %s", task[1], task[2], step, count, item:gsub("-", " "):gsub("^%l", string.upper)))
+			warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %d of %s", task[1], task[2], step, count, item:gsub("-", " "):gsub("^%l", string.upper)))
 			return false
 		end
 
