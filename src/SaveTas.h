@@ -57,22 +57,29 @@ public:
 	static inline void SaveLastTas(string path)
 	{
 		using std::fstream;
+		std::string setting_path = GetFile();
 		json data;
 		try
 		{
-			fstream file(GetFile(), fstream::in);
+			fstream file(setting_path, fstream::in);
 			data = json::parse(file);
 			file.close();
 		}
-		catch (...) // ignore all errors
-		{ }
+		catch (json::parse_error err) 
+		{
 
+		} // parser error
+		catch (...) 
+		{ 
+		
+		} // ignore all errors
+		
 		data[__setting] = path;
 
 		try
 		{
 			std::ofstream o;
-			o.open(GetFile());
+			o.open(setting_path);
 			if (o.is_open())
 			{
 				auto dump = data.dump(4);
@@ -80,8 +87,14 @@ public:
 				o.close();
 			}
 		}
-		catch (...) // ignore all errors
-		{ } 
+		catch (json::type_error err) 
+		{ 
+
+		} // type error
+		catch (...)
+		{ 
+		
+		} // ignore all errors
 	}
 
 private:
