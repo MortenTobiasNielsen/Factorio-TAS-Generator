@@ -197,7 +197,6 @@ end
 
 -- Place an item from the character's inventory into an entity's inventory
 -- Returns false on failure to prevent advancing step until within reach
--- It is possible to put 0 items if none are in the character's inventory
 local function put()
 
 	if not check_selection_reach() then
@@ -208,25 +207,28 @@ local function put()
 		return false;
 	end
 
-	if amount == -1 then 
-		amount = player.get_item_count(item)
-	else 
-		amount = math.min(player.get_item_count(item), amount)
+	local removalable_items = player.get_item_count(item)
+	local insertable_items = target_inventory.get_insertable_count(item)
+	if amount < 1 then
+		amount = math.min(removalable_items, insertable_items)
 	end
 
-    if amount == 0 then
-		warning(string.format("Step: %s, Action: %s, Step: %d - Put: Nothing to put", task[1], task[2], step))
-		return true
+	if removalable_items == 0 or insertable_items == 0 then
+		if removalable_items == 0 then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s is not available in your inventory", task[1], task[2], step, item))
+		end
+		if insertable_items == 0 then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can't be put into target inventory", task[1], task[2], step, item))
+		end
+		return false
+	elseif amount > removalable_items or amount > insertable_items then
+		return false
 	end
 
-	amount = target_inventory.insert{name=item, count=amount}
-
-	if amount == 0 then
-		warning(string.format("Step: %s, Action: %s, Step: %d - Put: Entity is already full", task[1], task[2], step))
-		return true
-	end
-
-	player.remove_item{name=item, count=amount}
+	amount = target_inventory.insert{
+		name=item,
+		count=player.remove_item{name=item, count=amount}
+	}
 
 	local text = string.format("-%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"-2 Iron plate (5)"
 	local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
@@ -240,7 +242,6 @@ end
 
 -- Place an item into the character's inventory from an entity's inventory
 -- Returns false on failure to prevent advancing step until within reach
--- It is possible to take 0 items if none are in the entity's inventory
 local function take()
 
 	if not check_selection_reach() then
@@ -251,25 +252,28 @@ local function take()
 		return false;
 	end
 
-	if amount == -1 then 
-		amount = target_inventory.get_item_count(item)
-	else
-		amount = math.min(target_inventory.get_item_count(item), amount)
+	local removalable_items = target_inventory.get_item_count(item)
+	local insertable_items = player.get_main_inventory().get_insertable_count(item)
+	if amount < 1 then
+		amount = math.min(removalable_items, insertable_items)
 	end
 
-	if amount == 0 then
-		warning(string.format("Step: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
-		return true
+	if removalable_items == 0 or insertable_items == 0 then
+		if removalable_items == 0 then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s is not available from the inventory", task[1], task[2], step, item))
+		end
+		if insertable_items == 0 then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can't be put into your inventory", task[1], task[2], step, item))
+		end
+		return false
+	elseif amount > removalable_items or amount > insertable_items then
+		return false
 	end
 
-	amount = player.insert{name=item, count=amount}
-
-	if amount == 0 then
-		warning(string.format("Step: %s, Action: %s, Step: %d - Take: Nothing to take", task[1], task[2], step))
-		return true
-	end
-
-	target_inventory.remove{name=item, count=amount}
+	amount = player.insert{
+		name=item,
+		count=target_inventory.remove{name=item, count=amount}
+	}
 
 	local text = string.format("+%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"+2 Iron plate (5)"
 	local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
@@ -292,18 +296,21 @@ local function craft()
 		return false;
 	end
 
-	amount = player.get_craftable_count(item);
+	amount = player.get_craftable_count(item)
 
 	if amount > 0 then
 		if count == -1 then
 			player.begin_crafting{count = amount, recipe = item}
+		elseif count <= amount then
+			player.begin_crafting{count = count, recipe = item}
 		else
-			player.begin_crafting{count = math.min(count, amount), recipe = item}
+			warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %d of %s", task[1], task[2], step, count, item:gsub("-", " "):gsub("^%l", string.upper)))
+			return false
 		end
 
 		return true
     else
-        if(step > step_reached) then 
+        if(step > step_reached) then
             warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
             step_reached = step
 		end
@@ -892,8 +899,7 @@ end
 
 -- Drop items on the ground (like pressing the 'z' key)
 local function drop()
-
-	if player.can_place_entity{name = drop_item, position = drop_position} then
+	if player.get_item_count(drop_item) > 0 and player.can_place_entity{name = drop_item, position = drop_position} then
 		player.surface.create_entity{name = "item-on-ground",
 								stack = {
 									name = drop_item,
@@ -903,6 +909,7 @@ local function drop()
 								force = "player",
 								spill = true
 								}
+		player.remove_item({name = drop_item})
 		return true
 	end
 
