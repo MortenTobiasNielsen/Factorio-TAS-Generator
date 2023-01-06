@@ -1511,18 +1511,22 @@ end)
 
 script.on_load(migrate_global)
 
-script.on_event(defines.events.on_console_chat, function(event)
-	if event.message then
-		if event.message == "release" then
-			run = false
-		end
+local function release()
+	run = false
+end
 
-		if event.message == "resume" then
-			run = true
-		end
+local function resume()
+	run = true
+end
 
-		if event.message == "skip" then
-			change_step(1)
-		end
+local function skip(data)
+	if data and data.parameter and tonumber( data.parameter ) then
+		change_step(tonumber(data.parameter))
+	else
+		change_step(1)
 	end
-end)
+end
+
+commands.add_command("release", nil, release)
+commands.add_command("resume", nil, resume)
+commands.add_command("skip", nil, skip)
