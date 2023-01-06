@@ -1825,6 +1825,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			break;
 
 		case e_craft:
+		case e_cancel_crafting:
 			gridEntry.Amount = stepParameters->Amount;
 			gridEntry.Item = stepParameters->Item;
 			break;
@@ -2012,6 +2013,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 		case e_stop:
 		case e_pick_up:
 		case e_idle:
+		case e_cancel_crafting:
 			return true;
 
 		case e_build:

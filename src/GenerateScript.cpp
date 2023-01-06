@@ -148,6 +148,10 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				craft(currentStep, amount == "All" ? "-1" : amount, item, comment);
 				break;
 
+			case e_cancel_crafting:
+				cancel_crafting(currentStep, amount == "All" ? "-1" : amount, item, comment);
+				break;
+
 			case e_tech:
 				tech(currentStep, item, comment);
 				break;
@@ -745,6 +749,14 @@ void GenerateScript::craft(string step, string amount, string item, string comme
 	item = check_item_name(item);
 
 	step_list += Step(step, "1", "\"craft\", " + amount + ", \"" + item + "\"", comment);
+	total_steps += 1;
+};
+
+void GenerateScript::cancel_crafting(string step, string amount, string item, string comment)
+{
+	item = check_item_name(item);
+
+	step_list += Step(step, "1", "\"cancel crafting\", " + amount + ", \"" + item + "\"", comment);
 	total_steps += 1;
 };
 

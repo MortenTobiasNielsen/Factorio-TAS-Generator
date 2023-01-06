@@ -1171,6 +1171,7 @@ static const struct
 	std::string idle = "Idle";
 	std::string launch = "Launch";
 	std::string save = "Save";
+	std::string cancel_crafting = "Cancel";
 
 } struct_steps_list;
 
