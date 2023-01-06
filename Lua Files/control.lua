@@ -222,7 +222,6 @@ local function put()
 		end
 		return false
 	elseif amount > removalable_items or amount > insertable_items then
-		warning(string.format("Step: %s, Action: %s, Step: %d - Put: not enough % scan be transferred", task[1], task[2], step, item))
 		return false
 	end
 
@@ -268,7 +267,6 @@ local function take()
 		end
 		return false
 	elseif amount > removalable_items or amount > insertable_items then
-		warning(string.format("Step: %s, Action: %s, Step: %d - Put: not enough %s can be transferred", task[1], task[2], step, item))
 		return false
 	end
 
