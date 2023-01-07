@@ -213,15 +213,27 @@ local function put()
 		amount = math.min(removalable_items, insertable_items)
 	end
 
-	if removalable_items == 0 or insertable_items == 0 then
-		if removalable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s is not available in your inventory", task[1], task[2], step, item))
+	if removalable_items == 0 then
+		if not walking.walking then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s is not available in your inventory", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 		end
-		if insertable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can't be put into target inventory", task[1], task[2], step, item))
+
+		return false;
+	end
+
+	if insertable_items == 0 then
+		if not walking.walking then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can't be put into target inventory", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 		end
-		return false
-	elseif amount > removalable_items or amount > insertable_items then
+
+		return false;
+	end
+
+	if amount > removalable_items or amount > insertable_items then
+		if not walking.walking then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Put: not enough %s can be transferred. Amount: %d Removalable: %d Insertable: %d", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper), amount, removalable_items, insertable_items))
+		end
+
 		return false
 	end
 
@@ -258,15 +270,27 @@ local function take()
 		amount = math.min(removalable_items, insertable_items)
 	end
 
-	if removalable_items == 0 or insertable_items == 0 then
-		if removalable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s is not available from the inventory", task[1], task[2], step, item))
+	if removalable_items == 0 then
+		if not walking.walking then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Take: %s is not available from the inventory", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 		end
-		if insertable_items == 0 then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can't be put into your inventory", task[1], task[2], step, item))
+
+		return false;
+	end
+
+	if insertable_items == 0 then
+		if not walking.walking then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Take: %s can't be put into your inventory", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
 		end
-		return false
-	elseif amount > removalable_items or amount > insertable_items then
+
+		return false;
+	end
+
+	if amount > removalable_items or amount > insertable_items then
+		if not walking.walking then
+			warning(string.format("Step: %s, Action: %s, Step: %d - Take: not enough %s can be transferred. Amount: %d Removalable: %d Insertable: %d", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper), amount, removalable_items, insertable_items))
+		end
+
 		return false
 	end
 
@@ -304,7 +328,10 @@ local function craft()
 		elseif count <= amount then
 			player.begin_crafting{count = count, recipe = item}
 		else
-			warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %d of %s", task[1], task[2], step, count, item:gsub("-", " "):gsub("^%l", string.upper)))
+			if not walking.walking then
+				warning(string.format("Step: %s, Action: %s, Step: %d - Craft: It is not possible to craft %s - Only possible to craft %d of %d", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper), amount, count))
+			end
+
 			return false
 		end
 
