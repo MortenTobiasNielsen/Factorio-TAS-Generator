@@ -159,16 +159,16 @@ int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepP
 
 void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters)
 {
-	string capitalized = Capitalize(stepParameters.Comment);
-	if (capitalized == "Split")
-	{
-		return;
-	}
-
 	for (int i = 0; i < buildingsInSnapShot; i++)
 	{
 		if (stepParameters == buildings[i])
 		{
+			string capitalized = Capitalize(stepParameters.Comment);
+			if (capitalized == "Split")
+			{
+				return;
+			}
+
 			buildings[i].X = -0.4523543; // Invalidate the building
 			return;
 		}
