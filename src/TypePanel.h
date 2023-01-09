@@ -13,7 +13,7 @@ public:
 		{
 			Take, Put, Game_Speed, Craft, Walk, Mine,
 			Build, Recipe, Tech, Limit, Idle, Filter, Pause,
-			Priority, Rotate, Pick_Up, Drop, Launch, Save, Stop
+			Priority, Rotate, Pick_Up, Drop, Launch, Save, Stop, Cancel_Crafting
 		};
 	};
 

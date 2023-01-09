@@ -65,6 +65,7 @@ protected:
 	void OnTakeMenuSelected(wxCommandEvent& event);
 	void OnPutMenuSelected(wxCommandEvent& event);
 	void OnCraftMenuSelected(wxCommandEvent& event);
+	void OnCancelCraftingMenuSelected(wxCommandEvent& event);
 	void OnRecipeMenuChosen(wxCommandEvent& event);
 	void OnRotateMenuSelected(wxCommandEvent& event);
 	void OnAddMenuSelected(wxCommandEvent& event);
@@ -104,6 +105,7 @@ protected:
 	void OnTechChosen(wxCommandEvent& event);
 	void OnLaunchChosen(wxCommandEvent& event);
 	void OnSaveChosen(wxCommandEvent& event);
+	void OnCancelCraftingChosen(wxCommandEvent& event);
 	void OnPriorityChosen(wxCommandEvent& event);
 	void OnLimitChosen(wxCommandEvent& event);
 	void OnIdleChosen(wxCommandEvent& event);
@@ -183,6 +185,7 @@ private:
 		vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};
 		vector<bool> pick = {false, false, true, false, false, false, false, false, false, false, false, false};
 		vector<bool> idle = {false, false, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> cancel_crafting = {false, false, true, true, false, false, false, false, false, false, false, false};
 	} parameter_choices;
 
 	vector<string> row_selections;
