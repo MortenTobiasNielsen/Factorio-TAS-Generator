@@ -11,10 +11,6 @@
 #include "DialogProgressBar.h"
 #include "StepParameters.h"
 #include "utils.h"
-#include <filesystem>
-
-#include "nlohmann/json.hpp"
-using json = nlohmann::json;
 
 using std::string;
 using std::vector;
@@ -34,44 +30,6 @@ public:
 		string folder_location_generate,
 		string goal
 	);
-
-	//entry string for settings json
-	static inline const std::string __setting = "last-tas";
-
-	//filename for settings json
-	static inline const std::string filename = "generator-settings.json";
-
-	/// <summary>
-	/// Gets the fully qualified named of settings json file
-	/// </summary>
-	/// <returns>The file name as a std::string</returns>
-	static inline const std::string GetFile()
-	{
-		return (std::filesystem::current_path() / filename).string();
-	}
-	static inline void SaveLastTas(string path)
-	{
-		using std::fstream;
-		fstream file(GetFile(), fstream::in);
-		try
-		{
-			json data = json::parse(file);
-			file.close();
-			data[__setting] = path;
-
-			std::ofstream o;
-			o.open(GetFile());
-			if (o.is_open())
-			{
-				auto dump = data.dump(4);
-				o << dump << std::endl;
-				o.close();
-			}
-		}
-		catch (...)
-		{
-		} // ignore all errors
-	}
 
 private:
 	inline const char* const bool_to_string(bool b);

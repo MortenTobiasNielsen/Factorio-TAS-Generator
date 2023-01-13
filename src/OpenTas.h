@@ -16,9 +16,6 @@
 #include "utils.h"
 #include "DialogProgressBar.h"
 
-#include "nlohmann/json.hpp"
-using json = nlohmann::json;
-
 using std::string;
 using std::vector;
 using std::map;
@@ -55,37 +52,6 @@ class OpenTas
 {
 public:
 	open_file_return_data* Open(DialogProgressBar* dialog_progress_bar, std::ifstream& file);
-
-
-	//entry string for settings json
-	static inline const std::string __setting = "last-tas";
-
-	//filename for settings json
-	static inline const std::string filename = "generator-settings.json";
-
-	/// <summary>
-	/// Gets the fully qualified named of settings json file
-	/// </summary>
-	/// <returns>The file name as a std::string</returns>
-	static inline const std::string GetFile()
-	{
-		return (std::filesystem::current_path() / filename).string();
-	}
-	static inline std::string LoadLastTas(wxWindow * window)
-	{
-		using std::fstream;
-		fstream file(GetFile(), fstream::in);
-		try
-		{
-			json data = json::parse(file);
-			file.close();
-			string path = data.value(__setting, "");
-			return path;
-		}
-		catch (...)
-		{
-		} // ignore all errors
-	}
 
 private:
 	open_file_return_data return_data;
