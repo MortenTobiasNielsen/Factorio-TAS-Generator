@@ -196,6 +196,7 @@
     <ClInclude Include="DialogProgressBar.h" />
     <ClInclude Include="GridEntry.h" />
     <ClInclude Include="StepParameters.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="TypePanel.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

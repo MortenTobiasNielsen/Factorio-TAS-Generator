@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SaveTas.h"
+#include "Settings.h"
 
 bool SaveTas::Save(
 	wxWindow* parent,
@@ -119,7 +120,7 @@ bool SaveTas::Save(
 		}
 	}
 
-	SaveLastTas(folder_location);
+	settings::SaveLastTas(folder_location);
 
 	return true;
 }

@@ -136,10 +136,10 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	//set shortcuts from settings file
 	ShortcutChanger::UpdateShortcutsFromFile(menu_shortcuts);
-	std::string tas_file_string = OpenTas::LoadLastTas();
-	if (tas_file_string != "")
+	settings::setting settings = settings::ReadSettingFile();
+	if (settings.last_tas != "")
 	{
-		std::ifstream tas_file(tas_file_string);
+		std::ifstream tas_file(settings.last_tas);
 		Open(&tas_file);
 	}
 }
