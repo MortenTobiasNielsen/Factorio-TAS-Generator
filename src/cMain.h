@@ -47,6 +47,7 @@ protected:
 
 	// File menu items
 	void OnMenuNew(wxCommandEvent& event);
+	void Open(std::ifstream *);
 	void OnMenuOpen(wxCommandEvent& event);
 	void OnMenuSave(wxCommandEvent& event);
 	void OnMenuSaveAs(wxCommandEvent& event);
@@ -56,6 +57,7 @@ protected:
 	void OnChooseLocation(wxCommandEvent& event);
 	void OnGenerateScript(wxCommandEvent& event);
 
+	void OnChangeShortcutMenuSelected(wxCommandEvent & event);
 	void OnWalkMenuSelected(wxCommandEvent& event);
 	void OnMineMenuSelected(wxCommandEvent& event);
 	void OnGameSpeedMenuSelected(wxCommandEvent& event);
@@ -63,6 +65,7 @@ protected:
 	void OnTakeMenuSelected(wxCommandEvent& event);
 	void OnPutMenuSelected(wxCommandEvent& event);
 	void OnCraftMenuSelected(wxCommandEvent& event);
+	void OnCancelCraftingMenuSelected(wxCommandEvent& event);
 	void OnRecipeMenuChosen(wxCommandEvent& event);
 	void OnRotateMenuSelected(wxCommandEvent& event);
 	void OnAddMenuSelected(wxCommandEvent& event);
@@ -102,6 +105,7 @@ protected:
 	void OnTechChosen(wxCommandEvent& event);
 	void OnLaunchChosen(wxCommandEvent& event);
 	void OnSaveChosen(wxCommandEvent& event);
+	void OnCancelCraftingChosen(wxCommandEvent& event);
 	void OnPriorityChosen(wxCommandEvent& event);
 	void OnLimitChosen(wxCommandEvent& event);
 	void OnIdleChosen(wxCommandEvent& event);
@@ -181,6 +185,7 @@ private:
 		vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};
 		vector<bool> pick = {false, false, true, false, false, false, false, false, false, false, false, false};
 		vector<bool> idle = {false, false, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> cancel_crafting = {false, false, true, true, false, false, false, false, false, false, false, false};
 	} parameter_choices;
 
 	vector<string> row_selections;
@@ -223,6 +228,8 @@ private:
 
 	bool CheckTakePut(std::string& item);
 
+	bool Save(string filename, bool save_as);
+	bool AutoSave();
 	bool SaveFile(bool save_as);
 
 	string ExtractStep();

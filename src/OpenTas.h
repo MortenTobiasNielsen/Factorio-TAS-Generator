@@ -8,6 +8,7 @@
 #include <map>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 #include "Functions.h"
 #include "StepParameters.h"

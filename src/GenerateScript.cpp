@@ -51,7 +51,7 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver << "\n\t\"author\": \"" << "DunRaider" << "\",";
 	saver << "\n\t\"factorio_version\": \"" << "1.1" << "\",";
 	saver << "\n\t\"contact\": \"" << "" << "\",";
-	saver << "\n\t\"description\": \"" << "This run has been made with the help of EZRaiderz TAS helper" << "\"";
+	saver << "\n\t\"description\": \"" << "This run has been made with the help of Factorio TAS Generator" << "\"";
 	saver << "\n}";
 
 	saver.close();
@@ -146,6 +146,10 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 			case e_craft:
 				craft(currentStep, amount == "All" ? "-1" : amount, item, comment);
+				break;
+
+			case e_cancel_crafting:
+				cancel_crafting(currentStep, amount == "All" ? "-1" : amount, item, comment);
 				break;
 
 			case e_tech:
@@ -745,6 +749,14 @@ void GenerateScript::craft(string step, string amount, string item, string comme
 	item = check_item_name(item);
 
 	step_list += Step(step, "1", "\"craft\", " + amount + ", \"" + item + "\"", comment);
+	total_steps += 1;
+};
+
+void GenerateScript::cancel_crafting(string step, string amount, string item, string comment)
+{
+	item = check_item_name(item);
+
+	step_list += Step(step, "1", "\"cancel crafting\", " + amount + ", \"" + item + "\"", comment);
 	total_steps += 1;
 };
 

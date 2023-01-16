@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SaveTas.h"
+#include "Settings.h"
 
 bool SaveTas::Save(
 	wxWindow* parent,
@@ -118,6 +119,8 @@ bool SaveTas::Save(
 			dialog_progress_bar->set_button_enable(true);
 		}
 	}
+
+	settings::SaveLastTas(folder_location);
 
 	return true;
 }

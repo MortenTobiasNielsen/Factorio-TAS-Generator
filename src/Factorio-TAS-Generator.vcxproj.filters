@@ -22,6 +22,7 @@
     <ClCompile Include="SearchUtil.cpp">
       <Filter>Structs</Filter>
     </ClCompile>
+    <ClCompile Include="ShortcutChanger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -54,6 +55,9 @@
       <Filter>Structs</Filter>
     </ClInclude>
     <ClInclude Include="SearchUtilities.h" />
+    <ClInclude Include="ShortcutChanger.h" />
+    <ClInclude Include="nlohmann\json.hpp" />
+    <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Factorio-TAS-Generator.rc" />

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cMain.h"
+#include "ShortcutChanger.h"
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950))
 {
@@ -132,6 +133,15 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	// split steps into seperate panel
 	wxAuiNotebook* a = (wxAuiNotebook*)step_panel->GetParent();
 	a->Split(1, wxRIGHT);
+
+	//set shortcuts from settings file
+	ShortcutChanger::UpdateShortcutsFromFile(menu_shortcuts);
+	settings::setting settings = settings::ReadSettingFile();
+	if (settings.last_tas != "")
+	{
+		std::ifstream tas_file(settings.last_tas);
+		Open(&tas_file);
+	}
 }
 
 void cMain::StepSeachOnText(wxCommandEvent& event)
@@ -1135,6 +1145,114 @@ void cMain::OnMenuNew(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::Open(std::ifstream * file)
+{
+	if (!dialog_progress_bar)
+	{
+		dialog_progress_bar = new DialogProgressBar(this, wxID_ANY, "Processing request");
+	}
+
+	OpenTas open;
+	open_file_return_data* result = open.Open(dialog_progress_bar, *file);
+
+	if (!result->success)
+	{
+		malformed_saved_file_message();
+		return;
+	}
+
+	StepGridData = result->steps;
+	template_map = result->template_map;
+	save_file_location = result->save_file_location;
+	generate_code_folder_location = result->generate_code_folder_location;
+
+	if (result->goal == goal_steelaxe_text)
+	{
+		menu_goals->GetMenuItems()[0]->Check();
+	}
+	else if (result->goal == goal_GOTLAP_text)
+	{
+		menu_goals->GetMenuItems()[1]->Check();
+	}
+	else if (result->goal == goal_any_percent_text)
+	{
+		menu_goals->GetMenuItems()[2]->Check();
+	}
+	else if (result->goal == goal_debug_text)
+	{
+		menu_goals->GetMenuItems()[3]->Check();
+	}
+	else
+	{
+		malformed_saved_file_message();
+		return;
+	}
+
+	menu_auto_close->GetMenuItems()[0]->Check(result->auto_close_generate_script);
+	auto_close_generate_script = result->auto_close_generate_script;
+
+	menu_auto_close->GetMenuItems()[1]->Check(result->auto_close_open);
+	auto_close_open = result->auto_close_open;
+
+	menu_auto_close->GetMenuItems()[2]->Check(result->auto_close_save);
+	auto_close_save = result->auto_close_save;
+
+	menu_auto_close->GetMenuItems()[3]->Check(result->auto_close_save_as);
+	auto_close_save_as = result->auto_close_save_as;
+
+	check_furnace->SetValue(result->auto_put_furnace);
+	check_burner->SetValue(result->auto_put_burner);
+	check_lab->SetValue(result->auto_put_lab);
+	check_recipe->SetValue(result->auto_put_recipe);
+
+	PopulateStepGrid();
+
+	dialog_progress_bar->set_progress(100.0f - 35);
+	wxYield();
+
+	dialog_progress_bar->set_progress(100.0f - 25);
+	wxYield();
+
+	if (result->template_map.size())
+	{
+		std::vector<std::string> keys = get_keys(result->template_map);
+
+		for (int i = 0; i < keys.size(); i++)
+		{
+			template_choices.Add(keys[i]);
+		}
+
+		cmb_choose_template->Clear();
+
+		if (template_choices.size())
+		{
+			cmb_choose_template->Append(template_choices);
+			cmb_choose_template->SetValue(*template_choices.begin());
+			UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
+		}
+	}
+
+	file->close();
+
+	dialog_progress_bar->set_progress(100.0f - 20);
+	wxYield();
+
+	std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
+
+	SetLabel(window_title + " - " + file_name);
+
+	dialog_progress_bar->set_progress(100);
+	if (auto_close_open)
+	{
+		dialog_progress_bar->Close();
+	}
+	else
+	{
+		dialog_progress_bar->set_button_enable(true);
+	}
+
+}
+
 void cMain::OnMenuOpen(wxCommandEvent& event)
 {
 	wxFileDialog dlg(this, "Open saved file", "", "", ".txt files (*.txt) | *.txt", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -1164,110 +1282,7 @@ void cMain::OnMenuOpen(wxCommandEvent& event)
 				return;
 			}
 		}
-
-		if (!dialog_progress_bar)
-		{
-			dialog_progress_bar = new DialogProgressBar(this, wxID_ANY, "Processing request");
-		}
-
-		OpenTas open;
-		open_file_return_data* result = open.Open(dialog_progress_bar, file);
-
-		if (!result->success)
-		{
-			malformed_saved_file_message();
-			return;
-		}
-
-		StepGridData = result->steps;
-		template_map = result->template_map;
-		save_file_location = result->save_file_location;
-		generate_code_folder_location = result->generate_code_folder_location;
-
-		if (result->goal == goal_steelaxe_text)
-		{
-			menu_goals->GetMenuItems()[0]->Check();
-		}
-		else if (result->goal == goal_GOTLAP_text)
-		{
-			menu_goals->GetMenuItems()[1]->Check();
-		}
-		else if (result->goal == goal_any_percent_text)
-		{
-			menu_goals->GetMenuItems()[2]->Check();
-		}
-		else if (result->goal == goal_debug_text)
-		{
-			menu_goals->GetMenuItems()[3]->Check();
-		}
-		else
-		{
-			malformed_saved_file_message();
-			return;
-		}
-
-		menu_auto_close->GetMenuItems()[0]->Check(result->auto_close_generate_script);
-		auto_close_generate_script = result->auto_close_generate_script;
-
-		menu_auto_close->GetMenuItems()[1]->Check(result->auto_close_open);
-		auto_close_open = result->auto_close_open;
-
-		menu_auto_close->GetMenuItems()[2]->Check(result->auto_close_save);
-		auto_close_save = result->auto_close_save;
-
-		menu_auto_close->GetMenuItems()[3]->Check(result->auto_close_save_as);
-		auto_close_save_as = result->auto_close_save_as;
-
-		check_furnace->SetValue(result->auto_put_furnace);
-		check_burner->SetValue(result->auto_put_burner);
-		check_lab->SetValue(result->auto_put_lab);
-		check_recipe->SetValue(result->auto_put_recipe);
-
-		PopulateStepGrid();
-
-		dialog_progress_bar->set_progress(100.0f - 35);
-		wxYield();
-		
-		dialog_progress_bar->set_progress(100.0f - 25);
-		wxYield();
-
-		if (result->template_map.size())
-		{
-			std::vector<std::string> keys = get_keys(result->template_map);
-
-			for (int i = 0; i < keys.size(); i++)
-			{
-				template_choices.Add(keys[i]);
-			}
-
-			cmb_choose_template->Clear();
-
-			if (template_choices.size())
-			{
-				cmb_choose_template->Append(template_choices);
-				cmb_choose_template->SetValue(*template_choices.begin());
-				OnTemplateChosen(event);
-			}
-		}
-
-		file.close();
-
-		dialog_progress_bar->set_progress(100.0f - 20);
-		wxYield();
-
-		std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
-
-		SetLabel(window_title + " - " + file_name);
-
-		dialog_progress_bar->set_progress(100);
-		if (auto_close_open)
-		{
-			dialog_progress_bar->Close();
-		}
-		else
-		{
-			dialog_progress_bar->set_button_enable(true);
-		}
+		Open(&file);
 	}
 
 	event.Skip();
@@ -1352,6 +1367,28 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 
 	GenerateScript generate_script;
 	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
+
+	AutoSave();
+
+	event.Skip();
+}
+
+void cMain::OnChangeShortcutMenuSelected(wxCommandEvent& event)
+{
+	// open state file
+	// create changer
+	// send file & menu items to changer
+
+	ShortcutChanger * sc = new ShortcutChanger(this, 
+		wxID_ANY,
+		wxT("Change shortcuts"), 
+		wxDefaultPosition,
+		wxDefaultSize, 
+		wxCAPTION | wxCLOSE_BOX | wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP | wxBORDER_DEFAULT);
+
+	sc->Build(menu_shortcuts);	
+
+	sc->Show();
 
 	event.Skip();
 }
@@ -1610,23 +1647,8 @@ void cMain::malformed_saved_file_message()
 	dialog_progress_bar->set_button_enable(true);
 }
 
-bool cMain::SaveFile(bool save_as)
+bool cMain::Save(string filename, bool save_as)
 {
-
-	if (save_file_location == "" || save_as)
-	{
-		wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-		if (dlg.ShowModal() == wxID_OK)
-		{
-			save_file_location = dlg.GetPath().ToStdString();
-		}
-		else
-		{
-			return false;
-		}
-	}
-
 	std::vector<bool> auto_list{
 		menu_auto_close->GetMenuItems()[0]->IsChecked(),
 		menu_auto_close->GetMenuItems()[1]->IsChecked(),
@@ -1659,22 +1681,55 @@ bool cMain::SaveFile(bool save_as)
 	}
 
 	SaveTas save;
-	save.Save(
+	return save.Save(
 		this,
 		dialog_progress_bar,
 		save_as,
 		auto_list,
 		StepGridData,
 		template_map,
-		save_file_location,
+		filename,
 		generate_code_folder_location,
 		goal);
+}
+
+bool cMain::AutoSave()
+{
+	using std::to_string;
+	if (save_file_location == "" || !save_file_location.ends_with(".txt"))
+		return false; //don't autosave if location is not set or it doesn't point to txt file
+	static int autosave_count = 0;
+	if (++autosave_count > 10) 
+		autosave_count = 1; //make files from 1 to 10
+	string filename = save_file_location.substr(0, save_file_location.size() - 4) + "_temp_" + to_string(autosave_count) + ".txt";
+
+	return Save(filename, false);
+}
+
+bool cMain::SaveFile(bool save_as)
+{
+
+	if (save_file_location == "" || save_as)
+	{
+		wxFileDialog dlg(this, "Save file", "", "", ".txt files (*.txt) | *.txt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+		if (dlg.ShowModal() == wxID_OK)
+		{
+			save_file_location = dlg.GetPath().ToStdString();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool save = Save(save_file_location, save_as);
 
 	std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
 
 	SetLabel(window_title + " - " + file_name);
 
-	return true;
+	return save;
 }
 
 StepParameters cMain::ExtractStepParameters()
@@ -1770,6 +1825,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			break;
 
 		case e_craft:
+		case e_cancel_crafting:
 			gridEntry.Amount = stepParameters->Amount;
 			gridEntry.Item = stepParameters->Item;
 			break;
@@ -1957,6 +2013,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 		case e_stop:
 		case e_pick_up:
 		case e_idle:
+		case e_cancel_crafting:
 			return true;
 
 		case e_build:

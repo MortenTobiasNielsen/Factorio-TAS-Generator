@@ -55,6 +55,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_menubar1->Append( menu_script, wxT("Script") );
 
 	menu_shortcuts = new wxMenu();
+	wxMenuItem* shortcut_changer;
+	shortcut_changer = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Change shortcuts") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_changer );
+
 	wxMenuItem* shortcut_craft;
 	shortcut_craft = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Craft") ) + wxT('\t') + wxT("Ctrl+1"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_craft );
@@ -154,6 +158,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxMenuItem* shortcut_move_down;
 	shortcut_move_down = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Move Down") ) + wxT('\t') + wxT("Alt+S"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_move_down );
+
+	wxMenuItem* shortcut_cancel_crafting;
+	shortcut_cancel_crafting = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Cancel Crafting") ) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_cancel_crafting );
 
 	m_menubar1->Append( menu_shortcuts, wxT("Shortcuts") );
 
@@ -615,6 +623,17 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	fgSizer3->Add( bSizer1411, 1, wxEXPAND, 5 );
 
+	wxBoxSizer* bSizerCancelCrafting;
+	bSizerCancelCrafting = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_cancel_crafting = new wxRadioButton( type_panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_cancel_crafting->SetToolTip( wxT("Cancels items in the players crafting queue, \nreturning the ingredients to your hand") );
+
+	bSizerCancelCrafting->Add( rbtn_cancel_crafting, 0, wxALL, 5 );
+
+
+	fgSizer3->Add( bSizerCancelCrafting, 1, wxEXPAND, 5 );
+
 
 	bSizer18->Add( fgSizer3, 1, wxEXPAND|wxLEFT|wxRIGHT, 15 );
 
@@ -989,6 +1008,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChooseLocation ), this, menu_script_choose_location->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnGenerateScript ), this, menu_script_generate_script->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnOnlyGenerateSteps ), this, menu_script_only_generate_steps->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChangeShortcutMenuSelected ), this, shortcut_changer->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftMenuSelected ), this, shortcut_craft->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnWalkMenuSelected ), this, shortcut_walk->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnGameSpeedMenuSelected ), this, shortcut_game_speed->GetId());
@@ -1014,6 +1034,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnDeleteMenuSelected ), this, shortcut_delete_step->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveUpMenuSelected ), this, shortcut_move_up->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveDownMenuSelected ), this, shortcut_move_down->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingMenuSelected ), this, shortcut_cancel_crafting->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuSteelAxeClicked ), this, goal_steelaxe->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuGOTLAPClicked ), this, goal_GOTLAP->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAnyPercentClicked ), this, goal_any_percent->GetId());
@@ -1042,6 +1063,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_drop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnDropChosen ), NULL, this );
 	rbtn_launch->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
 	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
+	rbtn_cancel_crafting->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	btn_template_new->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
 	btn_template_delete->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTemplateClicked ), NULL, this );
@@ -1091,6 +1113,7 @@ GUI_Base::~GUI_Base()
 	rbtn_drop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnDropChosen ), NULL, this );
 	rbtn_launch->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
 	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
+	rbtn_cancel_crafting->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	btn_template_new->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
 	btn_template_delete->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTemplateClicked ), NULL, this );
@@ -1116,6 +1139,57 @@ GUI_Base::~GUI_Base()
 	grid_steps->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 
 	m_mgr.UnInit();
+
+}
+
+Shortcut_changer::Shortcut_changer( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxSize( -1,-1 ), wxSize( -1,-1 ) );
+
+	sc_vertical_sizer = new wxBoxSizer( wxVERTICAL );
+
+	sc_help_label = new wxStaticText( this, wxID_ANY, wxT("HELP: \nThe input fields expect a keybinding -> [<modifierkey>+<key>]\nYou can have multiple modifier keys among [\"Alt\", \"Ctrl\", \"Shift\"] separated with +.\nYou can only have one key in uppercase.\nYou can use F keys like \"F1\".\n\nExamples: \nAlt+G\nCtrl+Shift+G\nCtrl+F1"), wxDefaultPosition, wxDefaultSize, 0 );
+	sc_help_label->Wrap( -1 );
+	sc_vertical_sizer->Add( sc_help_label, 0, wxALL|wxEXPAND, 5 );
+
+	sc_grid_sizer = new wxGridSizer( 7, 4, 5, 5 );
+
+
+	sc_vertical_sizer->Add( sc_grid_sizer, 0, wxALL|wxEXPAND, 5 );
+
+	wxBoxSizer* sc_control_sizer;
+	sc_control_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	sc_reset_button = new wxButton( this, wxID_ANY, wxT("Reset shortcuts"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_THEME );
+	sc_control_sizer->Add( sc_reset_button, 0, wxALL, 5 );
+
+	sc_save_button = new wxButton( this, wxID_ANY, wxT("Save shortcuts"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_THEME );
+	sc_control_sizer->Add( sc_save_button, 0, wxALL, 5 );
+
+
+	sc_vertical_sizer->Add( sc_control_sizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+
+
+	this->SetSizer( sc_vertical_sizer );
+	this->Layout();
+	sc_vertical_sizer->Fit( this );
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( Shortcut_changer::OnCloseShortcutChanger ) );
+	this->Connect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( Shortcut_changer::OnInitDialogShortcutChanger ) );
+	sc_reset_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Shortcut_changer::OnButtonClickSCReset ), NULL, this );
+	sc_save_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Shortcut_changer::OnButtonClickSCSave ), NULL, this );
+}
+
+Shortcut_changer::~Shortcut_changer()
+{
+	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( Shortcut_changer::OnCloseShortcutChanger ) );
+	this->Disconnect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( Shortcut_changer::OnInitDialogShortcutChanger ) );
+	sc_reset_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Shortcut_changer::OnButtonClickSCReset ), NULL, this );
+	sc_save_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( Shortcut_changer::OnButtonClickSCSave ), NULL, this );
 
 }
 

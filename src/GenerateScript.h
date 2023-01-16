@@ -105,6 +105,7 @@ private:
 	void walk(string step, string action, string x_cord, string y_cord, string comment);
 	void mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment);
 	void craft(string step, string amount, string item, string comment);
+	void cancel_crafting(string step, string amount, string item, string comment);
 	void tech(string step, string tech_to_research, string comment);
 	void speed(string step, string speed, string comment);
 	void pause(string step, string comment);
