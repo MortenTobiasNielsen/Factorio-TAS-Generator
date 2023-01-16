@@ -38,7 +38,7 @@ void GenerateScript::UnexpectedError(DialogProgressBar* dialog_progress_bar)
 
 void GenerateScript::AddInfoFile(string& folder_location)
 {
-	auto software_version = "0.2.0";
+	auto software_version = "0.1.1";
 
 	std::ofstream saver;
 
