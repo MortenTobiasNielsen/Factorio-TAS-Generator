@@ -150,7 +150,7 @@ protected:
 	void StepSeachOnCancelButton(wxCommandEvent& event);
 
 private:
-	wxString window_title = "EZRaiderz TAS Helper";
+	wxString window_title = "Factorio TAS Generator";
 
 	DialogProgressBar* dialog_progress_bar = nullptr;
 

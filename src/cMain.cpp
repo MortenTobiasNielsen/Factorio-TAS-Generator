@@ -1643,7 +1643,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 void cMain::malformed_saved_file_message()
 {
 	ResetToNewWindow();
-	wxMessageBox("It seems like the structure of the file does not correspond with an EZRaiderz TAS helper file", "A file error occurred");
+	wxMessageBox("It seems like the structure of the file does not correspond with an Factorio TAS Generator file", "A file error occurred");
 	dialog_progress_bar->set_button_enable(true);
 }
 
