@@ -853,8 +853,17 @@ local function recipe()
 end
 
 local function tech()
+	if steps[step].comment and steps[step].comment == "Cancel" then
+		if player.force.current_research then
+			msg(string.format("Cancel research %s and add research %s", player.force.current_research.name, item))
+			player.force.cancel_current_research();
+			player.force.add_research(item)
+			return true
+		end
+	end
+
 	player.force.add_research(item)
-    msg(string.format("Add research %s", item))
+	msg(string.format("Add research %s", item))
 	return true
 end
 
