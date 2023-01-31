@@ -856,7 +856,7 @@ local function tech()
 	if steps[step].comment and steps[step].comment == "Cancel" and player.force.current_research then
 		player.force.research_queue = {}
 		player.force.add_research(item)
-		msg(string.format("Research: Cleared research queue and %s added", item))
+		msg(string.format("Research: Cleared queue and %s added", item))
 		return true
 	end
 
