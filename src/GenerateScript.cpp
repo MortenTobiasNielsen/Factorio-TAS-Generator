@@ -261,7 +261,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 					vector<string> parameters = {};
 
 					size_t pos = 0;
-					while ((pos = comment.find(';')) != std::string::npos)
+					while ((pos = comment.find(':')) != std::string::npos)
 					{
 						parameters.push_back(comment.substr(0, pos));
 						comment.erase(0, pos + 1);
