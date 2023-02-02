@@ -747,7 +747,15 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 }
 
 void GenerateScript::mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment)
-{
+{ 
+	// Mine the coordinates without checking distance if the user have added Override in the comment - this is mostly useful for removing wreckage. 
+	if (comment == "Override")
+	{
+		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, comment);
+		total_steps += 1;
+		return;
+	}
+
 	if (is_building)
 	{
 		check_interact_distance(step, "1", x_cord, y_cord, building_name, OrientationEnum);
