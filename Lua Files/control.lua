@@ -853,8 +853,15 @@ local function recipe()
 end
 
 local function tech()
+	if steps[step].comment and steps[step].comment == "Cancel" and player.force.current_research then
+		player.force.research_queue = {}
+		player.force.add_research(item)
+		msg(string.format("Research: Cleared queue and %s added", item))
+		return true
+	end
+
 	player.force.add_research(item)
-    msg(string.format("Add research %s", item))
+	msg(string.format("Research: %s added", item))
 	return true
 end
 
