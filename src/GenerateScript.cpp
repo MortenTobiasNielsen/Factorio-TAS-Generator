@@ -255,6 +255,23 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_pick_up:
+				if (comment.find("COMP:") != string::npos)
+				{
+					comment.erase(0, 5);
+					vector<string> parameters = {};
+
+					size_t pos = 0;
+					while ((pos = comment.find(':')) != std::string::npos)
+					{
+						parameters.push_back(comment.substr(0, pos));
+						comment.erase(0, pos + 1);
+					}
+
+					row_pick_compatibility(currentStep, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+
+					break;
+				}
+
 				pick(currentStep, amount, comment);
 				break;
 
@@ -1129,5 +1146,24 @@ void GenerateScript::row_drop(string step, string x_cord, string y_cord, string 
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
 		drop(step, std::to_string(i + 1), x_cord, y_cord, item, building);
+	}
+}
+
+void GenerateScript::pick_compatibility(std::string step, std::string action, std::string x_cord, std::string y_cord)
+{
+	walk(step, action, x_cord, y_cord, last_walking_comment);
+	step_list += signature(step, action) + "\"pick\", {" + x_cord + ", " + y_cord + "}}\n";
+	total_steps += 1;
+}
+
+void GenerateScript::row_pick_compatibility(std::string step, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size)
+{
+	pick_compatibility(step, "1", x_cord, y_cord);
+
+	for (int i = 1; i < std::stof(number_of_buildings); i++)
+	{
+		find_coordinates(x_cord, y_cord, direction, building_size);
+
+		pick_compatibility(step, std::to_string(i + 1), x_cord, y_cord);
 	}
 }

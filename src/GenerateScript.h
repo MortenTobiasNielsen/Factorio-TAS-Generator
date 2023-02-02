@@ -138,4 +138,7 @@ private:
 
 	void drop(string step, string action, string x_cord, string y_cord, string item, string building, string comment = "");
 	void row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building, string building_size, string comment);
+
+	void pick_compatibility(std::string step, std::string action, std::string x_cord, std::string y_cord);
+	void row_pick_compatibility(std::string step, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size);
 };

@@ -1066,6 +1066,10 @@ local function doStep(current_step)
 		drop_item = current_step[4]
 		return drop()
 
+	elseif current_step[2] == "pick" then
+		player.picking_state = true
+		return true
+
 	elseif current_step[2] == "idle" then
 		idle = current_step[3]
 		return true
