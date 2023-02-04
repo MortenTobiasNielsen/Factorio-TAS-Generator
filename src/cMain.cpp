@@ -1647,7 +1647,7 @@ void cMain::malformed_saved_file_message()
 	dialog_progress_bar->set_button_enable(true);
 }
 
-bool cMain::Save(string filename, bool save_as)
+bool cMain::Save(string filename, bool save_as, bool set_last_location)
 {
 	std::vector<bool> auto_list{
 		menu_auto_close->GetMenuItems()[0]->IsChecked(),
@@ -1690,7 +1690,8 @@ bool cMain::Save(string filename, bool save_as)
 		template_map,
 		filename,
 		generate_code_folder_location,
-		goal);
+		goal,
+		set_last_location);
 }
 
 bool cMain::AutoSave()
@@ -1703,7 +1704,7 @@ bool cMain::AutoSave()
 		autosave_count = 1; //make files from 1 to 10
 	string filename = save_file_location.substr(0, save_file_location.size() - 4) + "_temp_" + to_string(autosave_count) + ".txt";
 
-	return Save(filename, false);
+	return Save(filename, false, false);
 }
 
 bool cMain::SaveFile(bool save_as)
