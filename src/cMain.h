@@ -228,7 +228,7 @@ private:
 
 	bool CheckTakePut(std::string& item);
 
-	bool Save(string filename, bool save_as);
+	bool Save(string filename, bool save_as, bool set_last_location = true);
 	bool AutoSave();
 	bool SaveFile(bool save_as);
 

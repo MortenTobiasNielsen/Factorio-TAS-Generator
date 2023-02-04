@@ -12,7 +12,8 @@ bool SaveTas::Save(
 	map<string, vector<StepParameters>> templates,
 	string folder_location,
 	string folder_location_generate,
-	string goal)
+	string goal,
+	bool set_last_location)
 {
 	int total_lines = steps.size();
 
@@ -120,7 +121,10 @@ bool SaveTas::Save(
 		}
 	}
 
-	settings::SaveLastTas(folder_location);
+	if (set_last_location)
+	{
+		settings::SaveLastTas(folder_location);
+	}
 
 	return true;
 }
