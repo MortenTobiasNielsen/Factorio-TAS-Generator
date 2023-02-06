@@ -400,6 +400,11 @@ string GenerateScript::extract_define(string from_into, string building)
 		return struct_take_put_list.drill_modules;
 	}
 
+	if (building == "Beacon")
+	{
+		return struct_take_put_list.beacon_modules;
+	}
+
 	if (from_into == struct_from_into_list.input)
 	{
 		return struct_take_put_list.assembly_input;

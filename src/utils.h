@@ -1225,6 +1225,7 @@ static const struct
 	std::string chest = "defines.inventory.chest";
 	std::string lab_input = "defines.inventory.lab_input";
 	std::string lab_modules = "defines.inventory.lab_modules";
+	std::string beacon_modules = "defines.inventory.beacon_modules";
 	std::string fuel = "defines.inventory.fuel";
 	std::string drill_modules = "defines.inventory.mining_drill_modules";
 	std::string assembly_input = "defines.inventory.assembling_machine_input";
