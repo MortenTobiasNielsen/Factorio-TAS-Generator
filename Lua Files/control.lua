@@ -1356,6 +1356,12 @@ script.on_event(defines.events.on_tick, function(event)
 		end
 	end
 
+	if steps[step] == nil or steps[step][1] == "break" then
+		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		return
+	end
+
 	update_player_position()
 
 	if compatibility_mode then
