@@ -1633,6 +1633,13 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 			OnIdleMenuSelected(event);
 			spin_amount->SetValue(gridEntry->Amount);
 			txt_comment->SetValue(gridEntry->Comment);
+		
+			return;
+		case e_cancel_crafting:
+			OnCancelCraftingMenuSelected(event);
+			cmb_item->SetValue(gridEntry->Item);
+			spin_amount->SetValue(gridEntry->Amount);
+			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		default:
