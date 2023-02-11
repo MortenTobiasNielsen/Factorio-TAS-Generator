@@ -1255,8 +1255,8 @@ local function backwards_compatibility()
 	end
 
 	if steps[step][2] == "save" then
-		save(steps[step][1][1], steps[step][3])
 		change_step(1)
+		save(steps[step-1][1][1], steps[step-1][3])
 	end
 
 	if pickup_ticks > 0 then
