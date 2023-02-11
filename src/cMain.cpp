@@ -2068,6 +2068,10 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 
 			return true;
 
+		case e_rotate:
+			// Set amount of buildings to 1 and go to default
+			stepParameters.Buildings = 1;
+
 		default:
 
 			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
