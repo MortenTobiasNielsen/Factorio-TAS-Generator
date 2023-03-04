@@ -141,7 +141,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 				SetBuildingAndOrientation(&steps[i]);
 
-				rotate(currentStep, x_cord, y_cord, amount, item, build_orientation, comment);
+				row_rotate(currentStep, x_cord, y_cord, amount, item, build_orientation, direction_to_build, amount_of_buildings, building_size, comment);
 				break;
 
 			case e_craft:
@@ -918,23 +918,42 @@ void GenerateScript::pick(string step, string amount, string comment)
 	total_steps += 1;
 }
 
-void GenerateScript::rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment)
+void GenerateScript::rotate(string step, string action, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment)
 {
 
-	check_interact_distance(step, "1", x_cord, y_cord, item, OrientationEnum);
+	check_interact_distance(step, action, x_cord, y_cord, item, OrientationEnum);
 
 	if (std::stoi(times) == 3)
 	{
-		step_list += Step(step, "1", "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true", comment);
+		step_list += Step(step, action, "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true", comment);
 		total_steps += 1;
 	}
 	else
 	{
-		for (int i = 0; i < std::stoi(times); i++)
-		{
-			step_list += Step(step, std::to_string(i + 1), "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false", comment);
-			total_steps += 1;
-		}
+		step_list += Step(step, action, "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false", comment);
+		total_steps += 1;
+	}
+}
+
+void GenerateScript::row_rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment)
+{
+	int action = 1, times_ = stoi(times);
+	if (times_ == 3)
+		rotate(step, std::to_string(action++), x_cord, y_cord, times, item, OrientationEnum, comment);
+	else
+		while(times_-- > 0)
+			rotate(step, std::to_string(action++), x_cord, y_cord, "1", item, OrientationEnum, comment);
+
+	for (int i = 1; i < std::stof(number_of_buildings); i++)
+	{
+		times_ = stoi(times);
+		find_coordinates(x_cord, y_cord, direction, building_size);
+
+		if (times_ == 3)
+			rotate(step, std::to_string(action++), x_cord, y_cord, times, item, OrientationEnum);
+		else
+			while (times_-- > 0)
+				rotate(step, std::to_string(action++), x_cord, y_cord, "1", item, OrientationEnum);
 	}
 }
 

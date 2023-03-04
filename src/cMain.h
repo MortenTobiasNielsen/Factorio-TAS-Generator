@@ -167,7 +167,7 @@ private:
 		// x-cord, y-cord, amount, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
 		vector<bool> game_speed = {false, false, true, false, false, false, false, false, false, false, false, false};
 		vector<bool> mining = {true, true, true, false, false, false, false, false, false, false, false, false};
-		vector<bool> rotate = {true, true, true, false, false, false, false, false, false, false, false, false};
+		vector<bool> rotate = {true, true, true, false, false, false, false, false, false, true, true, true};
 		vector<bool> craft = {false, false, true, true, false, false, false, false, false, false, false, false};
 		vector<bool> walk = {true, true, false, false, false, false, false, false, false, false, false, false};
 		vector<bool> build = {true, true, false, true, false, false, false, false, true, true, true, true};
