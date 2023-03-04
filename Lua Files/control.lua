@@ -237,12 +237,16 @@ local function put()
 		return false
 	end
 
+	amount=target_inventory.insert{
+		name=item,
+		count=amount,
+	}
+
+	if amount == 0 then return false end
+
 	amount = player.remove_item{
 		name=item,
-		count=target_inventory.insert{
-			name=item,
-			count=amount,
-		},
+		count=amount,
 	}
 
 	local text = string.format("-%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"-2 Iron plate (5)"
