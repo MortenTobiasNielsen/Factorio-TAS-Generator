@@ -1365,7 +1365,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 		return;
 	};
 
-	GenerateScript generate_script;
+	GenerateScript generate_script(grid_steps);
 	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, menu_script->GetMenuItems()[2]->IsChecked(), goal);
 
 	AutoSave();
