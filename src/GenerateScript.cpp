@@ -243,15 +243,10 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_drop:
-				if (steps[i].BuildingIndex == 0)
-				{
-					UnexpectedError(dialog_progress_bar);
-					return;
-				}
+				building = "Item on ground";
+				build_orientation = build_orientations[1];
 
-				SetBuildingAndOrientation(&steps[i]);
-
-				row_drop(currentStep, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size, building, comment);
+				drop(currentStep, "1", x_cord, y_cord, item, building, comment);
 				break;
 
 			case e_pick_up:
@@ -1131,22 +1126,10 @@ void GenerateScript::drop(string step, string action, string x_cord, string y_co
 {
 	check_interact_distance(step, action, x_cord, y_cord, building, "North");
 
-	convert_string(item);
+	item = convert_string(item);
 
 	step_list += Step(step, action, "\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"", comment);
 	total_steps += 1;
-}
-
-void GenerateScript::row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building_size, string building, string comment)
-{
-	drop(step, "1", x_cord, y_cord, item, building, comment);
-
-	for (int i = 1; i < std::stof(number_of_buildings); i++)
-	{
-		find_coordinates(x_cord, y_cord, direction, building_size);
-
-		drop(step, std::to_string(i + 1), x_cord, y_cord, item, building);
-	}
 }
 
 void GenerateScript::pick_compatibility(std::string step, std::string action, std::string x_cord, std::string y_cord)
