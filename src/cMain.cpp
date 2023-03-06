@@ -1617,9 +1617,6 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			cmb_item->SetValue(gridEntry->Item);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
@@ -1924,9 +1921,6 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Item = stepParameters->Item;
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			break;
 
 		case e_filter:
@@ -2021,6 +2015,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 		case e_stop:
 		case e_pick_up:
 		case e_idle:
+		case e_drop:
 		case e_cancel_crafting:
 			return true;
 
@@ -2386,7 +2381,6 @@ bool cMain::ValidateAllSteps()
 			case e_rotate:
 			case e_priority:
 			case e_launch:
-			case e_drop:
 				if (!BuildingExists(BuildingsSnapShot, buildingsInSnapShot, step))
 				{
 					string message = "Step " + to_string(i + 1) + " is not connected to a building. Ensure that the step is not placed before the build step.";

@@ -933,7 +933,10 @@ end
 
 -- Drop items on the ground (like pressing the 'z' key)
 local function drop()
-	if player.get_item_count(drop_item) > 0 and player.can_place_entity{name = drop_item, position = drop_position} then
+	local can_reach = 10 > math.sqrt(
+		math.abs(player.position.x - drop_position[1])^2 + math.abs(player.position.y - drop_position[2])^2
+	)
+	if player.get_item_count(drop_item) > 0 and can_reach then
 		player.surface.create_entity{name = "item-on-ground",
 								stack = {
 									name = drop_item,
