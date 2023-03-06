@@ -208,7 +208,7 @@ static const map<string, vector<string>> recipes = {
 	{"Empty water barrel", {"Water barrel", "1"}},
 	{"Iron gear wheel", {"Iron plate", "2"}},
 	{"Landfill", {"Stone", "20"}},
-	{"Long handed inserter", {"Iron plate", "1", "Iron gear wheel", "1", "Inserter", "1"}},
+	{"Long-handed inserter", {"Iron plate", "1", "Iron gear wheel", "1", "Inserter", "1"}},
 	{"Military science pack", {"Piercing rounds magazine", "1", "Grenade", "1", "Stone wall", "2"}},
 	{"Modular armor", {"Steel plate", "50", "Advanced circuit", "30"}},
 	{"Productivity module", {"Electronic circuit", "5", "Advanced circuit", "5"}},

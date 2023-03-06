@@ -989,6 +989,14 @@ void GenerateScript::row_build(string step, string x_cord, string y_cord, string
 
 void GenerateScript::take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string OrientationEnum, string comment)
 {
+	if (comment == "Override")
+	{
+		item = check_item_name(item);
+		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, comment);
+		total_steps += 1;
+		return;
+	}
+
 	if (OrientationEnum == "Wreck")
 	{
 		check_interact_distance(step, action, x_cord, y_cord, OrientationEnum, "North");
@@ -1018,6 +1026,14 @@ void GenerateScript::row_take(string step, string x_cord, string y_cord, string 
 
 void GenerateScript::put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string OrientationEnum, string comment)
 {
+	if (comment == "Override")
+	{
+		item = check_item_name(item);
+		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, comment);
+		total_steps += 1;
+		return;
+	}
+
 	if (OrientationEnum == "Wreck")
 	{
 		check_interact_distance(step, action, x_cord, y_cord, OrientationEnum, "North");
