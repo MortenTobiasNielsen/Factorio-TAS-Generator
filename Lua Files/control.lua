@@ -1457,14 +1457,38 @@ local function set_quick_bar(event)
 		local set = split_string(settings.global[settings_short..i].value)
 		if set then
 			for key,val in pairs(set) do
-				player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+				local item = string.sub(val, 7, -2)-- removes "[item=" and "]"
+				if item ~= "" then player.set_quick_bar_slot((i-1)*10 + key, item) end
 			end
 		end
 	end
 end
 
+---Event handler for the player set quickslot, 
+---Updates quickbar settings, to make it easier to set the filters you want 
+---@param event EventData.on_player_set_quick_bar_slot
+local function on_set_quickbar(event)
+	local p = game.players[event.player_index]
+	for i = 1, 10 do
+		local set = settings.global[settings_short..i]
+		local line = ""
+		for j = 1, 10 do
+			local slot = p.get_quick_bar_slot((i-1)*10 + j)
+			if slot then
+				line = line .. "[item=" .. slot.name .. "],"
+			else
+				line = line .. "[item],"
+			end
+		end
+		set.value = string.sub(line, 0, -1)
+		settings.global[settings_short..i] = set
+	end
+end
+
 script.on_event(defines.events.on_player_joined_game, function(event)
 	set_quick_bar(event)
+	script.on_event(defines.events.on_player_set_quick_bar_slot, on_set_quickbar)
+	game.players[event.player_index].game_view_settings.show_entity_info = true --Set alt-mode=true
 end)
 
 local tas_interface =
