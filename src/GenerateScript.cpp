@@ -2,8 +2,7 @@
 
 #include "GenerateScript.h"
 
-
-GenerateScript::GenerateScript()
+GenerateScript::GenerateScript(wxGrid* grid_steps) : grid_steps(grid_steps)
 {
 	reset();
 }
@@ -55,6 +54,12 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver << "\n}";
 
 	saver.close();
+}
+
+void GenerateScript::PaintWalk(string step)
+{
+	int row = std::stoi(step) - 1;
+	grid_steps->SetCellBackgroundColour(row, 9, *wxCYAN);
 }
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
@@ -481,6 +486,7 @@ void GenerateScript::check_mining_distance(string step, string action, string x_
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1])
 	{
+		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
 	}
 }
@@ -532,6 +538,7 @@ void GenerateScript::check_interact_distance(string step, string action, string 
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1])
 	{
+		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
 	}
 }
@@ -794,93 +801,9 @@ void GenerateScript::tech(string step, string tech_to_research, string comment)
 {
 	tech_to_research = convert_string(tech_to_research);
 
-	if (tech_to_research == "efficiency-module")
+	if (auto search = map_translation_research.find(tech_to_research); search != map_translation_research.end())
 	{
-		tech_to_research = "effectivity-module";
-	}
-	else if (tech_to_research == "efficiency-module-2")
-	{
-		tech_to_research = "effectivity-module-2";
-	}
-	else if (tech_to_research == "efficiency-module-3")
-	{
-		tech_to_research = "effectivity-module-3";
-	}
-	else if (tech_to_research == "lab-research-speed-1")
-	{
-		tech_to_research = "research-speed-1";
-	}
-	else if (tech_to_research == "lab-research-speed-2")
-	{
-		tech_to_research = "research-speed-2";
-	}
-	else if (tech_to_research == "lab-research-speed-3")
-	{
-		tech_to_research = "research-speed-3";
-	}
-	else if (tech_to_research == "lab-research-speed-4")
-	{
-		tech_to_research = "research-speed-4";
-	}
-	else if (tech_to_research == "lab-research-speed-5")
-	{
-		tech_to_research = "research-speed-5";
-	}
-	else if (tech_to_research == "lab-research-speed-6")
-	{
-		tech_to_research = "research-speed-6";
-	}
-	else if (tech_to_research == "worker-robot-cargo-size-1")
-	{
-		tech_to_research = "worker-robots-storage-1";
-	}
-	else if (tech_to_research == "worker-robot-cargo-size-2")
-	{
-		tech_to_research = "worker-robots-storage-2";
-	}
-	else if (tech_to_research == "worker-robot-cargo-size-3")
-	{
-		tech_to_research = "worker-robots-storage-3";
-	}
-	else if (tech_to_research == "worker-robot-speed-1")
-	{
-		tech_to_research = "worker-robots-speed-1";
-	}
-	else if (tech_to_research == "worker-robot-speed-2")
-	{
-		tech_to_research = "worker-robots-speed-2";
-	}
-	else if (tech_to_research == "worker-robot-speed-3")
-	{
-		tech_to_research = "worker-robots-speed-3";
-	}
-	else if (tech_to_research == "worker-robot-speed-4")
-	{
-		tech_to_research = "worker-robots-speed-4";
-	}
-	else if (tech_to_research == "worker-robot-speed-5")
-	{
-		tech_to_research = "worker-robots-speed-5";
-	}
-	else if (tech_to_research == "worker-robot-speed-6")
-	{
-		tech_to_research = "worker-robots-speed-6";
-	}
-	else if (tech_to_research == "portable-solar-panel")
-	{
-		tech_to_research = "solar-panel-equipment";
-	}
-	else if (tech_to_research == "land-mines")
-	{
-		tech_to_research = "land-mine";
-	}
-	else if (tech_to_research == "nightvision-equipment")
-	{
-		tech_to_research = "night-vision-equipment";
-	}
-	else if (tech_to_research == "personal-battery")
-	{
-		tech_to_research = "battery equipment";
+		tech_to_research = search->second;
 	}
 
 	step_list += Step(step, "1", "\"tech\", \"" + tech_to_research + "\"", comment);
