@@ -242,7 +242,10 @@ local function put()
 		count=amount,
 	}
 
-	if amount == 0 then return false end
+	if amount < 1 then
+		warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can not be transferred. Amount: %d Removalable: %d Insertable: %d", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper), amount, removalable_items, insertable_items))
+		return false
+	end
 
 	amount = player.remove_item{
 		name=item,
