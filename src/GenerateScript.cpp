@@ -937,23 +937,38 @@ void GenerateScript::rotate(string step, string action, string x_cord, string y_
 
 void GenerateScript::row_rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment)
 {
-	int action = 1, times_ = stoi(times);
-	if (times_ == 3)
-		rotate(step, std::to_string(action++), x_cord, y_cord, times, item, OrientationEnum, comment);
-	else
-		while(times_-- > 0)
-			rotate(step, std::to_string(action++), x_cord, y_cord, "1", item, OrientationEnum, comment);
+	int action = 1; //action iterator
+	const int times_c = stoi(times); //constant rotation amount
+	int times_i = times_c; //rotation amount iterator
 
-	for (int i = 1; i < std::stof(number_of_buildings); i++)
+	if (times_i == 3)
 	{
-		times_ = stoi(times);
+		rotate(step, std::to_string(action++), x_cord, y_cord, times, item, OrientationEnum, comment);
+	}
+	else
+	{
+		while (times_i-- > 0)
+		{
+			rotate(step, std::to_string(action++), x_cord, y_cord, "1", item, OrientationEnum, comment);
+		}
+	}
+
+	for (int i = 1; i < stoi(number_of_buildings); i++)
+	{
+		times_i = times_c;
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		if (times_ == 3)
+		if (times_i == 3)
+		{
 			rotate(step, std::to_string(action++), x_cord, y_cord, times, item, OrientationEnum);
+		}
 		else
-			while (times_-- > 0)
+		{
+			while (times_i-- > 0)
+			{
 				rotate(step, std::to_string(action++), x_cord, y_cord, "1", item, OrientationEnum);
+			}
+		}
 	}
 }
 
