@@ -59,7 +59,7 @@ void GenerateScript::AddInfoFile(string& folder_location)
 void GenerateScript::PaintWalk(string step)
 {
 	int row = std::stoi(step) - 1;
-	grid_steps->SetCellBackgroundColour(row, 9, *wxRED);
+	grid_steps->SetCellBackgroundColour(row, 9, *wxCYAN);
 }
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
