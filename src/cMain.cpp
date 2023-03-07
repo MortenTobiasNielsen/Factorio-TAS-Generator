@@ -2140,7 +2140,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 			return false;
 
 		case OilRefinery:
-			if (!check_input(stepParameters.Item, oil_refinery_list))
+			if (check_input(stepParameters.Item, oil_refinery_list))
 			{
 				return true;
 			}
@@ -2149,7 +2149,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 			return false;
 
 		case ChemicalPlant:
-			if (!check_input(stepParameters.Item, full_chemical_plant_recipes))
+			if (check_input(stepParameters.Item, full_chemical_plant_recipes))
 			{
 				return true;
 			}
@@ -2158,7 +2158,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 			return false;
 
 		case Centrifuge:
-			if (!check_input(stepParameters.Item, centrifuge_list))
+			if (check_input(stepParameters.Item, centrifuge_list))
 			{
 				return true;
 			}
@@ -2169,7 +2169,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 		case StoneFurnace:
 		case SteelFurnace:
 		case ElectricFurnace:
-			if (!check_input(stepParameters.Item, furnace_list))
+			if (check_input(stepParameters.Item, furnace_list))
 			{
 				return true;
 			}

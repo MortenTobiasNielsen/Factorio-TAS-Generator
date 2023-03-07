@@ -701,7 +701,9 @@ static const std::vector<std::string> assemply_level2_extra_list =
 static const std::vector<std::string> chemical_plant_list =
 {
 	"Flamethrower ammo",
-	"Solid fuel",
+	"Solid fuel from light oil",
+	"Solid fuel from petroleum gas",
+	"Solid fuel from heavy oil",
 	"Plastic bar",
 	"Sulfur",
 	"Battery",
