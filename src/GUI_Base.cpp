@@ -15,7 +15,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_mgr.SetManagedWindow(this);
 	m_mgr.SetFlags(wxAUI_MGR_DEFAULT);
 
-	m_menubar1 = new wxMenuBar( 0 );
+	main_menubar = new wxMenuBar( 0 );
 	menu_file = new wxMenu();
 	wxMenuItem* menu_file_new;
 	menu_file_new = new wxMenuItem( menu_file, wxID_ANY, wxString( wxT("New") ) + wxT('\t') + wxT("CTRL+N"), wxEmptyString, wxITEM_NORMAL );
@@ -37,7 +37,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_file_exit = new wxMenuItem( menu_file, wxID_ANY, wxString( wxT("Exit") ) , wxEmptyString, wxITEM_NORMAL );
 	menu_file->Append( menu_file_exit );
 
-	m_menubar1->Append( menu_file, wxT("File") );
+	main_menubar->Append( menu_file, wxT("File") );
 
 	menu_script = new wxMenu();
 	wxMenuItem* menu_script_choose_location;
@@ -52,7 +52,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_script_only_generate_steps = new wxMenuItem( menu_script, wxID_ANY, wxString( wxT("Only Generate Steps File") ) , wxEmptyString, wxITEM_CHECK );
 	menu_script->Append( menu_script_only_generate_steps );
 
-	m_menubar1->Append( menu_script, wxT("Script") );
+	main_menubar->Append( menu_script, wxT("Script") );
 
 	menu_shortcuts = new wxMenu();
 	wxMenuItem* shortcut_changer;
@@ -163,7 +163,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	shortcut_cancel_crafting = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Cancel Crafting") ) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_cancel_crafting );
 
-	m_menubar1->Append( menu_shortcuts, wxT("Shortcuts") );
+	main_menubar->Append( menu_shortcuts, wxT("Shortcuts") );
 
 	menu_goals = new wxMenu();
 	wxMenuItem* goal_steelaxe;
@@ -183,7 +183,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	goal_debug = new wxMenuItem( menu_goals, wxID_ANY, wxString( wxT("Debug") ) , wxEmptyString, wxITEM_RADIO );
 	menu_goals->Append( goal_debug );
 
-	m_menubar1->Append( menu_goals, wxT("Goal") );
+	main_menubar->Append( menu_goals, wxT("Goal") );
 
 	menu_auto_close = new wxMenu();
 	wxMenuItem* auto_close_generate_script;
@@ -204,489 +204,527 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	auto_close_save_as = new wxMenuItem( menu_auto_close, wxID_ANY, wxString( wxT("Save As") ) , wxEmptyString, wxITEM_CHECK );
 	menu_auto_close->Append( auto_close_save_as );
 
-	m_menubar1->Append( menu_auto_close, wxT("Auto-close") );
+	main_menubar->Append( menu_auto_close, wxT("Auto-close") );
 
-	this->SetMenuBar( m_menubar1 );
+	this->SetMenuBar( main_menubar );
 
-	m_panel21 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel21, wxAuiPaneInfo() .Name( wxT("StepDetailPanel") ).Top() .Caption( wxT("Step detail") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 1010,155 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 650,140 ) ).MinSize( wxSize( 650,120 ) ).Layer( 1 ) );
+	detail_panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_mgr.AddPane( detail_panel, wxAuiPaneInfo() .Name( wxT("StepDetailPanel") ).Top() .Caption( wxT("Step detail") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 1010,155 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 650,140 ) ).MinSize( wxSize( 650,120 ) ).Layer( 1 ) );
 
-	wxBoxSizer* bSizer19;
-	bSizer19 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer;
+	detail_sizer = new wxBoxSizer( wxHORIZONTAL );
 
-	wxFlexGridSizer* fgSizer2;
-	fgSizer2 = new wxFlexGridSizer( 1, 3, 0, 0 );
-	fgSizer2->SetFlexibleDirection( wxBOTH );
-	fgSizer2->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
+	wxFlexGridSizer* detail_sizer_flex;
+	detail_sizer_flex = new wxFlexGridSizer( 1, 3, 0, 0 );
+	detail_sizer_flex->SetFlexibleDirection( wxBOTH );
+	detail_sizer_flex->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 
-	wxBoxSizer* bSizer1181;
-	bSizer1181 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* detail_sizer_col1;
+	detail_sizer_col1 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizerX;
-	bSizerX = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_X;
+	detail_sizer_X = new wxBoxSizer( wxHORIZONTAL );
 
-	bSizerX->SetMinSize( wxSize( 10,10 ) );
-	label_x_cord = new wxStaticText( m_panel21, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	detail_sizer_X->SetMinSize( wxSize( 10,10 ) );
+	label_x_cord = new wxStaticText( detail_panel, wxID_ANY, wxT("X-Cord:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_x_cord->Wrap( -1 );
-	bSizerX->Add( label_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_X->Add( label_x_cord, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	spin_x = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 1 );
+	spin_x = new wxSpinCtrlDouble( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0.000000, 1 );
 	spin_x->SetDigits( 3 );
 	spin_x->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
-	bSizerX->Add( spin_x, 0, wxALL, 5 );
+	detail_sizer_X->Add( spin_x, 0, wxALL, 5 );
 
 
-	bSizer1181->Add( bSizerX, 1, 0, 5 );
+	detail_sizer_col1->Add( detail_sizer_X, 1, 0, 5 );
 
-	wxBoxSizer* bSizerY;
-	bSizerY = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Y;
+	detail_sizer_Y = new wxBoxSizer( wxHORIZONTAL );
 
-	label_y_cord = new wxStaticText( m_panel21, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_y_cord = new wxStaticText( detail_panel, wxID_ANY, wxT("Y-Cord:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_y_cord->Wrap( -1 );
-	bSizerY->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	detail_sizer_Y->Add( label_y_cord, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	spin_y = new wxSpinCtrlDouble( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
+	spin_y = new wxSpinCtrlDouble( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1e+06, 1e+06, 0, 1 );
 	spin_y->SetDigits( 3 );
-	bSizerY->Add( spin_y, 0, wxALL, 5 );
+	detail_sizer_Y->Add( spin_y, 0, wxALL, 5 );
 
 
-	bSizer1181->Add( bSizerY, 1, 0, 5 );
+	detail_sizer_col1->Add( detail_sizer_Y, 1, 0, 5 );
 
-	wxBoxSizer* bSizer36;
-	bSizer36 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Amount;
+	detail_sizer_Amount = new wxBoxSizer( wxHORIZONTAL );
 
-	label_amount = new wxStaticText( m_panel21, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_amount = new wxStaticText( detail_panel, wxID_ANY, wxT("Amount:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_amount->Wrap( -1 );
-	bSizer36->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Amount->Add( label_amount, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	spin_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 1000000, 1 );
-	bSizer36->Add( spin_amount, 0, wxALL, 5 );
+	spin_amount = new wxSpinCtrl( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 1000000, 1 );
+	detail_sizer_Amount->Add( spin_amount, 0, wxALL, 5 );
 
 
-	bSizer1181->Add( bSizer36, 1, 0, 5 );
+	detail_sizer_col1->Add( detail_sizer_Amount, 1, 0, 5 );
 
-	wxBoxSizer* bSizer361;
-	bSizer361 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Comment;
+	detail_sizer_Comment = new wxBoxSizer( wxHORIZONTAL );
 
-	label_comment = new wxStaticText( m_panel21, wxID_ANY, wxT("Comment:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_comment = new wxStaticText( detail_panel, wxID_ANY, wxT("Comment:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_comment->Wrap( -1 );
-	bSizer361->Add( label_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Comment->Add( label_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	txt_comment = new wxTextCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
-	bSizer361->Add( txt_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	bSizer1181->Add( bSizer361, 1, wxEXPAND, 5 );
+	txt_comment = new wxTextCtrl( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 100,-1 ), 0 );
+	detail_sizer_Comment->Add( txt_comment, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	fgSizer2->Add( bSizer1181, 1, wxEXPAND, 5 );
+	detail_sizer_col1->Add( detail_sizer_Comment, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer1191;
-	bSizer1191 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer35;
-	bSizer35 = new wxBoxSizer( wxHORIZONTAL );
+	detail_sizer_flex->Add( detail_sizer_col1, 1, wxEXPAND, 5 );
 
-	label_item = new wxStaticText( m_panel21, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	wxBoxSizer* detail_sizer_col2;
+	detail_sizer_col2 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* detail_sizer_ItemTech;
+	detail_sizer_ItemTech = new wxBoxSizer( wxHORIZONTAL );
+
+	label_item = new wxStaticText( detail_panel, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_item->Wrap( -1 );
-	bSizer35->Add( label_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_ItemTech->Add( label_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	cmb_item = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
+	cmb_item = new wxComboBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
 	cmb_item->SetMinSize( wxSize( 150,-1 ) );
 
-	bSizer35->Add( cmb_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_ItemTech->Add( cmb_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	bSizer1191->Add( bSizer35, 1, 0, 5 );
+	detail_sizer_col2->Add( detail_sizer_ItemTech, 1, 0, 5 );
 
-	wxBoxSizer* bSizer31;
-	bSizer31 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_FromTo;
+	detail_sizer_FromTo = new wxBoxSizer( wxHORIZONTAL );
 
-	label_from_into = new wxStaticText( m_panel21, wxID_ANY, wxT("From:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_from_into = new wxStaticText( detail_panel, wxID_ANY, wxT("From:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_from_into->Wrap( -1 );
-	bSizer31->Add( label_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_FromTo->Add( label_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	cmb_from_into = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
+	cmb_from_into = new wxComboBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
 	cmb_from_into->SetSelection( 0 );
 	cmb_from_into->SetMinSize( wxSize( 150,-1 ) );
 
-	bSizer31->Add( cmb_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_FromTo->Add( cmb_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	bSizer1191->Add( bSizer31, 1, 0, 5 );
+	detail_sizer_col2->Add( detail_sizer_FromTo, 1, 0, 5 );
 
-	wxBoxSizer* bSizer47;
-	bSizer47 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Input;
+	detail_sizer_Input = new wxBoxSizer( wxHORIZONTAL );
 
-	label_input = new wxStaticText( m_panel21, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_input = new wxStaticText( detail_panel, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_input->Wrap( -1 );
-	bSizer47->Add( label_input, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Input->Add( label_input, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	wxString radio_inputChoices[] = { wxT("Left"), wxT("None"), wxT("Right") };
 	int radio_inputNChoices = sizeof( radio_inputChoices ) / sizeof( wxString );
-	radio_input = new wxRadioBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_inputNChoices, radio_inputChoices, 3, wxRA_SPECIFY_COLS );
+	radio_input = new wxRadioBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_inputNChoices, radio_inputChoices, 3, wxRA_SPECIFY_COLS );
 	radio_input->SetSelection( 1 );
 	radio_input->SetFont( wxFont( 6, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	radio_input->SetMinSize( wxSize( 150,-1 ) );
 
-	bSizer47->Add( radio_input, 0, wxLEFT|wxRIGHT, 5 );
+	detail_sizer_Input->Add( radio_input, 0, wxLEFT|wxRIGHT, 5 );
 
 
-	bSizer1191->Add( bSizer47, 1, 0, 5 );
+	detail_sizer_col2->Add( detail_sizer_Input, 1, 0, 5 );
 
-	wxBoxSizer* bSizer471;
-	bSizer471 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Output;
+	detail_sizer_Output = new wxBoxSizer( wxHORIZONTAL );
 
-	label_output = new wxStaticText( m_panel21, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_output = new wxStaticText( detail_panel, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_output->Wrap( -1 );
-	bSizer471->Add( label_output, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Output->Add( label_output, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	wxString radio_outputChoices[] = { wxT("Left"), wxT("None"), wxT("Right") };
 	int radio_outputNChoices = sizeof( radio_outputChoices ) / sizeof( wxString );
-	radio_output = new wxRadioBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_outputNChoices, radio_outputChoices, 3, wxRA_SPECIFY_COLS );
+	radio_output = new wxRadioBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_outputNChoices, radio_outputChoices, 3, wxRA_SPECIFY_COLS );
 	radio_output->SetSelection( 1 );
 	radio_output->SetFont( wxFont( 6, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	radio_output->SetMinSize( wxSize( 150,-1 ) );
 
-	bSizer471->Add( radio_output, 0, wxLEFT|wxRIGHT, 5 );
+	detail_sizer_Output->Add( radio_output, 0, wxLEFT|wxRIGHT, 5 );
 
 
-	bSizer1191->Add( bSizer471, 1, wxEXPAND, 5 );
+	detail_sizer_col2->Add( detail_sizer_Output, 1, wxEXPAND, 5 );
 
 
-	fgSizer2->Add( bSizer1191, 1, wxEXPAND, 5 );
+	detail_sizer_flex->Add( detail_sizer_col2, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer120;
-	bSizer120 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* detail_sizer_col3;
+	detail_sizer_col3 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer58;
-	bSizer58 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Orientation;
+	detail_sizer_Orientation = new wxBoxSizer( wxHORIZONTAL );
 
-	label_building_orientation = new wxStaticText( m_panel21, wxID_ANY, wxT("Building orientation:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_building_orientation = new wxStaticText( detail_panel, wxID_ANY, wxT("Building orientation:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_building_orientation->Wrap( -1 );
-	bSizer58->Add( label_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Orientation->Add( label_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	cmb_building_orientation = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
+	cmb_building_orientation = new wxComboBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
 	cmb_building_orientation->SetToolTip( wxT("The orientation of the building. Inserters are reversed.") );
 
-	bSizer58->Add( cmb_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Orientation->Add( cmb_building_orientation, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	bSizer120->Add( bSizer58, 1, 0, 5 );
+	detail_sizer_col3->Add( detail_sizer_Orientation, 1, 0, 5 );
 
-	wxBoxSizer* bSizer59;
-	bSizer59 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Direction;
+	detail_sizer_Direction = new wxBoxSizer( wxHORIZONTAL );
 
-	label_direction_to_build = new wxStaticText( m_panel21, wxID_ANY, wxT("Build direction:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_direction_to_build = new wxStaticText( detail_panel, wxID_ANY, wxT("Build direction:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_direction_to_build->Wrap( -1 );
-	bSizer59->Add( label_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Direction->Add( label_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	cmb_direction_to_build = new wxComboBox( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
+	cmb_direction_to_build = new wxComboBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 80,-1 ), 0, NULL, 0 );
 	cmb_direction_to_build->SetToolTip( wxT("The direction to place the next building") );
 
-	bSizer59->Add( cmb_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Direction->Add( cmb_direction_to_build, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
-	bSizer120->Add( bSizer59, 1, 0, 5 );
+	detail_sizer_col3->Add( detail_sizer_Direction, 1, 0, 5 );
 
-	wxBoxSizer* bSizer51;
-	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Size;
+	detail_sizer_Size = new wxBoxSizer( wxHORIZONTAL );
 
-	label_building_size = new wxStaticText( m_panel21, wxID_ANY, wxT("Building size:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_building_size = new wxStaticText( detail_panel, wxID_ANY, wxT("Building size:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_building_size->Wrap( -1 );
-	bSizer51->Add( label_building_size, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Size->Add( label_building_size, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	spin_building_size = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 10, 1 );
+	spin_building_size = new wxSpinCtrl( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 10, 1 );
 	spin_building_size->SetToolTip( wxT("Number of tiles the building is wide. Used for placing multiple buildings in a row.") );
 	spin_building_size->SetMinSize( wxSize( 80,-1 ) );
 
-	bSizer51->Add( spin_building_size, 0, wxALL, 5 );
+	detail_sizer_Size->Add( spin_building_size, 0, wxALL, 5 );
 
 
-	bSizer120->Add( bSizer51, 1, wxEXPAND, 5 );
+	detail_sizer_col3->Add( detail_sizer_Size, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer52;
-	bSizer52 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* detail_sizer_Buildings;
+	detail_sizer_Buildings = new wxBoxSizer( wxHORIZONTAL );
 
-	label_amount_of_buildings = new wxStaticText( m_panel21, wxID_ANY, wxT("Amount of Buildings:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
+	label_amount_of_buildings = new wxStaticText( detail_panel, wxID_ANY, wxT("Amount of Buildings:"), wxDefaultPosition, wxSize( 115,-1 ), wxALIGN_RIGHT );
 	label_amount_of_buildings->Wrap( -1 );
-	bSizer52->Add( label_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	detail_sizer_Buildings->Add( label_amount_of_buildings, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	spin_building_amount = new wxSpinCtrl( m_panel21, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 250, 1 );
+	spin_building_amount = new wxSpinCtrl( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 1, 250, 1 );
 	spin_building_amount->SetToolTip( wxT("The number of buildings to place in a row") );
 	spin_building_amount->SetMinSize( wxSize( 80,-1 ) );
 
-	bSizer52->Add( spin_building_amount, 0, wxALL, 5 );
+	detail_sizer_Buildings->Add( spin_building_amount, 0, wxALL, 5 );
 
 
-	bSizer120->Add( bSizer52, 1, wxEXPAND, 5 );
+	detail_sizer_col3->Add( detail_sizer_Buildings, 1, wxEXPAND, 5 );
 
 
-	fgSizer2->Add( bSizer120, 1, wxEXPAND, 5 );
+	detail_sizer_flex->Add( detail_sizer_col3, 1, wxEXPAND, 5 );
 
 
-	bSizer19->Add( fgSizer2, 1, wxEXPAND, 5 );
+	detail_sizer->Add( detail_sizer_flex, 1, wxEXPAND, 5 );
 
 
-	m_panel21->SetSizer( bSizer19 );
-	m_panel21->Layout();
-	bSizer19->Fit( m_panel21 );
+	detail_panel->SetSizer( detail_sizer );
+	detail_panel->Layout();
+	detail_sizer->Fit( detail_panel );
 	type_panel = new TypePanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
 	m_mgr.AddPane( type_panel, wxAuiPaneInfo() .Name( wxT("StepTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,140 ) ).MinSize( wxSize( 620,120 ) ).Layer( 1 ) );
 
-	wxBoxSizer* bSizer18;
-	bSizer18 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer;
+	type_sizer = new wxBoxSizer( wxVERTICAL );
 
-	wxFlexGridSizer* fgSizer3;
-	fgSizer3 = new wxFlexGridSizer( 3, 7, 15, 15 );
-	fgSizer3->SetFlexibleDirection( wxBOTH );
-	fgSizer3->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
+	wxFlexGridSizer* type_sizer_flex;
+	type_sizer_flex = new wxFlexGridSizer( 3, 7, 15, 15 );
+	type_sizer_flex->SetFlexibleDirection( wxBOTH );
+	type_sizer_flex->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
 
-	wxBoxSizer* bSizer42;
-	bSizer42 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Take;
+	type_sizer_Take = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_take = new wxRadioButton( type_panel, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer42->Add( rbtn_take, 0, wxALL, 5 );
+	rbtn_take->SetToolTip( wxT("Makes the character take items from a container [chest, furnace, assembler, etc.] and put them into their inventory") );
+
+	type_sizer_Take->Add( rbtn_take, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer42, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Take, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer11;
-	bSizer11 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Put;
+	type_sizer_Put = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_put = new wxRadioButton( type_panel, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer11->Add( rbtn_put, 0, wxALL, 5 );
+	rbtn_put->SetToolTip( wxT("Makes the character put items from his inventory into a container [chest, furnace, assembler, etc.]") );
+
+	type_sizer_Put->Add( rbtn_put, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer11, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Put, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer17;
-	bSizer17 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_GameSpeed;
+	type_sizer_GameSpeed = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_game_speed = new wxRadioButton( type_panel, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer17->Add( rbtn_game_speed, 0, wxALL, 5 );
+	rbtn_game_speed->SetToolTip( wxT("Changes the game speed to X%") );
+
+	type_sizer_GameSpeed->Add( rbtn_game_speed, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer17, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_GameSpeed, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer39;
-	bSizer39 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Craft;
+	type_sizer_Craft = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_craft = new wxRadioButton( type_panel, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer39->Add( rbtn_craft, 0, wxALL, 5 );
+	rbtn_craft->SetToolTip( wxT("Makes the character craft an item") );
+
+	type_sizer_Craft->Add( rbtn_craft, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer39, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Craft, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer15;
-	bSizer15 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Walk;
+	type_sizer_Walk = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_walk = new wxRadioButton( type_panel, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer15->Add( rbtn_walk, 0, wxALL, 5 );
+	rbtn_walk->SetToolTip( wxT("Makes the character walk to a point") );
+
+	type_sizer_Walk->Add( rbtn_walk, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer15, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Walk, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer12;
-	bSizer12 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Mine;
+	type_sizer_Mine = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_mine = new wxRadioButton( type_panel, wxID_ANY, wxT("Mine"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer12->Add( rbtn_mine, 0, wxALL, 5 );
+	rbtn_mine->SetToolTip( wxT("Makes the character mine an area, if there is a building, tree or rock they will remove that instead") );
+
+	type_sizer_Mine->Add( rbtn_mine, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer12, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Mine, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer141;
-	bSizer141 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Pause;
+	type_sizer_Pause = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_pause = new wxRadioButton( type_panel, wxID_ANY, wxT("Pause"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer141->Add( rbtn_pause, 0, wxALL, 5 );
+	rbtn_pause->SetToolTip( wxT("Pauses the game, when all previous tasks are completed. Same as /Pause in the console, the game can be continued with /Resume") );
+
+	type_sizer_Pause->Add( rbtn_pause, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer141, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Pause, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer16;
-	bSizer16 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Build;
+	type_sizer_Build = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_build = new wxRadioButton( type_panel, wxID_ANY, wxT("Build"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer16->Add( rbtn_build, 0, wxALL, 5 );
+	rbtn_build->SetToolTip( wxT("Makes the character build an entity") );
+
+	type_sizer_Build->Add( rbtn_build, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer16, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Build, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer64;
-	bSizer64 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Recipe;
+	type_sizer_Recipe = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_recipe = new wxRadioButton( type_panel, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer64->Add( rbtn_recipe, 0, wxALL, 5 );
+	rbtn_recipe->SetToolTip( wxT("Makes the character change the recipe for a crafting machine") );
+
+	type_sizer_Recipe->Add( rbtn_recipe, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer64, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Recipe, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer63;
-	bSizer63 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Tech;
+	type_sizer_Tech = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_tech = new wxRadioButton( type_panel, wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer63->Add( rbtn_tech, 0, wxALL, 5 );
+	rbtn_tech->SetToolTip( wxT("Adds a technologi to the research queue") );
+
+	type_sizer_Tech->Add( rbtn_tech, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer63, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Tech, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer40;
-	bSizer40 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Limit;
+	type_sizer_Limit = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_limit = new wxRadioButton( type_panel, wxID_ANY, wxT("Limit"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer40->Add( rbtn_limit, 0, wxALL, 5 );
+	rbtn_limit->SetToolTip( wxT("Makes the character limit a chest to X slots") );
+
+	type_sizer_Limit->Add( rbtn_limit, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer40, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Limit, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer431;
-	bSizer431 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Idle;
+	type_sizer_Idle = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_idle = new wxRadioButton( type_panel, wxID_ANY, wxT("Idle"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer431->Add( rbtn_idle, 0, wxALL, 5 );
+	rbtn_idle->SetToolTip( wxT("Makes the character do nothing for X ticks") );
+
+	type_sizer_Idle->Add( rbtn_idle, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer431, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Idle, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer65;
-	bSizer65 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Filter;
+	type_sizer_Filter = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_filter = new wxRadioButton( type_panel, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer65->Add( rbtn_filter, 0, wxALL, 5 );
+	rbtn_filter->SetToolTip( wxT("Makes the character set the filter on either: a filter-inserter, a splitter or a slot in a car / train wagon") );
+
+	type_sizer_Filter->Add( rbtn_filter, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer65, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Filter, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer8;
-	bSizer8 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* type_sizer_Stop;
+	type_sizer_Stop = new wxBoxSizer( wxHORIZONTAL );
 
 	rbtn_stop = new wxRadioButton( type_panel, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer8->Add( rbtn_stop, 0, wxALL, 5 );
+	type_sizer_Stop->Add( rbtn_stop, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer8, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Stop, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer9;
-	bSizer9 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Priority;
+	type_sizer_Priority = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_priority = new wxRadioButton( type_panel, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer9->Add( rbtn_priority, 0, wxALL, 5 );
+	rbtn_priority->SetToolTip( wxT("Makes the character set the input and output priority on a splitter.\nNeeds to be applied before setting the filter on the splitter.") );
+
+	type_sizer_Priority->Add( rbtn_priority, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer9, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Priority, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer13;
-	bSizer13 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Rotate;
+	type_sizer_Rotate = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_rotate = new wxRadioButton( type_panel, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer13->Add( rbtn_rotate, 0, wxALL, 5 );
+	rbtn_rotate->SetToolTip( wxT("Makes the character rotate an entity X times.\nIf X is 3 then the entity is rotated once counter-clock-wise.") );
+
+	type_sizer_Rotate->Add( rbtn_rotate, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer13, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Rotate, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer41;
-	bSizer41 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_PickUp;
+	type_sizer_PickUp = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_pick_up = new wxRadioButton( type_panel, wxID_ANY, wxT("Pick Up"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer41->Add( rbtn_pick_up, 0, wxALL, 5 );
+	rbtn_pick_up->SetToolTip( wxT("Makes the character start to pick up items on the floor, same as pressing ( f )") );
+
+	type_sizer_PickUp->Add( rbtn_pick_up, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer41, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_PickUp, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer441;
-	bSizer441 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Drop;
+	type_sizer_Drop = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_drop = new wxRadioButton( type_panel, wxID_ANY, wxT("Drop"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer441->Add( rbtn_drop, 0, wxALL, 5 );
+	rbtn_drop->SetToolTip( wxT("Makes the character drop an item, same as pressing ( z )") );
+
+	type_sizer_Drop->Add( rbtn_drop, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer441, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Drop, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer14;
-	bSizer14 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Launch;
+	type_sizer_Launch = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_launch = new wxRadioButton( type_panel, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer14->Add( rbtn_launch, 0, wxALL, 5 );
+	rbtn_launch->SetToolTip( wxT("Makes the character launch a rocket from a rocket silo") );
+
+	type_sizer_Launch->Add( rbtn_launch, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer14, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Launch, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer1411;
-	bSizer1411 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Save;
+	type_sizer_Save = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_save = new wxRadioButton( type_panel, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1411->Add( rbtn_save, 0, wxALL, 5 );
+	rbtn_save->SetToolTip( wxT("Creates a save game named by the comment, the tas can only be continued from these save games.\nIn single player the save game name has the prefix autosave-") );
+
+	type_sizer_Save->Add( rbtn_save, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizer1411, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_Save, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* bSizerCancelCrafting;
-	bSizerCancelCrafting = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_CancelCrafting;
+	type_sizer_CancelCrafting = new wxBoxSizer( wxVERTICAL );
 
 	rbtn_cancel_crafting = new wxRadioButton( type_panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_cancel_crafting->SetToolTip( wxT("Cancels items in the players crafting queue, \nreturning the ingredients to your hand") );
 
-	bSizerCancelCrafting->Add( rbtn_cancel_crafting, 0, wxALL, 5 );
+	type_sizer_CancelCrafting->Add( rbtn_cancel_crafting, 0, wxALL, 5 );
 
 
-	fgSizer3->Add( bSizerCancelCrafting, 1, wxEXPAND, 5 );
+	type_sizer_flex->Add( type_sizer_CancelCrafting, 1, wxEXPAND, 5 );
 
 
-	bSizer18->Add( fgSizer3, 1, wxEXPAND|wxLEFT|wxRIGHT, 15 );
+	type_sizer->Add( type_sizer_flex, 1, wxEXPAND|wxLEFT|wxRIGHT, 15 );
 
 
-	type_panel->SetSizer( bSizer18 );
+	type_panel->SetSizer( type_sizer );
 	type_panel->Layout();
-	bSizer18->Fit( type_panel );
-	m_panel23 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( m_panel23, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,140 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
+	type_sizer->Fit( type_panel );
+	auto_put_panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_mgr.AddPane( auto_put_panel, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,140 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
 
-	wxBoxSizer* bSizer116;
-	bSizer116 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* auto_put_sizer;
+	auto_put_sizer = new wxBoxSizer( wxVERTICAL );
 
-	wxFlexGridSizer* fgSizer4;
-	fgSizer4 = new wxFlexGridSizer( 4, 1, 5, 15 );
-	fgSizer4->SetFlexibleDirection( wxBOTH );
-	fgSizer4->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	wxFlexGridSizer* auto_put_flex;
+	auto_put_flex = new wxFlexGridSizer( 4, 1, 5, 15 );
+	auto_put_flex->SetFlexibleDirection( wxBOTH );
+	auto_put_flex->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	check_furnace = new wxCheckBox( m_panel23, wxID_ANY, wxT("Furnace"), wxDefaultPosition, wxDefaultSize, 0 );
+	check_furnace = new wxCheckBox( auto_put_panel, wxID_ANY, wxT("Furnace"), wxDefaultPosition, wxDefaultSize, 0 );
 	check_furnace->SetValue(true);
 	check_furnace->SetToolTip( wxT("Adds a step to put coal into stone and steel furnaces") );
 
-	fgSizer4->Add( check_furnace, 0, wxALL, 5 );
+	auto_put_flex->Add( check_furnace, 0, wxALL, 5 );
 
-	check_burner = new wxCheckBox( m_panel23, wxID_ANY, wxT("Burner"), wxDefaultPosition, wxDefaultSize, 0 );
+	check_burner = new wxCheckBox( auto_put_panel, wxID_ANY, wxT("Burner"), wxDefaultPosition, wxDefaultSize, 0 );
 	check_burner->SetValue(true);
 	check_burner->SetToolTip( wxT("Adds a step to put coal into Burner Mining Drills, Burner Inserters and Boilers") );
 
-	fgSizer4->Add( check_burner, 0, wxALL, 5 );
+	auto_put_flex->Add( check_burner, 0, wxALL, 5 );
 
-	check_lab = new wxCheckBox( m_panel23, wxID_ANY, wxT("Lab"), wxDefaultPosition, wxDefaultSize, 0 );
+	check_lab = new wxCheckBox( auto_put_panel, wxID_ANY, wxT("Lab"), wxDefaultPosition, wxDefaultSize, 0 );
 	check_lab->SetValue(true);
 	check_lab->SetToolTip( wxT("Adds a step to put automation science into the Lab") );
 
-	fgSizer4->Add( check_lab, 0, wxALL, 5 );
+	auto_put_flex->Add( check_lab, 0, wxALL, 5 );
 
-	check_recipe = new wxCheckBox( m_panel23, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0 );
+	check_recipe = new wxCheckBox( auto_put_panel, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0 );
 	check_recipe->SetValue(true);
 	check_recipe->SetToolTip( wxT("Add steps to put the items needed to craft that recipe") );
 
-	fgSizer4->Add( check_recipe, 0, wxALL, 5 );
+	auto_put_flex->Add( check_recipe, 0, wxALL, 5 );
 
 
-	bSizer116->Add( fgSizer4, 1, wxLEFT|wxRIGHT, 5 );
+	auto_put_sizer->Add( auto_put_flex, 1, wxLEFT|wxRIGHT, 5 );
 
 
-	m_panel23->SetSizer( bSizer116 );
-	m_panel23->Layout();
-	bSizer116->Fit( m_panel23 );
-	m_auinotebook1 = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TAB_EXTERNAL_MOVE|wxAUI_NB_TAB_MOVE|wxAUI_NB_TAB_SPLIT|wxAUI_NB_TOP|wxAUI_NB_WINDOWLIST_BUTTON|wxBORDER_RAISED );
-	m_mgr.AddPane( m_auinotebook1, wxAuiPaneInfo() .Name( wxT("DataBook") ).Center() .Caption( wxT("Book") ).CaptionVisible( false ).CloseButton( false ).MaximizeButton( true ).MinimizeButton( true ).PinButton( true ).Dock().Resizable().FloatingSize( wxDefaultSize ).Row( 2 ).MinSize( wxSize( 500,500 ) ).Layer( 2 ).CentrePane() );
+	auto_put_panel->SetSizer( auto_put_sizer );
+	auto_put_panel->Layout();
+	auto_put_sizer->Fit( auto_put_panel );
+	main_book = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TAB_EXTERNAL_MOVE|wxAUI_NB_TAB_MOVE|wxAUI_NB_TAB_SPLIT|wxAUI_NB_TOP|wxAUI_NB_WINDOWLIST_BUTTON|wxBORDER_RAISED );
+	m_mgr.AddPane( main_book, wxAuiPaneInfo() .Name( wxT("DataBook") ).Center() .Caption( wxT("Book") ).CaptionVisible( false ).CloseButton( false ).MaximizeButton( true ).MinimizeButton( true ).PinButton( true ).Dock().Resizable().FloatingSize( wxDefaultSize ).Row( 2 ).MinSize( wxSize( 500,500 ) ).Layer( 2 ).CentrePane() );
 
-	template_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxTAB_TRAVERSAL );
+	template_panel = new wxPanel( main_book, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5612;
 	bSizer5612 = new wxBoxSizer( wxVERTICAL );
 
@@ -889,8 +927,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	template_panel->SetSizer( bSizer5612 );
 	template_panel->Layout();
 	bSizer5612->Fit( template_panel );
-	m_auinotebook1->AddPage( template_panel, wxT("Templates"), true, wxNullBitmap );
-	step_panel = new wxPanel( m_auinotebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	main_book->AddPage( template_panel, wxT("Templates"), true, wxNullBitmap );
+	step_panel = new wxPanel( main_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
 
@@ -992,7 +1030,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->SetSizer( bSizer5611 );
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
-	m_auinotebook1->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
+	main_book->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
 
 
 	m_mgr.Update();
