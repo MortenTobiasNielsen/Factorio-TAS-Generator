@@ -802,6 +802,39 @@ void cMain::OnStepsGridDoubleLeftClick(wxGridEvent& event)
 	event.Skip();
 }
 
+void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
+{
+	wxGridBlockCoordsVector rowsBlocks = grid_steps->GetSelectedRowBlocks();
+	if (rowsBlocks.empty()){ //prevents a crash due to somehow selecting zero rows??
+		event.Skip();
+		return;
+	}
+	wxColour colour = grid_steps->GetCellBackgroundColour(rowsBlocks[0].GetTopRow(), 1); //retrieve the colour of the first selected element
+	step_colour_picker->SetColour(colour);
+	event.Skip();
+}
+
+void cMain::OnStepColourPickerColourChanged(wxColourPickerEvent& event)
+{
+	if (!grid_steps->IsSelection())
+	{
+		wxMessageBox("No step is chosen - please select row(s) in the step list", "Cannot change colour of steps");
+		return;
+	}
+	const wxColour colour = step_colour_picker->GetColour();
+	wxGridBlockCoordsVector rowsBlocks = grid_steps->GetSelectedRowBlocks();
+	for (wxGridBlockCoords block : rowsBlocks)
+	{
+		for (int row = block.GetTopRow(); row <= block.GetBottomRow(); row++)
+		{
+			grid_steps->SetCellBackgroundColour(row, 1, colour);
+			grid_steps->SetCellBackgroundColour(row, 2, colour);
+			grid_steps->SetCellBackgroundColour(row, 3, colour);
+		}
+	}
+	event.Skip();
+}
+
 void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
 {
 	if (!grid_steps->IsSelection())

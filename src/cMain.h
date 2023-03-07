@@ -126,6 +126,8 @@ protected:
 	void OnMoveDownFiveClicked(wxMouseEvent& event);
 
 	void OnStepsGridDoubleLeftClick(wxGridEvent& event);
+	void OnStepsGridRangeSelect(wxGridRangeSelectEvent& event);
+	void OnStepColourPickerColourChanged(wxColourPickerEvent& event);
 
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);

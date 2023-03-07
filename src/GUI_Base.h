@@ -28,6 +28,7 @@
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 #include <wx/checkbox.h>
+#include <wx/clrpicker.h>
 #include <wx/button.h>
 #include <wx/statline.h>
 #include <wx/grid.h>
@@ -107,6 +108,7 @@ class GUI_Base : public wxFrame
 		wxCheckBox* check_burner;
 		wxCheckBox* check_lab;
 		wxCheckBox* check_recipe;
+		wxColourPickerCtrl* step_colour_picker;
 		wxAuiNotebook* main_book;
 		wxPanel* template_panel;
 		wxStaticText* label_choose_template;
@@ -204,6 +206,7 @@ class GUI_Base : public wxFrame
 		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -228,6 +231,7 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
+		virtual void OnStepsGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
 
 
 	public:
