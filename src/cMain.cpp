@@ -883,7 +883,7 @@ void cMain::OnTemplateChosen(wxCommandEvent& event)
 	event.Skip();
 }
 
-void cMain::OnTemplateEnter(wxCommandEvent& event)
+void cMain::OnTemplateText(wxCommandEvent& event)
 {
 	UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
 	event.Skip();

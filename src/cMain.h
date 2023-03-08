@@ -139,7 +139,7 @@ protected:
 	void OnTemplateGridDoubleLeftClick(wxGridEvent& event);
 
 	void OnTemplateChosen(wxCommandEvent& event);
-	void OnTemplateEnter(wxCommandEvent& event);
+	void OnTemplateText(wxCommandEvent& event);
 
 	void TemplateAlterStep(StepParameters& step);
 
