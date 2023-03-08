@@ -202,6 +202,11 @@ void cMain::ResetToNewWindow()
 
 bool cMain::CheckBeforeClose()
 {
+	if (no_changes)
+	{
+		return true; 
+	}
+
 	if (grid_steps->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)
 	{
 		int answer = wxMessageBox("Do you want to save your changes?", "Ensure that you have saved what you need", wxICON_QUESTION | wxYES_NO | wxCANCEL, this);
@@ -291,6 +296,8 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 			StepGridData.insert(it2, data);
 		}
 	}
+
+	no_changes = false;
 }
 
 void cMain::TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map)
@@ -368,6 +375,8 @@ void cMain::TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, 
 			}
 		}
 	}
+
+	no_changes = false;
 }
 
 bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
@@ -421,6 +430,7 @@ bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepPara
 		rowsDeleted += rowCount;
 	}
 
+	no_changes = false;
 	return true;
 }
 
@@ -445,6 +455,7 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 
 	BackgroundColorUpdate(grid, rowNum, step.StepEnum);
 
+	no_changes = false;
 	return true;
 }
 
@@ -488,6 +499,8 @@ void cMain::UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
 
 		BackgroundColorUpdate(grid, i, steps[i].StepEnum);
 	}
+
+	no_changes = false;
 }
 
 void cMain::OnAddStepClicked(wxCommandEvent& event)
@@ -506,6 +519,7 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 		AddStep(grid_steps->GetNumberRows());
 	}
 	
+	no_changes = false;
 	event.Skip();
 }
 
@@ -525,6 +539,7 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 		AddStep(grid_steps->GetNumberRows());
 	}
 
+	no_changes = false;
 	event.Skip();
 }
 
@@ -648,6 +663,7 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 	BackgroundColorUpdate(grid_steps, row, stepParameters.StepEnum);
 
 	grid_steps->SelectRow(row);
+	no_changes = false;
 }
 
 void cMain::OnDeleteStepClicked(wxCommandEvent& event)
@@ -744,6 +760,7 @@ void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 		}
 	}
 
+	no_changes = false;
 	event.Skip();
 }
 
@@ -861,6 +878,7 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 	}
 
 	it->second = steps;
+	no_changes = false;
 }
 
 void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow)
@@ -916,6 +934,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 	
 	UpdateTemplateGrid(grid_template, template_map[name]);
 
+	no_changes = false;
 	event.Skip();
 }
 
@@ -950,6 +969,8 @@ void cMain::OnDeleteTemplateClicked(wxCommandEvent& event)
 	{
 		grid_template->DeleteRows(0, grid_template->GetNumberRows());
 	}
+
+	no_changes = false;
 }
 
 void cMain::OnTemplateAddFromStepsListClicked(wxCommandEvent& event)
@@ -1016,6 +1037,8 @@ void cMain::OnTemplateAddToStepsListClicked(wxCommandEvent& event)
 
 		moveTo += 1;
 	}
+
+	no_changes = false;
 }
 
 void cMain::TemplateAlterStep(StepParameters& step)
@@ -1063,6 +1086,7 @@ void cMain::OnTemplateChangeStepClicked(wxCommandEvent& event)
 
 	template_map[name][rowNum] = stepParameters;
 
+	no_changes = false;
 	event.Skip();
 }
 
@@ -1251,6 +1275,7 @@ void cMain::Open(std::ifstream * file)
 		dialog_progress_bar->set_button_enable(true);
 	}
 
+	no_changes = true;
 }
 
 void cMain::OnMenuOpen(wxCommandEvent& event)
@@ -1737,6 +1762,11 @@ bool cMain::SaveFile(bool save_as)
 	std::string file_name = save_file_location.substr(save_file_location.rfind("\\") + 1);
 
 	SetLabel(window_title + " - " + file_name);
+
+	if (save)
+	{
+		no_changes = true;
+	}
 
 	return save;
 }

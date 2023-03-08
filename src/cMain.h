@@ -162,6 +162,8 @@ private:
 	bool auto_close_save = true;
 	bool auto_close_save_as = false;
 
+	bool no_changes = true;
+
 	const struct parameter_choices_struct
 	{
 		// x-cord, y-cord, amount, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
