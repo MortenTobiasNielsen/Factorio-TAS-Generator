@@ -1502,6 +1502,9 @@ script.on_event(defines.events.on_player_joined_game, function(event)
 	set_quick_bar(event)
 	script.on_event(defines.events.on_player_set_quick_bar_slot, on_set_quickbar)
 	game.players[event.player_index].game_view_settings.show_entity_info = true --Set alt-mode=true
+	if game and debug_state then
+		game.write_file("tas_state.txt", "State begins:\n", false) --reset tas_state file, only works for MP
+	end
 end)
 
 local tas_interface =
@@ -1585,6 +1588,9 @@ local function migrate_global()
 	if player then
 		player_position = player.position
 	end
+	if game and debug_state then
+		game.write_file("tas_state", "", false) --reset tas_state file
+	end
 end
 
 script.on_init(function()
@@ -1598,6 +1604,27 @@ script.on_init(function()
 end)
 
 script.on_load(migrate_global)
+
+local function write_state()
+	if debug_state and game and player and player.get_main_inventory() then
+		local inventory = player.get_main_inventory().get_contents()
+		local inventory_string = game.table_to_json(inventory)
+
+		local str = string.format([[
+Tick: %d
+	Position: %s
+	Inventory: %s
+]],
+game.tick,
+game.table_to_json(player.position),
+inventory_string
+			)
+
+		game.write_file("tas_state.txt", str, true)
+	end
+end
+
+script.on_nth_tick(11, write_state)
 
 local function release()
 	run = false
