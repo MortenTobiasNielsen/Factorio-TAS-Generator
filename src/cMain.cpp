@@ -1540,6 +1540,10 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 			spin_amount->SetValue(gridEntry->Amount);
 			txt_comment->SetValue(gridEntry->Comment);
 
+			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
+			spin_building_size->SetValue(gridEntry->BuildingSize);
+			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
+
 			return;
 		case e_priority:
 			OnPriorityMenuSelected(event);
@@ -1859,6 +1863,9 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = stepParameters->Amount;
 			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
+			gridEntry.DirectionToBuild = stepParameters->Direction;
+			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
 			stepParameters->Item = gridEntry.Item;
 			break;
 

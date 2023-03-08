@@ -144,9 +144,11 @@ private:
 	void launch(string step, string x_cord, string y_cord, string comment);
 	void save(string step, string nameOfSaveGame);
 	void idle(string step, string amount, string comment);
-	void rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment);
 	void pick(string step, string amount, string comment);
 
+	void rotate(string step, string action, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment = "");
+	void row_rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment);
+	
 	void build(string step, string action, string x_cord, string y_cord, string item, string OrientationEnum, string comment = "");
 	void row_build(string step, string x_cord, string y_cord, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment);
 
