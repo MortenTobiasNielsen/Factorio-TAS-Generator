@@ -288,12 +288,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_ItemTech;
 	detail_sizer_ItemTech = new wxBoxSizer( wxHORIZONTAL );
 
-	label_item = new wxStaticText( detail_panel, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_item = new wxStaticText( detail_panel, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
 	label_item->Wrap( -1 );
 	detail_sizer_ItemTech->Add( label_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	cmb_item = new wxComboBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
-	cmb_item->SetMinSize( wxSize( 150,-1 ) );
+	cmb_item->SetMinSize( wxSize( 180,-1 ) );
 
 	detail_sizer_ItemTech->Add( cmb_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -303,13 +303,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_FromTo;
 	detail_sizer_FromTo = new wxBoxSizer( wxHORIZONTAL );
 
-	label_from_into = new wxStaticText( detail_panel, wxID_ANY, wxT("From:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_from_into = new wxStaticText( detail_panel, wxID_ANY, wxT("From:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
 	label_from_into->Wrap( -1 );
 	detail_sizer_FromTo->Add( label_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	cmb_from_into = new wxComboBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_SORT );
 	cmb_from_into->SetSelection( 0 );
-	cmb_from_into->SetMinSize( wxSize( 150,-1 ) );
+	cmb_from_into->SetMinSize( wxSize( 180,-1 ) );
 
 	detail_sizer_FromTo->Add( cmb_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -319,7 +319,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_Input;
 	detail_sizer_Input = new wxBoxSizer( wxHORIZONTAL );
 
-	label_input = new wxStaticText( detail_panel, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_input = new wxStaticText( detail_panel, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
 	label_input->Wrap( -1 );
 	detail_sizer_Input->Add( label_input, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -328,7 +328,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	radio_input = new wxRadioBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_inputNChoices, radio_inputChoices, 3, wxRA_SPECIFY_COLS );
 	radio_input->SetSelection( 1 );
 	radio_input->SetFont( wxFont( 6, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
-	radio_input->SetMinSize( wxSize( 150,-1 ) );
+	radio_input->SetMinSize( wxSize( 180,-1 ) );
 
 	detail_sizer_Input->Add( radio_input, 0, wxLEFT|wxRIGHT, 5 );
 
@@ -338,7 +338,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_Output;
 	detail_sizer_Output = new wxBoxSizer( wxHORIZONTAL );
 
-	label_output = new wxStaticText( detail_panel, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
+	label_output = new wxStaticText( detail_panel, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
 	label_output->Wrap( -1 );
 	detail_sizer_Output->Add( label_output, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -347,7 +347,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	radio_output = new wxRadioBox( detail_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, radio_outputNChoices, radio_outputChoices, 3, wxRA_SPECIFY_COLS );
 	radio_output->SetSelection( 1 );
 	radio_output->SetFont( wxFont( 6, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
-	radio_output->SetMinSize( wxSize( 150,-1 ) );
+	radio_output->SetMinSize( wxSize( 180,-1 ) );
 
 	detail_sizer_Output->Add( radio_output, 0, wxLEFT|wxRIGHT, 5 );
 
