@@ -241,4 +241,16 @@ private:
 	vector<string> all_recipes;
 	vector<StepParameters> StepGridData;
 	vector<Building> BuildingsSnapShot;
+
+	// holds the current state of some gui elements
+	struct
+	{
+		wxArrayString* cmb_item;
+		const wxString* label_item;
+		const wxString* label_from_into;
+	}current; 
+
+	void UpdateCmbItem(wxArrayString* new_list);
+	void UpdateLabelItem(const wxString* new_text);
+	void UpdateLabelFromInto(const wxString* new_text);
 };
