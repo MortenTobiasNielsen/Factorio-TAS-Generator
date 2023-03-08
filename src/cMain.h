@@ -250,6 +250,7 @@ private:
 		wxArrayString* cmb_item;
 		const wxString* label_item;
 		const wxString* label_from_into;
+		map<wxArrayString*, wxString> map_last_item;
 	}current; 
 
 	void UpdateCmbItem(wxArrayString* new_list);
