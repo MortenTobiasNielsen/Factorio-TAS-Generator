@@ -211,7 +211,7 @@ void cMain::OnPutChosen(wxCommandEvent& event)
 
 	UpdateCmbItem(&item_choices);
 	UpdateLabelItem(&TypePanel::item);
-	UpdateLabelFromInto(&TypePanel::from);
+	UpdateLabelFromInto(&TypePanel::into);
 
 	cmb_from_into->SetValue(TypePanel::input); // set default to input on put step
 
@@ -238,7 +238,7 @@ void cMain::OnfilterChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.filter);
 
-	UpdateCmbItem(&handcrafted_choices);
+	UpdateCmbItem(&item_choices);
 	UpdateLabelItem(&TypePanel::item);
 
 	event.Skip();
