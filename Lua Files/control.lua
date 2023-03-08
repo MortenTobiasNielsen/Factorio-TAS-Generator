@@ -237,9 +237,19 @@ local function put()
 		return false
 	end
 
-	amount = target_inventory.insert{
+	amount=target_inventory.insert{
 		name=item,
-		count=player.remove_item{name=item, count=amount}
+		count=amount,
+	}
+
+	if amount < 1 then
+		warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can not be transferred. Amount: %d Removalable: %d Insertable: %d", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper), amount, removalable_items, insertable_items))
+		return false
+	end
+
+	amount = player.remove_item{
+		name=item,
+		count=amount,
 	}
 
 	local text = string.format("-%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"-2 Iron plate (5)"
