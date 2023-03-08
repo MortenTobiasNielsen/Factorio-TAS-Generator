@@ -4765,7 +4765,7 @@
                                                             <property name="selection">-1</property>
                                                             <property name="show">1</property>
                                                             <property name="size"></property>
-                                                            <property name="style"></property>
+                                                            <property name="style">wxTE_PROCESS_ENTER</property>
                                                             <property name="subclass">; ; forward_declare</property>
                                                             <property name="toolbar_pane">0</property>
                                                             <property name="tooltip"></property>
@@ -4778,6 +4778,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnCombobox">OnTemplateChosen</event>
+                                                            <event name="OnTextEnter">OnTemplateEnter</event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">
