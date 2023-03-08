@@ -49,13 +49,13 @@ class GUI_Base : public wxFrame
 	private:
 
 	protected:
-		wxMenuBar* m_menubar1;
+		wxMenuBar* main_menubar;
 		wxMenu* menu_file;
 		wxMenu* menu_script;
 		wxMenu* menu_shortcuts;
 		wxMenu* menu_goals;
 		wxMenu* menu_auto_close;
-		wxPanel* m_panel21;
+		wxPanel* detail_panel;
 		wxStaticText* label_x_cord;
 		wxSpinCtrlDouble* spin_x;
 		wxStaticText* label_y_cord;
@@ -102,12 +102,12 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_launch;
 		wxRadioButton* rbtn_save;
 		wxRadioButton* rbtn_cancel_crafting;
-		wxPanel* m_panel23;
+		wxPanel* auto_put_panel;
 		wxCheckBox* check_furnace;
 		wxCheckBox* check_burner;
 		wxCheckBox* check_lab;
 		wxCheckBox* check_recipe;
-		wxAuiNotebook* m_auinotebook1;
+		wxAuiNotebook* main_book;
 		wxPanel* template_panel;
 		wxStaticText* label_choose_template;
 		wxComboBox* cmb_choose_template;
