@@ -4778,6 +4778,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnCombobox">OnTemplateChosen</event>
+                                                            <event name="OnText">OnTemplateText</event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">

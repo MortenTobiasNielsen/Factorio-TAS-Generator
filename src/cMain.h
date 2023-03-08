@@ -140,8 +140,8 @@ protected:
 	void OnTemplateGridDoubleLeftClick(wxGridEvent& event);
 
 	void OnTemplateChosen(wxCommandEvent& event);
+	void OnTemplateText(wxCommandEvent& event);
 
-	void TemplateAlterStep(int row, wxGrid* grid);
 	void TemplateAlterStep(StepParameters& step);
 
 	//Seach

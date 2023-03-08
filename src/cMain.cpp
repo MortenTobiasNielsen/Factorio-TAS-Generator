@@ -883,6 +883,12 @@ void cMain::OnTemplateChosen(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::OnTemplateText(wxCommandEvent& event)
+{
+	UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
+	event.Skip();
+}
+
 void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 {
 	int rowCount = cmb_choose_template->GetCount();
@@ -910,6 +916,7 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 	template_choices.Sort();
 	cmb_choose_template->Append(template_choices);
 	cmb_choose_template->SetValue(name);
+	cmb_choose_template->AutoComplete(template_choices);
 
 	vector<StepParameters> template_list = {};
 	template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
@@ -938,6 +945,7 @@ void cMain::OnDeleteTemplateClicked(wxCommandEvent& event)
 	template_choices.Remove(name);
 	cmb_choose_template->Clear();
 	cmb_choose_template->Append(template_choices);
+	cmb_choose_template->AutoComplete(template_choices);
 
 	if (template_choices.size())
 	{
@@ -1228,6 +1236,7 @@ void cMain::Open(std::ifstream * file)
 		{
 			cmb_choose_template->Append(template_choices);
 			cmb_choose_template->SetValue(*template_choices.begin());
+			cmb_choose_template->AutoComplete(template_choices);
 			UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
 		}
 	}
