@@ -163,6 +163,8 @@ private:
 	bool auto_close_save = true;
 	bool auto_close_save_as = false;
 
+	bool no_changes = true;
+
 	vector<string> row_selections;
 
 	string not_relevant = "";

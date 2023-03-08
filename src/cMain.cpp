@@ -2271,13 +2271,8 @@ bool cMain::CheckTakePut(StepParameters& stepParameters)
 	string building = FindBuildingName(stepParameters.BuildingIndex);
 	if (check_input(building, chest_list))
 	{
-		if (to_check == "Chest")
-		{
-			return true;
-		}
-
-		wxMessageBox("Only Chest is a valid \"From/Into\" choice for a chest", "Please choose chest");
-		return false;
+		stepParameters.FromInto = "Chest";
+		return true;
 	}
 
 	if (to_check == "Fuel")
