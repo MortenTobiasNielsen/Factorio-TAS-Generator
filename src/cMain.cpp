@@ -551,7 +551,7 @@ void cMain::AddStep(int row)
 			stepParameters.Step = struct_steps_list.put;
 			stepParameters.Amount = "1";
 
-			if (check_furnace->IsChecked() && to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel)
+			if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
 			{
 				stepParameters.Item = struct_fuel_list.coal;
 				stepParameters.FromInto = struct_from_into_list.fuel;
@@ -560,7 +560,7 @@ void cMain::AddStep(int row)
 				return;
 			}
 
-			if (check_burner->IsChecked() && to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler)
+			if (check_burner->IsChecked() && (to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler))
 			{
 				stepParameters.Item = struct_fuel_list.coal;
 				stepParameters.FromInto = struct_from_into_list.fuel;
