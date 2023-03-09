@@ -35,6 +35,7 @@ struct StepParameters
 	string PriorityIn;
 	string PriorityOut;
 	string Comment;
+	string Colour;
 
 	void Reset();
 	void Next();
