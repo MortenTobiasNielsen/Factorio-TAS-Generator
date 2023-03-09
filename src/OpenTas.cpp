@@ -134,7 +134,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		string comment = "";
-		if (segments.size() == step_segment_size)
+		if (segments.size() == step_segment_size || segments.size() == step_segment_size_without_comment)
 		{
 			comment = segments[9];
 		}
@@ -165,7 +165,15 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Orientation = Capitalize(segments[5]);
 		step.Direction = Capitalize(segments[6]);
 		step.Comment = comment;
-		step.Colour = segments[10];
+
+		if (segments.size() == step_segment_size)
+		{
+			step.Colour = segments[10];
+		}
+		else
+		{
+			step.Colour = "";
+		}
 
 		if (step.Step == "Start")
 		{

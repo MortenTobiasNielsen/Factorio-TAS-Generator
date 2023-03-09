@@ -1352,10 +1352,13 @@ void cMain::PopulateStepGrid()
 
 		BackgroundColorUpdate(grid_steps, i, StepGridData[i].StepEnum);
 
-		wxColour colour = wxColour(StepGridData[i].Colour);
-		grid_steps->SetCellBackgroundColour(i, 1, colour);
-		grid_steps->SetCellBackgroundColour(i, 2, colour);
-		grid_steps->SetCellBackgroundColour(i, 3, colour);
+		if (StepGridData[i].Colour != "")
+		{
+			wxColour colour = wxColour(StepGridData[i].Colour);
+			grid_steps->SetCellBackgroundColour(i, 1, colour);
+			grid_steps->SetCellBackgroundColour(i, 2, colour);
+			grid_steps->SetCellBackgroundColour(i, 3, colour);
+		}
 	}
 }
 
