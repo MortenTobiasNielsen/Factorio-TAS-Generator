@@ -596,15 +596,17 @@ void cMain::AddStep(int row)
 			return;
 
 		case e_recipe:
+		{
 			UpdateStepGrid(row, &stepParameters);
 
 			to_check = stepParameters.Item;
+			
+			int multiplier = stoi(stepParameters.Amount);
 
-			if (check_recipe->IsChecked())
+			if (0 < multiplier && check_recipe->IsChecked())
 			{
 				vector<string> recipe = recipes.find(to_check)->second;
 
-				int multiplier = stoi(stepParameters.Amount);
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
 					stepParameters.StepEnum = e_put;
@@ -616,8 +618,9 @@ void cMain::AddStep(int row)
 					UpdateStepGrid(row + 1, &stepParameters);
 				}
 			}
-
+			
 			return;
+		}
 
 		default:
 			UpdateStepGrid(row, &stepParameters);
@@ -1782,9 +1785,14 @@ std::string cMain::ExtractAmount()
 {
 	int amount = spin_amount->GetValue();
 
-	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_recipe->GetValue() || rbtn_pick_up->GetValue()))
+	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_pick_up->GetValue()))
 	{
 		return "1";
+	}
+
+	if (amount < 1 && rbtn_recipe->GetValue())
+	{
+		return "0";
 	}
 
 	if (amount < 0 && rbtn_limit->GetValue())
