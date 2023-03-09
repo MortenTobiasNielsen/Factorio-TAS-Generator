@@ -680,84 +680,58 @@ void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 	}
 
 	row_selections.clear();
-	int counter = 1;
 	int startRow = 0;
 	int RowsToDelete = 0;
+	bool confirmed = false;
+
+	auto blocks = grid_steps->GetSelectedRowBlocks();
 
 	// Find the first block of rows selected - extract the first row and the amount of rows in the block
-	for (const auto& block : grid_steps->GetSelectedRowBlocks())
+	for (const auto& block : blocks)
 	{
-		if (counter == 1)
+		startRow = block.GetTopRow();
+		RowsToDelete = block.GetBottomRow() - startRow + 1;
+
+		for (int i = startRow; i < (startRow + RowsToDelete); i++)
 		{
-			startRow = block.GetTopRow();
-			RowsToDelete = block.GetBottomRow() - startRow + 1;
-
-			counter++;
-			continue;
-		}
-
-		row_selections.push_back(std::to_string(block.GetTopRow()) + "," + std::to_string(block.GetBottomRow() - block.GetTopRow() + 1));
-		counter++;
-	}
-
-	counter--;
-
-	for (int i = startRow; i < (startRow + RowsToDelete); i++)
-	{
-		if (StepGridData[i].StepEnum == e_build)
-		{
-			if (wxMessageBox("At least one of the rows selected is a build step - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", "The build step(s) you are deleting could be associated with future step", wxICON_WARNING | wxYES_NO, this) != wxYES)
+			if (StepGridData[i].StepEnum == e_build)
 			{
-				return;
-			}
+				if (wxMessageBox("At least one of the rows selected is a build step - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", "The build step(s) you are deleting could be associated with future step", wxICON_WARNING | wxYES_NO, this) != wxYES)
+				{
+					return;
+				}
 
-			break;
-		}
-	}
-
-	grid_steps->DeleteRows(startRow, RowsToDelete);
-
-	auto it1 = StepGridData.begin();
-	auto it2 = StepGridData.begin();
-
-	it1 += startRow;
-	it2 += startRow + RowsToDelete;
-
-	StepGridData.erase(it1, it2);
-
-	// The row after the deleted row(s) are selected if there were no other row blocks selected
-	if (counter == 1)
-	{
-		if (startRow < grid_steps->GetNumberRows())
-		{
-			grid_steps->SelectRow(startRow);
-		}
-		else if(startRow - 1 >= 0)
-		{
-			grid_steps->SelectRow(startRow - 1);
-		}
-	}
-	else
-	{
-		// Otherwise the other selections are selected once more
-		grid_steps->ClearSelection();
-
-		auto StartRow = 0;
-		auto rowCount = 0;
-		for (const auto& selection : row_selections)
-		{
-			long long pos = selection.find(",");
-
-			StartRow = std::stoi(selection.substr(0, pos)) - RowsToDelete;
-			rowCount = std::stoi(selection.substr(pos + 1));
-
-			int total_rows = StartRow + rowCount;
-
-			for (int i = StartRow; i < total_rows; i++)
-			{
-				grid_steps->SelectRow(i, true);
+				confirmed = true;
+				break;
 			}
 		}
+		if (confirmed) break; // chain break
+	}
+
+	for (auto it = blocks.rbegin(); it != blocks.rend(); ++it)
+	{
+		auto& block = *it;
+		startRow = block.GetTopRow();
+		RowsToDelete = block.GetBottomRow() - startRow + 1;
+		grid_steps->DeleteRows(startRow, RowsToDelete);
+
+		auto it1 = StepGridData.begin();
+		auto it2 = StepGridData.begin();
+
+		it1 += startRow;
+		it2 += startRow + RowsToDelete;
+		
+		StepGridData.erase(it1, it2);
+	}
+
+	// The row after the deleted row(s) are selected
+	if (startRow < grid_steps->GetNumberRows())
+	{
+		grid_steps->SelectRow(startRow);
+	}
+	else if(startRow - 1 >= 0)
+	{
+		grid_steps->SelectRow(startRow - 1);
 	}
 
 	no_changes = false;
