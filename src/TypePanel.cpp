@@ -158,10 +158,17 @@ void cMain::UpdateCmbItem(wxArrayString* new_list)
 {
 	if (new_list != current.cmb_item)
 	{
+		if (!current.map_last_item.contains(new_list)) // if map_last_item does not contain new_list, add it
+			current.map_last_item.insert(std::pair(new_list, *new_list->begin()));
+		const wxString current_value = cmb_item->GetValue();
+		// either the new list contains the current value or default to the new list's last value
+		wxString last = ListContains(new_list, current_value) ? current_value : current.map_last_item[new_list];
+		current.map_last_item[current.cmb_item] = current_value; // update last item of the list we leave
+
 		current.cmb_item = new_list;
 		cmb_item->Clear();
 		cmb_item->Append(*new_list);
-		cmb_item->SetValue(*new_list->begin());
+		cmb_item->SetValue(last);
 		cmb_item->AutoComplete(*new_list);
 	}
 }

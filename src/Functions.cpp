@@ -254,3 +254,12 @@ vector<wxString> Split(const string& s, char delim)
 	if (result.empty()) result.push_back(s);
 	return result;
 }
+
+bool ListContains(wxArrayString* list, wxString str)
+{
+	for (int i = 0; i < list->GetCount(); i++)
+	{
+		if (list->Item(i) == str) return true;
+	}
+	return false;
+}

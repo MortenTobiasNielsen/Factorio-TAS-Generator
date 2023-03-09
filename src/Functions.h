@@ -38,3 +38,4 @@ void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry);
 
 bool StringContainsAny(const wxString& str, const string& chars);
 vector<wxString> Split(const string& s, char delim);
+bool ListContains(wxArrayString* list, wxString str);
