@@ -12,12 +12,14 @@ using std::map;
 
 static const double invalidX = 0.3543534;
 
-static const int step_segment_size = 10;
-static const int step_segment_size_without_comment = 9;
+static const int step_segment_size = 11;
+static const int step_segment_size_without_comment = 10;
+static const int step_segment_size_without_comment_and_colour = 9;
 static const int group_segment_size = 11;
 static const int group_segment_size_without_comment = 10;
-static const int template_segment_size = 11;
-static const int template_segment_size_without_comment = 10;
+static const int template_segment_size = 12;
+static const int template_segment_size_without_comment = 11;
+static const int template_segment_size_without_comment_and_colour = 10;
 
 static const string total_steps_indicator = "Total lines:";
 static const string goal_indicator = "Goal:";

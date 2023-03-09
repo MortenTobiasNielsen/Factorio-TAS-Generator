@@ -827,6 +827,7 @@ void cMain::OnStepColourPickerColourChanged(wxColourPickerEvent& event)
 	{
 		for (int row = block.GetTopRow(); row <= block.GetBottomRow(); row++)
 		{
+			StepGridData.at(row).Colour = colour.GetAsString();
 			grid_steps->SetCellBackgroundColour(row, 1, colour);
 			grid_steps->SetCellBackgroundColour(row, 2, colour);
 			grid_steps->SetCellBackgroundColour(row, 3, colour);
@@ -1350,6 +1351,11 @@ void cMain::PopulateStepGrid()
 		PopulateGrid(grid_steps, i, &gridEntry);
 
 		BackgroundColorUpdate(grid_steps, i, StepGridData[i].StepEnum);
+
+		wxColour colour = wxColour(StepGridData[i].Colour);
+		grid_steps->SetCellBackgroundColour(i, 1, colour);
+		grid_steps->SetCellBackgroundColour(i, 2, colour);
+		grid_steps->SetCellBackgroundColour(i, 3, colour);
 	}
 }
 
