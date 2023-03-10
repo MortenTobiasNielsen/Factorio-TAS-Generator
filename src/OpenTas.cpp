@@ -58,6 +58,17 @@ open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std
 		return_data.success = true;
 	}
 
+	if (update_segment(file))
+	{
+		return_data.selected_rows = wxGridBlockCoordsVector();
+		for (int i = 1; i < segments.size(); i += 2)
+		{
+			return_data.selected_rows.push_back(
+				wxGridBlockCoords(stoi(segments[i]), 0, stoi(segments[i + 1]), 9)
+			);
+		}
+	}
+
 	return &return_data;
 }
 

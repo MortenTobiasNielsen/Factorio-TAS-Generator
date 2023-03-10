@@ -29,6 +29,7 @@ public:
 		string folder_location,
 		string folder_location_generate,
 		string goal,
+		wxGridBlockCoordsVector selected_rows,
 		bool set_last_location = true
 	);
 

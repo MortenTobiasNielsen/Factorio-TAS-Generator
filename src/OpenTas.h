@@ -30,6 +30,8 @@ struct open_file_return_data
 	string save_file_location;
 	string generate_code_folder_location;
 
+	wxGridBlockCoordsVector selected_rows;
+
 	bool auto_close_generate_script = false;
 	bool auto_close_open = false;
 	bool auto_close_save = false;
