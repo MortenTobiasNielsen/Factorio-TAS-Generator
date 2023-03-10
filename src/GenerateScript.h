@@ -65,7 +65,7 @@ private:
 
 	/// <summary>Paints the step to indicate walk sub-step was added</summary>
 	/// <param name="step">The index of the step using a start of 1</param>
-	void PaintWalk(string step);
+	void PaintWalk(string step, bool paint = true);
 
 	void SetBuildingAndOrientation(StepParameters* stepParameters);
 	void TransferParameters(StepParameters& stepParameters);

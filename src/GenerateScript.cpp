@@ -56,10 +56,10 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver.close();
 }
 
-void GenerateScript::PaintWalk(string step)
+void GenerateScript::PaintWalk(string step, bool paint)
 {
 	int row = std::stoi(step) - 1;
-	grid_steps->SetCellBackgroundColour(row, 9, *wxCYAN);
+	grid_steps->SetCellBackgroundColour(row, 9, paint ? *wxCYAN : *wxWHITE);
 }
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
@@ -484,6 +484,10 @@ void GenerateScript::check_mining_distance(string step, string action, string x_
 		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
 	}
+	else
+	{
+		PaintWalk(step, false);
+	}
 }
 
 void GenerateScript::check_interact_distance(string step, string action, string x_cord, string y_cord, string building_name, string OrientationEnum)
@@ -535,6 +539,10 @@ void GenerateScript::check_interact_distance(string step, string action, string 
 	{
 		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
+	}
+	else
+	{
+		PaintWalk(step, false);
 	}
 }
 
