@@ -1295,6 +1295,27 @@ void cMain::Open(std::ifstream * file)
 		dialog_progress_bar->set_button_enable(true);
 	}
 
+	if (!result->selected_rows.empty())
+	{
+		int row_count = grid_steps->GetNumberRows();
+		int first_row_index = result->selected_rows[0].GetTopRow();
+		if (row_count > 0 && first_row_index < row_count)
+		{
+			wxGridEvent mock_event = wxGridEvent(0, wxEVT_GRID_CELL_LEFT_DCLICK, 0, first_row_index);
+			OnStepsGridDoubleLeftClick(mock_event); // load first row into detail panel
+			grid_steps->GoToCell(first_row_index, 0); // move the grid to first selected row
+
+			for (auto block : result->selected_rows)
+			{
+				if (block.GetTopRow() < row_count && block.GetBottomRow() < row_count) // verify the selected rows are still in the grid
+				{
+					grid_steps->SelectBlock(block.GetTopLeft(), block.GetBottomRight(), true); // select each block
+				}
+			}
+			
+		}
+	}
+
 	no_changes = true;
 }
 
@@ -1752,6 +1773,7 @@ bool cMain::Save(string filename, bool save_as, bool set_last_location)
 		filename,
 		generate_code_folder_location,
 		goal,
+		grid_steps->GetSelectedRowBlocks(),
 		set_last_location);
 }
 
