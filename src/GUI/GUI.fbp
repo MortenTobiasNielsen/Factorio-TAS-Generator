@@ -1412,7 +1412,7 @@
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
                                                     <property name="show">1</property>
-                                                    <property name="size">45,-1</property>
+                                                    <property name="size">60,-1</property>
                                                     <property name="style">wxALIGN_RIGHT</property>
                                                     <property name="subclass">; ; forward_declare</property>
                                                     <property name="toolbar_pane">0</property>
@@ -1551,7 +1551,7 @@
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
                                                     <property name="show">1</property>
-                                                    <property name="size">45,-1</property>
+                                                    <property name="size">60,-1</property>
                                                     <property name="style">wxALIGN_RIGHT</property>
                                                     <property name="subclass">; ; forward_declare</property>
                                                     <property name="toolbar_pane">0</property>
@@ -1690,7 +1690,7 @@
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
                                                     <property name="show">1</property>
-                                                    <property name="size">45,-1</property>
+                                                    <property name="size">60,-1</property>
                                                     <property name="style">wxALIGN_RIGHT</property>
                                                     <property name="subclass">; ; forward_declare</property>
                                                     <property name="toolbar_pane">0</property>
@@ -1830,7 +1830,7 @@
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
                                                     <property name="show">1</property>
-                                                    <property name="size">45,-1</property>
+                                                    <property name="size">60,-1</property>
                                                     <property name="style">wxALIGN_RIGHT</property>
                                                     <property name="subclass">; ; forward_declare</property>
                                                     <property name="toolbar_pane">0</property>

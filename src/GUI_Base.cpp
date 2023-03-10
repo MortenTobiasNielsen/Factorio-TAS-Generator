@@ -288,7 +288,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_ItemTech;
 	detail_sizer_ItemTech = new wxBoxSizer( wxHORIZONTAL );
 
-	label_item = new wxStaticText( detail_panel, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
+	label_item = new wxStaticText( detail_panel, wxID_ANY, wxT("Item:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_item->Wrap( -1 );
 	detail_sizer_ItemTech->Add( label_item, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -303,7 +303,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_FromTo;
 	detail_sizer_FromTo = new wxBoxSizer( wxHORIZONTAL );
 
-	label_from_into = new wxStaticText( detail_panel, wxID_ANY, wxT("From:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
+	label_from_into = new wxStaticText( detail_panel, wxID_ANY, wxT("From:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_from_into->Wrap( -1 );
 	detail_sizer_FromTo->Add( label_from_into, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -319,7 +319,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_Input;
 	detail_sizer_Input = new wxBoxSizer( wxHORIZONTAL );
 
-	label_input = new wxStaticText( detail_panel, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
+	label_input = new wxStaticText( detail_panel, wxID_ANY, wxT("Input:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_input->Wrap( -1 );
 	detail_sizer_Input->Add( label_input, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -338,7 +338,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* detail_sizer_Output;
 	detail_sizer_Output = new wxBoxSizer( wxHORIZONTAL );
 
-	label_output = new wxStaticText( detail_panel, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 45,-1 ), wxALIGN_RIGHT );
+	label_output = new wxStaticText( detail_panel, wxID_ANY, wxT("Output:"), wxDefaultPosition, wxSize( 60,-1 ), wxALIGN_RIGHT );
 	label_output->Wrap( -1 );
 	detail_sizer_Output->Add( label_output, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
