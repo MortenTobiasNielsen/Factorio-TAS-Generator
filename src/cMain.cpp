@@ -1303,6 +1303,7 @@ void cMain::Open(std::ifstream * file)
 		{
 			wxGridEvent mock_event = wxGridEvent(0, wxEVT_GRID_CELL_LEFT_DCLICK, 0, first_row_index);
 			OnStepsGridDoubleLeftClick(mock_event); // load first row into detail panel
+			grid_steps->GoToCell(row_count-1, 0);
 			grid_steps->GoToCell(first_row_index, 0); // move the grid to first selected row
 
 			for (auto block : result->selected_rows)
