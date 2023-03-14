@@ -131,10 +131,15 @@ end
 
 ---@param by number
 local function change_step(by)
+	local _task = 0
+	if steps and steps[step] and steps[step][1][1] then
+		_task = steps[step][1][1] 
+	end
 	step = step + by
 	script.raise_event(tas_step_change, {
 		change_step_by = by,
 		step = step,
+		task = _task,
 		tick = game.tick,
 	})
 end
