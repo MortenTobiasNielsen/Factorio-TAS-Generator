@@ -1246,6 +1246,94 @@ Shortcut_changer::~Shortcut_changer()
 
 }
 
+ImportStepsDialog::ImportStepsDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : ImportStepsDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxSize( 600,300 ), wxDefaultSize );
+
+	wxBoxSizer* import_steps_sizer;
+	import_steps_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	import_steps_text_import = new wxTextCtrl( this, wxID_ANY, wxT("Build;8.500000;3.500000;;Transport belt;East;West;1;8;;#afafaf;\nBuild;0.500000;3.500000;;Transport belt;East;West;1;2;;#afafaf;\nBuild;-0.500000;5.500000;;Transport belt;East;East;1;7;;#afafaf;\nWalk;7.125000;0.890625;;;;;;;;#afafaf;\nBuild;9.000000;7.000000;;Stone furnace;North;East;2;2;;#afafaf;\nBuild;8.500000;3.500000;;Transport belt;East;West;1;8;;#afafaf;\nBuild;0.500000;3.500000;;Transport belt;East;West;1;2;;#afafaf;\nBuild;-0.500000;5.500000;;Transport belt;East;East;1;7;;#afafaf;\nWalk;7.125000;0.890625;;;;;;;;#afafaf;\nBuild;9.000000;7.000000;;Stone furnace;North;East;2;2;;#afafaf;\nBuild;8.500000;3.500000;;Transport belt;East;West;1;8;;#afafaf;\nBuild;0.500000;3.500000;;Transport belt;East;West;1;2;;#afafaf;\nBuild;-0.500000;5.500000;;Transport belt;East;East;1;7;;#afafaf;\nWalk;7.125000;0.890625;;;;;;;;#afafaf;\nBuild;9.000000;7.000000;;Stone furnace;North;East;2;2;;#afafaf;\nBuild;8.500000;3.500000;;Transport belt;East;West;1;8;;#afafaf;\nBuild;0.500000;3.500000;;Transport belt;East;West;1;2;;#afafaf;\nBuild;-0.500000;5.500000;;Transport belt;East;East;1;7;;#afafaf;\nWalk;7.125000;0.890625;;;;;;;;#afafaf;\nBuild;9.000000;7.000000;;Stone furnace;North;East;2;2;;#afafaf;"), wxDefaultPosition, wxDefaultSize, wxTE_DONTWRAP|wxTE_LEFT|wxTE_MULTILINE );
+	import_steps_text_import->SetMinSize( wxSize( 450,250 ) );
+
+	import_steps_sizer->Add( import_steps_text_import, 0, wxALL, 5 );
+
+	wxBoxSizer* import_steps_ctrl_sizer;
+	import_steps_ctrl_sizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* import_steps_into_steps_sizer;
+	import_steps_into_steps_sizer = new wxBoxSizer( wxVERTICAL );
+
+	import_steps_into_steps_ctrl = new wxSpinCtrl( this, wxID_ANY, wxT("1"), wxDefaultPosition, wxSize( 120,-1 ), wxSP_ARROW_KEYS, -999999, 999999, 1 );
+	import_steps_into_steps_ctrl->SetToolTip( wxT("Positive numbers places the imported steps in the step list from the top and negative numbers from the bottom.\nWith 1 being the top element and 0 being the bottom element.") );
+	import_steps_into_steps_ctrl->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_steps_ctrl->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_steps_sizer->Add( import_steps_into_steps_ctrl, 0, wxALL, 5 );
+
+	import_steps_into_steps_btn = new wxButton( this, wxID_ANY, wxT("Into steps"), wxDefaultPosition, wxSize( 120,-1 ), 0 );
+	import_steps_into_steps_btn->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_steps_btn->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_steps_sizer->Add( import_steps_into_steps_btn, 0, wxALL, 5 );
+
+
+	import_steps_ctrl_sizer->Add( import_steps_into_steps_sizer, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* import_steps_into_template_sizer;
+	import_steps_into_template_sizer = new wxBoxSizer( wxVERTICAL );
+
+	import_steps_into_template_ctrl = new wxTextCtrl( this, wxID_ANY, wxT("new_template"), wxDefaultPosition, wxSize( 120,-1 ), 0 );
+	#ifdef __WXGTK__
+	if ( !import_steps_into_template_ctrl->HasFlag( wxTE_MULTILINE ) )
+	{
+	import_steps_into_template_ctrl->SetMaxLength( 45 );
+	}
+	#else
+	import_steps_into_template_ctrl->SetMaxLength( 45 );
+	#endif
+	import_steps_into_template_ctrl->SetToolTip( wxT("Template name should be unique") );
+	import_steps_into_template_ctrl->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_template_ctrl->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_template_sizer->Add( import_steps_into_template_ctrl, 0, wxALL, 5 );
+
+	import_steps_into_template_btn = new wxButton( this, wxID_ANY, wxT("Create template"), wxDefaultPosition, wxSize( 120,-1 ), 0 );
+	import_steps_into_template_btn->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_template_btn->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_template_sizer->Add( import_steps_into_template_btn, 0, wxALL, 5 );
+
+
+	import_steps_ctrl_sizer->Add( import_steps_into_template_sizer, 1, wxEXPAND, 5 );
+
+
+	import_steps_sizer->Add( import_steps_ctrl_sizer, 1, wxEXPAND, 5 );
+
+
+	this->SetSizer( import_steps_sizer );
+	this->Layout();
+	import_steps_sizer->Fit( this );
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	import_steps_into_steps_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
+	import_steps_into_steps_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoStepsBtnClick ), NULL, this );
+	import_steps_into_template_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
+	import_steps_into_template_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoTemplateBtnClick ), NULL, this );
+}
+
+ImportStepsDialog::~ImportStepsDialog()
+{
+	// Disconnect Events
+	import_steps_into_steps_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
+	import_steps_into_steps_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoStepsBtnClick ), NULL, this );
+	import_steps_into_template_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
+	import_steps_into_template_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ImportStepsDialog::OnImportStepsIntoTemplateBtnClick ), NULL, this );
+
+}
+
 BaseForDialogProgress::BaseForDialogProgress( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
