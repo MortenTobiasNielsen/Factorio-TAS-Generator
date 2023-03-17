@@ -58,7 +58,7 @@
     <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ParameterChoices.h" />
-    <ClInclude Include="ImportStepsDialog.h" />
+    <ClInclude Include="ImportStepsPanel.h" />
     <ClInclude Include="nlohmann\json.hpp">
       <Filter>misc</Filter>
     </ClInclude>

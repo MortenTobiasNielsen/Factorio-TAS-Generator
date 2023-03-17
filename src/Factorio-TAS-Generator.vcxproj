@@ -185,7 +185,7 @@
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
-    <ClInclude Include="ImportStepsDialog.h" />
+    <ClInclude Include="ImportStepsPanel.h" />
     <ClInclude Include="nlohmann\json.hpp" />
     <ClInclude Include="ParameterChoices.h" />
     <ClInclude Include="SearchUtil.h" />

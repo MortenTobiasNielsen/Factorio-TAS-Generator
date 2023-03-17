@@ -10,7 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include "TypePanel.h"
-#include "ImportStepsDialog.h"
+#include "ImportStepsPanel.h"
 #include <wx/string.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
@@ -34,11 +34,11 @@
 #include <wx/statline.h>
 #include <wx/grid.h>
 #include <wx/srchctrl.h>
+#include <wx/valtext.h>
 #include <wx/aui/auibook.h>
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
 #include <wx/dialog.h>
-#include <wx/valtext.h>
 #include <wx/gauge.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -141,6 +141,12 @@ class GUI_Base : public wxFrame
 		wxButton* btn_move_up;
 		wxButton* btn_move_down;
 		wxGrid* grid_steps;
+		ImportStepsPanel* import_steps_panel;
+		wxTextCtrl* import_steps_text_import;
+		wxSpinCtrl* import_steps_into_steps_ctrl;
+		wxButton* import_steps_into_steps_btn;
+		wxTextCtrl* import_steps_into_template_ctrl;
+		wxButton* import_steps_into_template_btn;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnApplicationClose( wxCloseEvent& event ) { event.Skip(); }
@@ -234,6 +240,10 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsBtnClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoTemplateCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoTemplateBtnClick( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
@@ -271,35 +281,6 @@ class Shortcut_changer : public wxDialog
 		Shortcut_changer( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Change shortcuts"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxCLOSE_BOX|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSTAY_ON_TOP|wxBORDER_RAISED|wxTAB_TRAVERSAL );
 
 		~Shortcut_changer();
-
-};
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class ImportStepsDialog
-///////////////////////////////////////////////////////////////////////////////
-class ImportStepsDialog : public ImportStepsDialog
-{
-	private:
-
-	protected:
-		wxTextCtrl* import_steps_text_import;
-		wxSpinCtrl* import_steps_into_steps_ctrl;
-		wxButton* import_steps_into_steps_btn;
-		wxTextCtrl* import_steps_into_template_ctrl;
-		wxButton* import_steps_into_template_btn;
-
-		// Virtual event handlers, override them in your derived class
-		virtual void OnImportStepsIntoStepsCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnImportStepsIntoStepsBtnClick( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnImportStepsIntoTemplateCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnImportStepsIntoTemplateBtnClick( wxCommandEvent& event ) { event.Skip(); }
-
-
-	public:
-
-		ImportStepsDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Import steps"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxCAPTION|wxCLOSE_BOX|wxDEFAULT_DIALOG_STYLE );
-
-		~ImportStepsDialog();
 
 };
 
