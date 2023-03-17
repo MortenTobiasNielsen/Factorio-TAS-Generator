@@ -185,6 +185,7 @@
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
+    <ClInclude Include="ImportStepsDialog.h" />
     <ClInclude Include="nlohmann\json.hpp" />
     <ClInclude Include="ParameterChoices.h" />
     <ClInclude Include="SearchUtil.h" />
@@ -229,6 +230,9 @@
     <CopyFileToFolders Include="..\Lua Files\settings.lua">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="misc\wxWidgets.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
