@@ -768,6 +768,7 @@ void GenerateScript::mining(string step, string x_cord, string y_cord, string du
 	{
 		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, comment);
 		total_steps += 1;
+		PaintWalk(step, false);
 		return;
 	}
 
@@ -954,7 +955,8 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 		item = check_item_name(item);
 		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, comment);
 		total_steps += 1;
-		return;
+		PaintWalk(step, false);
+		return; 
 	}
 
 	if (OrientationEnum == "Wreck")
@@ -991,6 +993,7 @@ void GenerateScript::put(string step, string action, string x_cord, string y_cor
 		item = check_item_name(item);
 		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, comment);
 		total_steps += 1;
+		PaintWalk(step, false);
 		return;
 	}
 
