@@ -142,11 +142,12 @@ class GUI_Base : public wxFrame
 		wxButton* btn_move_down;
 		wxGrid* grid_steps;
 		ImportStepsPanel* import_steps_panel;
-		wxTextCtrl* import_steps_text_import;
 		wxSpinCtrl* import_steps_into_steps_ctrl;
 		wxButton* import_steps_into_steps_btn;
 		wxTextCtrl* import_steps_into_template_ctrl;
 		wxButton* import_steps_into_template_btn;
+		wxCheckBox* import_steps_clear_checkbox;
+		wxTextCtrl* import_steps_text_import;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnApplicationClose( wxCloseEvent& event ) { event.Skip(); }
@@ -240,13 +241,17 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsCtrl( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoStepsCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoStepsBtnClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoTemplateCtrlText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoTemplateCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoTemplateBtnClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsTextUpdate( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
+		wxString import_steps_into_template_ctrl_validator;
 
 		GUI_Base( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio TAS Generator"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1840,1080 ), long style = wxDEFAULT_FRAME_STYLE|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
 		wxAuiManager m_mgr;

@@ -23,6 +23,7 @@
       <Filter>Structs</Filter>
     </ClCompile>
     <ClCompile Include="ShortcutChanger.cpp" />
+    <ClCompile Include="ImportStepsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -31,7 +32,6 @@
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="OpenTas.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="SaveTas.h" />
     <ClInclude Include="DialogProgressBar.h" />
     <ClInclude Include="TypePanel.h" />
@@ -60,6 +60,9 @@
     <ClInclude Include="ParameterChoices.h" />
     <ClInclude Include="ImportStepsPanel.h" />
     <ClInclude Include="nlohmann\json.hpp">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>misc</Filter>
     </ClInclude>
   </ItemGroup>

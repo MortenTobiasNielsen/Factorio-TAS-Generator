@@ -169,6 +169,7 @@
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="GenerateScript.cpp" />
     <ClCompile Include="GUI_Base.cpp" />
+    <ClCompile Include="ImportStepsPanel.cpp" />
     <ClCompile Include="OpenTas.cpp" />
     <ClCompile Include="SaveTas.cpp" />
     <ClCompile Include="ShortcutChanger.cpp" />
