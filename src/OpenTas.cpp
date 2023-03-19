@@ -58,6 +58,17 @@ open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std
 		return_data.success = true;
 	}
 
+	if (update_segment(file))
+	{
+		return_data.selected_rows = wxGridBlockCoordsVector();
+		for (int i = 1; i < segments.size(); i += 2)
+		{
+			return_data.selected_rows.push_back(
+				wxGridBlockCoords(stoi(segments[i]), 0, stoi(segments[i + 1]), 9)
+			);
+		}
+	}
+
 	return &return_data;
 }
 
@@ -116,7 +127,9 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 
 	while (update_segment(file))
 	{
-		if (segments.size() != step_segment_size && segments.size() != step_segment_size_without_comment)
+		if (segments.size() != step_segment_size && 
+			segments.size() != step_segment_size_without_colour &&
+			segments.size() != step_segment_size_without_comment_and_colour)
 		{
 			if (segments[0] == save_templates_indicator)
 			{
@@ -132,7 +145,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		string comment = "";
-		if (segments.size() == step_segment_size)
+		if (segments.size() == step_segment_size || segments.size() == step_segment_size_without_colour)
 		{
 			comment = segments[9];
 		}
@@ -163,6 +176,15 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Orientation = Capitalize(segments[5]);
 		step.Direction = Capitalize(segments[6]);
 		step.Comment = comment;
+
+		if (segments.size() == step_segment_size)
+		{
+			step.Colour = segments[10];
+		}
+		else
+		{
+			step.Colour = "";
+		}
 
 		if (step.Step == "Start")
 		{
@@ -210,7 +232,6 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			case e_filter:
 			case e_rotate:
 			case e_launch:
-			case e_drop:
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -375,7 +396,9 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 
 	while (update_segment(file))
 	{
-		if (segments.size() != template_segment_size && segments.size() != template_segment_size_without_comment)
+		if (segments.size() != template_segment_size &&
+			segments.size() != template_segment_size_without_colour &&
+			segments.size() != template_segment_size_without_comment_and_colour)
 		{
 			if (segments.size() == 1 && segments[0] == save_file_indicator)
 			{

@@ -12,12 +12,14 @@ using std::map;
 
 static const double invalidX = 0.3543534;
 
-static const int step_segment_size = 10;
-static const int step_segment_size_without_comment = 9;
+static const int step_segment_size = 11;
+static const int step_segment_size_without_colour = 10;
+static const int step_segment_size_without_comment_and_colour = 9;
 static const int group_segment_size = 11;
 static const int group_segment_size_without_comment = 10;
-static const int template_segment_size = 11;
-static const int template_segment_size_without_comment = 10;
+static const int template_segment_size = 12;
+static const int template_segment_size_without_colour = 11;
+static const int template_segment_size_without_comment_and_colour = 10;
 
 static const string total_steps_indicator = "Total lines:";
 static const string goal_indicator = "Goal:";
@@ -208,7 +210,7 @@ static const map<string, vector<string>> recipes = {
 	{"Empty water barrel", {"Water barrel", "1"}},
 	{"Iron gear wheel", {"Iron plate", "2"}},
 	{"Landfill", {"Stone", "20"}},
-	{"Long handed inserter", {"Iron plate", "1", "Iron gear wheel", "1", "Inserter", "1"}},
+	{"Long-handed inserter", {"Iron plate", "1", "Iron gear wheel", "1", "Inserter", "1"}},
 	{"Military science pack", {"Piercing rounds magazine", "1", "Grenade", "1", "Stone wall", "2"}},
 	{"Modular armor", {"Steel plate", "50", "Advanced circuit", "30"}},
 	{"Productivity module", {"Electronic circuit", "5", "Advanced circuit", "5"}},
@@ -701,7 +703,9 @@ static const std::vector<std::string> assemply_level2_extra_list =
 static const std::vector<std::string> chemical_plant_list =
 {
 	"Flamethrower ammo",
-	"Solid fuel",
+	"Solid fuel from light oil",
+	"Solid fuel from petroleum gas",
+	"Solid fuel from heavy oil",
 	"Plastic bar",
 	"Sulfur",
 	"Battery",
@@ -1225,6 +1229,7 @@ static const struct
 	std::string chest = "defines.inventory.chest";
 	std::string lab_input = "defines.inventory.lab_input";
 	std::string lab_modules = "defines.inventory.lab_modules";
+	std::string beacon_modules = "defines.inventory.beacon_modules";
 	std::string fuel = "defines.inventory.fuel";
 	std::string drill_modules = "defines.inventory.mining_drill_modules";
 	std::string assembly_input = "defines.inventory.assembling_machine_input";

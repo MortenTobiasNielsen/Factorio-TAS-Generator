@@ -12,7 +12,9 @@ bool SaveTas::Save(
 	map<string, vector<StepParameters>> templates,
 	string folder_location,
 	string folder_location_generate,
-	string goal)
+	string goal,
+	wxGridBlockCoordsVector selected_rows,
+	bool set_last_location)
 {
 	int total_lines = steps.size();
 
@@ -92,7 +94,12 @@ bool SaveTas::Save(
 	myfile << auto_put_furnace_text << ";" << bool_to_string(auto_list[4]) << std::endl;
 	myfile << auto_put_burner_text << ";" << bool_to_string(auto_list[5]) << std::endl;
 	myfile << auto_put_lab_text << ";" << bool_to_string(auto_list[6]) << std::endl;
-	myfile << auto_put_recipe_text << ";" << bool_to_string(auto_list[7]);
+	myfile << auto_put_recipe_text << ";" << bool_to_string(auto_list[7]) << std::endl;
+
+	string s_selected_rows = "";
+	for (auto p : selected_rows) 
+		s_selected_rows += to_string(p.GetTopRow()) + ";" + to_string(p.GetBottomRow()) + ";";
+	myfile << "selected rows;" << s_selected_rows;
 
 	myfile.close();
 
@@ -120,7 +127,10 @@ bool SaveTas::Save(
 		}
 	}
 
-	settings::SaveLastTas(folder_location);
+	if (set_last_location)
+	{
+		settings::SaveLastTas(folder_location);
+	}
 
 	return true;
 }

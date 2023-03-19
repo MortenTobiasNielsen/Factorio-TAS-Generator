@@ -2,6 +2,7 @@
 
 #include "cMain.h"
 #include "utils.h"
+#include "ParameterChoices.h"
 
 using std::string;
 
@@ -64,19 +65,20 @@ void TypePanel::SwitchStep(STEP_TYPE::step_type type)
 }
 
 #pragma region cMain
-void cMain::setup_paramters(std::vector<bool> parameters)
+void cMain::setup_paramters(const int parameters)
 {
-	spin_x->Enable(parameters[0]);
-	spin_y->Enable(parameters[1]);
-	spin_amount->Enable(parameters[2]);
-	cmb_item->Enable(parameters[3]);
-	cmb_from_into->Enable(parameters[4]);
-	radio_input->Enable(parameters[6]);
-	radio_output->Enable(parameters[7]);
-	cmb_building_orientation->Enable(parameters[8]);
-	cmb_direction_to_build->Enable(parameters[9]);
-	spin_building_size->Enable(parameters[11]);
-	spin_building_amount->Enable(parameters[10]);
+	using enum choice_bit_vector;
+	spin_x->Enable(parameters & x_coordinate);
+	spin_y->Enable(parameters & y_coordinate);
+	spin_amount->Enable(parameters & amount);
+	cmb_item->Enable(parameters & item);
+	cmb_from_into->Enable(parameters & from_to);
+	radio_input->Enable((bool)(input == (parameters & input)));
+	radio_output->Enable((bool)(output == (parameters & output)));
+	cmb_building_orientation->Enable(parameters & building_orientation);
+	cmb_direction_to_build->Enable(parameters & direction_to_build);
+	spin_building_size->Enable(parameters & building_size);
+	spin_building_amount->Enable(parameters & amount_of_buildings);
 }
 
 // Finds the current radio button that is choosen, 
@@ -151,6 +153,41 @@ string cMain::ExtractStep()
 
 	return "not found";
 }
+
+void cMain::UpdateCmbItem(wxArrayString* new_list)
+{
+	if (new_list != current.cmb_item)
+	{
+		if (!current.map_last_item.contains(new_list)) // if map_last_item does not contain new_list, add it
+			current.map_last_item.insert(std::pair(new_list, *new_list->begin()));
+		const wxString current_value = cmb_item->GetValue();
+		// either the new list contains the current value or default to the new list's last value
+		wxString last = ListContains(new_list, current_value) ? current_value : current.map_last_item[new_list];
+		current.map_last_item[current.cmb_item] = current_value; // update last item of the list we leave
+
+		current.cmb_item = new_list;
+		cmb_item->Clear();
+		cmb_item->Append(*new_list);
+		cmb_item->SetValue(last);
+		cmb_item->AutoComplete(*new_list);
+	}
+}
+void cMain::UpdateLabelItem(const wxString* new_text)
+{
+	if (new_text != current.label_item)
+	{
+		current.label_item = new_text;
+		label_item->SetLabelText(*new_text);
+	}
+}
+void cMain::UpdateLabelFromInto(const wxString* new_text)
+{
+	if (new_text != current.label_from_into)
+	{
+		current.label_from_into = new_text;
+		label_from_into->SetLabelText(*new_text);
+	}
+}
 #pragma endregion
 
 #pragma region cMain eventhandlers
@@ -158,15 +195,8 @@ void cMain::OnBuildChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.build);
 
-	cmb_item->Clear();
-	for (auto it = all_buildings.begin(); it < all_buildings.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*all_buildings.begin());
-	cmb_item->AutoComplete(building_choices);
-
-	label_item->SetLabelText(TypePanel::item);
+	UpdateCmbItem(&building_choices);
+	UpdateLabelItem(&TypePanel::item);
 
 	event.Skip();
 }
@@ -175,18 +205,11 @@ void cMain::OnTakeChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.take);
 
-	cmb_item->Clear();
-	for (auto it = all_items.begin(); it < all_items.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*all_items.begin());
-	cmb_item->AutoComplete(item_choices);
+	UpdateCmbItem(&item_choices);
+	UpdateLabelItem(&TypePanel::item);
+	UpdateLabelFromInto(&TypePanel::from);
 
 	cmb_from_into->SetValue(TypePanel::output); // set default to output on take step
-
-	label_item->SetLabelText(TypePanel::item);
-	label_from_into->SetLabelText(TypePanel::from);
 
 	event.Skip();
 }
@@ -195,18 +218,11 @@ void cMain::OnPutChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.put);
 
-	cmb_item->Clear();
-	for (auto it = all_items.begin(); it < all_items.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*all_items.begin());
-	cmb_item->AutoComplete(item_choices);
+	UpdateCmbItem(&item_choices);
+	UpdateLabelItem(&TypePanel::item);
+	UpdateLabelFromInto(&TypePanel::into);
 
 	cmb_from_into->SetValue(TypePanel::input); // set default to input on put step
-
-	label_item->SetLabelText(TypePanel::item);
-	label_from_into->SetLabelText(TypePanel::into);
 
 	event.Skip();
 }
@@ -215,15 +231,8 @@ void cMain::OnCraftChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.craft);
 
-	cmb_item->Clear();
-	for (auto it = handcrafted_list.begin(); it < handcrafted_list.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*handcrafted_list.begin());
-	cmb_item->AutoComplete(handcrafted_choices);
-
-	label_item->SetLabelText(TypePanel::item);
+	UpdateCmbItem(&handcrafted_choices);
+	UpdateLabelItem(&TypePanel::item);
 
 	event.Skip();
 }
@@ -238,15 +247,8 @@ void cMain::OnfilterChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.filter);
 
-	cmb_item->Clear();
-	for (auto it = all_items.begin(); it < all_items.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*all_items.begin());
-	cmb_item->AutoComplete(item_choices);
-
-	label_item->SetLabelText(TypePanel::item);
+	UpdateCmbItem(&item_choices);
+	UpdateLabelItem(&TypePanel::item);
 
 	event.Skip();
 }
@@ -255,15 +257,8 @@ void cMain::OnRecipeChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.recipe);
 
-	cmb_item->Clear();
-	for (auto it = all_recipes.begin(); it < all_recipes.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*all_recipes.begin());
-	cmb_item->AutoComplete(recipe_choices);
-
-	label_item->SetLabelText(TypePanel::recipe);
+	UpdateCmbItem(&recipe_choices);
+	UpdateLabelItem(&TypePanel::recipe);
 
 	event.Skip();
 }
@@ -272,15 +267,8 @@ void cMain::OnTechChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.tech);
 
-	cmb_item->Clear();
-	for (auto it = tech_list.begin(); it < tech_list.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*tech_list.begin());
-	cmb_item->AutoComplete(tech_choices);
-
-	label_item->SetLabelText(TypePanel::tech);
+	UpdateCmbItem(&tech_choices);
+	UpdateLabelItem(&TypePanel::tech);
 
 	event.Skip();
 }
@@ -300,6 +288,10 @@ void cMain::OnSaveChosen(wxCommandEvent& event)
 void cMain::OnCancelCraftingChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.cancel_crafting);
+
+	UpdateCmbItem(&handcrafted_choices);
+	UpdateLabelItem(&TypePanel::item);
+
 	event.Skip();
 }
 
@@ -331,15 +323,8 @@ void cMain::OnDropChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.drop);
 
-	cmb_item->Clear();
-	for (auto it = all_items.begin(); it < all_items.end(); it++)
-	{
-		cmb_item->Append(*it);
-	}
-	cmb_item->SetValue(*all_items.begin());
-	cmb_item->AutoComplete(item_choices);
-
-	label_item->SetLabelText(TypePanel::item);
+	UpdateCmbItem(&item_choices);
+	UpdateLabelItem(&TypePanel::item);
 
 	event.Skip();
 }

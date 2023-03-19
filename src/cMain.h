@@ -28,6 +28,7 @@
 #include "DialogProgressBar.h"
 #include "StepNameToEnum.h"
 #include "utils.h"
+#include "ParameterChoices.h"
 
 #include "../icon.xpm"
 
@@ -125,6 +126,8 @@ protected:
 	void OnMoveDownFiveClicked(wxMouseEvent& event);
 
 	void OnStepsGridDoubleLeftClick(wxGridEvent& event);
+	void OnStepsGridRangeSelect(wxGridRangeSelectEvent& event);
+	void OnStepColourPickerColourChanged(wxColourPickerEvent& event);
 
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
@@ -139,8 +142,8 @@ protected:
 	void OnTemplateGridDoubleLeftClick(wxGridEvent& event);
 
 	void OnTemplateChosen(wxCommandEvent& event);
+	void OnTemplateText(wxCommandEvent& event);
 
-	void TemplateAlterStep(int row, wxGrid* grid);
 	void TemplateAlterStep(StepParameters& step);
 
 	//Seach
@@ -150,7 +153,7 @@ protected:
 	void StepSeachOnCancelButton(wxCommandEvent& event);
 
 private:
-	wxString window_title = "EZRaiderz TAS Helper";
+	wxString window_title = "Factorio TAS Generator";
 
 	DialogProgressBar* dialog_progress_bar = nullptr;
 
@@ -162,31 +165,7 @@ private:
 	bool auto_close_save = true;
 	bool auto_close_save_as = false;
 
-	const struct parameter_choices_struct
-	{
-		// x-cord, y-cord, amount, item, from/to, tech, input, output, building orientation, direction to build, building size, amount of buildings
-		vector<bool> game_speed = {false, false, true, false, false, false, false, false, false, false, false, false};
-		vector<bool> mining = {true, true, true, false, false, false, false, false, false, false, false, false};
-		vector<bool> rotate = {true, true, true, false, false, false, false, false, false, false, false, false};
-		vector<bool> craft = {false, false, true, true, false, false, false, false, false, false, false, false};
-		vector<bool> walk = {true, true, false, false, false, false, false, false, false, false, false, false};
-		vector<bool> build = {true, true, false, true, false, false, false, false, true, true, true, true};
-		vector<bool> take = {true, true, true, true, true, false, false, false, false, true, true, true};
-		vector<bool> put = {true, true, true, true, true, false, false, false, false, true, true, true};
-		vector<bool> filter = {true, true, true, true, false, false, false, false, false, true, true, true};
-		vector<bool> recipe = {true, true, true, true, false, false, false, false, false, true, true, true};
-		vector<bool> tech = {false, false, false, true, false, false, false, false, false, false, false, false};
-		vector<bool> launch = {true, true, false, false, false, false, false, false, false, false, false, false};
-		vector<bool> save = {false, false, false, false, false, false, false, false, false, false, false, false};
-		vector<bool> priority = {true, true, false, false, false, false, true, true, false, true, true, true};
-		vector<bool> limit = {true, true, true, false, false, false, false, false, false, true, true, true};
-		vector<bool> Pause = {false, false, false, false, false, false, false, false, false, false, false, false};
-		vector<bool> stop = {false, false, false, false, false, false, false, false, false, false, false, false};
-		vector<bool> drop = {true, true, false, true, false, false, false, false, false, true, true, true};
-		vector<bool> pick = {false, false, true, false, false, false, false, false, false, false, false, false};
-		vector<bool> idle = {false, false, true, false, false, false, false, false, false, false, false, false};
-		vector<bool> cancel_crafting = {false, false, true, true, false, false, false, false, false, false, false, false};
-	} parameter_choices;
+	bool no_changes = true;
 
 	vector<string> row_selections;
 
@@ -222,13 +201,11 @@ private:
 	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
 	void UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
 
-	void setup_paramters(std::vector<bool> parameters);
+	void setup_paramters(const int parameters);
 
 	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event);
 
-	bool CheckTakePut(std::string& item);
-
-	bool Save(string filename, bool save_as);
+	bool Save(string filename, bool save_as, bool set_last_location = true);
 	bool AutoSave();
 	bool SaveFile(bool save_as);
 
@@ -268,4 +245,17 @@ private:
 	vector<string> all_recipes;
 	vector<StepParameters> StepGridData;
 	vector<Building> BuildingsSnapShot;
+
+	// holds the current state of some gui elements
+	struct
+	{
+		wxArrayString* cmb_item;
+		const wxString* label_item;
+		const wxString* label_from_into;
+		map<wxArrayString*, wxString> map_last_item;
+	}current; 
+
+	void UpdateCmbItem(wxArrayString* new_list);
+	void UpdateLabelItem(const wxString* new_text);
+	void UpdateLabelFromInto(const wxString* new_text);
 };

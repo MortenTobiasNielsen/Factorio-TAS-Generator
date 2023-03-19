@@ -2,8 +2,7 @@
 
 #include "GenerateScript.h"
 
-
-GenerateScript::GenerateScript()
+GenerateScript::GenerateScript(wxGrid* grid_steps) : grid_steps(grid_steps)
 {
 	reset();
 }
@@ -55,6 +54,12 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver << "\n}";
 
 	saver.close();
+}
+
+void GenerateScript::PaintWalk(string step, bool paint)
+{
+	int row = std::stoi(step) - 1;
+	grid_steps->SetCellBackgroundColour(row, 9, paint ? *wxCYAN : *wxWHITE);
 }
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
@@ -141,7 +146,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 				SetBuildingAndOrientation(&steps[i]);
 
-				rotate(currentStep, x_cord, y_cord, amount, item, build_orientation, comment);
+				row_rotate(currentStep, x_cord, y_cord, amount, item, build_orientation, direction_to_build, amount_of_buildings, building_size, comment);
 				break;
 
 			case e_craft:
@@ -243,18 +248,30 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				break;
 
 			case e_drop:
-				if (steps[i].BuildingIndex == 0)
-				{
-					UnexpectedError(dialog_progress_bar);
-					return;
-				}
+				building = "Item on ground";
+				build_orientation = build_orientations[1];
 
-				SetBuildingAndOrientation(&steps[i]);
-
-				row_drop(currentStep, x_cord, y_cord, item, direction_to_build, amount_of_buildings, building_size, building, comment);
+				drop(currentStep, "1", x_cord, y_cord, item, building, comment);
 				break;
 
 			case e_pick_up:
+				if (comment.find("COMP:") != string::npos)
+				{
+					comment.erase(0, 5);
+					vector<string> parameters = {};
+
+					size_t pos = 0;
+					while ((pos = comment.find(':')) != std::string::npos)
+					{
+						parameters.push_back(comment.substr(0, pos));
+						comment.erase(0, pos + 1);
+					}
+
+					row_pick_compatibility(currentStep, parameters[0], parameters[1], parameters[2], parameters[3], parameters[4]);
+
+					break;
+				}
+
 				pick(currentStep, amount, comment);
 				break;
 
@@ -383,6 +400,11 @@ string GenerateScript::extract_define(string from_into, string building)
 		return struct_take_put_list.drill_modules;
 	}
 
+	if (building == "Beacon")
+	{
+		return struct_take_put_list.beacon_modules;
+	}
+
 	if (from_into == struct_from_into_list.input)
 	{
 		return struct_take_put_list.assembly_input;
@@ -459,7 +481,12 @@ void GenerateScript::check_mining_distance(string step, string action, string x_
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1])
 	{
+		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
+	}
+	else
+	{
+		PaintWalk(step, false);
 	}
 }
 
@@ -510,7 +537,12 @@ void GenerateScript::check_interact_distance(string step, string action, string 
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1])
 	{
+		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
+	}
+	else
+	{
+		PaintWalk(step, false);
 	}
 }
 
@@ -730,7 +762,15 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 }
 
 void GenerateScript::mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment)
-{
+{ 
+	// Mine the coordinates without checking distance if the user have added Override in the comment - this is mostly useful for removing wreckage. 
+	if (comment == "Override")
+	{
+		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, comment);
+		total_steps += 1;
+		return;
+	}
+
 	if (is_building)
 	{
 		check_interact_distance(step, "1", x_cord, y_cord, building_name, OrientationEnum);
@@ -764,93 +804,9 @@ void GenerateScript::tech(string step, string tech_to_research, string comment)
 {
 	tech_to_research = convert_string(tech_to_research);
 
-	if (tech_to_research == "efficiency-module")
+	if (auto search = map_translation_research.find(tech_to_research); search != map_translation_research.end())
 	{
-		tech_to_research = "effectivity-module";
-	}
-	else if (tech_to_research == "efficiency-module-2")
-	{
-		tech_to_research = "effectivity-module-2";
-	}
-	else if (tech_to_research == "efficiency-module-3")
-	{
-		tech_to_research = "effectivity-module-3";
-	}
-	else if (tech_to_research == "lab-research-speed-1")
-	{
-		tech_to_research = "research-speed-1";
-	}
-	else if (tech_to_research == "lab-research-speed-2")
-	{
-		tech_to_research = "research-speed-2";
-	}
-	else if (tech_to_research == "lab-research-speed-3")
-	{
-		tech_to_research = "research-speed-3";
-	}
-	else if (tech_to_research == "lab-research-speed-4")
-	{
-		tech_to_research = "research-speed-4";
-	}
-	else if (tech_to_research == "lab-research-speed-5")
-	{
-		tech_to_research = "research-speed-5";
-	}
-	else if (tech_to_research == "lab-research-speed-6")
-	{
-		tech_to_research = "research-speed-6";
-	}
-	else if (tech_to_research == "worker-robot-cargo-size-1")
-	{
-		tech_to_research = "worker-robots-storage-1";
-	}
-	else if (tech_to_research == "worker-robot-cargo-size-2")
-	{
-		tech_to_research = "worker-robots-storage-2";
-	}
-	else if (tech_to_research == "worker-robot-cargo-size-3")
-	{
-		tech_to_research = "worker-robots-storage-3";
-	}
-	else if (tech_to_research == "worker-robot-speed-1")
-	{
-		tech_to_research = "worker-robots-speed-1";
-	}
-	else if (tech_to_research == "worker-robot-speed-2")
-	{
-		tech_to_research = "worker-robots-speed-2";
-	}
-	else if (tech_to_research == "worker-robot-speed-3")
-	{
-		tech_to_research = "worker-robots-speed-3";
-	}
-	else if (tech_to_research == "worker-robot-speed-4")
-	{
-		tech_to_research = "worker-robots-speed-4";
-	}
-	else if (tech_to_research == "worker-robot-speed-5")
-	{
-		tech_to_research = "worker-robots-speed-5";
-	}
-	else if (tech_to_research == "worker-robot-speed-6")
-	{
-		tech_to_research = "worker-robots-speed-6";
-	}
-	else if (tech_to_research == "portable-solar-panel")
-	{
-		tech_to_research = "solar-panel-equipment";
-	}
-	else if (tech_to_research == "land-mines")
-	{
-		tech_to_research = "land-mine";
-	}
-	else if (tech_to_research == "nightvision-equipment")
-	{
-		tech_to_research = "night-vision-equipment";
-	}
-	else if (tech_to_research == "personal-battery")
-	{
-		tech_to_research = "battery equipment";
+		tech_to_research = search->second;
 	}
 
 	step_list += Step(step, "1", "\"tech\", \"" + tech_to_research + "\"", comment);
@@ -893,22 +849,56 @@ void GenerateScript::pick(string step, string amount, string comment)
 	total_steps += 1;
 }
 
-void GenerateScript::rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment)
+void GenerateScript::rotate(string step, string action, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment)
 {
 
-	check_interact_distance(step, "1", x_cord, y_cord, item, OrientationEnum);
+	check_interact_distance(step, action, x_cord, y_cord, item, OrientationEnum);
 
 	if (std::stoi(times) == 3)
 	{
-		step_list += Step(step, "1", "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true", comment);
+		step_list += Step(step, action, "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "true", comment);
 		total_steps += 1;
 	}
 	else
 	{
-		for (int i = 0; i < std::stoi(times); i++)
+		step_list += Step(step, action, "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false", comment);
+		total_steps += 1;
+	}
+}
+
+void GenerateScript::row_rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment)
+{
+	int action = 1; //action iterator
+	const int times_c = stoi(times); //constant rotation amount
+	int times_i = times_c; //rotation amount iterator
+
+	if (times_i == 3)
+	{
+		rotate(step, std::to_string(action++), x_cord, y_cord, times, item, OrientationEnum, comment);
+	}
+	else
+	{
+		while (times_i-- > 0)
 		{
-			step_list += Step(step, std::to_string(i + 1), "\"rotate\", {" + x_cord + ", " + y_cord + "}, " + "false", comment);
-			total_steps += 1;
+			rotate(step, std::to_string(action++), x_cord, y_cord, "1", item, OrientationEnum, comment);
+		}
+	}
+
+	for (int i = 1; i < stoi(number_of_buildings); i++)
+	{
+		times_i = times_c;
+		find_coordinates(x_cord, y_cord, direction, building_size);
+
+		if (times_i == 3)
+		{
+			rotate(step, std::to_string(action++), x_cord, y_cord, times, item, OrientationEnum);
+		}
+		else
+		{
+			while (times_i-- > 0)
+			{
+				rotate(step, std::to_string(action++), x_cord, y_cord, "1", item, OrientationEnum);
+			}
 		}
 	}
 }
@@ -959,6 +949,14 @@ void GenerateScript::row_build(string step, string x_cord, string y_cord, string
 
 void GenerateScript::take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string OrientationEnum, string comment)
 {
+	if (comment == "Override")
+	{
+		item = check_item_name(item);
+		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, comment);
+		total_steps += 1;
+		return;
+	}
+
 	if (OrientationEnum == "Wreck")
 	{
 		check_interact_distance(step, action, x_cord, y_cord, OrientationEnum, "North");
@@ -988,6 +986,14 @@ void GenerateScript::row_take(string step, string x_cord, string y_cord, string 
 
 void GenerateScript::put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string OrientationEnum, string comment)
 {
+	if (comment == "Override")
+	{
+		item = check_item_name(item);
+		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, comment);
+		total_steps += 1;
+		return;
+	}
+
 	if (OrientationEnum == "Wreck")
 	{
 		check_interact_distance(step, action, x_cord, y_cord, OrientationEnum, "North");
@@ -1106,20 +1112,27 @@ void GenerateScript::drop(string step, string action, string x_cord, string y_co
 {
 	check_interact_distance(step, action, x_cord, y_cord, building, "North");
 
-	convert_string(item);
+	item = convert_string(item);
 
 	step_list += Step(step, action, "\"drop\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"", comment);
 	total_steps += 1;
 }
 
-void GenerateScript::row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building_size, string building, string comment)
+void GenerateScript::pick_compatibility(std::string step, std::string action, std::string x_cord, std::string y_cord)
 {
-	drop(step, "1", x_cord, y_cord, item, building, comment);
+	walk(step, action, x_cord, y_cord, last_walking_comment);
+	step_list += signature(step, action) + "\"pick\", {" + x_cord + ", " + y_cord + "}}\n";
+	total_steps += 1;
+}
+
+void GenerateScript::row_pick_compatibility(std::string step, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size)
+{
+	pick_compatibility(step, "1", x_cord, y_cord);
 
 	for (int i = 1; i < std::stof(number_of_buildings); i++)
 	{
 		find_coordinates(x_cord, y_cord, direction, building_size);
 
-		drop(step, std::to_string(i + 1), x_cord, y_cord, item, building);
+		pick_compatibility(step, std::to_string(i + 1), x_cord, y_cord);
 	}
 }

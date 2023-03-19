@@ -237,9 +237,19 @@ local function put()
 		return false
 	end
 
-	amount = target_inventory.insert{
+	amount=target_inventory.insert{
 		name=item,
-		count=player.remove_item{name=item, count=amount}
+		count=amount,
+	}
+
+	if amount < 1 then
+		warning(string.format("Step: %s, Action: %s, Step: %d - Put: %s can not be transferred. Amount: %d Removalable: %d Insertable: %d", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper), amount, removalable_items, insertable_items))
+		return false
+	end
+
+	amount = player.remove_item{
+		name=item,
+		count=amount,
 	}
 
 	local text = string.format("-%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"-2 Iron plate (5)"
@@ -853,8 +863,15 @@ local function recipe()
 end
 
 local function tech()
+	if steps[step].comment and steps[step].comment == "Cancel" and player.force.current_research then
+		player.force.research_queue = {}
+		player.force.add_research(item)
+		msg(string.format("Research: Cleared queue and %s added", item))
+		return true
+	end
+
 	player.force.add_research(item)
-    msg(string.format("Add research %s", item))
+	msg(string.format("Research: %s added", item))
 	return true
 end
 
@@ -926,7 +943,10 @@ end
 
 -- Drop items on the ground (like pressing the 'z' key)
 local function drop()
-	if player.get_item_count(drop_item) > 0 and player.can_place_entity{name = drop_item, position = drop_position} then
+	local can_reach = 10 > math.sqrt(
+		math.abs(player.position.x - drop_position[1])^2 + math.abs(player.position.y - drop_position[2])^2
+	)
+	if player.get_item_count(drop_item) > 0 and can_reach then
 		player.surface.create_entity{name = "item-on-ground",
 								stack = {
 									name = drop_item,
@@ -1058,6 +1078,10 @@ local function doStep(current_step)
 		drop_position = current_step[3]
 		drop_item = current_step[4]
 		return drop()
+
+	elseif current_step[2] == "pick" then
+		player.picking_state = true
+		return true
 
 	elseif current_step[2] == "idle" then
 		idle = current_step[3]
@@ -1244,8 +1268,8 @@ local function backwards_compatibility()
 	end
 
 	if steps[step][2] == "save" then
-		save(steps[step][1][1], steps[step][3])
 		change_step(1)
+		save(steps[step-1][1][1], steps[step-1][3])
 	end
 
 	if pickup_ticks > 0 then
@@ -1345,6 +1369,12 @@ script.on_event(defines.events.on_tick, function(event)
 		end
 	end
 
+	if steps[step] == nil or steps[step][1] == "break" then
+		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+		debug_state = false
+		return
+	end
+
 	update_player_position()
 
 	if compatibility_mode then
@@ -1440,14 +1470,38 @@ local function set_quick_bar(event)
 		local set = split_string(settings.global[settings_short..i].value)
 		if set then
 			for key,val in pairs(set) do
-				player.set_quick_bar_slot((i-1)*10 + key, string.sub(val, 7, -2)) -- removes "[item=" and "]"
+				local item = string.sub(val, 7, -2)-- removes "[item=" and "]"
+				if item ~= "" then player.set_quick_bar_slot((i-1)*10 + key, item) end
 			end
 		end
 	end
 end
 
+---Event handler for the player set quickslot, 
+---Updates quickbar settings, to make it easier to set the filters you want 
+---@param event EventData.on_player_set_quick_bar_slot
+local function on_set_quickbar(event)
+	local p = game.players[event.player_index]
+	for i = 1, 10 do
+		local set = settings.global[settings_short..i]
+		local line = ""
+		for j = 1, 10 do
+			local slot = p.get_quick_bar_slot((i-1)*10 + j)
+			if slot then
+				line = line .. "[item=" .. slot.name .. "],"
+			else
+				line = line .. "[item],"
+			end
+		end
+		set.value = string.sub(line, 0, -1)
+		settings.global[settings_short..i] = set
+	end
+end
+
 script.on_event(defines.events.on_player_joined_game, function(event)
 	set_quick_bar(event)
+	script.on_event(defines.events.on_player_set_quick_bar_slot, on_set_quickbar)
+	game.players[event.player_index].game_view_settings.show_entity_info = true --Set alt-mode=true
 end)
 
 local tas_interface =

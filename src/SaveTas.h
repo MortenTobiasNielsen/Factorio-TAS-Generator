@@ -28,7 +28,9 @@ public:
 		map<string, vector<StepParameters>> templates,
 		string folder_location,
 		string folder_location_generate,
-		string goal
+		string goal,
+		wxGridBlockCoordsVector selected_rows,
+		bool set_last_location = true
 	);
 
 private:

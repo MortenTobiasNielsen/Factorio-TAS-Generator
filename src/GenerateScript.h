@@ -24,10 +24,11 @@ using std::to_string;
 class GenerateScript
 {
 public:
-	GenerateScript();
+	GenerateScript(wxGrid* grid_steps);
 	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal);
 
 private:
+	wxGrid* grid_steps;
 	string step_list;
 	float player_x_cord;
 	float player_y_cord;
@@ -62,6 +63,10 @@ private:
 
 	void AddInfoFile(string& folder_location);
 
+	/// <summary>Paints the step to indicate walk sub-step was added</summary>
+	/// <param name="step">The index of the step using a start of 1</param>
+	void PaintWalk(string step, bool paint = true);
+
 	void SetBuildingAndOrientation(StepParameters* stepParameters);
 	void TransferParameters(StepParameters& stepParameters);
 
@@ -89,6 +94,33 @@ private:
 		{"Efficiency module 3", "effectivity-module-3"}
 	};
 
+
+	const map<string, string> map_translation_research{
+		{"efficiency-module", "effectivity-module"},
+		{"efficiency-module-2", "effectivity-module-2"},
+		{"efficiency-module-3", "effectivity-module-3"},
+		{"lab-research-speed-1", "research-speed-1"},
+		{"lab-research-speed-2", "research-speed-2"},
+		{"lab-research-speed-3", "research-speed-3"},
+		{"lab-research-speed-4", "research-speed-4"},
+		{"lab-research-speed-5", "research-speed-5"},
+		{"lab-research-speed-6", "research-speed-6"},
+		{"worker-robot-cargo-size-1", "worker-robots-storage-1"},
+		{"worker-robot-cargo-size-2", "worker-robots-storage-2"},
+		{"worker-robot-cargo-size-3", "worker-robots-storage-3"},
+		{"worker-robot-speed-1", "worker-robots-speed-1"},
+		{"worker-robot-speed-2", "worker-robots-speed-2"},
+		{"worker-robot-speed-3", "worker-robots-speed-3"},
+		{"worker-robot-speed-4", "worker-robots-speed-4"},
+		{"worker-robot-speed-5", "worker-robots-speed-5"},
+		{"worker-robot-speed-6", "worker-robots-speed-6"},
+		{"portable-solar-panel", "solar-panel-equipment"},
+		{"land-mines", "land-mine"},
+		{"nightvision-equipment", "night-vision-equipment"},
+		{"personal-battery", "battery equipment"},
+		{"personal-MK2-battery", "battery mk2 equipment"},
+	};
+
 	string extract_define(string from_into, string building);
 	string convert_string(string input);
 	string check_item_name(string item);
@@ -112,9 +144,11 @@ private:
 	void launch(string step, string x_cord, string y_cord, string comment);
 	void save(string step, string nameOfSaveGame);
 	void idle(string step, string amount, string comment);
-	void rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment);
 	void pick(string step, string amount, string comment);
 
+	void rotate(string step, string action, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment = "");
+	void row_rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment);
+	
 	void build(string step, string action, string x_cord, string y_cord, string item, string OrientationEnum, string comment = "");
 	void row_build(string step, string x_cord, string y_cord, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment);
 
@@ -137,5 +171,7 @@ private:
 	void row_filter(string step, string x_cord, string y_cord, string item, string amount, string type, string direction_to_build, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment);
 
 	void drop(string step, string action, string x_cord, string y_cord, string item, string building, string comment = "");
-	void row_drop(string step, string x_cord, string y_cord, string item, string direction, string number_of_buildings, string building, string building_size, string comment);
+
+	void pick_compatibility(std::string step, std::string action, std::string x_cord, std::string y_cord);
+	void row_pick_compatibility(std::string step, std::string x_cord, std::string y_cord, std::string direction, std::string number_of_buildings, std::string building_size);
 };

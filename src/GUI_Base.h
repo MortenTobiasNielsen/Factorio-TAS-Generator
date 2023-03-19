@@ -28,6 +28,7 @@
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 #include <wx/checkbox.h>
+#include <wx/clrpicker.h>
 #include <wx/button.h>
 #include <wx/statline.h>
 #include <wx/grid.h>
@@ -49,13 +50,13 @@ class GUI_Base : public wxFrame
 	private:
 
 	protected:
-		wxMenuBar* m_menubar1;
+		wxMenuBar* main_menubar;
 		wxMenu* menu_file;
 		wxMenu* menu_script;
 		wxMenu* menu_shortcuts;
 		wxMenu* menu_goals;
 		wxMenu* menu_auto_close;
-		wxPanel* m_panel21;
+		wxPanel* detail_panel;
 		wxStaticText* label_x_cord;
 		wxSpinCtrlDouble* spin_x;
 		wxStaticText* label_y_cord;
@@ -102,12 +103,13 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_launch;
 		wxRadioButton* rbtn_save;
 		wxRadioButton* rbtn_cancel_crafting;
-		wxPanel* m_panel23;
+		wxPanel* auto_put_panel;
 		wxCheckBox* check_furnace;
 		wxCheckBox* check_burner;
 		wxCheckBox* check_lab;
 		wxCheckBox* check_recipe;
-		wxAuiNotebook* m_auinotebook1;
+		wxColourPickerCtrl* step_colour_picker;
+		wxAuiNotebook* main_book;
 		wxPanel* template_panel;
 		wxStaticText* label_choose_template;
 		wxComboBox* cmb_choose_template;
@@ -204,7 +206,9 @@ class GUI_Base : public wxFrame
 		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -227,6 +231,7 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
+		virtual void OnStepsGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
 
 
 	public:

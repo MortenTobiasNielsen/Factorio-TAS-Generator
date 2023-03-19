@@ -36,6 +36,7 @@
             <property name="center">wxBOTH</property>
             <property name="context_help"></property>
             <property name="context_menu">1</property>
+            <property name="drag_accept_files">0</property>
             <property name="enabled">1</property>
             <property name="event_handler">impl_virtual</property>
             <property name="extra_style"></property>
@@ -62,6 +63,7 @@
                 <property name="bg"></property>
                 <property name="context_help"></property>
                 <property name="context_menu">1</property>
+                <property name="drag_accept_files">0</property>
                 <property name="enabled">1</property>
                 <property name="fg"></property>
                 <property name="font"></property>
@@ -69,7 +71,7 @@
                 <property name="id">wxID_ANY</property>
                 <property name="maximum_size"></property>
                 <property name="minimum_size"></property>
-                <property name="name">m_menubar1</property>
+                <property name="name">main_menubar</property>
                 <property name="permission">protected</property>
                 <property name="pos"></property>
                 <property name="size"></property>
@@ -79,7 +81,7 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style"></property>
-                <object class="wxMenu" expanded="1">
+                <object class="wxMenu" expanded="0">
                     <property name="label">File</property>
                     <property name="name">menu_file</property>
                     <property name="permission">protected</property>
@@ -154,7 +156,7 @@
                         <event name="OnMenuSelection">OnMenuExit</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="1">
+                <object class="wxMenu" expanded="0">
                     <property name="label">Script</property>
                     <property name="name">menu_script</property>
                     <property name="permission">protected</property>
@@ -582,7 +584,7 @@
                         <property name="shortcut">Shift+1</property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">OnCancelCraftingMenuSelected</event>
-                </object>
+                    </object>
                 </object>
                 <object class="wxMenu" expanded="0">
                     <property name="label">Goal</property>
@@ -645,7 +647,7 @@
                         <event name="OnMenuSelection">OnMenuDebugClicked</event>
                     </object>
                 </object>
-                <object class="wxMenu" expanded="1">
+                <object class="wxMenu" expanded="0">
                     <property name="label">Auto-close</property>
                     <property name="name">menu_auto_close</property>
                     <property name="permission">protected</property>
@@ -728,6 +730,7 @@
                 <property name="dock">Dock</property>
                 <property name="dock_fixed">0</property>
                 <property name="docking">Top</property>
+                <property name="drag_accept_files">0</property>
                 <property name="enabled">1</property>
                 <property name="fg"></property>
                 <property name="floatable">1</property>
@@ -742,7 +745,7 @@
                 <property name="minimize_button">0</property>
                 <property name="minimum_size"></property>
                 <property name="moveable">1</property>
-                <property name="name">m_panel21</property>
+                <property name="name">detail_panel</property>
                 <property name="pane_border">1</property>
                 <property name="pane_position">76,330</property>
                 <property name="pane_size">1010,155</property>
@@ -758,12 +761,12 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                <object class="wxBoxSizer" expanded="0">
+                <object class="wxBoxSizer" expanded="1">
                     <property name="minimum_size"></property>
-                    <property name="name">bSizer19</property>
+                    <property name="name">detail_sizer</property>
                     <property name="orient">wxHORIZONTAL</property>
                     <property name="permission">none</property>
-                    <object class="sizeritem" expanded="0">
+                    <object class="sizeritem" expanded="1">
                         <property name="border">5</property>
                         <property name="flag">wxEXPAND</property>
                         <property name="proportion">1</property>
@@ -774,7 +777,7 @@
                             <property name="growablerows"></property>
                             <property name="hgap">0</property>
                             <property name="minimum_size"></property>
-                            <property name="name">fgSizer2</property>
+                            <property name="name">detail_sizer_flex</property>
                             <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
                             <property name="permission">none</property>
                             <property name="rows">1</property>
@@ -785,7 +788,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer1181</property>
+                                    <property name="name">detail_sizer_col1</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -794,7 +797,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size">10,10</property>
-                                            <property name="name">bSizerX</property>
+                                            <property name="name">detail_sizer_X</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -822,6 +825,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -884,6 +888,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -930,7 +935,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizerY</property>
+                                            <property name="name">detail_sizer_Y</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -958,6 +963,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1020,6 +1026,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1066,7 +1073,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer36</property>
+                                            <property name="name">detail_sizer_Amount</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -1094,6 +1101,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1155,6 +1163,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1200,7 +1209,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer361</property>
+                                            <property name="name">detail_sizer_Comment</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -1228,6 +1237,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1289,6 +1299,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1338,7 +1349,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer1191</property>
+                                    <property name="name">detail_sizer_col2</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -1347,7 +1358,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer35</property>
+                                            <property name="name">detail_sizer_ItemTech</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -1375,6 +1386,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1437,6 +1449,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1449,7 +1462,7 @@
                                                     <property name="maximum_size"></property>
                                                     <property name="min_size"></property>
                                                     <property name="minimize_button">0</property>
-                                                    <property name="minimum_size">150,-1</property>
+                                                    <property name="minimum_size">180,-1</property>
                                                     <property name="moveable">1</property>
                                                     <property name="name">cmb_item</property>
                                                     <property name="pane_border">1</property>
@@ -1484,7 +1497,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer31</property>
+                                            <property name="name">detail_sizer_FromTo</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -1512,6 +1525,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1574,6 +1588,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1586,7 +1601,7 @@
                                                     <property name="maximum_size"></property>
                                                     <property name="min_size"></property>
                                                     <property name="minimize_button">0</property>
-                                                    <property name="minimum_size">150,-1</property>
+                                                    <property name="minimum_size">180,-1</property>
                                                     <property name="moveable">1</property>
                                                     <property name="name">cmb_from_into</property>
                                                     <property name="pane_border">1</property>
@@ -1621,7 +1636,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer47</property>
+                                            <property name="name">detail_sizer_Input</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -1649,6 +1664,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1711,6 +1727,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1725,7 +1742,7 @@
                                                     <property name="maximum_size"></property>
                                                     <property name="min_size"></property>
                                                     <property name="minimize_button">0</property>
-                                                    <property name="minimum_size">150,-1</property>
+                                                    <property name="minimum_size">180,-1</property>
                                                     <property name="moveable">1</property>
                                                     <property name="name">radio_input</property>
                                                     <property name="pane_border">1</property>
@@ -1759,7 +1776,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer471</property>
+                                            <property name="name">detail_sizer_Output</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -1787,6 +1804,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1849,6 +1867,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1863,7 +1882,7 @@
                                                     <property name="maximum_size"></property>
                                                     <property name="min_size"></property>
                                                     <property name="minimize_button">0</property>
-                                                    <property name="minimum_size">150,-1</property>
+                                                    <property name="minimum_size">180,-1</property>
                                                     <property name="moveable">1</property>
                                                     <property name="name">radio_output</property>
                                                     <property name="pane_border">1</property>
@@ -1899,7 +1918,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer120</property>
+                                    <property name="name">detail_sizer_col3</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -1908,7 +1927,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer58</property>
+                                            <property name="name">detail_sizer_Orientation</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -1936,6 +1955,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -1998,6 +2018,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -2045,7 +2066,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer59</property>
+                                            <property name="name">detail_sizer_Direction</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -2073,6 +2094,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -2135,6 +2157,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -2182,7 +2205,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer51</property>
+                                            <property name="name">detail_sizer_Size</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -2210,6 +2233,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -2271,6 +2295,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -2316,7 +2341,7 @@
                                         <property name="proportion">1</property>
                                         <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
-                                            <property name="name">bSizer52</property>
+                                            <property name="name">detail_sizer_Buildings</property>
                                             <property name="orient">wxHORIZONTAL</property>
                                             <property name="permission">none</property>
                                             <object class="sizeritem" expanded="0">
@@ -2344,6 +2369,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -2405,6 +2431,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -2471,6 +2498,7 @@
                 <property name="dock">Dock</property>
                 <property name="dock_fixed">0</property>
                 <property name="docking">Top</property>
+                <property name="drag_accept_files">0</property>
                 <property name="enabled">1</property>
                 <property name="fg"></property>
                 <property name="floatable">1</property>
@@ -2503,10 +2531,10 @@
                 <property name="window_style">wxBORDER_NONE|wxTAB_TRAVERSAL</property>
                 <object class="wxBoxSizer" expanded="1">
                     <property name="minimum_size"></property>
-                    <property name="name">bSizer18</property>
+                    <property name="name">type_sizer</property>
                     <property name="orient">wxVERTICAL</property>
                     <property name="permission">none</property>
-                    <object class="sizeritem" expanded="0">
+                    <object class="sizeritem" expanded="1">
                         <property name="border">15</property>
                         <property name="flag">wxEXPAND|wxLEFT|wxRIGHT</property>
                         <property name="proportion">1</property>
@@ -2517,7 +2545,7 @@
                             <property name="growablerows"></property>
                             <property name="hgap">15</property>
                             <property name="minimum_size"></property>
-                            <property name="name">fgSizer3</property>
+                            <property name="name">type_sizer_flex</property>
                             <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_ALL</property>
                             <property name="permission">none</property>
                             <property name="rows">3</property>
@@ -2528,7 +2556,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer42</property>
+                                    <property name="name">type_sizer_Take</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -2556,6 +2584,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -2584,7 +2613,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character take items from a container [chest, furnace, assembler, etc.] and put them into their inventory</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -2604,7 +2633,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer11</property>
+                                    <property name="name">type_sizer_Put</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -2632,6 +2661,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -2660,7 +2690,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character put items from his inventory into a container [chest, furnace, assembler, etc.]</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -2680,7 +2710,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer17</property>
+                                    <property name="name">type_sizer_GameSpeed</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -2708,6 +2738,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -2736,7 +2767,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Changes the game speed to X%</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -2756,7 +2787,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer39</property>
+                                    <property name="name">type_sizer_Craft</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -2784,6 +2815,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -2812,7 +2844,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character craft an item</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -2832,7 +2864,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer15</property>
+                                    <property name="name">type_sizer_Walk</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -2860,6 +2892,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -2888,7 +2921,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character walk to a point</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -2908,7 +2941,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer12</property>
+                                    <property name="name">type_sizer_Mine</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -2936,6 +2969,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -2964,7 +2998,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character mine an area, if there is a building, tree or rock they will remove that instead</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -2984,7 +3018,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer141</property>
+                                    <property name="name">type_sizer_Pause</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3012,6 +3046,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3040,7 +3075,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Pauses the game, when all previous tasks are completed. Same as /Pause in the console, the game can be continued with /Resume</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3060,7 +3095,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer16</property>
+                                    <property name="name">type_sizer_Build</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3088,6 +3123,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3116,7 +3152,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character build an entity</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3136,7 +3172,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer64</property>
+                                    <property name="name">type_sizer_Recipe</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3164,6 +3200,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3192,7 +3229,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character change the recipe for a crafting machine</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3212,7 +3249,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer63</property>
+                                    <property name="name">type_sizer_Tech</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3240,6 +3277,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3268,7 +3306,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Adds a technologi to the research queue</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3288,7 +3326,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer40</property>
+                                    <property name="name">type_sizer_Limit</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3316,6 +3354,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3344,7 +3383,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character limit a chest to X slots</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3364,7 +3403,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer431</property>
+                                    <property name="name">type_sizer_Idle</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3392,6 +3431,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3420,7 +3460,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character do nothing for X ticks</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3440,7 +3480,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer65</property>
+                                    <property name="name">type_sizer_Filter</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3468,6 +3508,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3496,7 +3537,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character set the filter on either: a filter-inserter, a splitter or a slot in a car / train wagon</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3516,7 +3557,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer8</property>
+                                    <property name="name">type_sizer_Stop</property>
                                     <property name="orient">wxHORIZONTAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3544,6 +3585,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3592,7 +3634,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer9</property>
+                                    <property name="name">type_sizer_Priority</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3620,6 +3662,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3648,7 +3691,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character set the input and output priority on a splitter.&#x0A;Needs to be applied before setting the filter on the splitter.</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3668,7 +3711,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer13</property>
+                                    <property name="name">type_sizer_Rotate</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3696,6 +3739,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3724,7 +3768,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character rotate an entity X times.&#x0A;If X is 3 then the entity is rotated once counter-clock-wise.</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3744,7 +3788,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer41</property>
+                                    <property name="name">type_sizer_PickUp</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3772,6 +3816,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3800,7 +3845,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character start to pick up items on the floor, same as pressing ( f )</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3820,7 +3865,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer441</property>
+                                    <property name="name">type_sizer_Drop</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3848,6 +3893,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3876,7 +3922,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character drop an item, same as pressing ( z )</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3896,7 +3942,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer14</property>
+                                    <property name="name">type_sizer_Launch</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -3924,6 +3970,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -3952,7 +3999,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Makes the character launch a rocket from a rocket silo</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -3972,7 +4019,7 @@
                                 <property name="proportion">1</property>
                                 <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizer1411</property>
+                                    <property name="name">type_sizer_Save</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="0">
@@ -4000,6 +4047,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -4028,7 +4076,7 @@
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
-                                            <property name="tooltip"></property>
+                                            <property name="tooltip">Creates a save game named by the comment, the tas can only be continued from these save games.&#x0A;In single player the save game name has the prefix autosave-</property>
                                             <property name="validator_data_type"></property>
                                             <property name="validator_style">wxFILTER_NONE</property>
                                             <property name="validator_type">wxDefaultValidator</property>
@@ -4042,20 +4090,20 @@
                                     </object>
                                 </object>
                             </object>
-                            <object class="sizeritem" expanded="1">
+                            <object class="sizeritem" expanded="0">
                                 <property name="border">5</property>
                                 <property name="flag">wxEXPAND</property>
                                 <property name="proportion">1</property>
-                                <object class="wxBoxSizer" expanded="1">
+                                <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
-                                    <property name="name">bSizerCancelCrafting</property>
+                                    <property name="name">type_sizer_CancelCrafting</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="1">
+                                    <object class="sizeritem" expanded="0">
                                         <property name="border">5</property>
                                         <property name="flag">wxALL</property>
                                         <property name="proportion">0</property>
-                                        <object class="wxRadioButton" expanded="1">
+                                        <object class="wxRadioButton" expanded="0">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
                                             <property name="RightDockable">1</property>
@@ -4144,6 +4192,7 @@
                 <property name="dock">Dock</property>
                 <property name="dock_fixed">0</property>
                 <property name="docking">Top</property>
+                <property name="drag_accept_files">0</property>
                 <property name="enabled">1</property>
                 <property name="fg"></property>
                 <property name="floatable">1</property>
@@ -4158,7 +4207,7 @@
                 <property name="minimize_button">0</property>
                 <property name="minimum_size"></property>
                 <property name="moveable">1</property>
-                <property name="name">m_panel23</property>
+                <property name="name">auto_put_panel</property>
                 <property name="pane_border">1</property>
                 <property name="pane_position">963,321</property>
                 <property name="pane_size">300,150</property>
@@ -4176,8 +4225,8 @@
                 <property name="window_style">wxTAB_TRAVERSAL</property>
                 <object class="wxBoxSizer" expanded="1">
                     <property name="minimum_size"></property>
-                    <property name="name">bSizer116</property>
-                    <property name="orient">wxVERTICAL</property>
+                    <property name="name">auto_put_sizer</property>
+                    <property name="orient">wxHORIZONTAL</property>
                     <property name="permission">none</property>
                     <object class="sizeritem" expanded="1">
                         <property name="border">5</property>
@@ -4190,7 +4239,7 @@
                             <property name="growablerows"></property>
                             <property name="hgap">15</property>
                             <property name="minimum_size"></property>
-                            <property name="name">fgSizer4</property>
+                            <property name="name">auto_put_flex</property>
                             <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_SPECIFIED</property>
                             <property name="permission">none</property>
                             <property name="rows">4</property>
@@ -4221,6 +4270,7 @@
                                     <property name="dock">Dock</property>
                                     <property name="dock_fixed">0</property>
                                     <property name="docking">Left</property>
+                                    <property name="drag_accept_files">0</property>
                                     <property name="enabled">1</property>
                                     <property name="fg"></property>
                                     <property name="floatable">1</property>
@@ -4285,6 +4335,7 @@
                                     <property name="dock">Dock</property>
                                     <property name="dock_fixed">0</property>
                                     <property name="docking">Left</property>
+                                    <property name="drag_accept_files">0</property>
                                     <property name="enabled">1</property>
                                     <property name="fg"></property>
                                     <property name="floatable">1</property>
@@ -4349,6 +4400,7 @@
                                     <property name="dock">Dock</property>
                                     <property name="dock_fixed">0</property>
                                     <property name="docking">Left</property>
+                                    <property name="drag_accept_files">0</property>
                                     <property name="enabled">1</property>
                                     <property name="fg"></property>
                                     <property name="floatable">1</property>
@@ -4413,6 +4465,7 @@
                                     <property name="dock">Dock</property>
                                     <property name="dock_fixed">0</property>
                                     <property name="docking">Left</property>
+                                    <property name="drag_accept_files">0</property>
                                     <property name="enabled">1</property>
                                     <property name="fg"></property>
                                     <property name="floatable">1</property>
@@ -4453,6 +4506,82 @@
                             </object>
                         </object>
                     </object>
+                    <object class="sizeritem" expanded="1">
+                        <property name="border">5</property>
+                        <property name="flag">wxEXPAND</property>
+                        <property name="proportion">1</property>
+                        <object class="wxBoxSizer" expanded="1">
+                            <property name="minimum_size"></property>
+                            <property name="name">bSizer65</property>
+                            <property name="orient">wxHORIZONTAL</property>
+                            <property name="permission">none</property>
+                            <object class="sizeritem" expanded="1">
+                                <property name="border">5</property>
+                                <property name="flag">wxALL</property>
+                                <property name="proportion">0</property>
+                                <object class="wxColourPickerCtrl" expanded="1">
+                                    <property name="BottomDockable">1</property>
+                                    <property name="LeftDockable">1</property>
+                                    <property name="RightDockable">1</property>
+                                    <property name="TopDockable">1</property>
+                                    <property name="aui_layer"></property>
+                                    <property name="aui_name"></property>
+                                    <property name="aui_position"></property>
+                                    <property name="aui_row"></property>
+                                    <property name="best_size"></property>
+                                    <property name="bg"></property>
+                                    <property name="caption"></property>
+                                    <property name="caption_visible">1</property>
+                                    <property name="center_pane">0</property>
+                                    <property name="close_button">1</property>
+                                    <property name="colour">wxSYS_COLOUR_WINDOW</property>
+                                    <property name="context_help"></property>
+                                    <property name="context_menu">1</property>
+                                    <property name="default_pane">0</property>
+                                    <property name="dock">Dock</property>
+                                    <property name="dock_fixed">0</property>
+                                    <property name="docking">Left</property>
+                                    <property name="drag_accept_files">0</property>
+                                    <property name="enabled">1</property>
+                                    <property name="fg"></property>
+                                    <property name="floatable">1</property>
+                                    <property name="font"></property>
+                                    <property name="gripper">0</property>
+                                    <property name="hidden">0</property>
+                                    <property name="id">wxID_ANY</property>
+                                    <property name="max_size"></property>
+                                    <property name="maximize_button">0</property>
+                                    <property name="maximum_size"></property>
+                                    <property name="min_size"></property>
+                                    <property name="minimize_button">0</property>
+                                    <property name="minimum_size"></property>
+                                    <property name="moveable">1</property>
+                                    <property name="name">step_colour_picker</property>
+                                    <property name="pane_border">1</property>
+                                    <property name="pane_position"></property>
+                                    <property name="pane_size"></property>
+                                    <property name="permission">protected</property>
+                                    <property name="pin_button">1</property>
+                                    <property name="pos"></property>
+                                    <property name="resize">Resizable</property>
+                                    <property name="show">1</property>
+                                    <property name="size"></property>
+                                    <property name="style">wxCLRP_DEFAULT_STYLE|wxCLRP_SHOW_LABEL</property>
+                                    <property name="subclass">; ; forward_declare</property>
+                                    <property name="toolbar_pane">0</property>
+                                    <property name="tooltip"></property>
+                                    <property name="validator_data_type"></property>
+                                    <property name="validator_style">wxFILTER_NONE</property>
+                                    <property name="validator_type">wxDefaultValidator</property>
+                                    <property name="validator_variable"></property>
+                                    <property name="window_extra_style"></property>
+                                    <property name="window_name"></property>
+                                    <property name="window_style"></property>
+                                    <event name="OnColourChanged">OnStepColourPickerColourChanged</event>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
                 </object>
             </object>
             <object class="wxAuiNotebook" expanded="1">
@@ -4476,6 +4605,7 @@
                 <property name="dock">Dock</property>
                 <property name="dock_fixed">0</property>
                 <property name="docking">Center</property>
+                <property name="drag_accept_files">0</property>
                 <property name="enabled">1</property>
                 <property name="fg"></property>
                 <property name="floatable">1</property>
@@ -4490,7 +4620,7 @@
                 <property name="minimize_button">1</property>
                 <property name="minimum_size"></property>
                 <property name="moveable">1</property>
-                <property name="name">m_auinotebook1</property>
+                <property name="name">main_book</property>
                 <property name="pane_border">1</property>
                 <property name="pane_position"></property>
                 <property name="pane_size"></property>
@@ -4534,6 +4664,7 @@
                         <property name="dock">Dock</property>
                         <property name="dock_fixed">0</property>
                         <property name="docking">Left</property>
+                        <property name="drag_accept_files">0</property>
                         <property name="enabled">1</property>
                         <property name="fg"></property>
                         <property name="floatable">1</property>
@@ -4587,11 +4718,11 @@
                                             <property name="name">bSizer103</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="1">
+                                            <object class="sizeritem" expanded="0">
                                                 <property name="border">5</property>
                                                 <property name="flag">wxALIGN_LEFT</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer126</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -4621,6 +4752,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -4683,6 +4815,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -4721,6 +4854,7 @@
                                                             <property name="window_name"></property>
                                                             <property name="window_style"></property>
                                                             <event name="OnCombobox">OnTemplateChosen</event>
+                                                            <event name="OnText">OnTemplateText</event>
                                                         </object>
                                                     </object>
                                                     <object class="sizeritem" expanded="0">
@@ -4753,6 +4887,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -4827,6 +4962,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -4877,7 +5013,7 @@
                                                 <property name="border">5</property>
                                                 <property name="flag">wxALIGN_LEFT</property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1002</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -4912,6 +5048,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -4986,6 +5123,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5060,6 +5198,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5134,6 +5273,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5207,6 +5347,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -5244,16 +5385,16 @@
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">0</property>
-                                        <object class="wxBoxSizer" expanded="1">
+                                        <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size">-1,-1</property>
                                             <property name="name">bSizer1041</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="1">
+                                            <object class="sizeritem" expanded="0">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1051</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5288,6 +5429,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5334,11 +5476,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="1">
+                                            <object class="sizeritem" expanded="0">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1061</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5373,6 +5515,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5425,16 +5568,16 @@
                                         <property name="border">5</property>
                                         <property name="flag"></property>
                                         <property name="proportion">0</property>
-                                        <object class="wxBoxSizer" expanded="1">
+                                        <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size">-1,-1</property>
                                             <property name="name">bSizer1042</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="1">
+                                            <object class="sizeritem" expanded="0">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1052</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5464,6 +5607,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5525,6 +5669,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5564,11 +5709,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="1">
+                                            <object class="sizeritem" expanded="0">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer1062</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5598,6 +5743,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5659,6 +5805,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5704,16 +5851,16 @@
                                         <property name="border">5</property>
                                         <property name="flag"></property>
                                         <property name="proportion">0</property>
-                                        <object class="wxBoxSizer" expanded="1">
+                                        <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size">-1,-1</property>
                                             <property name="name">bSizer104</property>
                                             <property name="orient">wxVERTICAL</property>
                                             <property name="permission">none</property>
-                                            <object class="sizeritem" expanded="1">
+                                            <object class="sizeritem" expanded="0">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer105</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5743,6 +5890,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5804,6 +5952,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5843,11 +5992,11 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="sizeritem" expanded="1">
+                                            <object class="sizeritem" expanded="0">
                                                 <property name="border">5</property>
                                                 <property name="flag"></property>
                                                 <property name="proportion">1</property>
-                                                <object class="wxBoxSizer" expanded="1">
+                                                <object class="wxBoxSizer" expanded="0">
                                                     <property name="minimum_size"></property>
                                                     <property name="name">bSizer106</property>
                                                     <property name="orient">wxHORIZONTAL</property>
@@ -5877,6 +6026,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -5938,6 +6088,7 @@
                                                             <property name="dock">Dock</property>
                                                             <property name="dock_fixed">0</property>
                                                             <property name="docking">Left</property>
+                                                            <property name="drag_accept_files">0</property>
                                                             <property name="enabled">1</property>
                                                             <property name="fg"></property>
                                                             <property name="floatable">1</property>
@@ -6028,6 +6179,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="drag_col_move">0</property>
                                             <property name="drag_col_size">1</property>
                                             <property name="drag_grid_size">0</property>
@@ -6109,6 +6261,7 @@
                         <property name="dock">Dock</property>
                         <property name="dock_fixed">0</property>
                         <property name="docking">Right</property>
+                        <property name="drag_accept_files">0</property>
                         <property name="enabled">1</property>
                         <property name="fg"></property>
                         <property name="floatable">1</property>
@@ -6167,7 +6320,7 @@
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="1">
+                                        <object class="wxBoxSizer" expanded="0">
                                             <property name="minimum_size"></property>
                                             <property name="name">bSizer113</property>
                                             <property name="orient">wxHORIZONTAL</property>
@@ -6198,6 +6351,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -6271,6 +6425,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -6346,6 +6501,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -6420,6 +6576,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -6494,6 +6651,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -6569,6 +6727,7 @@
                                                     <property name="dock">Dock</property>
                                                     <property name="dock_fixed">0</property>
                                                     <property name="docking">Left</property>
+                                                    <property name="drag_accept_files">0</property>
                                                     <property name="enabled">1</property>
                                                     <property name="fg"></property>
                                                     <property name="floatable">1</property>
@@ -6665,6 +6824,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="drag_col_move">0</property>
                                             <property name="drag_col_size">1</property>
                                             <property name="drag_grid_size">0</property>
@@ -6714,6 +6874,7 @@
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
                                             <event name="OnGridCellLeftDClick">OnStepsGridDoubleLeftClick</event>
+                                            <event name="OnGridRangeSelect">OnStepsGridRangeSelect</event>
                                         </object>
                                     </object>
                                 </object>
@@ -6832,22 +6993,22 @@
                         <property name="permission">protected</property>
                         <property name="rows">7</property>
                         <property name="vgap">5</property>
-                                </object>
+                    </object>
                 </object>
                 <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
                     <property name="flag">wxALIGN_CENTER_HORIZONTAL</property>
                     <property name="proportion">0</property>
-                    <object class="wxBoxSizer" expanded="1">
+                    <object class="wxBoxSizer" expanded="0">
                         <property name="minimum_size"></property>
                         <property name="name">sc_control_sizer</property>
                         <property name="orient">wxHORIZONTAL</property>
                         <property name="permission">none</property>
-                        <object class="sizeritem" expanded="1">
+                        <object class="sizeritem" expanded="0">
                             <property name="border">5</property>
                             <property name="flag">wxALL</property>
                             <property name="proportion">0</property>
-                            <object class="wxButton" expanded="1">
+                            <object class="wxButton" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -6918,11 +7079,11 @@
                                 <event name="OnButtonClick">OnButtonClickSCReset</event>
                             </object>
                         </object>
-                        <object class="sizeritem" expanded="1">
+                        <object class="sizeritem" expanded="0">
                             <property name="border">5</property>
                             <property name="flag">wxALL</property>
                             <property name="proportion">0</property>
-                            <object class="wxButton" expanded="1">
+                            <object class="wxButton" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -7055,6 +7216,7 @@
                         <property name="dock">Dock</property>
                         <property name="dock_fixed">0</property>
                         <property name="docking">Left</property>
+                        <property name="drag_accept_files">0</property>
                         <property name="enabled">1</property>
                         <property name="fg"></property>
                         <property name="floatable">1</property>
@@ -7124,6 +7286,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -7185,6 +7348,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -7265,6 +7429,7 @@
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
                                             <property name="docking">Left</property>
+                                            <property name="drag_accept_files">0</property>
                                             <property name="enabled">0</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
