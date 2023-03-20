@@ -30,6 +30,8 @@ public:
 	const std::string currentDateTime(); // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
 
 private:
+	string name;
+
 	wxGrid* grid_steps;
 	string step_list;
 	float player_x_cord;

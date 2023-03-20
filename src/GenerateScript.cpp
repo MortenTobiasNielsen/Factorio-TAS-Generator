@@ -36,8 +36,25 @@ const std::string GenerateScript::currentDateTime()
 
 void GenerateScript::ClearSteps()
 {
+	const string endl = "\n";
+	const string tab = "\t";
+	const string comma_endl = ",\n";
+
 	total_steps = 1;
-	step_list = "local step = {}\n\n";
+	step_list = "";
+	std::stringstream ss (step_list);
+	ss << endl << "local tas_generator = {" << endl
+		<< tab << "name = \"" << generator_thumbprint.name << "\"" << comma_endl
+		<< tab << "version = \"" << generator_thumbprint.version << "\"" << comma_endl
+		<< tab << "tas = {" << endl
+		<< tab << tab << "name = \"" << name << "\"" << comma_endl
+		<< tab << tab << "timestamp = \"" << currentDateTime() << "\"" << comma_endl
+		<< tab << "}" << comma_endl
+		<< "}" << endl
+		<< endl
+		<< "local step = {}" << endl
+		<< endl;
+	step_list = ss.str();
 }
 
 string GenerateScript::EndSteps()
@@ -80,6 +97,7 @@ void GenerateScript::PaintWalk(string step, bool paint)
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
 {
+	this->name = folder_location.substr(folder_location.find_last_of('\\') + 1);
 	reset();
 
 	if (folder_location == "")

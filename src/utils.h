@@ -12,6 +12,12 @@ using std::map;
 
 static const double invalidX = 0.3543534;
 
+static const struct
+{
+	string name = "Factorio TAS Generator";
+	string version = "0.2.1";
+} generator_thumbprint;
+
 static const vector<string> fuel_list = {
 	"Wood",
 	"Coal",
