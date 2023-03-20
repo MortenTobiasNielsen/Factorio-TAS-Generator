@@ -187,6 +187,7 @@
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="ImportStepsPanel.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="nlohmann\json.hpp" />
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="ParameterChoices.h" />
