@@ -1155,32 +1155,6 @@ static const std::vector<std::string> drills_list =
 
 static const struct
 {
-	std::string game_speed = "Game speed";
-	std::string walk = "Walk";
-	std::string mine = "Mine";
-	std::string rotate = "Rotate";
-	std::string craft = "Craft";
-	std::string build = "Build";
-	std::string take = "Take";
-	std::string put = "Put";
-	std::string tech = "Tech";
-	std::string recipe = "Recipe";
-	std::string pause = "Pause";
-	std::string stop = "Stop";
-	std::string limit = "Limit";
-	std::string priority = "Priority";
-	std::string filter = "Filter";
-	std::string pick_up = "Pick up";
-	std::string drop = "Drop";
-	std::string idle = "Idle";
-	std::string launch = "Launch";
-	std::string save = "Save";
-	std::string cancel_crafting = "Cancel";
-
-} struct_steps_list;
-
-static const struct
-{
 	std::string input = "Input";
 	std::string output = "Output";
 	std::string fuel = "Fuel";

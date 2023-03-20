@@ -563,7 +563,7 @@ void cMain::AddStep(int row)
 			to_check = stepParameters.Item;
 
 			stepParameters.StepEnum = e_put;
-			stepParameters.Step = struct_steps_list.put;
+			stepParameters.Step = StepNames[e_put];
 			stepParameters.Amount = "1";
 
 			if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
@@ -610,7 +610,7 @@ void cMain::AddStep(int row)
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
 					stepParameters.StepEnum = e_put;
-					stepParameters.Step = struct_steps_list.put;
+					stepParameters.Step = StepNames[e_put];
 					stepParameters.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = struct_from_into_list.input;
