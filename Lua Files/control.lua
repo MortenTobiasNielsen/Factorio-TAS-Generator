@@ -1,7 +1,8 @@
 local util = require("util")
 local crash_site = require("crash-site")
 
-local steps = require("steps")
+local tas_generator = require("steps")
+local steps = tas_generator.steps
 local debug_state = require("goal")
 local run = true
 
@@ -1511,15 +1512,27 @@ end)
 
 local tas_interface =
 {
-get_current_task = function()
-	return step
-end,
-get_task_list = function()
-	return steps
-end,
-get_tas_step_change_id = function ()
-	return tas_step_change
-end,
+	get_current_task = function()
+		return step
+	end,
+	get_task_list = function()
+		return steps
+	end,
+	get_tas_step_change_id = function ()
+		return tas_step_change
+	end,
+	get_tas_name = function ()
+		return tas_generator.tas.name
+	end,
+	get_tas_timestamp = function ()
+		return tas_generator.tas.timestamp
+	end,
+	get_generator_name = function ()
+		return tas_generator.name
+	end,
+	get_generator_version = function ()
+		return tas_generator.version
+	end,
 }
 
 if not remote.interfaces["DunRaider-TAS"] then
