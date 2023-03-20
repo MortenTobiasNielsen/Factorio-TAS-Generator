@@ -1,6 +1,9 @@
 #pragma once
 
 #include "GenerateScript.h"
+#include <iostream>
+#include <stdio.h>
+#include <time.h>
 
 GenerateScript::GenerateScript(wxGrid* grid_steps) : grid_steps(grid_steps)
 {
@@ -16,6 +19,19 @@ void GenerateScript::reset()
 	target_y_cord = 0.0f;
 	x_building_size = 0.0f;
 	y_building_size = 0.0f;
+}
+
+// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+const std::string GenerateScript::currentDateTime()
+{
+	// https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c
+	time_t     now = time(0);
+	struct tm  tstruct;
+	char       buf[80];
+	tstruct = *localtime(&now);
+	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+	return buf;
 }
 
 void GenerateScript::ClearSteps()
