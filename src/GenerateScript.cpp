@@ -59,7 +59,9 @@ void GenerateScript::ClearSteps()
 
 string GenerateScript::EndSteps()
 {
-	return step_list + "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n" + "return step";
+	string last_step = "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n";
+	const string return_line = "tas_generator.steps = step\nreturn tas_generator\n";
+	return step_list + last_step + return_line;
 }
 
 void GenerateScript::UnexpectedError(DialogProgressBar* dialog_progress_bar)
