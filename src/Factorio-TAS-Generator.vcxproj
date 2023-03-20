@@ -188,7 +188,9 @@
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="ImportStepsPanel.h" />
     <ClInclude Include="nlohmann\json.hpp" />
+    <ClInclude Include="Orientation.h" />
     <ClInclude Include="ParameterChoices.h" />
+    <ClInclude Include="Priority.h" />
     <ClInclude Include="SearchUtil.h" />
     <ClInclude Include="SearchUtilities.h" />
     <ClInclude Include="ShortcutChanger.h" />
