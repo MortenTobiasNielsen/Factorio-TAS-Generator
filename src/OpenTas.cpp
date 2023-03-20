@@ -2,6 +2,8 @@
 
 #include "OpenTas.h"
 
+using namespace tas_file;
+
 void OpenTas::reset()
 {
 	segments.reserve(100);

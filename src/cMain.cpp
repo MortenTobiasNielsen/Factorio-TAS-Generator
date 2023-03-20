@@ -1209,19 +1209,19 @@ void cMain::Open(std::ifstream * file)
 	save_file_location = result->save_file_location;
 	generate_code_folder_location = result->generate_code_folder_location;
 
-	if (result->goal == goal_steelaxe_text)
+	if (result->goal == tas_file::goal_steelaxe_text)
 	{
 		menu_goals->GetMenuItems()[0]->Check();
 	}
-	else if (result->goal == goal_GOTLAP_text)
+	else if (result->goal == tas_file::goal_GOTLAP_text)
 	{
 		menu_goals->GetMenuItems()[1]->Check();
 	}
-	else if (result->goal == goal_any_percent_text)
+	else if (result->goal == tas_file::goal_any_percent_text)
 	{
 		menu_goals->GetMenuItems()[2]->Check();
 	}
-	else if (result->goal == goal_debug_text)
+	else if (result->goal == tas_file::goal_debug_text)
 	{
 		menu_goals->GetMenuItems()[3]->Check();
 	}
@@ -1748,19 +1748,19 @@ bool cMain::Save(string filename, bool save_as, bool set_last_location)
 	std::string goal;
 	if (menu_goals->GetMenuItems()[0]->IsChecked())
 	{
-		goal = goal_steelaxe_text;
+		goal = tas_file::goal_steelaxe_text;
 	}
 	else if (menu_goals->GetMenuItems()[1]->IsChecked())
 	{
-		goal = goal_GOTLAP_text;
+		goal = tas_file::goal_GOTLAP_text;
 	}
 	else if (menu_goals->GetMenuItems()[2]->IsChecked())
 	{
-		goal = goal_any_percent_text;
+		goal = tas_file::goal_any_percent_text;
 	}
 	else
 	{
-		goal = goal_debug_text;
+		goal = tas_file::goal_debug_text;
 	}
 
 	SaveTas save;

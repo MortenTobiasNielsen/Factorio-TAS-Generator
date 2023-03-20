@@ -59,9 +59,9 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 	while (update_segment())
 	{
 		counter++;
-		if (segments.size() != step_segment_size &&
-			segments.size() != step_segment_size_without_colour &&
-			segments.size() != step_segment_size_without_comment_and_colour)
+		if (segments.size() != tas_file::step_segment_size &&
+			segments.size() != tas_file::step_segment_size_without_colour &&
+			segments.size() != tas_file::step_segment_size_without_comment_and_colour)
 		{
 			wxMessageBox("It was not possible to read line ["+ std::to_string(counter) + "] as it only contained [" + std::to_string(segments.size()) + "] semicolons", "Text import error");
 			return false;
@@ -78,8 +78,8 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		step.Direction = Capitalize(segments[6]);
 		step.Size = segments[7] != "" ? stoi(segments[7]) : 0;
 		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 0;
-		step.Comment = segments.size() == step_segment_size || segments.size() == step_segment_size_without_colour ? segments[9] : "";
-		step.Colour = segments.size() == step_segment_size ? segments[10] : "";
+		step.Comment = segments.size() == tas_file::step_segment_size || segments.size() == tas_file::step_segment_size_without_colour ? segments[9] : "";
+		step.Colour = segments.size() == tas_file::step_segment_size ? segments[10] : "";
 
 		if (step.Step == "Start")
 		{

@@ -3,6 +3,8 @@
 #include "SaveTas.h"
 #include "Settings.h"
 
+using namespace tas_file;
+
 bool SaveTas::Save(
 	wxWindow* parent,
 	DialogProgressBar* dialog_progress_bar,
