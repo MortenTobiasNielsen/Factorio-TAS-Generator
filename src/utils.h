@@ -660,13 +660,15 @@ static const std::vector<std::string> science_packs = {
 	"Chemical science pack",
 	"Production science pack",
 	"Utility science pack",
-	"Space science pack"};
+	"Space science pack"
+};
 
 static const std::vector<std::string> furnace_list = {
 	"Iron plate",
 	"Copper plate",
 	"Steel plate",
-	"Stone brick"};
+	"Stone brick"
+};
 
 static const std::vector<std::string> assemply_level1_list =
 {
