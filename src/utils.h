@@ -21,6 +21,12 @@ static const int template_segment_size = 12;
 static const int template_segment_size_without_colour = 11;
 static const int template_segment_size_without_comment_and_colour = 10;
 
+static const struct
+{
+	string name = "Factorio TAS Generator";
+	string version = "0.2.1";
+} generator_thumbprint;
+
 static const string total_steps_indicator = "Total lines:";
 static const string goal_indicator = "Goal:";
 static const string steps_indicator = "Steps:";
