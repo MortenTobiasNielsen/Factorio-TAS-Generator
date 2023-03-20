@@ -309,14 +309,18 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	{
 		//add locale directory
 		fs::create_directories(folder_location + "\\locale\\en");
-		fs::copy_file("..\\Lua Files\\locale.cfg", folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);
+
+		bool exist = fs::exists("..\\Lua Files\\locale.cfg");
+		string pre_fix = exist ? "..\\Lua Files\\" : "";
+
+		fs::copy_file(pre_fix + "locale.cfg", folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);
 
 		//copy lua files to tas mod if they are newer
-		fs::copy_file("..\\Lua Files\\control.lua", folder_location + "\\control.lua", fs::copy_options::update_existing);
-		fs::copy_file("..\\Lua Files\\settings.lua", folder_location + "\\settings.lua", fs::copy_options::update_existing);
+		fs::copy_file(pre_fix + "control.lua", folder_location + "\\control.lua", fs::copy_options::update_existing);
+		fs::copy_file(pre_fix + "settings.lua", folder_location + "\\settings.lua", fs::copy_options::update_existing);
 
 		//always copy goal file
-		fs::copy_file("..\\Lua Files\\" + goal, folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
+		fs::copy_file(pre_fix + goal, folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
 	}
 
 	AddInfoFile(folder_location);
