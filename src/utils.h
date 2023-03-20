@@ -4,6 +4,9 @@
 #include <vector>
 #include <map>
 
+#include "Priority.h"
+#include "Orientation.h"
+
 using std::string;
 using std::vector;
 using std::map;
@@ -898,25 +901,6 @@ static const std::vector<std::string> take_from =
 	"Wreck"
 };
 
-enum INPUT_OUTPUT
-{
-	LEFT, NONE, RIGHT
-};
-
-static const std::vector<std::string> input_output = 
-{
-	"Left",
-	"None",
-	"Right"
-};
-
-static inline std::map<std::string, INPUT_OUTPUT> map_input_output = 
-{
-	{input_output[0], LEFT},
-	{input_output[1], NONE},
-	{input_output[2], RIGHT}
-};
-
 static const std::vector<std::string> module_list = 
 {
 	"Speed module",
@@ -929,31 +913,6 @@ static const std::vector<std::string> module_list =
 	"Productivity module 2",
 	"Productivity module 3"
 };
-
-static const std::vector<std::string> build_orientations = 
-{
-	"North",
-	"East",
-	"South",
-	"West"
-};
-
-enum Orientation
-{
-	North,
-	East,
-	South,
-	West,
-};
-
-static inline std::map<std::string, Orientation> OrientationToEnum = 
-{
-	{build_orientations[North], North},
-	{build_orientations[East], East},
-	{build_orientations[South], South},
-	{build_orientations[West], West}
-};
-
 
 static const std::vector<std::string> tech_list =
 {
@@ -1210,20 +1169,3 @@ static const struct
 	std::string assembly_output = "defines.inventory.assembling_machine_output";
 	std::string assembly_modules = "defines.inventory.assembling_machine_modules";
 } struct_take_put_list;
-
-static const struct
-{
-	std::string north = "defines.direction.north";
-	std::string south = "defines.direction.south";
-	std::string east = "defines.direction.east";
-	std::string west = "defines.direction.west";
-} build_direction_struct;
-
-static const struct
-{
-	std::string north = "North";
-	std::string south = "South";
-	std::string east = "East";
-	std::string west = "West";
-
-} struct_direction_list;
