@@ -2,21 +2,12 @@
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 #include <wx/string.h>
+#include "StepNameToEnum.h"
 
 //Top center panel with radio buttons
 class TypePanel : public wxPanel
 {
 public:
-	const struct STEP_TYPE
-	{
-		enum step_type
-		{
-			Take, Put, Game_Speed, Craft, Walk, Mine,
-			Build, Recipe, Tech, Limit, Idle, Filter, Pause,
-			Priority, Rotate, Pick_Up, Drop, Launch, Save, Stop, Cancel_Crafting
-		};
-	};
-
 	// Empty constructor: likely means you are doing something wrong
 	TypePanel() : wxPanel()
 	{}
@@ -30,7 +21,7 @@ public:
 	{}
 
 	// Takes a step_type and enables the corresponding radio button 
-	void SwitchStep(STEP_TYPE::step_type type);
+	void SwitchStep(StepType type);
 
 public:
 	// Modifier strings: used to manipulate step detail fields and labels

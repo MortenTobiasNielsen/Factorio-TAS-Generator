@@ -24,6 +24,7 @@
     </ClCompile>
     <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="ImportStepsPanel.cpp" />
+    <ClCompile Include="TasFileConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -54,7 +55,6 @@
     <ClInclude Include="SearchUtil.h">
       <Filter>Structs</Filter>
     </ClInclude>
-    <ClInclude Include="SearchUtilities.h" />
     <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ParameterChoices.h" />
@@ -65,6 +65,9 @@
     <ClInclude Include="resource.h">
       <Filter>misc</Filter>
     </ClInclude>
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Orientation.h" />
+    <ClInclude Include="Priority.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Lua Files\control.lua">

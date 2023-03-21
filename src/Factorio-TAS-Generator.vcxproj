@@ -194,7 +194,6 @@
     <ClInclude Include="ParameterChoices.h" />
     <ClInclude Include="Priority.h" />
     <ClInclude Include="SearchUtil.h" />
-    <ClInclude Include="SearchUtilities.h" />
     <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="StepNameToEnum.h" />
     <ClInclude Include="OpenTas.h" />
