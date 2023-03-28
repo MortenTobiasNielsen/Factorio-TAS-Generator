@@ -1510,35 +1510,6 @@ script.on_event(defines.events.on_player_joined_game, function(event)
 	game.players[event.player_index].game_view_settings.show_entity_info = true --Set alt-mode=true
 end)
 
-local tas_interface =
-{
-	get_current_task = function()
-		return step
-	end,
-	get_task_list = function()
-		return steps
-	end,
-	get_tas_step_change_id = function ()
-		return tas_step_change
-	end,
-	get_tas_name = function ()
-		return tas_generator.tas.name
-	end,
-	get_tas_timestamp = function ()
-		return tas_generator.tas.timestamp
-	end,
-	get_generator_name = function ()
-		return tas_generator.name
-	end,
-	get_generator_version = function ()
-		return tas_generator.version
-	end,
-}
-
-if not remote.interfaces["DunRaider-TAS"] then
-	remote.add_interface("DunRaider-TAS", tas_interface)
-end
-
 script.on_event(defines.events.on_player_created, function(event)
 	set_quick_bar(event)
 	on_player_created(event)
@@ -1636,3 +1607,38 @@ end
 commands.add_command("release", nil, release)
 commands.add_command("resume", nil, resume)
 commands.add_command("skip", nil, skip)
+
+local tas_interface =
+{
+	get_current_task = function()
+		return step
+	end,
+	get_task_list = function()
+		return steps
+	end,
+	get_tas_step_change_id = function ()
+		return tas_step_change
+	end,
+	get_tas_name = function ()
+		return tas_generator.tas.name
+	end,
+	get_tas_timestamp = function ()
+		return tas_generator.tas.timestamp
+	end,
+	get_generator_name = function ()
+		return tas_generator.name
+	end,
+	get_generator_version = function ()
+		return tas_generator.version
+	end,
+	--command interface
+	release = release,
+	resume = resume,
+	skip = function (n)
+		skip({parameter = n})
+	end,
+}
+
+if not remote.interfaces["DunRaider-TAS"] then
+	remote.add_interface("DunRaider-TAS", tas_interface)
+end
