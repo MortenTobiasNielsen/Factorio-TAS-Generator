@@ -152,6 +152,16 @@ protected:
 	void StepSeachOnSearchButton(wxCommandEvent& event);
 	void StepSeachOnCancelButton(wxCommandEvent& event);
 
+	//Import steps panel
+	void OnImportStepsIntoStepsCtrl(wxSpinEvent& event);
+	void OnImportStepsIntoStepsCtrlEnter(wxCommandEvent& event);
+	void OnImportStepsIntoStepsBtnClick(wxCommandEvent& event);
+	bool validateTemplateName();
+	void OnImportStepsIntoTemplateCtrlText(wxCommandEvent& event);
+	void OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event);
+	void OnImportStepsIntoTemplateBtnClick(wxCommandEvent& event);
+	void OnImportStepsTextUpdate(wxCommandEvent& event);
+
 private:
 	wxString window_title = "Factorio TAS Generator";
 

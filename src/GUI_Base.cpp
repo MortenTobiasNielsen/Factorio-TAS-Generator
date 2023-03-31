@@ -936,7 +936,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	template_panel->SetSizer( bSizer5612 );
 	template_panel->Layout();
 	bSizer5612->Fit( template_panel );
-	main_book->AddPage( template_panel, wxT("Templates"), true, wxNullBitmap );
+	main_book->AddPage( template_panel, wxT("Templates"), false, wxNullBitmap );
 	step_panel = new wxPanel( main_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
@@ -1040,6 +1040,89 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
 	main_book->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
+	import_steps_panel = new ImportStepsPanel( main_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Import") );
+	wxBoxSizer* import_steps_sizer;
+	import_steps_sizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* import_steps_ctrl_sizer;
+	import_steps_ctrl_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	wxBoxSizer* import_steps_into_steps_sizer;
+	import_steps_into_steps_sizer = new wxBoxSizer( wxVERTICAL );
+
+	import_steps_into_steps_ctrl = new wxSpinCtrl( import_steps_panel, wxID_ANY, wxT("-1"), wxDefaultPosition, wxSize( 120,-1 ), wxSP_ARROW_KEYS, -999999, 999999, -1 );
+	import_steps_into_steps_ctrl->SetToolTip( wxT("Positive numbers places the imported steps in the step list from the top and negative numbers from the bottom.\nWith 0 being the top element and -1 being the bottom element.\nAnd -2 Inserting steps between last and second to last element.") );
+	import_steps_into_steps_ctrl->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_steps_ctrl->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_steps_sizer->Add( import_steps_into_steps_ctrl, 0, wxALL, 5 );
+
+	import_steps_into_steps_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("Into steps"), wxDefaultPosition, wxSize( 120,-1 ), 0 );
+	import_steps_into_steps_btn->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_steps_btn->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_steps_sizer->Add( import_steps_into_steps_btn, 0, wxALL, 5 );
+
+
+	import_steps_ctrl_sizer->Add( import_steps_into_steps_sizer, 1, 0, 5 );
+
+	wxBoxSizer* import_steps_into_template_sizer;
+	import_steps_into_template_sizer = new wxBoxSizer( wxVERTICAL );
+
+	import_steps_into_template_ctrl = new wxTextCtrl( import_steps_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 120,-1 ), wxTE_PROCESS_ENTER );
+	#ifdef __WXGTK__
+	if ( !import_steps_into_template_ctrl->HasFlag( wxTE_MULTILINE ) )
+	{
+	import_steps_into_template_ctrl->SetMaxLength( 45 );
+	}
+	#else
+	import_steps_into_template_ctrl->SetMaxLength( 45 );
+	#endif
+	import_steps_into_template_ctrl->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	import_steps_into_template_ctrl->SetToolTip( wxT("Template name has to be at least 1 character long.\nTemplate name can only contain letters and numbers.\nTemplate name has to be unique") );
+	import_steps_into_template_ctrl->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_template_ctrl->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_template_ctrl->SetValidator( wxTextValidator( wxFILTER_ALPHANUMERIC, &import_steps_into_template_ctrl_validator ) );
+
+	import_steps_into_template_sizer->Add( import_steps_into_template_ctrl, 0, wxALL, 5 );
+
+	import_steps_into_template_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("Create template"), wxDefaultPosition, wxSize( 120,-1 ), 0 );
+	import_steps_into_template_btn->Enable( false );
+	import_steps_into_template_btn->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_template_btn->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_template_sizer->Add( import_steps_into_template_btn, 0, wxALL, 5 );
+
+
+	import_steps_ctrl_sizer->Add( import_steps_into_template_sizer, 1, 0, 5 );
+
+	import_steps_clear_checkbox = new wxCheckBox( import_steps_panel, wxID_ANY, wxT("Clear import"), wxDefaultPosition, wxDefaultSize, 0 );
+	import_steps_clear_checkbox->SetValue(true);
+	import_steps_clear_checkbox->SetToolTip( wxT("Clears the import text field on succesful insertion into Steps or creation of a template") );
+
+	import_steps_ctrl_sizer->Add( import_steps_clear_checkbox, 0, wxALL, 5 );
+
+
+	import_steps_sizer->Add( import_steps_ctrl_sizer, 1, 0, 5 );
+
+	wxBoxSizer* import_steps_text_sizer;
+	import_steps_text_sizer = new wxBoxSizer( wxVERTICAL );
+
+	import_steps_text_sizer->SetMinSize( wxSize( -1,1200 ) );
+	import_steps_text_import = new wxTextCtrl( import_steps_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_LEFT|wxTE_MULTILINE|wxTE_NO_VSCROLL );
+	import_steps_text_import->SetMinSize( wxSize( 450,600 ) );
+
+	import_steps_text_sizer->Add( import_steps_text_import, 0, wxALL|wxEXPAND, 5 );
+
+
+	import_steps_sizer->Add( import_steps_text_sizer, 1, wxEXPAND, 5 );
+
+
+	import_steps_panel->SetSizer( import_steps_sizer );
+	import_steps_panel->Layout();
+	import_steps_sizer->Fit( import_steps_panel );
+	main_book->AddPage( import_steps_panel, wxT("Import"), true, wxNullBitmap );
 
 
 	m_mgr.Update();
@@ -1137,6 +1220,13 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_move_down->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
+	import_steps_into_steps_ctrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( GUI_Base::OnImportStepsIntoStepsCtrl ), NULL, this );
+	import_steps_into_steps_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
+	import_steps_into_steps_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsBtnClick ), NULL, this );
+	import_steps_into_template_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlText ), NULL, this );
+	import_steps_into_template_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
+	import_steps_into_template_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateBtnClick ), NULL, this );
+	import_steps_text_import->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsTextUpdate ), NULL, this );
 }
 
 GUI_Base::~GUI_Base()
@@ -1190,6 +1280,13 @@ GUI_Base::~GUI_Base()
 	btn_move_down->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
+	import_steps_into_steps_ctrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( GUI_Base::OnImportStepsIntoStepsCtrl ), NULL, this );
+	import_steps_into_steps_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
+	import_steps_into_steps_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsBtnClick ), NULL, this );
+	import_steps_into_template_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlText ), NULL, this );
+	import_steps_into_template_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
+	import_steps_into_template_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateBtnClick ), NULL, this );
+	import_steps_text_import->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsTextUpdate ), NULL, this );
 
 	m_mgr.UnInit();
 

@@ -23,6 +23,7 @@
       <Filter>Structs</Filter>
     </ClCompile>
     <ClCompile Include="ShortcutChanger.cpp" />
+    <ClCompile Include="ImportStepsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -31,7 +32,6 @@
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="OpenTas.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="SaveTas.h" />
     <ClInclude Include="DialogProgressBar.h" />
     <ClInclude Include="TypePanel.h" />
@@ -56,23 +56,38 @@
     </ClInclude>
     <ClInclude Include="SearchUtilities.h" />
     <ClInclude Include="ShortcutChanger.h" />
-    <ClInclude Include="nlohmann\json.hpp" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="ParameterChoices.h" />
+    <ClInclude Include="ImportStepsPanel.h" />
+    <ClInclude Include="nlohmann\json.hpp">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Factorio-TAS-Generator.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="..\Lua Files\control.lua" />
-    <CopyFileToFolders Include="..\Lua Files\goal_any_percent.lua" />
-    <CopyFileToFolders Include="..\Lua Files\goal_debug.lua" />
-    <CopyFileToFolders Include="..\Lua Files\goal_gotlap.lua" />
-    <CopyFileToFolders Include="..\Lua Files\goal_steelaxe.lua" />
-    <CopyFileToFolders Include="..\Lua Files\locale.cfg" />
-    <CopyFileToFolders Include="..\Lua Files\settings.lua" />
+    <CopyFileToFolders Include="..\Lua Files\control.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\goal_any_percent.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\goal_debug.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\goal_gotlap.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\goal_steelaxe.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\locale.cfg">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\settings.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Structs">
@@ -81,5 +96,26 @@
     <Filter Include="Maps">
       <UniqueIdentifier>{7bdb55d0-e0ec-42f1-a7cc-bcf6f12d47ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="misc">
+      <UniqueIdentifier>{8cafac59-c4b4-4598-9a6f-798e4bc1d1a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lua">
+      <UniqueIdentifier>{59cc3c2e-7e65-4034-ba1d-c69903c5d1ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="misc\wxWidgets.natvis">
+      <Filter>misc</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico">
+      <Filter>misc</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Factorio-TAS-Generator.rc">
+      <Filter>misc</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
