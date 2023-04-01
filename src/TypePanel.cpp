@@ -87,69 +87,69 @@ string cMain::ExtractStep()
 {
 	//row 1
 	if (rbtn_take->GetValue())
-		return struct_steps_list.take;
+		return StepNames[e_take];
 
 	if (rbtn_put->GetValue())
-		return struct_steps_list.put;
+		return StepNames[e_put];
 
 	if (rbtn_game_speed->GetValue())
-		return struct_steps_list.game_speed;
+		return StepNames[e_game_speed];
 
 	if (rbtn_craft->GetValue())
-		return struct_steps_list.craft;
+		return StepNames[e_craft];
 
 	if (rbtn_walk->GetValue())
-		return struct_steps_list.walk;
+		return StepNames[e_walk];
 
 	if (rbtn_mine->GetValue())
-		return struct_steps_list.mine;
+		return StepNames[e_mine];
 
 	if (rbtn_pause->GetValue())
-		return struct_steps_list.pause;
+		return StepNames[e_pause];
 
 	//row 2
 	if (rbtn_build->GetValue())
-		return struct_steps_list.build;
+		return StepNames[e_build];
 
 	if (rbtn_recipe->GetValue())
-		return struct_steps_list.recipe;
+		return StepNames[e_recipe];
 
 	if (rbtn_tech->GetValue())
-		return struct_steps_list.tech;
+		return StepNames[e_tech];
 
 	if (rbtn_limit->GetValue())
-		return struct_steps_list.limit;
+		return StepNames[e_limit];
 
 	if (rbtn_idle->GetValue())
-		return struct_steps_list.idle;
+		return StepNames[e_idle];
 
 	if (rbtn_filter->GetValue())
-		return struct_steps_list.filter;
+		return StepNames[e_filter];
 
 	if (rbtn_stop->GetValue())
-		return struct_steps_list.stop;
+		return StepNames[e_stop];
 
 	//row 3
 	if (rbtn_priority->GetValue())
-		return struct_steps_list.priority;
+		return StepNames[e_priority];
 
 	if (rbtn_rotate->GetValue())
-		return struct_steps_list.rotate;
+		return StepNames[e_rotate];
 
 	if (rbtn_pick_up->GetValue())
-		return struct_steps_list.pick_up;
+		return StepNames[e_pick_up];
 
 	if (rbtn_drop->GetValue())
-		return struct_steps_list.drop;
+		return StepNames[e_drop];
 
 	if (rbtn_launch->GetValue())
-		return struct_steps_list.launch;
+		return StepNames[e_launch];
 
 	if (rbtn_save->GetValue())
-		return struct_steps_list.save;
+		return StepNames[e_save];
 
 	if (rbtn_cancel_crafting->GetValue())
-		return struct_steps_list.cancel_crafting;
+		return StepNames[e_cancel_crafting];
 
 	return "not found";
 }
