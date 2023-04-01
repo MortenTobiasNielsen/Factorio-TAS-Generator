@@ -12,6 +12,7 @@
 #include "Building.h"
 #include "GridEntry.h"
 #include "StepParameters.h"
+#include "Orientation.h"
 
 using std::vector;
 using std::string;

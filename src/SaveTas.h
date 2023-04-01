@@ -10,7 +10,7 @@
 
 #include "DialogProgressBar.h"
 #include "StepParameters.h"
-#include "utils.h"
+#include "TasFileConstants.h"
 
 using std::string;
 using std::vector;

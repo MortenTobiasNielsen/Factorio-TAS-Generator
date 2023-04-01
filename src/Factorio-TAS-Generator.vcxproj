@@ -187,10 +187,12 @@
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="ImportStepsPanel.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="nlohmann\json.hpp" />
+    <ClInclude Include="Orientation.h" />
     <ClInclude Include="ParameterChoices.h" />
+    <ClInclude Include="Priority.h" />
     <ClInclude Include="SearchUtil.h" />
-    <ClInclude Include="SearchUtilities.h" />
     <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="StepNameToEnum.h" />
     <ClInclude Include="OpenTas.h" />
@@ -200,6 +202,7 @@
     <ClInclude Include="GridEntry.h" />
     <ClInclude Include="StepParameters.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="TasFileConstants.h" />
     <ClInclude Include="TypePanel.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

@@ -29,6 +29,9 @@
 #include "StepNameToEnum.h"
 #include "utils.h"
 #include "ParameterChoices.h"
+#include "Inventory.h"
+#include "Priority.h"
+#include "TasFileConstants.h"
 
 #include "../icon.xpm"
 

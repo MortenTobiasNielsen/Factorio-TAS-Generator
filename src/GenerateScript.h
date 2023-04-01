@@ -16,6 +16,7 @@
 #include "StepParameters.h"
 #include "StepNameToEnum.h"
 #include "utils.h"
+#include "Inventory.h"
 
 using std::string;
 using std::vector;
