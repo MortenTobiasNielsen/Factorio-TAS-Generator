@@ -6,6 +6,7 @@
 #include "Building.h"
 #include "StepNameToEnum.h"
 #include "utils.h"
+#include "Orientation.h"
 
 using std::string;
 using std::ofstream;
