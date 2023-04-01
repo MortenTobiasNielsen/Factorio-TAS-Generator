@@ -67,6 +67,7 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="Priority.h" />
+    <ClInclude Include="TasFileConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Lua Files\control.lua">
