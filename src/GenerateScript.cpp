@@ -2,8 +2,8 @@
 
 #include "GenerateScript.h"
 #include <iostream>
-#include <stdio.h>
-#include <time.h>
+#include <chrono>
+#include <ctime>
 
 GenerateScript::GenerateScript(wxGrid* grid_steps) : grid_steps(grid_steps)
 {
@@ -21,17 +21,13 @@ void GenerateScript::reset()
 	y_building_size = 0.0f;
 }
 
-// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+// Get current date/time, format is Www Mmm dd hh:mm:ss yyyy
 const std::string GenerateScript::currentDateTime()
 {
 	// https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c
-	time_t     now = time(0);
-	struct tm  tstruct;
-	char       buf[80];
-	tstruct = *localtime(&now);
-	strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-
-	return buf;
+	auto end = std::chrono::system_clock::now();
+	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+	return std::ctime(&end_time);
 }
 
 void GenerateScript::ClearSteps()
@@ -39,6 +35,9 @@ void GenerateScript::ClearSteps()
 	const string endl = "\n";
 	const string tab = "\t";
 	const string comma_endl = ",\n";
+
+	string timestamp = currentDateTime();
+	timestamp.pop_back(); // removing tracing endl
 
 	total_steps = 1;
 	step_list = "";
@@ -48,7 +47,7 @@ void GenerateScript::ClearSteps()
 		<< tab << "version = \"" << generator_thumbprint.version << "\"" << comma_endl
 		<< tab << "tas = {" << endl
 		<< tab << tab << "name = \"" << name << "\"" << comma_endl
-		<< tab << tab << "timestamp = \"" << currentDateTime() << "\"" << comma_endl
+		<< tab << tab << "timestamp = \"" << timestamp << "\"" << comma_endl
 		<< tab << "}" << comma_endl
 		<< "}" << endl
 		<< endl
