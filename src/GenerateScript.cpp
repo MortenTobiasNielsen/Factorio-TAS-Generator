@@ -1,6 +1,9 @@
 #pragma once
 
 #include "GenerateScript.h"
+#include <iostream>
+#include <chrono>
+#include <ctime>
 
 GenerateScript::GenerateScript(wxGrid* grid_steps) : grid_steps(grid_steps)
 {
@@ -18,15 +21,44 @@ void GenerateScript::reset()
 	y_building_size = 0.0f;
 }
 
+// Get current date/time, format is yyyy-mm-dd hh:mm:ss
+const std::string GenerateScript::currentDateTime()
+{
+	using namespace std::chrono;
+	auto local = zoned_time{current_zone(), system_clock::now()};
+	return std::format("{:%Y-%m-%d %H:%M:%S}", local).substr(0, 19);
+}
+
 void GenerateScript::ClearSteps()
 {
+	const string endl = "\n";
+	const string tab = "\t";
+	const string comma_endl = ",\n";
+
+	string timestamp = currentDateTime();
+
 	total_steps = 1;
-	step_list = "local step = {}\n\n";
+	step_list = "";
+	std::stringstream ss (step_list);
+	ss << endl << "local tas_generator = {" << endl
+		<< tab << "name = \"" << generator_thumbprint.name << "\"" << comma_endl
+		<< tab << "version = \"" << generator_thumbprint.version << "\"" << comma_endl
+		<< tab << "tas = {" << endl
+		<< tab << tab << "name = \"" << name << "\"" << comma_endl
+		<< tab << tab << "timestamp = \"" << timestamp << "\"" << comma_endl
+		<< tab << "}" << comma_endl
+		<< "}" << endl
+		<< endl
+		<< "local step = {}" << endl
+		<< endl;
+	step_list = ss.str();
 }
 
 string GenerateScript::EndSteps()
 {
-	return step_list + "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n" + "return step";
+	string last_step = "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n";
+	const string return_line = "tas_generator.steps = step\nreturn tas_generator\n";
+	return step_list + last_step + return_line;
 }
 
 void GenerateScript::UnexpectedError(DialogProgressBar* dialog_progress_bar)
@@ -64,6 +96,7 @@ void GenerateScript::PaintWalk(string step, bool paint)
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
 {
+	this->name = folder_location.substr(folder_location.find_last_of('\\') + 1);
 	reset();
 
 	if (folder_location == "")
