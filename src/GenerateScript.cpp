@@ -21,13 +21,10 @@ void GenerateScript::reset()
 	y_building_size = 0.0f;
 }
 
-// Get current date/time, format is Www Mmm dd hh:mm:ss yyyy
+// Get current date/time, format is yyyy-mm-dd hh:mm:ss
 const std::string GenerateScript::currentDateTime()
 {
-	// https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c
-	auto end = std::chrono::system_clock::now();
-	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-	return std::ctime(&end_time);
+	return std::format("{:%Y-%m-%d %H:%M:%S}", std::chrono::system_clock::now()).substr(0, 19);
 }
 
 void GenerateScript::ClearSteps()
@@ -37,7 +34,6 @@ void GenerateScript::ClearSteps()
 	const string comma_endl = ",\n";
 
 	string timestamp = currentDateTime();
-	timestamp.pop_back(); // removing tracing endl
 
 	total_steps = 1;
 	step_list = "";
