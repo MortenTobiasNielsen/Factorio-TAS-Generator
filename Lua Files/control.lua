@@ -49,6 +49,7 @@ local drop_position
 
 local queued_save
 local tas_step_change = script.generate_event_name()
+local tas_state_change = script.generate_event_name()
 
 local function save_global()
 	--if not global.tas then return end
@@ -1588,12 +1589,21 @@ end)
 
 script.on_load(migrate_global)
 
+local function raise_state_change()
+	script.raise_event(tas_state_change, {
+		is_running = run,
+		tick = game.tick,
+	})
+end
+
 local function release()
 	run = false
+	raise_state_change()
 end
 
 local function resume()
 	run = true
+	raise_state_change()
 end
 
 local function skip(data)
@@ -1615,6 +1625,9 @@ local tas_interface =
 	end,
 	get_task_list = function()
 		return steps
+	end,
+	get_tas_step_change_id = function ()
+		return tas_step_change
 	end,
 	get_tas_step_change_id = function ()
 		return tas_step_change
