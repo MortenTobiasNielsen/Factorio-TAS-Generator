@@ -24,7 +24,9 @@ void GenerateScript::reset()
 // Get current date/time, format is yyyy-mm-dd hh:mm:ss
 const std::string GenerateScript::currentDateTime()
 {
-	return std::format("{:%Y-%m-%d %H:%M:%S}", std::chrono::system_clock::now()).substr(0, 19);
+	using namespace std::chrono;
+	auto local = zoned_time{current_zone(), system_clock::now()};
+	return std::format("{:%Y-%m-%d %H:%M:%S}", local).substr(0, 19);
 }
 
 void GenerateScript::ClearSteps()
