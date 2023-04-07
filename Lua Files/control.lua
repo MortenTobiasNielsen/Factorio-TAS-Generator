@@ -1629,8 +1629,8 @@ local tas_interface =
 	get_tas_step_change_id = function ()
 		return tas_step_change
 	end,
-	get_tas_step_change_id = function ()
-		return tas_step_change
+	get_tas_state_change_id = function ()
+		return tas_state_change
 	end,
 	get_tas_name = function ()
 		return tas_generator.tas.name
@@ -1643,6 +1643,11 @@ local tas_interface =
 	end,
 	get_generator_version = function ()
 		return tas_generator.version
+	end,
+	get_tas_state = function ()
+		return {
+			is_running = run,
+		}
 	end,
 	--command interface
 	release = release,
