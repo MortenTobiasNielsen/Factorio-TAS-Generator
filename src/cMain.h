@@ -159,6 +159,8 @@ protected:
 	void OnImportStepsIntoStepsCtrl(wxSpinEvent& event);
 	void OnImportStepsIntoStepsCtrlEnter(wxCommandEvent& event);
 	void OnImportStepsIntoStepsBtnClick(wxCommandEvent& event);
+	void OnImportStepsIntoStepsIndexBtnClicked(wxCommandEvent& event);
+	void OnImportStepsIntoStepsIndexBtnRight(wxMouseEvent& event);
 	bool validateTemplateName();
 	void OnImportStepsIntoTemplateCtrlText(wxCommandEvent& event);
 	void OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event);

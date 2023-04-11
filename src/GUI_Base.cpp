@@ -1050,16 +1050,28 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* import_steps_into_steps_sizer;
 	import_steps_into_steps_sizer = new wxBoxSizer( wxVERTICAL );
 
-	import_steps_into_steps_ctrl = new wxSpinCtrl( import_steps_panel, wxID_ANY, wxT("-1"), wxDefaultPosition, wxSize( 120,-1 ), wxSP_ARROW_KEYS, -999999, 999999, -1 );
+	wxBoxSizer* bSizer71;
+	bSizer71 = new wxBoxSizer( wxHORIZONTAL );
+
+	import_steps_into_steps_index_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("C"), wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxBU_EXACTFIT|wxBORDER_NONE );
+	import_steps_into_steps_index_btn->SetToolTip( wxT("Copy current row index from the Steps panel into number box\n - Left click to import before the selected step\n - Right click to import after the selected step") );
+	import_steps_into_steps_index_btn->SetMinSize( wxSize( 25,25 ) );
+
+	bSizer71->Add( import_steps_into_steps_index_btn, 0, wxBOTTOM|wxLEFT|wxTOP, 4 );
+
+	import_steps_into_steps_ctrl = new wxSpinCtrl( import_steps_panel, wxID_ANY, wxT("-1"), wxDefaultPosition, wxSize( 121,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -999999, 999999, -1 );
 	import_steps_into_steps_ctrl->SetToolTip( wxT("Positive numbers places the imported steps in the step list from the top and negative numbers from the bottom.\nWith 0 being the top element and -1 being the bottom element.\nAnd -2 Inserting steps between last and second to last element.") );
-	import_steps_into_steps_ctrl->SetMinSize( wxSize( 120,-1 ) );
-	import_steps_into_steps_ctrl->SetMaxSize( wxSize( 120,-1 ) );
+	import_steps_into_steps_ctrl->SetMinSize( wxSize( 121,-1 ) );
+	import_steps_into_steps_ctrl->SetMaxSize( wxSize( 121,-1 ) );
 
-	import_steps_into_steps_sizer->Add( import_steps_into_steps_ctrl, 0, wxALL, 5 );
+	bSizer71->Add( import_steps_into_steps_ctrl, 0, wxBOTTOM|wxRIGHT|wxTOP, 5 );
 
-	import_steps_into_steps_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("Into steps"), wxDefaultPosition, wxSize( 120,-1 ), 0 );
-	import_steps_into_steps_btn->SetMinSize( wxSize( 120,-1 ) );
-	import_steps_into_steps_btn->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_steps_sizer->Add( bSizer71, 1, wxEXPAND, 5 );
+
+	import_steps_into_steps_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("Into steps"), wxDefaultPosition, wxSize( 145,-1 ), 0 );
+	import_steps_into_steps_btn->SetMinSize( wxSize( 145,-1 ) );
+	import_steps_into_steps_btn->SetMaxSize( wxSize( 145,-1 ) );
 
 	import_steps_into_steps_sizer->Add( import_steps_into_steps_btn, 0, wxALL, 5 );
 
@@ -1220,6 +1232,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_move_down->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
+	import_steps_into_steps_index_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnClicked ), NULL, this );
+	import_steps_into_steps_index_btn->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnRight ), NULL, this );
 	import_steps_into_steps_ctrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( GUI_Base::OnImportStepsIntoStepsCtrl ), NULL, this );
 	import_steps_into_steps_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
 	import_steps_into_steps_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsBtnClick ), NULL, this );
@@ -1280,6 +1294,8 @@ GUI_Base::~GUI_Base()
 	btn_move_down->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
+	import_steps_into_steps_index_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnClicked ), NULL, this );
+	import_steps_into_steps_index_btn->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnRight ), NULL, this );
 	import_steps_into_steps_ctrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( GUI_Base::OnImportStepsIntoStepsCtrl ), NULL, this );
 	import_steps_into_steps_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
 	import_steps_into_steps_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsBtnClick ), NULL, this );
