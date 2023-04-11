@@ -4639,6 +4639,7 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style">wxBORDER_RAISED</property>
+                <event name="OnAuiNotebookPageChanged">OnMainBookPageChanged</event>
                 <object class="auinotebookpage" expanded="0">
                     <property name="bitmap"></property>
                     <property name="label">Templates</property>

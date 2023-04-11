@@ -167,6 +167,9 @@ protected:
 	void OnImportStepsIntoTemplateBtnClick(wxCommandEvent& event);
 	void OnImportStepsTextUpdate(wxCommandEvent& event);
 
+	//Main book
+	void OnMainBookPageChanged(wxAuiNotebookEvent& event);
+
 private:
 	wxString window_title = "Factorio TAS Generator";
 
