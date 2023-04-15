@@ -159,11 +159,16 @@ protected:
 	void OnImportStepsIntoStepsCtrl(wxSpinEvent& event);
 	void OnImportStepsIntoStepsCtrlEnter(wxCommandEvent& event);
 	void OnImportStepsIntoStepsBtnClick(wxCommandEvent& event);
+	void OnImportStepsIntoStepsIndexBtnClicked(wxCommandEvent& event);
+	void OnImportStepsIntoStepsIndexBtnRight(wxMouseEvent& event);
 	bool validateTemplateName();
 	void OnImportStepsIntoTemplateCtrlText(wxCommandEvent& event);
 	void OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event);
 	void OnImportStepsIntoTemplateBtnClick(wxCommandEvent& event);
 	void OnImportStepsTextUpdate(wxCommandEvent& event);
+
+	//Main book
+	void OnMainBookPageChanged(wxAuiNotebookEvent& event);
 
 private:
 	wxString window_title = "Factorio TAS Generator";

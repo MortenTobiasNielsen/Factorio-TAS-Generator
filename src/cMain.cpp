@@ -2496,3 +2496,13 @@ bool cMain::ValidateAllSteps()
 
 	return true;
 }
+
+void cMain::OnMainBookPageChanged(wxAuiNotebookEvent& event)
+{
+	auto page = event.GetSelection();
+	if (page == 2)
+	{
+		import_steps_text_import->SetFocus();
+	}
+	event.Skip();
+}

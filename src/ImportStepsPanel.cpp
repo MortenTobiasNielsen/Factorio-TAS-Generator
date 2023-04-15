@@ -149,6 +149,27 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 	return true;
 }
 
+void cMain::OnImportStepsIntoStepsIndexBtnClicked(wxCommandEvent& event)
+{
+	auto rows = grid_steps->GetSelectedRows();
+	if (rows.IsEmpty()) return;
+	auto row = rows.front();
+
+	import_steps_into_steps_ctrl->SetValue(row);
+	event.Skip();
+}
+
+void cMain::OnImportStepsIntoStepsIndexBtnRight(wxMouseEvent& event)
+{
+	auto rows = grid_steps->GetSelectedRows();
+	if (rows.IsEmpty()) return;
+	auto row = rows.Last();
+	auto totalRows = grid_steps->GetNumberRows();
+
+	import_steps_into_steps_ctrl->SetValue(row - totalRows);
+	event.Skip();
+}
+
 void cMain::OnImportStepsTextUpdate(wxCommandEvent& event)
 {
 	if (import_steps_text_import->IsEmpty())

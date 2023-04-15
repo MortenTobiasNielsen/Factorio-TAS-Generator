@@ -142,6 +142,7 @@ class GUI_Base : public wxFrame
 		wxButton* btn_move_down;
 		wxGrid* grid_steps;
 		ImportStepsPanel* import_steps_panel;
+		wxButton* import_steps_into_steps_index_btn;
 		wxSpinCtrl* import_steps_into_steps_ctrl;
 		wxButton* import_steps_into_steps_btn;
 		wxTextCtrl* import_steps_into_template_ctrl;
@@ -216,6 +217,7 @@ class GUI_Base : public wxFrame
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -241,6 +243,8 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsIndexBtnClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsIndexBtnRight( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoStepsCtrl( wxSpinEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoStepsCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoStepsBtnClick( wxCommandEvent& event ) { event.Skip(); }
