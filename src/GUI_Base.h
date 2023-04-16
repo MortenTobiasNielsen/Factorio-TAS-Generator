@@ -279,19 +279,19 @@ class Shortcut_changer : public wxDialog
 		wxListbook* sc_item_book;
 		wxPanel* sc_panel_file;
 		wxBoxSizer* sc_file_sizer;
-		wxGridSizer* sc_grid_sizer_file;
+		wxFlexGridSizer* sc_grid_sizer_file;
 		wxPanel* sc_panel_script;
 		wxBoxSizer* sc_script_sizer;
-		wxGridSizer* sc_grid_sizer_script;
+		wxFlexGridSizer* sc_grid_sizer_script;
 		wxPanel* sc_panel_shortcuts;
 		wxBoxSizer* sc_shortcuts_sizer;
-		wxGridSizer* sc_grid_sizer_shortcuts;
+		wxFlexGridSizer* sc_grid_sizer_shortcuts;
 		wxPanel* sc_panel_goals;
 		wxBoxSizer* sc_goal_sizer;
-		wxGridSizer* sc_grid_sizer_goals;
+		wxFlexGridSizer* sc_grid_sizer_goals;
 		wxPanel* sc_panel_auto;
 		wxBoxSizer* sc_auto_sizer;
-		wxGridSizer* sc_grid_sizer_auto;
+		wxFlexGridSizer* sc_grid_sizer_auto;
 		wxButton* sc_reset_button;
 		wxButton* sc_save_button;
 
