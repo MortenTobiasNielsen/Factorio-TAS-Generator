@@ -380,7 +380,7 @@ local function cancel_crafting()
 	for i = 1, #queue do
 		if queue[i].recipe == item then
 			if count == -1 then
-				player.cancel_crafting{index = i}
+				player.cancel_crafting{index = i, count = 1000000}
 				end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Cancel: [item=%s]", task[1], task[2], step, item ))
 				return true
 			elseif queue[i].count >= count then
