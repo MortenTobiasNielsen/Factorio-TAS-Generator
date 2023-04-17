@@ -1324,7 +1324,7 @@ Shortcut_changer::Shortcut_changer( wxWindow* parent, wxWindowID id, const wxStr
 	bSizer72 = new wxBoxSizer( wxVERTICAL );
 
 	sc_item_book = new wxListbook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_DEFAULT|wxBORDER_RAISED|wxBORDER_THEME );
-	sc_item_book->SetMinSize( wxSize( 800,330 ) );
+	sc_item_book->SetMinSize( wxSize( 800,340 ) );
 	sc_item_book->SetMaxSize( wxSize( 1500,700 ) );
 
 	sc_panel_file = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );

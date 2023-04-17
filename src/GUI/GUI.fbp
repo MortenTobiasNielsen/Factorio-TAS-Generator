@@ -709,7 +709,7 @@
                     </object>
                 </object>
             </object>
-            <object class="wxPanel" expanded="0">
+            <object class="wxPanel" expanded="1">
                 <property name="BottomDockable">0</property>
                 <property name="LeftDockable">0</property>
                 <property name="RightDockable">0</property>
@@ -761,16 +761,16 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                <object class="wxBoxSizer" expanded="0">
+                <object class="wxBoxSizer" expanded="1">
                     <property name="minimum_size"></property>
                     <property name="name">detail_sizer</property>
                     <property name="orient">wxHORIZONTAL</property>
                     <property name="permission">none</property>
-                    <object class="sizeritem" expanded="0">
+                    <object class="sizeritem" expanded="1">
                         <property name="border">5</property>
                         <property name="flag">wxEXPAND</property>
                         <property name="proportion">1</property>
-                        <object class="wxFlexGridSizer" expanded="0">
+                        <object class="wxFlexGridSizer" expanded="1">
                             <property name="cols">3</property>
                             <property name="flexible_direction">wxBOTH</property>
                             <property name="growablecols"></property>
@@ -782,20 +782,20 @@
                             <property name="permission">none</property>
                             <property name="rows">1</property>
                             <property name="vgap">0</property>
-                            <object class="sizeritem" expanded="0">
+                            <object class="sizeritem" expanded="1">
                                 <property name="border">5</property>
                                 <property name="flag">wxEXPAND</property>
                                 <property name="proportion">1</property>
-                                <object class="wxBoxSizer" expanded="0">
+                                <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
                                     <property name="name">detail_sizer_col1</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="0">
+                                    <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
                                         <property name="flag"></property>
                                         <property name="proportion">1</property>
-                                        <object class="wxBoxSizer" expanded="0">
+                                        <object class="wxBoxSizer" expanded="1">
                                             <property name="minimum_size">10,10</property>
                                             <property name="name">detail_sizer_X</property>
                                             <property name="orient">wxHORIZONTAL</property>
@@ -6237,7 +6237,7 @@
                         </object>
                     </object>
                 </object>
-                <object class="auinotebookpage" expanded="0">
+                <object class="auinotebookpage" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Steps</property>
                     <property name="select">0</property>
@@ -7638,7 +7638,7 @@
                                 <property name="maximum_size">1500,700</property>
                                 <property name="min_size"></property>
                                 <property name="minimize_button">0</property>
-                                <property name="minimum_size">800,320</property>
+                                <property name="minimum_size">800,340</property>
                                 <property name="moveable">1</property>
                                 <property name="name">sc_item_book</property>
                                 <property name="pane_border">1</property>

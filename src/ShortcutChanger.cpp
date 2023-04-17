@@ -35,10 +35,10 @@ void ShortcutChanger::Build(wxMenuBar* menu)
 		for (auto& [key, value] : state.shortcuts[menu])
 		{
 			wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-			wxStaticText* label = new wxStaticText(panel, wxID_ANY, wxString(key), wxDefaultPosition, wxSize(80, -1), 0);
-			label->Wrap(60);
+			wxStaticText* label = new wxStaticText(panel, wxID_ANY, wxString(key), wxDefaultPosition, wxSize(110, -1), wxALIGN_RIGHT);
+			label->Wrap(105);
 			sizer->Add(label, 0, wxALL, 5);
-			wxTextCtrl* input = new wxTextCtrl(panel, wxID_ANY, wxString(std::string(value)), wxDefaultPosition, wxSize(100, -1), 0);
+			wxTextCtrl* input = new wxTextCtrl(panel, wxID_ANY, wxString(std::string(value)), wxDefaultPosition, wxSize(90, -1), 0);
 			mapCtrl.insert({key, input});
 			sizer->Add(input, 0, wxALL, 5);
 			grid->Add(sizer);
