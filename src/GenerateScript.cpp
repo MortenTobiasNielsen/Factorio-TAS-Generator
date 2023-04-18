@@ -88,10 +88,16 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver.close();
 }
 
-void GenerateScript::PaintWalk(string step, bool paint)
+void GenerateScript::PaintIntermediateWalk(string step, bool paint)
 {
 	int row = std::stoi(step) - 1;
 	grid_steps->SetCellBackgroundColour(row, 9, paint ? *wxCYAN : *wxWHITE);
+}
+
+void GenerateScript::PaintWalkStep(string step, bool straight, bool diagonal)
+{
+	int row = std::stoi(step) - 1;
+	grid_steps->SetCellBackgroundColour(row, 9, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
 }
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
@@ -518,12 +524,12 @@ void GenerateScript::check_mining_distance(string step, string action, string x_
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1])
 	{
-		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
+		PaintIntermediateWalk(step);
 	}
 	else
 	{
-		PaintWalk(step, false);
+		PaintIntermediateWalk(step, false);
 	}
 }
 
@@ -574,12 +580,12 @@ void GenerateScript::check_interact_distance(string step, string action, string 
 
 	if (player_x_cord != coordinates[0] || player_y_cord != coordinates[1])
 	{
-		PaintWalk(step);
 		walk(step, action, std::to_string(coordinates[0]), std::to_string(coordinates[1]), last_walking_comment);
+		PaintIntermediateWalk(step);
 	}
 	else
 	{
-		PaintWalk(step, false);
+		PaintIntermediateWalk(step, false);
 	}
 }
 
@@ -775,22 +781,33 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 
 	string stateOfX = "different_x";
 	string stateOfY = "different_y";
+	bool sameXorY = false;
+	bool diagonal = false;
 
 	if (player_x_cord == std::stof(x_cord))
 	{
-		stateOfX = "same_x";
+		stateOfX = "same_x"; 
+		sameXorY = true;
 	}
 
 	if (player_y_cord == std::stof(y_cord))
 	{
-		stateOfY = "same_y";
+		stateOfY = "same_y"; 
+		sameXorY = true;
 	}
 
 	if (round(abs(player_x_cord - std::stof(x_cord)) * 1000) / 1000 == round(abs(player_y_cord - std::stof(y_cord)) * 1000) / 1000)
 	{
 		stateOfX = "diagonal";
 		stateOfY = "diagonal";
+		diagonal = true;
 	}
+
+	if (action == "1")
+	{
+		PaintWalkStep(step, sameXorY, diagonal);
+	}
+
 
 	step_list += Step(step, action, "\"walk\", {" + x_cord + ", " + y_cord + "}, \"" + last_walking_comment + "\", \"" + stateOfX + "\", \"" + stateOfY + "\"", comment);
 	player_x_cord = std::stof(x_cord);
@@ -805,7 +822,7 @@ void GenerateScript::mining(string step, string x_cord, string y_cord, string du
 	{
 		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, comment);
 		total_steps += 1;
-		PaintWalk(step, false);
+		PaintIntermediateWalk(step, false);
 		return;
 	}
 
@@ -992,7 +1009,7 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 		item = check_item_name(item);
 		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, comment);
 		total_steps += 1;
-		PaintWalk(step, false);
+		PaintIntermediateWalk(step, false);
 		return; 
 	}
 
@@ -1030,7 +1047,7 @@ void GenerateScript::put(string step, string action, string x_cord, string y_cor
 		item = check_item_name(item);
 		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, comment);
 		total_steps += 1;
-		PaintWalk(step, false);
+		PaintIntermediateWalk(step, false);
 		return;
 	}
 

@@ -69,7 +69,10 @@ private:
 
 	/// <summary>Paints the step to indicate walk sub-step was added</summary>
 	/// <param name="step">The index of the step using a start of 1</param>
-	void PaintWalk(string step, bool paint = true);
+	void PaintIntermediateWalk(string step, bool paint = true);
+	/// <summary>Paints the step to indicate the walk is either diagonal, straight or neither</summary>
+	/// <param name="step">The index of the step using a start of 1</param>
+	void PaintWalkStep(string step, bool straight, bool diagonal);
 
 	void SetBuildingAndOrientation(StepParameters* stepParameters);
 	void TransferParameters(StepParameters& stepParameters);
