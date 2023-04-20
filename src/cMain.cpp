@@ -802,6 +802,15 @@ void cMain::OnStepsGridDoubleLeftClick(wxGridEvent& event)
 	event.Skip();
 }
 
+void cMain::OnStepsGridDoubleRightClick(wxGridEvent& event)
+{
+	auto gridEntry = ExtractGridEntry(grid_steps, event.GetRow());
+
+	UpdateParameters(&gridEntry, event, false);
+
+	event.Skip();
+}
+
 void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 {
 	wxGridBlockCoordsVector rowsBlocks = grid_steps->GetSelectedRowBlocks();
@@ -1523,7 +1532,7 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event)
 	event.Skip();
 }
 
-void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
+void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType)
 {
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 
@@ -1533,12 +1542,12 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 	switch (step)
 	{
 		case e_stop:
-			OnStopMenuSelected(event);
+			if (changeType) OnStopMenuSelected(event);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		case e_build:
-			OnBuildMenuSelected(event);
+			if (changeType) OnBuildMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			cmb_item->SetValue(gridEntry->Item);
@@ -1550,31 +1559,31 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_craft:
-			OnCraftMenuSelected(event);
+			if (changeType) OnCraftMenuSelected(event);
 			spin_amount->SetValue(gridEntry->Amount);
 			cmb_item->SetValue(gridEntry->Item);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		case e_game_speed:
-			OnGameSpeedMenuSelected(event);
+			if (changeType) OnGameSpeedMenuSelected(event);
 			speed = stof(gridEntry->Amount.ToStdString()) * 100.0;
 			spin_amount->SetValue(speed);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		case e_pause:
-			OnPauseMenuSelected(event);
+			if (changeType) OnPauseMenuSelected(event);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		case e_save:
-			OnSaveMenuSelected(event);
+			if (changeType) OnSaveMenuSelected(event);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		case e_recipe:
-			OnRecipeMenuChosen(event);
+			if (changeType) OnRecipeMenuChosen(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			spin_amount->SetValue(gridEntry->Amount);
@@ -1586,7 +1595,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_limit:
-			OnLimitMenuSelected(event);
+			if (changeType) OnLimitMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			spin_amount->SetValue(gridEntry->Amount);
@@ -1597,7 +1606,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_filter:
-			OnFilterMenuSelected(event);
+			if (changeType) OnFilterMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			spin_amount->SetValue(gridEntry->Amount);
@@ -1609,7 +1618,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_rotate:
-			OnRotateMenuSelected(event);
+			if (changeType) OnRotateMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			spin_amount->SetValue(gridEntry->Amount);
@@ -1621,7 +1630,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_priority:
-			OnPriorityMenuSelected(event);
+			if (changeType) OnPriorityMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
@@ -1638,7 +1647,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_put:
-			OnPutMenuSelected(event);
+			if (changeType) OnPutMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			spin_amount->SetValue(gridEntry->Amount);
@@ -1651,7 +1660,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_take:
-			OnTakeMenuSelected(event);
+			if (changeType) OnTakeMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			spin_amount->SetValue(gridEntry->Amount);
@@ -1664,7 +1673,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_mine:
-			OnMineMenuSelected(event);
+			if (changeType) OnMineMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			spin_amount->SetValue(gridEntry->Amount);
@@ -1672,7 +1681,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_launch:
-			OnLaunchMenuSelected(event);
+			if (changeType) OnLaunchMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			txt_comment->SetValue(gridEntry->Comment);
@@ -1686,13 +1695,13 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_tech:
-			OnTechMenuSelected(event);
+			if (changeType) OnTechMenuSelected(event);
 			cmb_item->SetValue(gridEntry->Item);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		case e_drop:
-			OnDropMenuSelected(event);
+			if (changeType) OnDropMenuSelected(event);
 			spin_x->SetValue(gridEntry->X);
 			spin_y->SetValue(gridEntry->Y);
 			cmb_item->SetValue(gridEntry->Item);
@@ -1700,19 +1709,19 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event)
 
 			return;
 		case e_pick_up:
-			OnPickUpMenuSelected(event);
+			if (changeType) OnPickUpMenuSelected(event);
 			spin_amount->SetValue(gridEntry->Amount);
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
 		case e_idle:
-			OnIdleMenuSelected(event);
+			if (changeType) OnIdleMenuSelected(event);
 			spin_amount->SetValue(gridEntry->Amount);
 			txt_comment->SetValue(gridEntry->Comment);
 		
 			return;
 		case e_cancel_crafting:
-			OnCancelCraftingMenuSelected(event);
+			if (changeType) OnCancelCraftingMenuSelected(event);
 			cmb_item->SetValue(gridEntry->Item);
 			spin_amount->SetValue(gridEntry->Amount);
 			txt_comment->SetValue(gridEntry->Comment);

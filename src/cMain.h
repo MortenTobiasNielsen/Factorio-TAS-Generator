@@ -129,6 +129,7 @@ protected:
 	void OnMoveDownFiveClicked(wxMouseEvent& event);
 
 	void OnStepsGridDoubleLeftClick(wxGridEvent& event);
+	void OnStepsGridDoubleRightClick(wxGridEvent& event);
 	void OnStepsGridRangeSelect(wxGridRangeSelectEvent& event);
 	void OnStepColourPickerColourChanged(wxColourPickerEvent& event);
 
@@ -221,7 +222,7 @@ private:
 
 	void setup_paramters(const int parameters);
 
-	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event);
+	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType = true);
 
 	bool Save(string filename, bool save_as, bool set_last_location = true);
 	bool AutoSave();
