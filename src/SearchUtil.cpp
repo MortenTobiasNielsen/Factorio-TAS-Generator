@@ -75,16 +75,16 @@ bool Search::TrySelectCurrent(wxGrid* grid, vector<tuple<vector<int>, wxString>>
 	for (auto id : rows)
 	{
 		int a = 0;
-		for (auto [columns, term] : searchTerms)
+		for (auto& [columns, term] : searchTerms)
 		{
 			for (auto c : columns)
 			{ //any column contains term
-				if (starts_with_ignore_case(grid->GetCellValue(id, c),term))
+				if (starts_with_ignore_case_anyword(grid->GetCellValue(id, c),term))
 				{
 					a++;
 					break;
 				}
-			}//maybe add fast exit if no column contains term
+			}
 		}
 
 		if (a == searchTerms.size()) // if found row
@@ -125,12 +125,12 @@ bool Search::TrySelectNext(wxCommandEvent& event, wxGrid* grid, vector<tuple<vec
 		{
 			for (c = 0; c < columns.size(); c++)
 			{ //any column contains term
-				if (starts_with_ignore_case(grid->GetCellValue(i, columns[c]), term))
+				if (starts_with_ignore_case_anyword(grid->GetCellValue(i, columns[c]), term))
 				{
 					a++;
 					break;
 				}
-			}//maybe add fast exit if no column contains term
+			}
 		}
 
 		if (a == searchTerms.size()) // if found row
