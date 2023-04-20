@@ -132,7 +132,7 @@ bool Search::TrySelectNext(wxCommandEvent& event, wxGrid* grid, vector<tuple<vec
 			{
 				for (c = 0; c < columns.size(); c++)
 				{ //any column contains term
-					if (starts_with_ignore_case(grid->GetCellValue(i, columns[c]), term))
+					if (starts_with_ignore_case_anyword(grid->GetCellValue(i, columns[c]), term))
 					{
 						a++;
 						break;
