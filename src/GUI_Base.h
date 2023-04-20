@@ -86,27 +86,30 @@ class GUI_Base : public wxFrame
 		wxStaticText* label_amount_of_buildings;
 		wxSpinCtrl* spin_building_amount;
 		TypePanel* type_panel;
-		wxRadioButton* rbtn_take;
-		wxRadioButton* rbtn_put;
-		wxRadioButton* rbtn_game_speed;
-		wxRadioButton* rbtn_craft;
+		wxPanel* character_panel;
 		wxRadioButton* rbtn_walk;
-		wxRadioButton* rbtn_mine;
-		wxRadioButton* rbtn_pause;
-		wxRadioButton* rbtn_build;
-		wxRadioButton* rbtn_recipe;
+		wxRadioButton* rbtn_craft;
 		wxRadioButton* rbtn_tech;
-		wxRadioButton* rbtn_limit;
 		wxRadioButton* rbtn_idle;
-		wxRadioButton* rbtn_filter;
-		wxRadioButton* rbtn_stop;
-		wxRadioButton* rbtn_priority;
-		wxRadioButton* rbtn_rotate;
 		wxRadioButton* rbtn_pick_up;
 		wxRadioButton* rbtn_drop;
-		wxRadioButton* rbtn_launch;
-		wxRadioButton* rbtn_save;
 		wxRadioButton* rbtn_cancel_crafting;
+		wxRadioButton* rbtn_mine;
+		wxPanel* building_panel;
+		wxRadioButton* rbtn_take;
+		wxRadioButton* rbtn_put;
+		wxRadioButton* rbtn_build;
+		wxRadioButton* rbtn_recipe;
+		wxRadioButton* rbtn_limit;
+		wxRadioButton* rbtn_filter;
+		wxRadioButton* rbtn_priority;
+		wxRadioButton* rbtn_launch;
+		wxRadioButton* rbtn_rotate;
+		wxPanel* game_panel;
+		wxRadioButton* rbtn_game_speed;
+		wxRadioButton* rbtn_pause;
+		wxRadioButton* rbtn_stop;
+		wxRadioButton* rbtn_save;
 		wxPanel* auto_put_panel;
 		wxCheckBox* check_furnace;
 		wxCheckBox* check_burner;
@@ -197,27 +200,27 @@ class GUI_Base : public wxFrame
 		virtual void OnMenuAutoCloseOpenClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAutoCloseSaveClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAutoCloseSaveAsClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTakeChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPutChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGameSpeedChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnCraftChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWalkChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMineChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnBuildChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnRecipeChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCraftChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTechChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnLimitChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnIdleChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnfilterChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPriorityChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnRotateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPickUpChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDropChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMineChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTakeChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPutChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnBuildChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRecipeChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLimitChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnfilterChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPriorityChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRotateChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGameSpeedChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }

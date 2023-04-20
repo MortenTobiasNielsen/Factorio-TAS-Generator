@@ -432,248 +432,276 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	detail_panel->SetSizer( detail_sizer );
 	detail_panel->Layout();
 	detail_sizer->Fit( detail_panel );
-	type_panel = new TypePanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
-	m_mgr.AddPane( type_panel, wxAuiPaneInfo() .Name( wxT("StepTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 700,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 620,140 ) ).MinSize( wxSize( 620,120 ) ).Layer( 1 ) );
+	type_panel = new TypePanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxBORDER_NONE|wxTAB_TRAVERSAL );
+	m_mgr.AddPane( type_panel, wxAuiPaneInfo() .Name( wxT("StepTypePanel") ).Top() .Caption( wxT("Step type") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 720,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 720,140 ) ).MinSize( wxSize( 700,120 ) ).Layer( 1 ) );
 
 	wxBoxSizer* type_sizer;
-	type_sizer = new wxBoxSizer( wxVERTICAL );
+	type_sizer = new wxBoxSizer( wxHORIZONTAL );
 
-	wxFlexGridSizer* type_sizer_flex;
-	type_sizer_flex = new wxFlexGridSizer( 3, 7, 15, 15 );
-	type_sizer_flex->SetFlexibleDirection( wxBOTH );
-	type_sizer_flex->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_ALL );
-
-	wxBoxSizer* type_sizer_Take;
-	type_sizer_Take = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_take = new wxRadioButton( type_panel, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_take->SetToolTip( wxT("Makes the character take items from a container [chest, furnace, assembler, etc.] and put them into their inventory") );
-
-	type_sizer_Take->Add( rbtn_take, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Take, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Put;
-	type_sizer_Put = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_put = new wxRadioButton( type_panel, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_put->SetToolTip( wxT("Makes the character put items from his inventory into a container [chest, furnace, assembler, etc.]") );
-
-	type_sizer_Put->Add( rbtn_put, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Put, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_GameSpeed;
-	type_sizer_GameSpeed = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_game_speed = new wxRadioButton( type_panel, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_game_speed->SetToolTip( wxT("Changes the game speed to X%") );
-
-	type_sizer_GameSpeed->Add( rbtn_game_speed, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_GameSpeed, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Craft;
-	type_sizer_Craft = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_craft = new wxRadioButton( type_panel, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_craft->SetToolTip( wxT("Makes the character craft an item") );
-
-	type_sizer_Craft->Add( rbtn_craft, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Craft, 1, wxEXPAND, 5 );
+	character_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
+	wxFlexGridSizer* fgSizer4;
+	fgSizer4 = new wxFlexGridSizer( 3, 3, 10, 10 );
+	fgSizer4->SetFlexibleDirection( wxBOTH );
+	fgSizer4->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	wxBoxSizer* type_sizer_Walk;
 	type_sizer_Walk = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_walk = new wxRadioButton( type_panel, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_walk = new wxRadioButton( character_panel, wxID_ANY, wxT("Walk"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_walk->SetToolTip( wxT("Makes the character walk to a point") );
 
 	type_sizer_Walk->Add( rbtn_walk, 0, wxALL, 5 );
 
 
-	type_sizer_flex->Add( type_sizer_Walk, 1, wxEXPAND, 5 );
+	fgSizer4->Add( type_sizer_Walk, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* type_sizer_Mine;
-	type_sizer_Mine = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* type_sizer_Craft;
+	type_sizer_Craft = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_mine = new wxRadioButton( type_panel, wxID_ANY, wxT("Mine"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_mine->SetToolTip( wxT("Makes the character mine an area, if there is a building, tree or rock they will remove that instead") );
+	rbtn_craft = new wxRadioButton( character_panel, wxID_ANY, wxT("Craft"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_craft->SetToolTip( wxT("Makes the character craft an item") );
 
-	type_sizer_Mine->Add( rbtn_mine, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Mine, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Pause;
-	type_sizer_Pause = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_pause = new wxRadioButton( type_panel, wxID_ANY, wxT("Pause"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_pause->SetToolTip( wxT("Pauses the game, when all previous tasks are completed. Same as /Pause in the console, the game can be continued with /Resume") );
-
-	type_sizer_Pause->Add( rbtn_pause, 0, wxALL, 5 );
+	type_sizer_Craft->Add( rbtn_craft, 0, wxALL, 5 );
 
 
-	type_sizer_flex->Add( type_sizer_Pause, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Build;
-	type_sizer_Build = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_build = new wxRadioButton( type_panel, wxID_ANY, wxT("Build"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_build->SetToolTip( wxT("Makes the character build an entity") );
-
-	type_sizer_Build->Add( rbtn_build, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Build, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Recipe;
-	type_sizer_Recipe = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_recipe = new wxRadioButton( type_panel, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_recipe->SetToolTip( wxT("Makes the character change the recipe for a crafting machine") );
-
-	type_sizer_Recipe->Add( rbtn_recipe, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Recipe, 1, wxEXPAND, 5 );
+	fgSizer4->Add( type_sizer_Craft, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* type_sizer_Tech;
 	type_sizer_Tech = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_tech = new wxRadioButton( type_panel, wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_tech = new wxRadioButton( character_panel, wxID_ANY, wxT("Tech"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_tech->SetToolTip( wxT("Adds a technologi to the research queue") );
 
 	type_sizer_Tech->Add( rbtn_tech, 0, wxALL, 5 );
 
 
-	type_sizer_flex->Add( type_sizer_Tech, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Limit;
-	type_sizer_Limit = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_limit = new wxRadioButton( type_panel, wxID_ANY, wxT("Limit"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_limit->SetToolTip( wxT("Makes the character limit a chest to X slots") );
-
-	type_sizer_Limit->Add( rbtn_limit, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Limit, 1, wxEXPAND, 5 );
+	fgSizer4->Add( type_sizer_Tech, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* type_sizer_Idle;
 	type_sizer_Idle = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_idle = new wxRadioButton( type_panel, wxID_ANY, wxT("Idle"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_idle = new wxRadioButton( character_panel, wxID_ANY, wxT("Idle"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_idle->SetToolTip( wxT("Makes the character do nothing for X ticks") );
 
 	type_sizer_Idle->Add( rbtn_idle, 0, wxALL, 5 );
 
 
-	type_sizer_flex->Add( type_sizer_Idle, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Filter;
-	type_sizer_Filter = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_filter = new wxRadioButton( type_panel, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_filter->SetToolTip( wxT("Makes the character set the filter on either: a filter-inserter, a splitter or a slot in a car / train wagon") );
-
-	type_sizer_Filter->Add( rbtn_filter, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Filter, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Stop;
-	type_sizer_Stop = new wxBoxSizer( wxHORIZONTAL );
-
-	rbtn_stop = new wxRadioButton( type_panel, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0 );
-	type_sizer_Stop->Add( rbtn_stop, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Stop, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Priority;
-	type_sizer_Priority = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_priority = new wxRadioButton( type_panel, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_priority->SetToolTip( wxT("Makes the character set the input and output priority on a splitter.\nNeeds to be applied before setting the filter on the splitter.") );
-
-	type_sizer_Priority->Add( rbtn_priority, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Priority, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Rotate;
-	type_sizer_Rotate = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_rotate = new wxRadioButton( type_panel, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_rotate->SetToolTip( wxT("Makes the character rotate an entity X times.\nIf X is 3 then the entity is rotated once counter-clock-wise.") );
-
-	type_sizer_Rotate->Add( rbtn_rotate, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Rotate, 1, wxEXPAND, 5 );
+	fgSizer4->Add( type_sizer_Idle, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* type_sizer_PickUp;
 	type_sizer_PickUp = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_pick_up = new wxRadioButton( type_panel, wxID_ANY, wxT("Pick Up"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_pick_up = new wxRadioButton( character_panel, wxID_ANY, wxT("Pick Up"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_pick_up->SetToolTip( wxT("Makes the character start to pick up items on the floor, same as pressing ( f )") );
 
 	type_sizer_PickUp->Add( rbtn_pick_up, 0, wxALL, 5 );
 
 
-	type_sizer_flex->Add( type_sizer_PickUp, 1, wxEXPAND, 5 );
+	fgSizer4->Add( type_sizer_PickUp, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* type_sizer_Drop;
 	type_sizer_Drop = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_drop = new wxRadioButton( type_panel, wxID_ANY, wxT("Drop"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_drop = new wxRadioButton( character_panel, wxID_ANY, wxT("Drop"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_drop->SetToolTip( wxT("Makes the character drop an item, same as pressing ( z )") );
 
 	type_sizer_Drop->Add( rbtn_drop, 0, wxALL, 5 );
 
 
-	type_sizer_flex->Add( type_sizer_Drop, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Launch;
-	type_sizer_Launch = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_launch = new wxRadioButton( type_panel, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_launch->SetToolTip( wxT("Makes the character launch a rocket from a rocket silo") );
-
-	type_sizer_Launch->Add( rbtn_launch, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Launch, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* type_sizer_Save;
-	type_sizer_Save = new wxBoxSizer( wxVERTICAL );
-
-	rbtn_save = new wxRadioButton( type_panel, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
-	rbtn_save->SetToolTip( wxT("Creates a save game named by the comment, the tas can only be continued from these save games.\nIn single player the save game name has the prefix autosave-") );
-
-	type_sizer_Save->Add( rbtn_save, 0, wxALL, 5 );
-
-
-	type_sizer_flex->Add( type_sizer_Save, 1, wxEXPAND, 5 );
+	fgSizer4->Add( type_sizer_Drop, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* type_sizer_CancelCrafting;
 	type_sizer_CancelCrafting = new wxBoxSizer( wxVERTICAL );
 
-	rbtn_cancel_crafting = new wxRadioButton( type_panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_cancel_crafting = new wxRadioButton( character_panel, wxID_ANY, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_cancel_crafting->SetToolTip( wxT("Cancels items in the players crafting queue, \nreturning the ingredients to your hand") );
 
 	type_sizer_CancelCrafting->Add( rbtn_cancel_crafting, 0, wxALL, 5 );
 
 
-	type_sizer_flex->Add( type_sizer_CancelCrafting, 1, wxEXPAND, 5 );
+	fgSizer4->Add( type_sizer_CancelCrafting, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Mine;
+	type_sizer_Mine = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_mine = new wxRadioButton( character_panel, wxID_ANY, wxT("Mine"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_mine->SetToolTip( wxT("Makes the character mine an area, if there is a building, tree or rock they will remove that instead") );
+
+	type_sizer_Mine->Add( rbtn_mine, 0, wxALL, 5 );
 
 
-	type_sizer->Add( type_sizer_flex, 1, wxEXPAND|wxLEFT|wxRIGHT, 15 );
+	fgSizer4->Add( type_sizer_Mine, 1, wxEXPAND, 5 );
+
+
+	character_panel->SetSizer( fgSizer4 );
+	character_panel->Layout();
+	fgSizer4->Fit( character_panel );
+	type_sizer->Add( character_panel, 1, wxALL|wxEXPAND, 5 );
+
+	building_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
+	wxFlexGridSizer* fgSizer5;
+	fgSizer5 = new wxFlexGridSizer( 3, 3, 10, 10 );
+	fgSizer5->SetFlexibleDirection( wxBOTH );
+	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	wxBoxSizer* type_sizer_Take;
+	type_sizer_Take = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_take = new wxRadioButton( building_panel, wxID_ANY, wxT("Take"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_take->SetToolTip( wxT("Makes the character take items from a container [chest, furnace, assembler, etc.] and put them into their inventory") );
+
+	type_sizer_Take->Add( rbtn_take, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Take, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Put;
+	type_sizer_Put = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_put = new wxRadioButton( building_panel, wxID_ANY, wxT("Put"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_put->SetToolTip( wxT("Makes the character put items from his inventory into a container [chest, furnace, assembler, etc.]") );
+
+	type_sizer_Put->Add( rbtn_put, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Put, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Build;
+	type_sizer_Build = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_build = new wxRadioButton( building_panel, wxID_ANY, wxT("Build"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_build->SetToolTip( wxT("Makes the character build an entity") );
+
+	type_sizer_Build->Add( rbtn_build, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Build, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Recipe;
+	type_sizer_Recipe = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_recipe = new wxRadioButton( building_panel, wxID_ANY, wxT("Recipe"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_recipe->SetToolTip( wxT("Makes the character change the recipe for a crafting machine") );
+
+	type_sizer_Recipe->Add( rbtn_recipe, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Recipe, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Limit;
+	type_sizer_Limit = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_limit = new wxRadioButton( building_panel, wxID_ANY, wxT("Limit"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_limit->SetToolTip( wxT("Makes the character limit a chest to X slots") );
+
+	type_sizer_Limit->Add( rbtn_limit, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Limit, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Filter;
+	type_sizer_Filter = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_filter = new wxRadioButton( building_panel, wxID_ANY, wxT("Filter"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_filter->SetToolTip( wxT("Makes the character set the filter on either: a filter-inserter, a splitter or a slot in a car / train wagon") );
+
+	type_sizer_Filter->Add( rbtn_filter, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Filter, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Priority;
+	type_sizer_Priority = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_priority = new wxRadioButton( building_panel, wxID_ANY, wxT("Priority"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_priority->SetToolTip( wxT("Makes the character set the input and output priority on a splitter.\nNeeds to be applied before setting the filter on the splitter.") );
+
+	type_sizer_Priority->Add( rbtn_priority, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Priority, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Launch;
+	type_sizer_Launch = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_launch = new wxRadioButton( building_panel, wxID_ANY, wxT("Launch"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_launch->SetToolTip( wxT("Makes the character launch a rocket from a rocket silo") );
+
+	type_sizer_Launch->Add( rbtn_launch, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Launch, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Rotate;
+	type_sizer_Rotate = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_rotate = new wxRadioButton( building_panel, wxID_ANY, wxT("Rotate"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_rotate->SetToolTip( wxT("Makes the character rotate an entity X times.\nIf X is 3 then the entity is rotated once counter-clock-wise.") );
+
+	type_sizer_Rotate->Add( rbtn_rotate, 0, wxALL, 5 );
+
+
+	fgSizer5->Add( type_sizer_Rotate, 1, wxEXPAND, 5 );
+
+
+	building_panel->SetSizer( fgSizer5 );
+	building_panel->Layout();
+	fgSizer5->Fit( building_panel );
+	type_sizer->Add( building_panel, 1, wxEXPAND | wxALL, 5 );
+
+	game_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
+	wxFlexGridSizer* fgSizer6;
+	fgSizer6 = new wxFlexGridSizer( 3, 2, 10, 10 );
+	fgSizer6->SetFlexibleDirection( wxBOTH );
+	fgSizer6->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	wxBoxSizer* type_sizer_GameSpeed;
+	type_sizer_GameSpeed = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_game_speed = new wxRadioButton( game_panel, wxID_ANY, wxT("Game Speed"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_game_speed->SetToolTip( wxT("Changes the game speed to X%") );
+
+	type_sizer_GameSpeed->Add( rbtn_game_speed, 0, wxALL, 5 );
+
+
+	fgSizer6->Add( type_sizer_GameSpeed, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Pause;
+	type_sizer_Pause = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_pause = new wxRadioButton( game_panel, wxID_ANY, wxT("Pause"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_pause->SetToolTip( wxT("Pauses the game, when all previous tasks are completed. Same as /Pause in the console, the game can be continued with /Resume") );
+
+	type_sizer_Pause->Add( rbtn_pause, 0, wxALL, 5 );
+
+
+	fgSizer6->Add( type_sizer_Pause, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Stop;
+	type_sizer_Stop = new wxBoxSizer( wxHORIZONTAL );
+
+	rbtn_stop = new wxRadioButton( game_panel, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0 );
+	type_sizer_Stop->Add( rbtn_stop, 0, wxALL, 5 );
+
+
+	fgSizer6->Add( type_sizer_Stop, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Save;
+	type_sizer_Save = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_save = new wxRadioButton( game_panel, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_save->SetToolTip( wxT("Creates a save game named by the comment, the tas can only be continued from these save games.\nIn single player the save game name has the prefix autosave-") );
+
+	type_sizer_Save->Add( rbtn_save, 0, wxALL, 5 );
+
+
+	fgSizer6->Add( type_sizer_Save, 1, wxEXPAND, 5 );
+
+
+	game_panel->SetSizer( fgSizer6 );
+	game_panel->Layout();
+	fgSizer6->Fit( game_panel );
+	type_sizer->Add( game_panel, 1, wxEXPAND | wxALL, 5 );
 
 
 	type_panel->SetSizer( type_sizer );
@@ -715,7 +743,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	auto_put_flex->Add( check_recipe, 0, wxALL, 5 );
 
 
-	auto_put_sizer->Add( auto_put_flex, 1, wxLEFT|wxRIGHT, 5 );
+	auto_put_sizer->Add( auto_put_flex, 1, wxLEFT|wxRIGHT|wxTOP, 5 );
 
 	wxBoxSizer* bSizer65;
 	bSizer65 = new wxBoxSizer( wxHORIZONTAL );
@@ -1185,27 +1213,27 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAutoCloseOpenClicked ), this, auto_close_open->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAutoCloseSaveClicked ), this, auto_close_save->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAutoCloseSaveAsClicked ), this, auto_close_save_as->GetId());
-	rbtn_take->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeChosen ), NULL, this );
-	rbtn_put->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPutChosen ), NULL, this );
-	rbtn_game_speed->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnGameSpeedChosen ), NULL, this );
-	rbtn_craft->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftChosen ), NULL, this );
 	rbtn_walk->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnWalkChosen ), NULL, this );
-	rbtn_mine->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnMineChosen ), NULL, this );
-	rbtn_pause->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
-	rbtn_build->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildChosen ), NULL, this );
-	rbtn_recipe->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRecipeChosen ), NULL, this );
+	rbtn_craft->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftChosen ), NULL, this );
 	rbtn_tech->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTechChosen ), NULL, this );
-	rbtn_limit->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLimitChosen ), NULL, this );
 	rbtn_idle->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnIdleChosen ), NULL, this );
-	rbtn_filter->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnfilterChosen ), NULL, this );
-	rbtn_stop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
-	rbtn_priority->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPriorityChosen ), NULL, this );
-	rbtn_rotate->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRotateChosen ), NULL, this );
 	rbtn_pick_up->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPickUpChosen ), NULL, this );
 	rbtn_drop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnDropChosen ), NULL, this );
-	rbtn_launch->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
-	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	rbtn_cancel_crafting->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
+	rbtn_mine->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnMineChosen ), NULL, this );
+	rbtn_take->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeChosen ), NULL, this );
+	rbtn_put->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPutChosen ), NULL, this );
+	rbtn_build->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildChosen ), NULL, this );
+	rbtn_recipe->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRecipeChosen ), NULL, this );
+	rbtn_limit->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLimitChosen ), NULL, this );
+	rbtn_filter->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnfilterChosen ), NULL, this );
+	rbtn_priority->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPriorityChosen ), NULL, this );
+	rbtn_launch->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
+	rbtn_rotate->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRotateChosen ), NULL, this );
+	rbtn_game_speed->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnGameSpeedChosen ), NULL, this );
+	rbtn_pause->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
+	rbtn_stop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
+	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	step_colour_picker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
 	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
@@ -1248,27 +1276,27 @@ GUI_Base::~GUI_Base()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( GUI_Base::OnApplicationClose ) );
-	rbtn_take->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeChosen ), NULL, this );
-	rbtn_put->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPutChosen ), NULL, this );
-	rbtn_game_speed->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnGameSpeedChosen ), NULL, this );
-	rbtn_craft->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftChosen ), NULL, this );
 	rbtn_walk->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnWalkChosen ), NULL, this );
-	rbtn_mine->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnMineChosen ), NULL, this );
-	rbtn_pause->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
-	rbtn_build->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildChosen ), NULL, this );
-	rbtn_recipe->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRecipeChosen ), NULL, this );
+	rbtn_craft->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftChosen ), NULL, this );
 	rbtn_tech->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTechChosen ), NULL, this );
-	rbtn_limit->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLimitChosen ), NULL, this );
 	rbtn_idle->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnIdleChosen ), NULL, this );
-	rbtn_filter->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnfilterChosen ), NULL, this );
-	rbtn_stop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
-	rbtn_priority->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPriorityChosen ), NULL, this );
-	rbtn_rotate->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRotateChosen ), NULL, this );
 	rbtn_pick_up->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPickUpChosen ), NULL, this );
 	rbtn_drop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnDropChosen ), NULL, this );
-	rbtn_launch->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
-	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	rbtn_cancel_crafting->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
+	rbtn_mine->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnMineChosen ), NULL, this );
+	rbtn_take->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeChosen ), NULL, this );
+	rbtn_put->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPutChosen ), NULL, this );
+	rbtn_build->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildChosen ), NULL, this );
+	rbtn_recipe->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRecipeChosen ), NULL, this );
+	rbtn_limit->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLimitChosen ), NULL, this );
+	rbtn_filter->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnfilterChosen ), NULL, this );
+	rbtn_priority->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPriorityChosen ), NULL, this );
+	rbtn_launch->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchChosen ), NULL, this );
+	rbtn_rotate->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnRotateChosen ), NULL, this );
+	rbtn_game_speed->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnGameSpeedChosen ), NULL, this );
+	rbtn_pause->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
+	rbtn_stop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
+	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	step_colour_picker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
 	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
