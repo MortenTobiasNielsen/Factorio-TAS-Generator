@@ -11,52 +11,84 @@ Type panel is the second panel at the top, with a radio button for each steptype
 This file extends cMain.h to reduce the size of cMain.cpp
 */
 
+void TypePanel::SetType(wxRadioButton * choosen_btn)
+{
+	static cMain* parent = ((cMain*)this->GetParent());
+	static vector< wxRadioButton*> radio_buttons = {
+		parent->rbtn_take,
+		parent->rbtn_put,
+		parent->rbtn_game_speed,
+		parent->rbtn_craft,
+		parent->rbtn_walk,
+		parent->rbtn_mine,
+		parent->rbtn_build,
+		parent->rbtn_recipe,
+		parent->rbtn_tech,
+		parent->rbtn_limit,
+		parent->rbtn_idle,
+		parent->rbtn_filter,
+		parent->rbtn_pause,
+		parent->rbtn_priority,
+		parent->rbtn_rotate,
+		parent->rbtn_pick_up,
+		parent->rbtn_drop,
+		parent->rbtn_launch,
+		parent->rbtn_save,
+		parent->rbtn_stop,
+		parent->rbtn_cancel_crafting
+	};
+	for (auto btn : radio_buttons)
+	{
+		btn->SetValue(btn == choosen_btn);
+	}
+}
+
 void TypePanel::SwitchStep(StepType type)
 {
 	cMain* parent = ((cMain*)this->GetParent());
 	switch (type)
 	{
-		case e_take: parent->rbtn_take->SetValue(true);
+		case e_take: SetType(parent->rbtn_take);
 			break;
-		case e_put: parent->rbtn_put->SetValue(true);
+		case e_put: SetType(parent->rbtn_put);
 			break;
-		case e_game_speed: parent->rbtn_game_speed->SetValue(true);
+		case e_game_speed: SetType(parent->rbtn_game_speed);
 			break;
-		case e_craft: parent->rbtn_craft->SetValue(true);
+		case e_craft: SetType(parent->rbtn_craft);
 			break;
-		case e_walk: parent->rbtn_walk->SetValue(true);
+		case e_walk: SetType(parent->rbtn_walk);
 			break;
-		case e_mine: parent->rbtn_mine->SetValue(true);
+		case e_mine: SetType(parent->rbtn_mine);
 			break;
-		case e_build: parent->rbtn_build->SetValue(true);
+		case e_build: SetType(parent->rbtn_build);
 			break;
-		case e_recipe: parent->rbtn_recipe->SetValue(true);
+		case e_recipe: SetType(parent->rbtn_recipe);
 			break;
-		case e_tech: parent->rbtn_tech->SetValue(true);
+		case e_tech: SetType(parent->rbtn_tech);
 			break;
-		case e_limit: parent->rbtn_limit->SetValue(true);
+		case e_limit: SetType(parent->rbtn_limit);
 			break;
-		case e_idle: parent->rbtn_idle->SetValue(true);
+		case e_idle: SetType(parent->rbtn_idle);
 			break;
-		case e_filter: parent->rbtn_filter->SetValue(true);
+		case e_filter: SetType(parent->rbtn_filter);
 			break;
-		case e_pause: parent->rbtn_pause->SetValue(true);
+		case e_pause: SetType(parent->rbtn_pause);
 			break;
-		case e_priority: parent->rbtn_priority->SetValue(true);
+		case e_priority: SetType(parent->rbtn_priority);
 			break;
-		case e_rotate: parent->rbtn_rotate->SetValue(true);
+		case e_rotate: SetType(parent->rbtn_rotate);
 			break;
-		case e_pick_up: parent->rbtn_pick_up->SetValue(true);
+		case e_pick_up: SetType(parent->rbtn_pick_up);
 			break;
-		case e_drop: parent->rbtn_drop->SetValue(true);
+		case e_drop: SetType(parent->rbtn_drop);
 			break;
-		case e_launch: parent->rbtn_launch->SetValue(true);
+		case e_launch: SetType(parent->rbtn_launch);
 			break;
-		case e_save: parent->rbtn_save->SetValue(true);
+		case e_save: SetType(parent->rbtn_save);
 			break;
-		case e_stop: parent->rbtn_stop->SetValue(true);
+		case e_stop: SetType(parent->rbtn_stop);
 			break;
-		case e_cancel_crafting: parent->rbtn_cancel_crafting->SetValue(true);
+		case e_cancel_crafting: SetType(parent->rbtn_cancel_crafting);
 			break;
 		default:
 			// ERROR: You have done something wrong
@@ -193,6 +225,7 @@ void cMain::UpdateLabelFromInto(const wxString* new_text)
 #pragma region cMain eventhandlers
 void cMain::OnBuildChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_build);
 	setup_paramters(parameter_choices.build);
 
 	UpdateCmbItem(&building_choices);
@@ -203,6 +236,7 @@ void cMain::OnBuildChosen(wxCommandEvent& event)
 
 void cMain::OnTakeChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_take);
 	setup_paramters(parameter_choices.take);
 
 	UpdateCmbItem(&item_choices);
@@ -216,6 +250,7 @@ void cMain::OnTakeChosen(wxCommandEvent& event)
 
 void cMain::OnPutChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_put);
 	setup_paramters(parameter_choices.put);
 
 	UpdateCmbItem(&item_choices);
@@ -229,6 +264,7 @@ void cMain::OnPutChosen(wxCommandEvent& event)
 
 void cMain::OnCraftChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_craft);
 	setup_paramters(parameter_choices.craft);
 
 	UpdateCmbItem(&handcrafted_choices);
@@ -239,12 +275,14 @@ void cMain::OnCraftChosen(wxCommandEvent& event)
 
 void cMain::OnRotateChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_rotate);
 	setup_paramters(parameter_choices.rotate);
 	event.Skip();
 }
 
 void cMain::OnfilterChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_filter);
 	setup_paramters(parameter_choices.filter);
 
 	UpdateCmbItem(&item_choices);
@@ -255,6 +293,7 @@ void cMain::OnfilterChosen(wxCommandEvent& event)
 
 void cMain::OnRecipeChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_recipe);
 	setup_paramters(parameter_choices.recipe);
 
 	UpdateCmbItem(&recipe_choices);
@@ -265,6 +304,7 @@ void cMain::OnRecipeChosen(wxCommandEvent& event)
 
 void cMain::OnTechChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_tech);
 	setup_paramters(parameter_choices.tech);
 
 	UpdateCmbItem(&tech_choices);
@@ -275,18 +315,21 @@ void cMain::OnTechChosen(wxCommandEvent& event)
 
 void cMain::OnLaunchChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_launch);
 	setup_paramters(parameter_choices.launch);
 	event.Skip();
 }
 
 void cMain::OnSaveChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_save);
 	setup_paramters(parameter_choices.save);
 	event.Skip();
 }
 
 void cMain::OnCancelCraftingChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_cancel_crafting);
 	setup_paramters(parameter_choices.cancel_crafting);
 
 	UpdateCmbItem(&handcrafted_choices);
@@ -297,12 +340,14 @@ void cMain::OnCancelCraftingChosen(wxCommandEvent& event)
 
 void cMain::OnPriorityChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_priority);
 	setup_paramters(parameter_choices.priority);
 	event.Skip();
 }
 
 void cMain::OnLimitChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_limit);
 	setup_paramters(parameter_choices.limit);
 	event.Skip();
 }
@@ -315,12 +360,14 @@ void cMain::OnIdleChosen(wxCommandEvent& event)
 
 void cMain::OnPickUpChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_pick_up);
 	setup_paramters(parameter_choices.pick);
 	event.Skip();
 }
 
 void cMain::OnDropChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_drop);
 	setup_paramters(parameter_choices.drop);
 
 	UpdateCmbItem(&item_choices);
@@ -331,30 +378,35 @@ void cMain::OnDropChosen(wxCommandEvent& event)
 
 void cMain::OnPauseChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_pause);
 	setup_paramters(parameter_choices.Pause);
 	event.Skip();
 }
 
 void cMain::OnStopChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_stop);
 	setup_paramters(parameter_choices.stop);
 	event.Skip();
 }
 
 void cMain::OnWalkChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_walk);
 	setup_paramters(parameter_choices.walk);
 	event.Skip();
 }
 
 void cMain::OnMineChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_mine);
 	setup_paramters(parameter_choices.mining);
 	event.Skip();
 }
 
 void cMain::OnGameSpeedChosen(wxCommandEvent& event)
 {
+	type_panel->SetType(rbtn_game_speed);
 	setup_paramters(parameter_choices.game_speed);
 	event.Skip();
 }
