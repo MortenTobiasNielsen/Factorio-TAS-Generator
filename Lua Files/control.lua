@@ -5,6 +5,7 @@ local tas_generator = require("steps")
 local steps = tas_generator.steps
 local debug_state = require("goal")
 local run = true
+local never_stop = false
 
 local step
 local step_reached = 0
@@ -86,6 +87,8 @@ local function save_global()
 	global.tas.idled = idled
 
 	global.tas.player = player
+
+	global.tas.never_stop = never_stop
 end
 
 --recreate crash site
@@ -1173,6 +1176,11 @@ local function handle_ontick()
 		player.picking_state = true
 		pickup_ticks = pickup_ticks - 1
 	end
+
+	if steps[step].comment and steps[step].comment == "Never Stop" then 
+		never_stop = not never_stop
+	end
+
 	if walking.walking == false then
 		if idle > 0 then
 			idle = idle - 1
@@ -1417,6 +1425,10 @@ script.on_event(defines.events.on_tick, function(event)
 		handle_tick()
 	end
 
+	if never_stop and global.warning_mode == nil and walking.walking == false then
+		global.warning_mode = {start = game.tick}
+	end
+
 	player.walking_state = walking
 end)
 
@@ -1557,6 +1569,7 @@ local function create_tas_global_state()
  		keep_x = false,
  		keep_y = false,
 		diagonal = false,
+		never_stop = false,
 		duration = 0,
 		ticks_mining = 0,
 		idled = 0,
@@ -1597,6 +1610,7 @@ local function migrate_global()
 	duration = global.tas.duration
 	ticks_mining = global.tas.ticks_mining
 	idled = global.tas.idled
+	never_stop = global.tas.never_stop
 
 	player = global.tas.player
 	if player then
