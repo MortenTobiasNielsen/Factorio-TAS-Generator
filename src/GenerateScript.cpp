@@ -69,15 +69,13 @@ void GenerateScript::UnexpectedError(DialogProgressBar* dialog_progress_bar, int
 
 void GenerateScript::AddInfoFile(string& folder_location)
 {
-	auto software_version = "0.1.1";
-
 	std::ofstream saver;
 
 	saver.open(folder_location + "\\info.json");
 
 	saver << "{";
 	saver << "\n\t\"name\": \"" << folder_location.substr(folder_location.rfind("\\") + 1) << "\",";
-	saver << "\n\t\"version\": \"" << software_version << "\",";
+	saver << "\n\t\"version\": \"" << generator_thumbprint.version << "\",";
 	saver << "\n\t\"title\": \"" << folder_location.substr(folder_location.rfind("\\") + 1) << "\",";
 	saver << "\n\t\"author\": \"" << "DunRaider" << "\",";
 	saver << "\n\t\"factorio_version\": \"" << "1.1" << "\",";
