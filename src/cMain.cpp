@@ -254,6 +254,14 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 
 			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
 
+			if (StepGridData[row].Colour != "")
+			{
+				wxColour colour = wxColour(StepGridData[row].Colour);
+				grid->SetCellBackgroundColour(moveTo, 1, colour);
+				grid->SetCellBackgroundColour(moveTo, 2, colour);
+				grid->SetCellBackgroundColour(moveTo, 3, colour);
+			}
+
 			grid->DeleteRows(row);
 
 			auto it1 = StepGridData.begin();
@@ -284,6 +292,14 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 			grid->DeleteRows(row + 1);
 
 			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
+			
+			if (StepGridData[row].Colour != "")
+			{
+				wxColour colour = wxColour(StepGridData[row].Colour);
+				grid->SetCellBackgroundColour(moveTo, 1, colour);
+				grid->SetCellBackgroundColour(moveTo, 2, colour);
+				grid->SetCellBackgroundColour(moveTo, 3, colour);
+			}
 
 			auto it1 = StepGridData.begin();
 			it1 += row;
