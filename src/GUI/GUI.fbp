@@ -7070,6 +7070,9 @@
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
                                             <event name="OnGridCellLeftDClick">OnStepsGridDoubleLeftClick</event>
+                                            <event name="OnGridCellRightDClick">OnStepsGridDoubleRightClick</event>
+                                            <event name="OnGridLabelLeftDClick">OnStepsGridDoubleLeftClick</event>
+                                            <event name="OnGridLabelRightDClick">OnStepsGridDoubleRightClick</event>
                                             <event name="OnGridRangeSelect">OnStepsGridRangeSelect</event>
                                         </object>
                                     </object>
