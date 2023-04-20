@@ -12,39 +12,11 @@ using std::map;
 
 static const double invalidX = 0.3543534;
 
-static const int step_segment_size = 11;
-static const int step_segment_size_without_colour = 10;
-static const int step_segment_size_without_comment_and_colour = 9;
-static const int group_segment_size = 11;
-static const int group_segment_size_without_comment = 10;
-static const int template_segment_size = 12;
-static const int template_segment_size_without_colour = 11;
-static const int template_segment_size_without_comment_and_colour = 10;
-
-static const string total_steps_indicator = "Total lines:";
-static const string goal_indicator = "Goal:";
-static const string steps_indicator = "Steps:";
-static const string save_groups_indicator = "Groups:";
-static const string save_templates_indicator = "Templates:";
-static const string save_file_indicator = "Save file location:";
-static const string code_file_indicator = "Step folder location:";
-static const string auto_close_indicator = "Auto close settings:";
-static const string auto_put_indicator = "Auto put settings:";
-
-static const string auto_close_generate_script_text = "Generate Script";
-static const string auto_close_open_text = "Open";
-static const string auto_close_save_text = "Save";
-static const string auto_close_save_as_text = "Save As";
-
-static const string auto_put_furnace_text = "Furnace";
-static const string auto_put_burner_text = "Burner";
-static const string auto_put_lab_text = "Lab";
-static const string auto_put_recipe_text = "Recipe";
-
-static const string goal_steelaxe_text = "Steel Axe";
-static const string goal_GOTLAP_text = "Getting On Track Like A Pro";
-static const string goal_any_percent_text = "Any %";
-static const string goal_debug_text = "Debug";
+static const struct
+{
+	string name = "Factorio TAS Generator";
+	string version = "0.3.0";
+} generator_thumbprint;
 
 static const vector<string> fuel_list = {
 	"Wood",
@@ -657,13 +629,15 @@ static const std::vector<std::string> science_packs = {
 	"Chemical science pack",
 	"Production science pack",
 	"Utility science pack",
-	"Space science pack"};
+	"Space science pack"
+};
 
 static const std::vector<std::string> furnace_list = {
 	"Iron plate",
 	"Copper plate",
 	"Steel plate",
-	"Stone brick"};
+	"Stone brick"
+};
 
 static const std::vector<std::string> assemply_level1_list =
 {
@@ -888,35 +862,6 @@ static const std::vector<std::string> item_combat =
 	"Shotgun"
 };
 
-static const std::vector<std::string> take_from = 
-{
-	"Input",
-	"Output",
-	"Fuel",
-	"Modules",
-	"Chest",
-	"Wreck"
-};
-
-enum INPUT_OUTPUT
-{
-	LEFT, NONE, RIGHT
-};
-
-static const std::vector<std::string> input_output = 
-{
-	"Left",
-	"None",
-	"Right"
-};
-
-static inline std::map<std::string, INPUT_OUTPUT> map_input_output = 
-{
-	{input_output[0], LEFT},
-	{input_output[1], NONE},
-	{input_output[2], RIGHT}
-};
-
 static const std::vector<std::string> module_list = 
 {
 	"Speed module",
@@ -929,31 +874,6 @@ static const std::vector<std::string> module_list =
 	"Productivity module 2",
 	"Productivity module 3"
 };
-
-static const std::vector<std::string> build_orientations = 
-{
-	"North",
-	"East",
-	"South",
-	"West"
-};
-
-enum Orientation
-{
-	North,
-	East,
-	South,
-	West,
-};
-
-static inline std::map<std::string, Orientation> OrientationToEnum = 
-{
-	{build_orientations[North], North},
-	{build_orientations[East], East},
-	{build_orientations[South], South},
-	{build_orientations[West], West}
-};
-
 
 static const std::vector<std::string> tech_list =
 {
@@ -1155,42 +1075,6 @@ static const std::vector<std::string> drills_list =
 
 static const struct
 {
-	std::string game_speed = "Game speed";
-	std::string walk = "Walk";
-	std::string mine = "Mine";
-	std::string rotate = "Rotate";
-	std::string craft = "Craft";
-	std::string build = "Build";
-	std::string take = "Take";
-	std::string put = "Put";
-	std::string tech = "Tech";
-	std::string recipe = "Recipe";
-	std::string pause = "Pause";
-	std::string stop = "Stop";
-	std::string limit = "Limit";
-	std::string priority = "Priority";
-	std::string filter = "Filter";
-	std::string pick_up = "Pick up";
-	std::string drop = "Drop";
-	std::string idle = "Idle";
-	std::string launch = "Launch";
-	std::string save = "Save";
-	std::string cancel_crafting = "Cancel";
-
-} struct_steps_list;
-
-static const struct
-{
-	std::string input = "Input";
-	std::string output = "Output";
-	std::string fuel = "Fuel";
-	std::string modules = "Modules";
-	std::string chest = "Chest";
-	std::string wreck = "Wreck";
-} struct_from_into_list;
-
-static const struct
-{
 	std::string stone = "Stone furnace";
 	std::string steel = "Steel furnace";
 } struct_auto_put_furnace_list;
@@ -1223,33 +1107,3 @@ static const struct
 	std::string yellow_science = "utility-science-pack";
 	std::string white_science = "space-science-pack";
 } struct_science_list;
-
-static const struct
-{
-	std::string chest = "defines.inventory.chest";
-	std::string lab_input = "defines.inventory.lab_input";
-	std::string lab_modules = "defines.inventory.lab_modules";
-	std::string beacon_modules = "defines.inventory.beacon_modules";
-	std::string fuel = "defines.inventory.fuel";
-	std::string drill_modules = "defines.inventory.mining_drill_modules";
-	std::string assembly_input = "defines.inventory.assembling_machine_input";
-	std::string assembly_output = "defines.inventory.assembling_machine_output";
-	std::string assembly_modules = "defines.inventory.assembling_machine_modules";
-} struct_take_put_list;
-
-static const struct
-{
-	std::string north = "defines.direction.north";
-	std::string south = "defines.direction.south";
-	std::string east = "defines.direction.east";
-	std::string west = "defines.direction.west";
-} build_direction_struct;
-
-static const struct
-{
-	std::string north = "North";
-	std::string south = "South";
-	std::string east = "East";
-	std::string west = "West";
-
-} struct_direction_list;

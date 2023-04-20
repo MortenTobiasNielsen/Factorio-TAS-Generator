@@ -1,7 +1,8 @@
 local util = require("util")
 local crash_site = require("crash-site")
 
-local steps = require("steps")
+local tas_generator = require("steps")
+local steps = tas_generator.steps
 local debug_state = require("goal")
 local run = true
 
@@ -48,6 +49,7 @@ local drop_position
 
 local queued_save
 local tas_step_change = script.generate_event_name()
+local tas_state_change = script.generate_event_name()
 
 local function save_global()
 	--if not global.tas then return end
@@ -125,16 +127,29 @@ end
 --Print warning in case of errors in tas programming
 local function warning(msg)
     if debug_state then
+		global.warning_mode = global.warning_mode or {start = game.tick}
 		player.print(msg, {r=1, g=1}) -- print warnings in yellow
+	end
+end
+
+local function end_warning_mode(msg)
+	if debug_state and global.warning_mode then
+		player.print({"step-warning.mode", msg, game.tick - global.warning_mode.start,}, {r=1, g=1}) -- print warnings in yellow
+		global.warning_mode = nil
 	end
 end
 
 ---@param by number
 local function change_step(by)
+	local _task = 0
+	if steps and steps[step] and steps[step][1][1] then
+		_task = steps[step][1][1] 
+	end
 	step = step + by
 	script.raise_event(tas_step_change, {
 		change_step_by = by,
 		step = step,
+		task = _task,
 		tick = game.tick,
 	})
 end
@@ -259,6 +274,7 @@ local function put()
 		text=text,
 		position=pos}
 
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Put: [item=%s]", task[1], task[2], step, item ))
 	return true
 end
 
@@ -282,7 +298,7 @@ local function take()
 
 	if removalable_items == 0 then
 		if not walking.walking then
-			warning(string.format("Step: %s, Action: %s, Step: %d - Take: %s is not available from the inventory", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+			warning({"step-warning.take", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper), "is not available from the inventory"})
 		end
 
 		return false;
@@ -316,6 +332,7 @@ local function take()
 		text=text,
 		position=pos}
 
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Take: [item=%s]", task[1], task[2], step, item ))
 	return true
 end
 
@@ -344,7 +361,7 @@ local function craft()
 
 			return false
 		end
-
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Craft: [item=%s]", task[1], task[2], step, item ))
 		return true
     else
         if(step > step_reached) then
@@ -363,10 +380,12 @@ local function cancel_crafting()
 	for i = 1, #queue do
 		if queue[i].recipe == item then
 			if count == -1 then
-				player.cancel_crafting{index = i}
+				player.cancel_crafting{index = i, count = 1000000}
+				end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Cancel: [item=%s]", task[1], task[2], step, item ))
 				return true
 			elseif queue[i].count >= count then
 				player.cancel_crafting{index = i, count = count}
+				end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Cancel: [item=%s]", task[1], task[2], step, item ))
 				return true
 			else
 				warning(string.format("Step: %s, Action: %s, Step: %d - Cancel craft: It is not possible to cancel %s - Please check the script", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
@@ -424,6 +443,7 @@ local function create_entity_replace()
 		end
 		if (not neighbour_position) then
 			player.remove_item({name = item, count = 1})
+			end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Build: [item=%s]", task[1], task[2], step, item ))
 			return true
 		end
 
@@ -467,11 +487,13 @@ local function create_entity_replace()
 		end
 		--spend the item placed
 		player.remove_item({name = item, count = 1})
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Build: [item=%s]", task[1], task[2], step, item ))
 		return true
 	end
 
 	--no special fast replace handling
 	if created_entity then
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Build: [item=%s]", task[1], task[2], step, item ))
 		player.remove_item({name = item, count = 1})
 	end
 	return created_entity ~= nil
@@ -509,6 +531,7 @@ local function build()
 				end
 
 				player.remove_item({name = item, count = 1})
+				end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Build: [item=%s]", task[1], task[2], step, item ))
 				return true
 
 			elseif not walking.walking then
@@ -518,6 +541,7 @@ local function build()
 			return false
 
 		elseif player.can_place_entity{name = item, position = target_position, direction = direction} then
+			end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Build: [item=%s]", task[1], task[2], step, item ))
 			return create_entity_replace()
 		else 
 			if not walking.walking then
@@ -531,11 +555,13 @@ local function build()
 			if player.surface.can_fast_replace{name = "straight-rail", position = target_position, direction = direction, force = "player"} then
 				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", fast_replace=true, player=player, raise_built = true} then
 					player.remove_item({name = item, count = 1})
+					end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Build: [item=%s]", task[1], task[2], step, item ))
 					return true
 				end
 			else
 				if player.surface.create_entity{name = "straight-rail", position = target_position, direction = direction, force="player", raise_built = true} then
 					player.remove_item({name = item, count = 1})
+					end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Build: [item=%s]", task[1], task[2], step, item ))
 					return true
 				end
 			end
@@ -835,6 +861,7 @@ local function rotate()
 
 	if r then player.play_sound{path="utility/rotated_small"} end
 
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Rotate", task[1], task[2], step ))
 	return true
 end
 
@@ -859,6 +886,7 @@ local function recipe()
 		player.insert{name = name, count = count_}
 	end
 
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Recipe: [recipe=%s]", task[1], task[2], step, item ))
 	return true
 end
 
@@ -901,6 +929,7 @@ local function limit()
 
 	-- Setting set_bar to 1 completely limits all slots, so it's off by one
 	target_inventory.set_bar(amount+1)
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Limit", task[1], task[2], step ))
 	return true
 end
 
@@ -913,6 +942,7 @@ local function priority()
 	player_selection.splitter_input_priority = input
 	player_selection.splitter_output_priority = output
 
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Priority", task[1], task[2], step ))
 	return true
 end
 
@@ -929,6 +959,7 @@ local function filter()
 			player_selection.splitter_filter = item
 		end
 
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Filter: [item=%s]", task[1], task[2], step, item ))
 		return true
 	end
 
@@ -938,6 +969,7 @@ local function filter()
 		player_selection.set_filter(slot, item)
 	end
 
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Filter: [item=%s]", task[1], task[2], step, item ))
 	return true
 end
 
@@ -957,6 +989,7 @@ local function drop()
 								spill = true
 								}
 		player.remove_item({name = drop_item})
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Drop: [item=%s]", task[1], task[2], step, item ))
 		return true
 	end
 
@@ -970,6 +1003,7 @@ local function launch()
 		return false
 	end
 
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Launch", task[1], task[2], step ))
 	return player_selection.launch_rocket()
 end
 
@@ -1504,23 +1538,6 @@ script.on_event(defines.events.on_player_joined_game, function(event)
 	game.players[event.player_index].game_view_settings.show_entity_info = true --Set alt-mode=true
 end)
 
-local tas_interface =
-{
-get_current_task = function()
-	return step
-end,
-get_task_list = function()
-	return steps
-end,
-get_tas_step_change_id = function ()
-	return tas_step_change
-end,
-}
-
-if not remote.interfaces["DunRaider-TAS"] then
-	remote.add_interface("DunRaider-TAS", tas_interface)
-end
-
 script.on_event(defines.events.on_player_created, function(event)
 	set_quick_bar(event)
 	on_player_created(event)
@@ -1599,12 +1616,21 @@ end)
 
 script.on_load(migrate_global)
 
+local function raise_state_change()
+	script.raise_event(tas_state_change, {
+		is_running = run,
+		tick = game.tick,
+	})
+end
+
 local function release()
 	run = false
+	raise_state_change()
 end
 
 local function resume()
 	run = true
+	raise_state_change()
 end
 
 local function skip(data)
@@ -1618,3 +1644,46 @@ end
 commands.add_command("release", nil, release)
 commands.add_command("resume", nil, resume)
 commands.add_command("skip", nil, skip)
+
+local tas_interface =
+{
+	get_current_task = function()
+		return step
+	end,
+	get_task_list = function()
+		return steps
+	end,
+	get_tas_step_change_id = function ()
+		return tas_step_change
+	end,
+	get_tas_state_change_id = function ()
+		return tas_state_change
+	end,
+	get_tas_name = function ()
+		return tas_generator.tas.name
+	end,
+	get_tas_timestamp = function ()
+		return tas_generator.tas.timestamp
+	end,
+	get_generator_name = function ()
+		return tas_generator.name
+	end,
+	get_generator_version = function ()
+		return tas_generator.version
+	end,
+	get_tas_state = function ()
+		return {
+			is_running = run,
+		}
+	end,
+	--command interface
+	release = release,
+	resume = resume,
+	skip = function (n)
+		skip({parameter = n})
+	end,
+}
+
+if not remote.interfaces["DunRaider-TAS"] then
+	remote.add_interface("DunRaider-TAS", tas_interface)
+end

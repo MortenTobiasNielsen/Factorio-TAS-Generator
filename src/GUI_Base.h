@@ -10,6 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include "TypePanel.h"
+#include "ImportStepsPanel.h"
 #include <wx/string.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
@@ -33,9 +34,12 @@
 #include <wx/statline.h>
 #include <wx/grid.h>
 #include <wx/srchctrl.h>
+#include <wx/valtext.h>
 #include <wx/aui/auibook.h>
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
+#include <wx/listbook.h>
+#include <wx/listctrl.h>
 #include <wx/dialog.h>
 #include <wx/gauge.h>
 
@@ -139,6 +143,14 @@ class GUI_Base : public wxFrame
 		wxButton* btn_move_up;
 		wxButton* btn_move_down;
 		wxGrid* grid_steps;
+		ImportStepsPanel* import_steps_panel;
+		wxButton* import_steps_into_steps_index_btn;
+		wxSpinCtrl* import_steps_into_steps_ctrl;
+		wxButton* import_steps_into_steps_btn;
+		wxTextCtrl* import_steps_into_template_ctrl;
+		wxButton* import_steps_into_template_btn;
+		wxCheckBox* import_steps_clear_checkbox;
+		wxTextCtrl* import_steps_text_import;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnApplicationClose( wxCloseEvent& event ) { event.Skip(); }
@@ -207,6 +219,7 @@ class GUI_Base : public wxFrame
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -232,9 +245,19 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsIndexBtnClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsIndexBtnRight( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsCtrl( wxSpinEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoStepsBtnClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoTemplateCtrlText( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoTemplateCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsIntoTemplateBtnClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImportStepsTextUpdate( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
+		wxString import_steps_into_template_ctrl_validator;
 
 		GUI_Base( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Factorio TAS Generator"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 1840,1080 ), long style = wxDEFAULT_FRAME_STYLE|wxSYSTEM_MENU|wxTAB_TRAVERSAL );
 		wxAuiManager m_mgr;
@@ -253,7 +276,22 @@ class Shortcut_changer : public wxDialog
 	protected:
 		wxBoxSizer* sc_vertical_sizer;
 		wxStaticText* sc_help_label;
-		wxGridSizer* sc_grid_sizer;
+		wxListbook* sc_item_book;
+		wxPanel* sc_panel_file;
+		wxBoxSizer* sc_file_sizer;
+		wxFlexGridSizer* sc_grid_sizer_file;
+		wxPanel* sc_panel_script;
+		wxBoxSizer* sc_script_sizer;
+		wxFlexGridSizer* sc_grid_sizer_script;
+		wxPanel* sc_panel_shortcuts;
+		wxBoxSizer* sc_shortcuts_sizer;
+		wxFlexGridSizer* sc_grid_sizer_shortcuts;
+		wxPanel* sc_panel_goals;
+		wxBoxSizer* sc_goal_sizer;
+		wxFlexGridSizer* sc_grid_sizer_goals;
+		wxPanel* sc_panel_auto;
+		wxBoxSizer* sc_auto_sizer;
+		wxFlexGridSizer* sc_grid_sizer_auto;
 		wxButton* sc_reset_button;
 		wxButton* sc_save_button;
 

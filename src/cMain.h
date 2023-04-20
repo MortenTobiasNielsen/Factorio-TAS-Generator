@@ -29,6 +29,9 @@
 #include "StepNameToEnum.h"
 #include "utils.h"
 #include "ParameterChoices.h"
+#include "Inventory.h"
+#include "Priority.h"
+#include "TasFileConstants.h"
 
 #include "../icon.xpm"
 
@@ -151,6 +154,21 @@ protected:
 	void StepSeachOnTextEnter(wxCommandEvent& event);
 	void StepSeachOnSearchButton(wxCommandEvent& event);
 	void StepSeachOnCancelButton(wxCommandEvent& event);
+
+	//Import steps panel
+	void OnImportStepsIntoStepsCtrl(wxSpinEvent& event);
+	void OnImportStepsIntoStepsCtrlEnter(wxCommandEvent& event);
+	void OnImportStepsIntoStepsBtnClick(wxCommandEvent& event);
+	void OnImportStepsIntoStepsIndexBtnClicked(wxCommandEvent& event);
+	void OnImportStepsIntoStepsIndexBtnRight(wxMouseEvent& event);
+	bool validateTemplateName();
+	void OnImportStepsIntoTemplateCtrlText(wxCommandEvent& event);
+	void OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event);
+	void OnImportStepsIntoTemplateBtnClick(wxCommandEvent& event);
+	void OnImportStepsTextUpdate(wxCommandEvent& event);
+
+	//Main book
+	void OnMainBookPageChanged(wxAuiNotebookEvent& event);
 
 private:
 	wxString window_title = "Factorio TAS Generator";

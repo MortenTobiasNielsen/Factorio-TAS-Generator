@@ -22,25 +22,25 @@ void StepParameters::Reset()
 
 void StepParameters::Next()
 {
-	if (Direction == struct_direction_list.north)
+	if (Direction == build_orientations[North])
 	{
 		Y -= Size;
 		return;
 	}
 
-	if (Direction == struct_direction_list.south)
+	if (Direction == build_orientations[South])
 	{
 		Y += Size;
 		return;
 	}
 
-	if (Direction == struct_direction_list.east)
+	if (Direction == build_orientations[East])
 	{
 		X += Size;
 		return;
 	}
 
-	if (Direction == struct_direction_list.west)
+	if (Direction == build_orientations[West])
 	{
 		X -= Size;
 		return;
@@ -137,7 +137,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 	if (toCompare.X == X)
 	{
-		if (toCompare.Direction == struct_direction_list.south)
+		if (toCompare.Direction == build_orientations[South])
 		{
 			if (toCompare.Y > Y)
 			{
@@ -153,7 +153,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 			}
 		}
 
-		if (toCompare.Direction == struct_direction_list.north)
+		if (toCompare.Direction == build_orientations[North])
 		{
 			if (toCompare.Y < Y)
 			{
@@ -172,7 +172,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 	if (toCompare.Y == Y)
 	{
-		if (toCompare.Direction == struct_direction_list.east)
+		if (toCompare.Direction == build_orientations[East])
 		{
 			if (toCompare.X > X)
 			{
@@ -188,7 +188,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 			}
 		}
 
-		if (toCompare.Direction == struct_direction_list.west)
+		if (toCompare.Direction == build_orientations[West])
 		{
 			if (toCompare.X < X)
 			{

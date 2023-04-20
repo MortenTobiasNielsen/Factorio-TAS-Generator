@@ -15,6 +15,7 @@
 #include "BuildingNameToIndex.h"
 #include "utils.h"
 #include "DialogProgressBar.h"
+#include "TasFileConstants.h"
 
 using std::string;
 using std::vector;

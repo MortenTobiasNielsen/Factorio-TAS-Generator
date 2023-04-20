@@ -135,7 +135,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	a->Split(1, wxRIGHT);
 
 	//set shortcuts from settings file
-	ShortcutChanger::UpdateShortcutsFromFile(menu_shortcuts);
+	ShortcutChanger::UpdateShortcutsFromFile(main_menubar);
 	settings::setting settings = settings::ReadSettingFile();
 	if (settings.last_tas != "")
 	{
@@ -563,7 +563,7 @@ void cMain::AddStep(int row)
 			to_check = stepParameters.Item;
 
 			stepParameters.StepEnum = e_put;
-			stepParameters.Step = struct_steps_list.put;
+			stepParameters.Step = StepNames[e_put];
 			stepParameters.Amount = "1";
 
 			if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
@@ -610,7 +610,7 @@ void cMain::AddStep(int row)
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
 					stepParameters.StepEnum = e_put;
-					stepParameters.Step = struct_steps_list.put;
+					stepParameters.Step = StepNames[e_put];
 					stepParameters.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = struct_from_into_list.input;
@@ -1461,7 +1461,7 @@ void cMain::OnChangeShortcutMenuSelected(wxCommandEvent& event)
 		wxDefaultSize, 
 		wxCAPTION | wxCLOSE_BOX | wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP | wxBORDER_DEFAULT);
 
-	sc->Build(menu_shortcuts);	
+	sc->Build(main_menubar);	
 
 	sc->Show();
 
@@ -1992,6 +1992,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			break;
 
 		case e_limit:
+			stepParameters->Orientation = "Chest";
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = stepParameters->Amount;
@@ -2494,4 +2495,14 @@ bool cMain::ValidateAllSteps()
 	}
 
 	return true;
+}
+
+void cMain::OnMainBookPageChanged(wxAuiNotebookEvent& event)
+{
+	auto page = event.GetSelection();
+	if (page == 2)
+	{
+		import_steps_text_import->SetFocus();
+	}
+	event.Skip();
 }

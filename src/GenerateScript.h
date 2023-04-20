@@ -16,6 +16,7 @@
 #include "StepParameters.h"
 #include "StepNameToEnum.h"
 #include "utils.h"
+#include "Inventory.h"
 
 using std::string;
 using std::vector;
@@ -26,8 +27,11 @@ class GenerateScript
 public:
 	GenerateScript(wxGrid* grid_steps);
 	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal);
+	const std::string currentDateTime(); // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
 
 private:
+	string name;
+
 	wxGrid* grid_steps;
 	string step_list;
 	float player_x_cord;
@@ -59,7 +63,7 @@ private:
 	void reset();
 	void ClearSteps();
 	string EndSteps();
-	void UnexpectedError(DialogProgressBar* dialog_progress_bar);
+	void UnexpectedError(DialogProgressBar* dialog_progress_bar, int error_step);
 
 	void AddInfoFile(string& folder_location);
 

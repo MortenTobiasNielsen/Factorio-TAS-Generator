@@ -936,7 +936,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	template_panel->SetSizer( bSizer5612 );
 	template_panel->Layout();
 	bSizer5612->Fit( template_panel );
-	main_book->AddPage( template_panel, wxT("Templates"), true, wxNullBitmap );
+	main_book->AddPage( template_panel, wxT("Templates"), false, wxNullBitmap );
 	step_panel = new wxPanel( main_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5611;
 	bSizer5611 = new wxBoxSizer( wxVERTICAL );
@@ -1040,6 +1040,101 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel->Layout();
 	bSizer5611->Fit( step_panel );
 	main_book->AddPage( step_panel, wxT("Steps"), false, wxNullBitmap );
+	import_steps_panel = new ImportStepsPanel( main_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, wxT("Import") );
+	wxBoxSizer* import_steps_sizer;
+	import_steps_sizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* import_steps_ctrl_sizer;
+	import_steps_ctrl_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	wxBoxSizer* import_steps_into_steps_sizer;
+	import_steps_into_steps_sizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer71;
+	bSizer71 = new wxBoxSizer( wxHORIZONTAL );
+
+	import_steps_into_steps_index_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("C"), wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxBU_EXACTFIT|wxBORDER_NONE );
+	import_steps_into_steps_index_btn->SetToolTip( wxT("Copy current row index from the Steps panel into number box\n - Left click to import before the selected step\n - Right click to import after the selected step") );
+	import_steps_into_steps_index_btn->SetMinSize( wxSize( 25,25 ) );
+
+	bSizer71->Add( import_steps_into_steps_index_btn, 0, wxBOTTOM|wxLEFT|wxTOP, 4 );
+
+	import_steps_into_steps_ctrl = new wxSpinCtrl( import_steps_panel, wxID_ANY, wxT("-1"), wxDefaultPosition, wxSize( 121,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -999999, 999999, -1 );
+	import_steps_into_steps_ctrl->SetToolTip( wxT("Positive numbers places the imported steps in the step list from the top and negative numbers from the bottom.\nWith 0 being the top element and -1 being the bottom element.\nAnd -2 Inserting steps between last and second to last element.") );
+	import_steps_into_steps_ctrl->SetMinSize( wxSize( 121,-1 ) );
+	import_steps_into_steps_ctrl->SetMaxSize( wxSize( 121,-1 ) );
+
+	bSizer71->Add( import_steps_into_steps_ctrl, 0, wxBOTTOM|wxRIGHT|wxTOP, 5 );
+
+
+	import_steps_into_steps_sizer->Add( bSizer71, 1, wxEXPAND, 5 );
+
+	import_steps_into_steps_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("Into steps"), wxDefaultPosition, wxSize( 145,-1 ), 0 );
+	import_steps_into_steps_btn->SetMinSize( wxSize( 145,-1 ) );
+	import_steps_into_steps_btn->SetMaxSize( wxSize( 145,-1 ) );
+
+	import_steps_into_steps_sizer->Add( import_steps_into_steps_btn, 0, wxALL, 5 );
+
+
+	import_steps_ctrl_sizer->Add( import_steps_into_steps_sizer, 1, 0, 5 );
+
+	wxBoxSizer* import_steps_into_template_sizer;
+	import_steps_into_template_sizer = new wxBoxSizer( wxVERTICAL );
+
+	import_steps_into_template_ctrl = new wxTextCtrl( import_steps_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 120,-1 ), wxTE_PROCESS_ENTER );
+	#ifdef __WXGTK__
+	if ( !import_steps_into_template_ctrl->HasFlag( wxTE_MULTILINE ) )
+	{
+	import_steps_into_template_ctrl->SetMaxLength( 45 );
+	}
+	#else
+	import_steps_into_template_ctrl->SetMaxLength( 45 );
+	#endif
+	import_steps_into_template_ctrl->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	import_steps_into_template_ctrl->SetToolTip( wxT("Template name has to be at least 1 character long.\nTemplate name can only contain letters and numbers.\nTemplate name has to be unique") );
+	import_steps_into_template_ctrl->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_template_ctrl->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_template_ctrl->SetValidator( wxTextValidator( wxFILTER_ALPHANUMERIC, &import_steps_into_template_ctrl_validator ) );
+
+	import_steps_into_template_sizer->Add( import_steps_into_template_ctrl, 0, wxALL, 5 );
+
+	import_steps_into_template_btn = new wxButton( import_steps_panel, wxID_ANY, wxT("Create template"), wxDefaultPosition, wxSize( 120,-1 ), 0 );
+	import_steps_into_template_btn->Enable( false );
+	import_steps_into_template_btn->SetMinSize( wxSize( 120,-1 ) );
+	import_steps_into_template_btn->SetMaxSize( wxSize( 120,-1 ) );
+
+	import_steps_into_template_sizer->Add( import_steps_into_template_btn, 0, wxALL, 5 );
+
+
+	import_steps_ctrl_sizer->Add( import_steps_into_template_sizer, 1, 0, 5 );
+
+	import_steps_clear_checkbox = new wxCheckBox( import_steps_panel, wxID_ANY, wxT("Clear import"), wxDefaultPosition, wxDefaultSize, 0 );
+	import_steps_clear_checkbox->SetValue(true);
+	import_steps_clear_checkbox->SetToolTip( wxT("Clears the import text field on succesful insertion into Steps or creation of a template") );
+
+	import_steps_ctrl_sizer->Add( import_steps_clear_checkbox, 0, wxALL, 5 );
+
+
+	import_steps_sizer->Add( import_steps_ctrl_sizer, 1, 0, 5 );
+
+	wxBoxSizer* import_steps_text_sizer;
+	import_steps_text_sizer = new wxBoxSizer( wxVERTICAL );
+
+	import_steps_text_sizer->SetMinSize( wxSize( -1,1200 ) );
+	import_steps_text_import = new wxTextCtrl( import_steps_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_LEFT|wxTE_MULTILINE );
+	import_steps_text_import->SetMinSize( wxSize( 450,600 ) );
+
+	import_steps_text_sizer->Add( import_steps_text_import, 0, wxALL|wxEXPAND, 5 );
+
+
+	import_steps_sizer->Add( import_steps_text_sizer, 1, wxEXPAND, 5 );
+
+
+	import_steps_panel->SetSizer( import_steps_sizer );
+	import_steps_panel->Layout();
+	import_steps_sizer->Fit( import_steps_panel );
+	main_book->AddPage( import_steps_panel, wxT("Import"), true, wxNullBitmap );
 
 
 	m_mgr.Update();
@@ -1112,6 +1207,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	rbtn_cancel_crafting->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
 	step_colour_picker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
+	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
 	btn_template_new->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
@@ -1137,6 +1233,15 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_move_down->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
+	import_steps_into_steps_index_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnClicked ), NULL, this );
+	import_steps_into_steps_index_btn->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnRight ), NULL, this );
+	import_steps_into_steps_ctrl->Connect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( GUI_Base::OnImportStepsIntoStepsCtrl ), NULL, this );
+	import_steps_into_steps_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
+	import_steps_into_steps_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsBtnClick ), NULL, this );
+	import_steps_into_template_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlText ), NULL, this );
+	import_steps_into_template_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
+	import_steps_into_template_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateBtnClick ), NULL, this );
+	import_steps_text_import->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsTextUpdate ), NULL, this );
 }
 
 GUI_Base::~GUI_Base()
@@ -1165,6 +1270,7 @@ GUI_Base::~GUI_Base()
 	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
 	rbtn_cancel_crafting->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
 	step_colour_picker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
+	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
 	btn_template_new->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
@@ -1190,6 +1296,15 @@ GUI_Base::~GUI_Base()
 	btn_move_down->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
+	import_steps_into_steps_index_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnClicked ), NULL, this );
+	import_steps_into_steps_index_btn->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnImportStepsIntoStepsIndexBtnRight ), NULL, this );
+	import_steps_into_steps_ctrl->Disconnect( wxEVT_COMMAND_SPINCTRL_UPDATED, wxSpinEventHandler( GUI_Base::OnImportStepsIntoStepsCtrl ), NULL, this );
+	import_steps_into_steps_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsCtrlEnter ), NULL, this );
+	import_steps_into_steps_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoStepsBtnClick ), NULL, this );
+	import_steps_into_template_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlText ), NULL, this );
+	import_steps_into_template_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
+	import_steps_into_template_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateBtnClick ), NULL, this );
+	import_steps_text_import->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsTextUpdate ), NULL, this );
 
 	m_mgr.UnInit();
 
@@ -1205,10 +1320,102 @@ Shortcut_changer::Shortcut_changer( wxWindow* parent, wxWindowID id, const wxStr
 	sc_help_label->Wrap( -1 );
 	sc_vertical_sizer->Add( sc_help_label, 0, wxALL|wxEXPAND, 5 );
 
-	sc_grid_sizer = new wxGridSizer( 7, 4, 5, 5 );
+	wxBoxSizer* bSizer72;
+	bSizer72 = new wxBoxSizer( wxVERTICAL );
+
+	sc_item_book = new wxListbook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLB_DEFAULT|wxBORDER_RAISED|wxBORDER_THEME );
+	sc_item_book->SetMinSize( wxSize( 800,340 ) );
+	sc_item_book->SetMaxSize( wxSize( 1500,700 ) );
+
+	sc_panel_file = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	sc_file_sizer = new wxBoxSizer( wxVERTICAL );
+
+	sc_grid_sizer_file = new wxFlexGridSizer( 0, 3, 5, 5 );
+	sc_grid_sizer_file->SetFlexibleDirection( wxBOTH );
+	sc_grid_sizer_file->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 
-	sc_vertical_sizer->Add( sc_grid_sizer, 0, wxALL|wxEXPAND, 5 );
+	sc_file_sizer->Add( sc_grid_sizer_file, 1, wxEXPAND, 5 );
+
+
+	sc_panel_file->SetSizer( sc_file_sizer );
+	sc_panel_file->Layout();
+	sc_file_sizer->Fit( sc_panel_file );
+	sc_item_book->AddPage( sc_panel_file, wxT("File"), false );
+	sc_panel_script = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	sc_script_sizer = new wxBoxSizer( wxVERTICAL );
+
+	sc_grid_sizer_script = new wxFlexGridSizer( 0, 3, 5, 5 );
+	sc_grid_sizer_script->SetFlexibleDirection( wxBOTH );
+	sc_grid_sizer_script->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	sc_script_sizer->Add( sc_grid_sizer_script, 1, wxEXPAND, 5 );
+
+
+	sc_panel_script->SetSizer( sc_script_sizer );
+	sc_panel_script->Layout();
+	sc_script_sizer->Fit( sc_panel_script );
+	sc_item_book->AddPage( sc_panel_script, wxT("Script"), false );
+	sc_panel_shortcuts = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	sc_shortcuts_sizer = new wxBoxSizer( wxVERTICAL );
+
+	sc_grid_sizer_shortcuts = new wxFlexGridSizer( 0, 3, 5, 5 );
+	sc_grid_sizer_shortcuts->SetFlexibleDirection( wxBOTH );
+	sc_grid_sizer_shortcuts->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	sc_shortcuts_sizer->Add( sc_grid_sizer_shortcuts, 1, wxEXPAND, 5 );
+
+
+	sc_panel_shortcuts->SetSizer( sc_shortcuts_sizer );
+	sc_panel_shortcuts->Layout();
+	sc_shortcuts_sizer->Fit( sc_panel_shortcuts );
+	sc_item_book->AddPage( sc_panel_shortcuts, wxT("Shortcuts"), true );
+	sc_panel_goals = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	sc_goal_sizer = new wxBoxSizer( wxVERTICAL );
+
+	sc_grid_sizer_goals = new wxFlexGridSizer( 0, 3, 5, 5 );
+	sc_grid_sizer_goals->SetFlexibleDirection( wxBOTH );
+	sc_grid_sizer_goals->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	sc_goal_sizer->Add( sc_grid_sizer_goals, 1, wxEXPAND, 5 );
+
+
+	sc_panel_goals->SetSizer( sc_goal_sizer );
+	sc_panel_goals->Layout();
+	sc_goal_sizer->Fit( sc_panel_goals );
+	sc_item_book->AddPage( sc_panel_goals, wxT("Goals"), false );
+	sc_panel_auto = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	sc_auto_sizer = new wxBoxSizer( wxVERTICAL );
+
+	sc_grid_sizer_auto = new wxFlexGridSizer( 0, 3, 5, 5 );
+	sc_grid_sizer_auto->SetFlexibleDirection( wxBOTH );
+	sc_grid_sizer_auto->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	sc_auto_sizer->Add( sc_grid_sizer_auto, 1, wxEXPAND, 5 );
+
+
+	sc_panel_auto->SetSizer( sc_auto_sizer );
+	sc_panel_auto->Layout();
+	sc_auto_sizer->Fit( sc_panel_auto );
+	sc_item_book->AddPage( sc_panel_auto, wxT("Auto put"), false );
+	#ifdef __WXGTK__ // Small icon style not supported in GTK
+	wxListView* sc_item_bookListView = sc_item_book->GetListView();
+	long sc_item_bookFlags = sc_item_bookListView->GetWindowStyleFlag();
+	if( sc_item_bookFlags & wxLC_SMALL_ICON )
+	{
+		sc_item_bookFlags = ( sc_item_bookFlags & ~wxLC_SMALL_ICON ) | wxLC_ICON;
+	}
+	sc_item_bookListView->SetWindowStyleFlag( sc_item_bookFlags );
+	#endif
+
+	bSizer72->Add( sc_item_book, 1, wxALL|wxEXPAND, 5 );
+
+
+	sc_vertical_sizer->Add( bSizer72, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* sc_control_sizer;
 	sc_control_sizer = new wxBoxSizer( wxHORIZONTAL );
