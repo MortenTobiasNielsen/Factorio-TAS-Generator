@@ -25,6 +25,7 @@ string Capitalize(const wxString& stringToCapitalize, const bool isItem = false)
 bool equals_ignore_case(const std::string_view& lhs, const std::string_view& rhs);
 bool starts_with_ignore_case(const std::string& base, const std::string& start);
 bool starts_with_ignore_case(const wxString& base, const wxString& start);
+bool starts_with_ignore_case_anyword(const wxString& base, const wxString& start);
 
 void find_coordinates(string& x_cord, string& y_cord, string& direction, string& building_size);
 
@@ -39,4 +40,5 @@ void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry);
 
 bool StringContainsAny(const wxString& str, const string& chars);
 vector<wxString> Split(const string& s, char delim);
+vector<wxString> Split(const wxString& s, char delim);
 bool ListContains(wxArrayString* list, wxString str);

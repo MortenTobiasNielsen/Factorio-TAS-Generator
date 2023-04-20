@@ -105,6 +105,19 @@ bool starts_with_ignore_case(const wxString& base, const wxString& start)
 	return true;
 }
 
+bool starts_with_ignore_case_anyword(const wxString& base, const wxString& start)
+{
+	if (base.size() < start.size()) return false;
+	if (start.Contains(" ")) return starts_with_ignore_case(base, start);
+	vector<wxString> base_parts = Split(base, ' ');
+	for (wxString part : base_parts)
+	{
+		if (starts_with_ignore_case(part, start))
+			return true;
+	}
+	return false;
+}
+
 bool is_number(const std::string& str)
 {
 	for (auto s : str)
@@ -253,6 +266,11 @@ vector<wxString> Split(const string& s, char delim)
 	}
 	if (result.empty()) result.push_back(s);
 	return result;
+}
+
+vector<wxString> Split(const wxString& s, char delim)
+{
+	return Split(s.ToStdString(), delim);
 }
 
 bool ListContains(wxArrayString* list, wxString str)
