@@ -5,6 +5,10 @@ local tas_generator = require("steps")
 local steps = tas_generator.steps
 local debug_state = require("goal")
 local run = true
+local never_stop = false
+local use_all_ticks = false
+local step_executed = false
+local not_same_step = 1
 
 local step
 local step_reached = 0
@@ -86,6 +90,11 @@ local function save_global()
 	global.tas.idled = idled
 
 	global.tas.player = player
+
+	global.tas.never_stop = never_stop
+	global.tas.use_all_ticks = use_all_ticks
+	global.tas.step_executed = step_executed
+	global.tas.not_same_step = not_same_step
 end
 
 --recreate crash site
@@ -136,6 +145,21 @@ local function end_warning_mode(msg)
 	if debug_state and global.warning_mode then
 		player.print({"step-warning.mode", msg, game.tick - global.warning_mode.start,}, {r=1, g=1}) -- print warnings in yellow
 		global.warning_mode = nil
+	end
+end
+
+local function end_never_stop_modifier_warning_mode()
+	if debug_state and global.never_stop_modifier_warning_mode then
+		player.print(string.format("Step: %d - The character stood stil for %d tick(s) ", global.never_stop_modifier_warning_mode.step, game.tick - global.never_stop_modifier_warning_mode.start),{r=1, g=1})
+		global.never_stop_modifier_warning_mode = nil
+	end
+end
+
+-- I think it should be possible to do something like looping through the different types and check if any are tagged for termination
+local function end_use_all_ticks_warning_mode()
+	if debug_state and global.use_all_ticks_warning_mode then
+		player.print(string.format("Step: %d - %d tick(s) not used", global.use_all_ticks_warning_mode.step, game.tick - global.use_all_ticks_warning_mode.start), {r=1, g=1})
+		global.use_all_ticks_warning_mode = nil
 	end
 end
 
@@ -1173,6 +1197,7 @@ local function handle_ontick()
 		player.picking_state = true
 		pickup_ticks = pickup_ticks - 1
 	end
+
 	if walking.walking == false then
 		if idle > 0 then
 			idle = idle - 1
@@ -1191,6 +1216,7 @@ local function handle_ontick()
 					walking = walk()
 
 					change_step(1)
+					step_executed = true
 				end
 			end
 		elseif steps[step][2] == "walk" then
@@ -1208,6 +1234,9 @@ local function handle_ontick()
 			player.update_selected_entity(steps[step][3])
 
 			player.mining_state = {mining = true, position = steps[step][3]}
+			if global.use_all_ticks_warning_mode then
+				end_use_all_ticks_warning_mode()
+			end
 
 			duration = steps[step][4]
 
@@ -1216,6 +1245,7 @@ local function handle_ontick()
 			if ticks_mining >= duration then
 				player.mining_state = {mining = false, position = steps[step][3]}
 				change_step(1)
+				step_executed = true
 				mining = 0
 				ticks_mining = 0
 			end
@@ -1233,6 +1263,7 @@ local function handle_ontick()
 		elseif doStep(steps[step]) then
 			-- Do step while standing still
 			if steps[step].comment then msg(steps[step].comment) end
+			step_executed = true
 			change_step(1)
 		end
 	else
@@ -1240,6 +1271,7 @@ local function handle_ontick()
 			if doStep(steps[step]) then
 				-- Do step while walking
 				if steps[step].comment then msg(steps[step].comment) end
+				step_executed = true
 				change_step(1)
 			end
 		end
@@ -1403,6 +1435,20 @@ script.on_event(defines.events.on_tick, function(event)
 		end
 	end
 
+	if steps[step].comment and step > not_same_step then
+		if steps[step].comment == "Never Stop" then 
+			never_stop = not never_stop
+
+			msg(string.format("Step: %d - Never Stop: %s", steps[step][1][1], never_stop))
+			not_same_step = step
+		elseif steps[step].comment == "Use All Ticks" then
+			use_all_ticks = not use_all_ticks
+			
+			msg(string.format("Step: %d - Use All Ticks: %s", steps[step][1][1], use_all_ticks))
+			not_same_step = step
+		end
+	end
+
 	if steps[step] == nil or steps[step][1] == "break" then
 		debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 		debug_state = false
@@ -1414,7 +1460,24 @@ script.on_event(defines.events.on_tick, function(event)
 	if compatibility_mode then
 		backwards_compatibility()
 	else
+		step_executed = false
 		handle_tick()
+
+		if global.use_all_ticks_warning_mode and step_executed then
+			end_use_all_ticks_warning_mode()
+		end
+
+		if use_all_ticks and not step_executed and global.use_all_ticks_warning_mode == nil and not player.mining_state.mining then
+			global.use_all_ticks_warning_mode = {start = game.tick, step = steps[step][1][1]}
+		end
+	end
+
+	if global.never_stop_modifier_warning_mode and walking.walking then
+		end_never_stop_modifier_warning_mode()
+	end
+
+	if never_stop and global.never_stop_modifier_warning_mode == nil and walking.walking == false then
+		global.never_stop_modifier_warning_mode = {start = game.tick, step = steps[step][1][1]}
 	end
 
 	player.walking_state = walking
@@ -1557,9 +1620,13 @@ local function create_tas_global_state()
  		keep_x = false,
  		keep_y = false,
 		diagonal = false,
+		never_stop = false,
+		use_all_ticks = false,
+		step_executed = false,
 		duration = 0,
 		ticks_mining = 0,
 		idled = 0,
+		not_same_step = 1,
 	}
 end
 
@@ -1597,6 +1664,10 @@ local function migrate_global()
 	duration = global.tas.duration
 	ticks_mining = global.tas.ticks_mining
 	idled = global.tas.idled
+	never_stop = global.tas.never_stop
+	use_all_ticks = global.tas.use_all_ticks
+	step_executed = global.tas.step_executed
+	not_same_step = global.tas.not_same_step
 
 	player = global.tas.player
 	if player then
