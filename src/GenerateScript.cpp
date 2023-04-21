@@ -772,7 +772,7 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 	{
 		last_walking_comment = "";
 	}
-	else if (comment == "Never Stop")
+	else if (comment == "Never Stop" || comment == "Use All Ticks")
 	{
 		// Do nothing.
 	}
