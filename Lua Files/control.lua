@@ -94,6 +94,7 @@ local function save_global()
 	global.tas.never_stop = never_stop
 	global.tas.use_all_ticks = use_all_ticks
 	global.tas.step_executed = step_executed
+	global.tas.not_same_step = not_same_step
 end
 
 --recreate crash site
@@ -1625,6 +1626,7 @@ local function create_tas_global_state()
 		duration = 0,
 		ticks_mining = 0,
 		idled = 0,
+		not_same_step = 1,
 	}
 end
 
@@ -1665,6 +1667,7 @@ local function migrate_global()
 	never_stop = global.tas.never_stop
 	use_all_ticks = global.tas.use_all_ticks
 	step_executed = global.tas.step_executed
+	not_same_step = global.tas.not_same_step
 
 	player = global.tas.player
 	if player then
