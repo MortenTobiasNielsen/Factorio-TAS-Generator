@@ -37,6 +37,9 @@ void TypePanel::SetType(wxRadioButton * choosen_btn)
 		parent->rbtn_stop,
 		parent->rbtn_cancel_crafting
 	};
+	parent->rbtn_character_panel_hidden->SetValue(true);
+	parent->rbtn_building_panel_hidden->SetValue(true);
+	parent->rbtn_game_panel_hidden->SetValue(true);
 	for (auto btn : radio_buttons)
 	{
 		btn->SetValue(btn == choosen_btn);

@@ -95,6 +95,7 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_drop;
 		wxRadioButton* rbtn_cancel_crafting;
 		wxRadioButton* rbtn_mine;
+		wxRadioButton* rbtn_character_panel_hidden;
 		wxPanel* building_panel;
 		wxRadioButton* rbtn_take;
 		wxRadioButton* rbtn_put;
@@ -105,11 +106,13 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_priority;
 		wxRadioButton* rbtn_launch;
 		wxRadioButton* rbtn_rotate;
+		wxRadioButton* rbtn_building_panel_hidden;
 		wxPanel* game_panel;
 		wxRadioButton* rbtn_game_speed;
 		wxRadioButton* rbtn_pause;
 		wxRadioButton* rbtn_stop;
 		wxRadioButton* rbtn_save;
+		wxRadioButton* rbtn_game_panel_hidden;
 		wxPanel* auto_put_panel;
 		wxCheckBox* check_furnace;
 		wxCheckBox* check_burner;
