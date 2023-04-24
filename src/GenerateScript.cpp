@@ -962,7 +962,15 @@ void GenerateScript::row_rotate(string step, string x_cord, string y_cord, strin
 
 void GenerateScript::build(string step, string action, string x_cord, string y_cord, string item, string OrientationEnum, string comment)
 {
-	check_interact_distance(step, action, x_cord, y_cord, item, OrientationEnum);
+	if (comment == "Override")
+	{
+		PaintIntermediateWalk(step, false);
+	}
+	else
+	{
+		check_interact_distance(step, action, x_cord, y_cord, item, OrientationEnum);
+	}
+
 
 	item = check_item_name(item);
 
@@ -1082,7 +1090,15 @@ void GenerateScript::row_put(string step, string x_cord, string y_cord, string a
 
 void GenerateScript::recipe(string step, string action, string x_cord, string y_cord, string item, string building, string OrientationEnum, string comment)
 {
-	check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
+	if (comment == "Override")
+	{
+		PaintIntermediateWalk(step, false);
+	}
+	else
+	{
+		check_interact_distance(step, action, x_cord, y_cord, building, OrientationEnum);
+	}
+
 
 	item = check_item_name(item);
 
