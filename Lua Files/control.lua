@@ -1664,10 +1664,10 @@ local function migrate_global()
 	duration = global.tas.duration
 	ticks_mining = global.tas.ticks_mining
 	idled = global.tas.idled
-	never_stop = global.tas.never_stop
-	use_all_ticks = global.tas.use_all_ticks
-	step_executed = global.tas.step_executed
-	not_same_step = global.tas.not_same_step
+	never_stop = global.tas.never_stop or false
+	use_all_ticks = global.tas.use_all_ticks or false
+	step_executed = global.tas.step_executed or false
+	not_same_step = global.tas.not_same_step or 1
 
 	player = global.tas.player
 	if player then
