@@ -440,7 +440,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	character_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer4;
-	fgSizer4 = new wxFlexGridSizer( 3, 3, 10, 10 );
+	fgSizer4 = new wxFlexGridSizer( 4, 3, 10, 10 );
 	fgSizer4->SetFlexibleDirection( wxBOTH );
 	fgSizer4->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -532,6 +532,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	fgSizer4->Add( type_sizer_Mine, 1, wxEXPAND, 5 );
 
+	rbtn_character_panel_hidden = new wxRadioButton( character_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_character_panel_hidden->SetValue( true );
+	rbtn_character_panel_hidden->Hide();
+
+	fgSizer4->Add( rbtn_character_panel_hidden, 0, wxALL, 5 );
+
 
 	character_panel->SetSizer( fgSizer4 );
 	character_panel->Layout();
@@ -540,7 +546,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	building_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer5;
-	fgSizer5 = new wxFlexGridSizer( 3, 3, 10, 10 );
+	fgSizer5 = new wxFlexGridSizer( 4, 3, 10, 10 );
 	fgSizer5->SetFlexibleDirection( wxBOTH );
 	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -643,6 +649,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	fgSizer5->Add( type_sizer_Rotate, 1, wxEXPAND, 5 );
 
+	rbtn_building_panel_hidden = new wxRadioButton( building_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_building_panel_hidden->SetValue( true );
+	rbtn_building_panel_hidden->Hide();
+
+	fgSizer5->Add( rbtn_building_panel_hidden, 0, wxALL, 5 );
+
 
 	building_panel->SetSizer( fgSizer5 );
 	building_panel->Layout();
@@ -651,7 +663,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	game_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer6;
-	fgSizer6 = new wxFlexGridSizer( 3, 2, 10, 10 );
+	fgSizer6 = new wxFlexGridSizer( 4, 2, 10, 10 );
 	fgSizer6->SetFlexibleDirection( wxBOTH );
 	fgSizer6->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -696,6 +708,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 
 	fgSizer6->Add( type_sizer_Save, 1, wxEXPAND, 5 );
+
+	rbtn_game_panel_hidden = new wxRadioButton( game_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_game_panel_hidden->SetValue( true );
+	rbtn_game_panel_hidden->Hide();
+
+	fgSizer6->Add( rbtn_game_panel_hidden, 0, wxALL, 5 );
 
 
 	game_panel->SetSizer( fgSizer6 );

@@ -21,6 +21,9 @@ public:
 		const wxString& name = wxASCII_STR(wxPanelNameStr)) : wxPanel(parent, winid, pos, size, style, name)
 	{}
 
+	// Mutual exclusive radio button logic - selects the one btn and diselect the rest
+	void SetType(wxRadioButton * choosen_btn);
+
 	// Takes a step_type and enables the corresponding radio button 
 	void SwitchStep(StepType type);
 
