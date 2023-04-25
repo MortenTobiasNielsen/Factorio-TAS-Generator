@@ -231,10 +231,11 @@ void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry)
 	grid->SetCellValue(row, 3, gridEntry->Amount);
 	grid->SetCellValue(row, 4, gridEntry->Item);
 	grid->SetCellValue(row, 5, gridEntry->BuildingOrientation);
-	grid->SetCellValue(row, 6, gridEntry->DirectionToBuild);
-	grid->SetCellValue(row, 7, gridEntry->BuildingSize);
-	grid->SetCellValue(row, 8, gridEntry->AmountOfBuildings);
-	grid->SetCellValue(row, 9, gridEntry->Comment);
+	grid->SetCellValue(row, 6, gridEntry->Modifiers);
+	grid->SetCellValue(row, 7, gridEntry->DirectionToBuild);
+	grid->SetCellValue(row, 8, gridEntry->BuildingSize);
+	grid->SetCellValue(row, 9, gridEntry->AmountOfBuildings);
+	grid->SetCellValue(row, 10, gridEntry->Comment);
 }
 
 bool StringContainsAny(const wxString& str, const string& chars)

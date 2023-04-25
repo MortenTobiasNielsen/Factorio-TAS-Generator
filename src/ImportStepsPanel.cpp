@@ -76,8 +76,8 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		step.Item = Capitalize(segments[4], true);
 		step.Orientation = Capitalize(segments[5]);
 		step.Direction = Capitalize(segments[6]);
-		step.Size = segments[7] != "" ? stoi(segments[7]) : 0;
-		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 0;
+		step.Size = segments[8] != "" ? stoi(segments[7]) : 0;
+		step.Buildings = segments[9] != "" ? stoi(segments[8]) : 0;
 		step.Comment = segments.size() == step_segment_size || segments.size() == step_segment_size_without_colour ? segments[9] : "";
 		step.Colour = segments.size() == step_segment_size ? segments[10] : "";
 

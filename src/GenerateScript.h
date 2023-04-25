@@ -58,6 +58,14 @@ private:
 	string priority_out;
 	string building;
 
+	struct
+	{
+		bool wait_for = false;
+		bool cancel = false;
+		bool no_order = false;
+		bool walk_towards = false;
+	} modifiers;
+
 	string last_walking_comment;
 
 	void reset();
@@ -139,6 +147,7 @@ private:
 
 	string signature(string step, string action);
 	string Comment(string comment);
+	string Modifiers();
 	string Step(string step, string action, string details, string comment);
 
 	void walk(string step, string action, string x_cord, string y_cord, string comment);

@@ -10,6 +10,7 @@ struct GridEntry
 	wxString Amount;
 	wxString Item;
 	wxString BuildingOrientation;
+	wxString Modifiers;
 	wxString DirectionToBuild;
 	wxString BuildingSize;
 	wxString AmountOfBuildings;

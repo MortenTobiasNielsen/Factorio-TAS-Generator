@@ -931,6 +931,7 @@ void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int
 	to->SetCellValue(toRow, 7, from->GetCellValue(fromRow, 7));
 	to->SetCellValue(toRow, 8, from->GetCellValue(fromRow, 8));
 	to->SetCellValue(toRow, 9, from->GetCellValue(fromRow, 9));
+	to->SetCellValue(toRow, 10, from->GetCellValue(fromRow, 10));
 }
 
 void cMain::OnTemplateChosen(wxCommandEvent& event)
@@ -1868,6 +1869,13 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
+	string m = "";
+	m += modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue() ? "cancel, " : "";
+	m += modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue() ? "no order, " : "";
+	m += modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue() ? "wait for, " : "";
+	m += modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue() ? "walk towards, " : "";
+	stepParameters.Modifiers = m.substr(0, m.size() > 2 ? m.size() - 2 : m.size());
+
 	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;
 
 	return stepParameters;
@@ -1928,6 +1936,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 {
 	GridEntry gridEntry{
 		.Step = stepParameters->Step,
+		.Modifiers = stepParameters->Modifiers,
 		.Comment = stepParameters->Comment,
 	};
 
@@ -2115,10 +2124,11 @@ GridEntry cMain::ExtractGridEntry(wxGrid* grid, const int& row)
 		.Amount = grid->GetCellValue(row, 3),
 		.Item = grid->GetCellValue(row, 4),
 		.BuildingOrientation = grid->GetCellValue(row, 5),
-		.DirectionToBuild = grid->GetCellValue(row, 6),
-		.BuildingSize = grid->GetCellValue(row, 7),
-		.AmountOfBuildings = grid->GetCellValue(row, 8),
-		.Comment = grid->GetCellValue(row, 9)
+		.Modifiers = grid->GetCellValue(row, 6),
+		.DirectionToBuild = grid->GetCellValue(row, 7),
+		.BuildingSize = grid->GetCellValue(row, 8),
+		.AmountOfBuildings = grid->GetCellValue(row, 9),
+		.Comment = grid->GetCellValue(row, 10)
 	};
 
 	return gridEntry;

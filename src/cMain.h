@@ -221,6 +221,7 @@ private:
 	void UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
 
 	void setup_paramters(const int parameters);
+	void SetupModifiers(StepType type);
 
 	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType = true);
 

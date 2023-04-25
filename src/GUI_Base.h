@@ -29,11 +29,11 @@
 #include <wx/panel.h>
 #include <wx/radiobut.h>
 #include <wx/checkbox.h>
-#include <wx/clrpicker.h>
 #include <wx/button.h>
 #include <wx/statline.h>
 #include <wx/grid.h>
 #include <wx/srchctrl.h>
+#include <wx/clrpicker.h>
 #include <wx/valtext.h>
 #include <wx/aui/auibook.h>
 #include <wx/frame.h>
@@ -118,7 +118,11 @@ class GUI_Base : public wxFrame
 		wxCheckBox* check_burner;
 		wxCheckBox* check_lab;
 		wxCheckBox* check_recipe;
-		wxColourPickerCtrl* step_colour_picker;
+		wxPanel* step_modifier_panel;
+		wxCheckBox* modifier_no_order_checkbox;
+		wxCheckBox* modifier_wait_for_checkbox;
+		wxCheckBox* modifier_cancel_checkbox;
+		wxCheckBox* modifier_walk_towards_checkbox;
 		wxAuiNotebook* main_book;
 		wxPanel* template_panel;
 		wxStaticText* label_choose_template;
@@ -144,6 +148,7 @@ class GUI_Base : public wxFrame
 		wxPanel* step_panel;
 		wxSearchCtrl* step_search_ctrl;
 		wxCheckBox* step_search_toggle_updown;
+		wxColourPickerCtrl* step_colour_picker;
 		wxButton* btn_add_step;
 		wxButton* btn_change_step;
 		wxButton* btn_delete_step;
@@ -225,7 +230,6 @@ class GUI_Base : public wxFrame
 		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }
@@ -242,6 +246,7 @@ class GUI_Base : public wxFrame
 		virtual void StepSeachOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void StepSeachOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void StepSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
 		virtual void OnAddStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddStepRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
