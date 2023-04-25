@@ -5026,7 +5026,7 @@
                                     <property name="style"></property>
                                     <property name="subclass">; ; forward_declare</property>
                                     <property name="toolbar_pane">0</property>
-                                    <property name="tooltip">Specifies that this step is part of a block of steps that can be executed in any order.&#x0A;&#x0A;This allows the TAS to optimize the steps execution order.</property>
+                                    <property name="tooltip">Specifies that this step is part of a block of steps that can be executed in any order.&#x0A;&#x0A;This allows the TAS to optimize the steps execution order.&#x0A;&#x0A;This checkbox has a clickhandler to modify multiple selected steps at the same time.</property>
                                     <property name="validator_data_type"></property>
                                     <property name="validator_style">wxFILTER_NONE</property>
                                     <property name="validator_type">wxDefaultValidator</property>
@@ -5034,6 +5034,7 @@
                                     <property name="window_extra_style"></property>
                                     <property name="window_name"></property>
                                     <property name="window_style"></property>
+                                    <event name="OnCheckBox">OnNoOrderChecked</event>
                                 </object>
                             </object>
                             <object class="sizeritem" expanded="1">
@@ -5291,11 +5292,11 @@
                 <property name="window_name"></property>
                 <property name="window_style">wxBORDER_RAISED</property>
                 <event name="OnAuiNotebookPageChanged">OnMainBookPageChanged</event>
-                <object class="auinotebookpage" expanded="0">
+                <object class="auinotebookpage" expanded="1">
                     <property name="bitmap"></property>
                     <property name="label">Templates</property>
                     <property name="select">0</property>
-                    <object class="wxPanel" expanded="0">
+                    <object class="wxPanel" expanded="1">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
                         <property name="RightDockable">1</property>
@@ -5347,7 +5348,7 @@
                         <property name="window_extra_style"></property>
                         <property name="window_name"></property>
                         <property name="window_style">wxTAB_TRAVERSAL</property>
-                        <object class="wxBoxSizer" expanded="0">
+                        <object class="wxBoxSizer" expanded="1">
                             <property name="minimum_size"></property>
                             <property name="name">bSizer5612</property>
                             <property name="orient">wxVERTICAL</property>
@@ -6784,11 +6785,11 @@
                                     </object>
                                 </object>
                             </object>
-                            <object class="sizeritem" expanded="0">
+                            <object class="sizeritem" expanded="1">
                                 <property name="border">5</property>
                                 <property name="flag">wxEXPAND</property>
                                 <property name="proportion">1</property>
-                                <object class="wxBoxSizer" expanded="0">
+                                <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
                                     <property name="name">bSizer502</property>
                                     <property name="orient">wxVERTICAL</property>
@@ -6824,7 +6825,7 @@
                                             <property name="col_label_values">&quot;Step&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Modifiers&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
                                             <property name="col_label_vert_alignment">wxALIGN_CENTER</property>
                                             <property name="cols">11</property>
-                                            <property name="column_sizes">75,49,49,50,150,70,60,70,50,60,140</property>
+                                            <property name="column_sizes">75,49,49,50,150,70,60,70,50,60,139</property>
                                             <property name="context_help"></property>
                                             <property name="context_menu">1</property>
                                             <property name="default_pane">0</property>
@@ -7560,11 +7561,11 @@
                                     </object>
                                 </object>
                             </object>
-                            <object class="sizeritem" expanded="0">
+                            <object class="sizeritem" expanded="1">
                                 <property name="border">5</property>
                                 <property name="flag">wxEXPAND</property>
                                 <property name="proportion">1</property>
-                                <object class="wxBoxSizer" expanded="0">
+                                <object class="wxBoxSizer" expanded="1">
                                     <property name="minimum_size"></property>
                                     <property name="name">step_panel_grid_sizer</property>
                                     <property name="orient">wxVERTICAL</property>
@@ -7600,7 +7601,7 @@
                                             <property name="col_label_values">&quot;Step&quot; &quot;X-cord&quot; &quot;Y-cord&quot; &quot;Amount&quot; &quot;Item&quot; &quot;Orientation&quot; &quot;Modifier&quot; &quot;Direction&quot; &quot;Size&quot; &quot;Buildings&quot; &quot;Comment&quot;</property>
                                             <property name="col_label_vert_alignment">wxALIGN_CENTER</property>
                                             <property name="cols">11</property>
-                                            <property name="column_sizes">75,49,49,58,140,70,70,70,50,60,110</property>
+                                            <property name="column_sizes">75,49,49,58,140,70,80,70,50,60,112</property>
                                             <property name="context_help"></property>
                                             <property name="context_menu">1</property>
                                             <property name="default_pane">0</property>

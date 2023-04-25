@@ -1553,6 +1553,12 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event)
 
 void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType)
 {
+	auto& m = gridEntry->Modifiers;
+	modifier_cancel_checkbox->SetValue(m.find("cancel") != std::string::npos);
+	modifier_no_order_checkbox->SetValue(m.find("no order") != std::string::npos);
+	modifier_wait_for_checkbox->SetValue(m.find("wait for") != std::string::npos);
+	modifier_walk_towards_checkbox->SetValue(m.find("walk towards") != std::string::npos);
+
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 
 	string OrientationEnum = "";
@@ -2538,4 +2544,49 @@ void cMain::OnMainBookPageChanged(wxAuiNotebookEvent& event)
 		import_steps_text_import->SetFocus();
 	}
 	event.Skip();
+}
+
+void cMain::OnNoOrderChecked(wxCommandEvent& event)
+{
+	event.Skip();
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (rows.size() < 2) return;
+
+	for (int row : rows)
+	{
+		StepType e = StepGridData.at(row).StepEnum;
+		if (e == e_build || e == e_take || e == e_put || e == e_recipe)
+			continue;
+		else
+			return;
+	}
+	if (event.IsChecked())
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			if (step.Modifiers.find("no order") == std::string::npos)
+			{
+				step.Modifiers = step.Modifiers.size() == 0 ? "no order" : step.Modifiers + ", no order";
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
+	else
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			if (step.Modifiers.find("no order") != std::string::npos)
+			{
+				auto size = step.Modifiers.size();
+				auto index = step.Modifiers.find("no order, ");
+				step.Modifiers = index != std::string::npos ?
+					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + 10, size - index - 10) :
+					step.Modifiers.substr(0, size - 8);
+				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
 }

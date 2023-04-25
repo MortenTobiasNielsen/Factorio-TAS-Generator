@@ -780,7 +780,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	modifier_no_order_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("No order"), wxDefaultPosition, wxDefaultSize, 0 );
 	modifier_no_order_checkbox->Enable( false );
-	modifier_no_order_checkbox->SetToolTip( wxT("Specifies that this step is part of a block of steps that can be executed in any order.\n\nThis allows the TAS to optimize the steps execution order.") );
+	modifier_no_order_checkbox->SetToolTip( wxT("Specifies that this step is part of a block of steps that can be executed in any order.\n\nThis allows the TAS to optimize the steps execution order.\n\nThis checkbox has a clickhandler to modify multiple selected steps at the same time.") );
 
 	step_modifier_flex->Add( modifier_no_order_checkbox, 0, wxALL, 5 );
 
@@ -982,7 +982,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template->SetColSize( 7, 70 );
 	grid_template->SetColSize( 8, 50 );
 	grid_template->SetColSize( 9, 60 );
-	grid_template->SetColSize( 10, 140 );
+	grid_template->SetColSize( 10, 139 );
 	grid_template->EnableDragColMove( false );
 	grid_template->EnableDragColSize( true );
 	grid_template->SetColLabelValue( 0, wxT("Step") );
@@ -1093,11 +1093,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_steps->SetColSize( 3, 58 );
 	grid_steps->SetColSize( 4, 140 );
 	grid_steps->SetColSize( 5, 70 );
-	grid_steps->SetColSize( 6, 70 );
+	grid_steps->SetColSize( 6, 80 );
 	grid_steps->SetColSize( 7, 70 );
 	grid_steps->SetColSize( 8, 50 );
 	grid_steps->SetColSize( 9, 60 );
-	grid_steps->SetColSize( 10, 110 );
+	grid_steps->SetColSize( 10, 112 );
 	grid_steps->EnableDragColMove( false );
 	grid_steps->EnableDragColSize( true );
 	grid_steps->SetColLabelValue( 0, wxT("Step") );
@@ -1301,6 +1301,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_pause->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
 	rbtn_stop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
 	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
+	modifier_no_order_checkbox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderChecked ), NULL, this );
 	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
@@ -1367,6 +1368,7 @@ GUI_Base::~GUI_Base()
 	rbtn_pause->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
 	rbtn_stop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
 	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
+	modifier_no_order_checkbox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderChecked ), NULL, this );
 	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );

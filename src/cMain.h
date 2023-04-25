@@ -118,6 +118,9 @@ protected:
 	void OnPauseChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
 
+	// Modifiers
+	void OnNoOrderChecked(wxCommandEvent& event);
+
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);
 	void OnAddStepRightClicked(wxMouseEvent & event);
