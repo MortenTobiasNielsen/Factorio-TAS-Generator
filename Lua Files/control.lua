@@ -120,9 +120,10 @@ local function msg(msg)
 end
 
 --Print debug message about what the tas is doing
-local function debug(msg)
+local function debug(msg, supress_info)
 	if debug_state then
 		player.print(msg)
+        if not supress_info then
         player.print(string.format(
             "Seconds: %s, tick: %s, player position [%d, %d]",
             game.tick / 60,
@@ -131,6 +132,7 @@ local function debug(msg)
             player.position.y
 	))
 	end
+end
 end
 
 --Print warning in case of errors in tas programming
