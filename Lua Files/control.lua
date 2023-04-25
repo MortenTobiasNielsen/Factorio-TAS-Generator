@@ -918,6 +918,13 @@ local function recipe()
 		return false;
 	end
 
+	if global.wait_for_recipe and player_selection.crafting_progress ~= 0 then
+		warning(string.format("Step: %s, Action: %s, Step: %d - Set recipe %s: The entity is still crafting.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+		step_reached = step
+		return false
+	end
+	global.wait_for_recipe = nil
+
 	local items_returned = player_selection.set_recipe(item)
 
 	for name, count_ in pairs (items_returned) do
@@ -1062,6 +1069,7 @@ local function doStep(current_step)
 		count = current_step[3]
 		item = current_step[4]
 
+		global.wait_for_recipe = current_step.wait_for
 		global.cancel = current_step.cancel
 		return craft()
 
@@ -1122,7 +1130,7 @@ local function doStep(current_step)
         task = current_step[1]
 		target_position = current_step[3]
 		item = current_step[4]
-
+		global.wait_for_recipe = current_step.wait_for
 		return recipe()
 
 	elseif current_step[2] == "limit" then
