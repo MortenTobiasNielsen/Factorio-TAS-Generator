@@ -924,8 +924,8 @@ local function tech()
 		return true
 	end
 
-	player.force.add_research(item)
-	msg(string.format("Research: %s added", item))
+	local was_addded = player.force.add_research(item)
+	msg(string.format("Research: %s %s added", item, not was_addded and "not"))
 	return true
 end
 
