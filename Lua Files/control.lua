@@ -124,15 +124,15 @@ local function debug(msg, supress_info)
 	if debug_state then
 		player.print(msg)
         if not supress_info then
-        player.print(string.format(
-            "Seconds: %s, tick: %s, player position [%d, %d]",
-            game.tick / 60,
-            game.tick,
-            player.position.x,
-            player.position.y
-	))
+			player.print(string.format(
+				"Seconds: %s, tick: %s, player position [%d, %d]",
+				game.tick / 60,
+				game.tick,
+				player.position.x,
+				player.position.y
+			))
+		end
 	end
-end
 end
 
 --Print warning in case of errors in tas programming
@@ -554,7 +554,7 @@ local function build()
 	if (item ~= "rail") then
 		if item_is_tile(item) then
 			if tile_is_in_reach() then
-				if item == "stone-brick" then 
+				if item == "stone-brick" then
 					player.surface.set_tiles({{position = target_position, name = "stone-path"}})
 				elseif (item == "hazard-concrete") or (item == "refined-hazard-concrete") then
 					player.surface.set_tiles({{position = target_position, name = item.."-left"}})
@@ -1184,6 +1184,54 @@ local function doStep(current_step)
 	end
 end
 
+local original_warning = warning
+local function load_StepBlock()
+	if global.step_block or not steps[step].no_order then return end
+	global.step_block = {}
+	debug("entering step block")
+	warning = function ()
+		--override warning with a function that does nothing
+	end
+	for i = step, #steps do
+		local _step = steps[i]
+		if not _step.no_order then
+			break
+		else
+			table.insert(global.step_block, i)
+		end
+	end
+	global.step_block_info = {
+		total_steps = #global.step_block,
+		start_tick = game.tick
+	}
+end
+
+local function execute_StepBlock()
+	local _success, _step_index, _step
+	for i = 1, #global.step_block do
+		_step_index = global.step_block[i]
+		_step = steps[_step_index]
+		_success = doStep(_step)
+		if _success then
+			debug(string.format("Executed %d - Type: %s, Step: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index), true)
+			table.remove(global.step_block, i)
+			break
+		end
+	end
+	if #global.step_block < 1 then
+		change_step(global.step_block_info.total_steps)
+		global.step_block = nil
+		global.step_block_info = nil
+		warning = original_warning
+		debug("Ending step block")
+	elseif (game.tick - global.step_block_info.start_tick) > (25 * global.step_block_info.total_steps) then
+		debug_state = true
+		warning = original_warning
+		warning("Catastrofic execution of [color=red]No order[/color] step block. Exceeeded ".. (25 * global.step_block_info.total_steps) .. " ticks.")
+		run = false
+	end
+end
+
 local function handle_pretick()
 	--pretick sets step directly so it doesn't raise too many events
 	while run do
@@ -1316,14 +1364,14 @@ local function handle_ontick()
 				change_step(1)
 				mining = 0
 				ticks_mining = 0
-		end
+			end
 
 			mining = mining + 1
 			if mining > 5 then
 				if player.character_mining_progress == 0 then
 					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 					debug_state = false
-	else
+				else
 					mining = 0
 				end
 			end
@@ -1367,8 +1415,12 @@ local function handle_tick()
 	if not run then --early end from pretick
 		return
 	end
-
-	handle_ontick()
+	load_StepBlock()
+	if global.step_block then
+		execute_StepBlock()
+	else
+		handle_ontick()
+	end
 
 	handle_posttick()
 end
