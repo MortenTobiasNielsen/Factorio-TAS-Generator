@@ -1210,8 +1210,9 @@ local function handle_pretick()
 			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 			change_step(1)
 			debug_state = false
-		elseif(steps[step][2] == "walk" and walking.walking == false and idle < 1) then
+		elseif(steps[step][2] == "walk" and ( walking.walking == false or global.walk_towards_state) and idle < 1) then
 			update_destination_position(steps[step][3][1], steps[step][3][2])
+			global.walk_towards_state = steps[step].walk_towards
 
 			find_walking_pattern()
 			walking = walk()
@@ -1241,6 +1242,7 @@ local function handle_ontick()
 
 				if steps[step][2] == "walk" then
 					update_destination_position(steps[step][3][1], steps[step][3][2])
+					global.walk_towards_state = steps[step].walk_towards
 
 					find_walking_pattern()
 					walking = walk()
@@ -1252,6 +1254,7 @@ local function handle_ontick()
 		elseif steps[step][2] == "walk" then
 			if steps[step].comment then msg(steps[step].comment) end
 			update_destination_position(steps[step][3][1], steps[step][3][2])
+			global.walk_towards_state = steps[step].walk_towards
 			
 			find_walking_pattern()
 			walking = walk()
@@ -1297,7 +1300,35 @@ local function handle_ontick()
 			change_step(1)
 		end
 	else
-		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
+		if global.walk_towards_state and steps[step][2] == "mine" then
+			if duration and duration == 0 and steps[step].comment then msg(steps[step].comment) end
+			
+			player.update_selected_entity(steps[step][3])
+
+			player.mining_state = {mining = true, position = steps[step][3]}
+
+			duration = steps[step][4]
+
+			ticks_mining = ticks_mining + 1
+
+			if ticks_mining >= duration then
+				player.mining_state = {mining = false, position = steps[step][3]}
+				change_step(1)
+				mining = 0
+				ticks_mining = 0
+		end
+
+			mining = mining + 1
+			if mining > 5 then
+				if player.character_mining_progress == 0 then
+					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					debug_state = false
+	else
+					mining = 0
+				end
+			end
+		elseif steps[step][2] ~= "walk" and steps[step][2] ~= "idle" and steps[step][2] ~= "mine" then
+			
 			if doStep(steps[step]) then
 				-- Do step while walking
 				if steps[step].comment then msg(steps[step].comment) end
@@ -1386,6 +1417,7 @@ local function backwards_compatibility()
 			end
 		elseif steps[step][2] == "walk" then
 			update_destination_position(steps[step][3][1], steps[step][3][2])
+			global.walk_towards_state = steps[step].walk_towards
 
 			find_walking_pattern()
 			walking = walk()
@@ -1559,6 +1591,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	if run and steps[step] and steps[step][2] and steps[step][2] == "walk" then
 		update_destination_position(steps[step][3][1], steps[step][3][2])
+		global.walk_towards_state = steps[step].walk_towards
 
 		find_walking_pattern()
 		walking = walk()
