@@ -373,6 +373,18 @@ local function craft()
 		return false;
 	end
 
+	if global.cancel and player.crafting_queue_size > 0 then
+		player.cancel_crafting{ index = 1, count = 1000000}
+		return false
+	elseif global.wait_for_recipe and player.crafting_queue_size > 0 then
+		warning(string.format("Step: %s, Action: %s, Step: %d - Craft [item=%s]: It is not possible to craft as the queue is not empty", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+		step_reached = step
+		return false
+	else
+		global.wait_for_recipe = nil
+	end
+	global.cancel = nil
+
 	amount = player.get_craftable_count(item)
 
 	if amount > 0 then
@@ -917,6 +929,13 @@ local function recipe()
 end
 
 local function tech()
+	if global.cancel and player.force.current_research then
+		player.force.cancel_current_research()
+		return false
+	else
+		global.cancel = nil
+	end
+
 	if steps[step].comment and steps[step].comment == "Cancel" and player.force.current_research then
 		player.force.research_queue = {}
 		player.force.add_research(item)
@@ -1043,6 +1062,7 @@ local function doStep(current_step)
 		count = current_step[3]
 		item = current_step[4]
 
+		global.cancel = current_step.cancel
 		return craft()
 
 	elseif current_step[2] == "cancel crafting" then
@@ -1094,7 +1114,7 @@ local function doStep(current_step)
         task_category = "Tech"
         task = current_step[1]
 		item = current_step[3]
-
+		global.cancel = current_step.cancel
 		return tech()
 
 	elseif current_step[2] == "recipe" then
