@@ -3,10 +3,12 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <set>
 
 using std::map;
 using std::string;
 using std::vector;
+using std::set;
 
 /// <summary>
 /// Enumaration of all step types
@@ -37,3 +39,32 @@ static const map<string, StepType> MapStepNameToStepType = {{"Stop", e_stop}, {"
 	{"Walk", e_walk}, {"Tech", e_tech}, {"Drop", e_drop}, {"Pick up", e_pick_up}, {"Idle", e_idle}, {"Cancel", e_cancel_crafting}};
 
 StepType ToStepType(string step);
+
+static struct ModifierTypeSets{
+	set<StepType> walk_towards{
+		e_walk,
+	};
+	set<StepType> no_order{
+		e_build,
+		e_craft,
+		e_recipe,
+		e_limit,
+		e_filter,
+		e_rotate,
+		e_priority,
+		e_put,
+		e_take,
+		e_launch,
+		e_tech,
+		e_drop,
+		e_cancel_crafting,
+	};
+	set<StepType> cancel{
+		e_tech,
+		e_craft,
+	};
+	set<StepType> wait_for{
+		e_recipe,
+		e_craft,
+	};
+} modifier_types;

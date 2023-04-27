@@ -2554,8 +2554,8 @@ void cMain::OnNoOrderChecked(wxCommandEvent& event)
 
 	for (int row : rows)
 	{
-		StepType e = StepGridData.at(row).StepEnum;
-		if (e == e_build || e == e_take || e == e_put || e == e_recipe)
+		StepType e = StepGridData.at(row).StepEnum; 
+		if (modifier_types.no_order.contains(e))
 			continue;
 		else
 			return;

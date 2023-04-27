@@ -118,10 +118,10 @@ void cMain::setup_paramters(const int parameters)
 
 void cMain::SetupModifiers(StepType type)
 {
-	modifier_walk_towards_checkbox->Enable(type == e_walk);
-	modifier_no_order_checkbox->Enable(type == e_take || type == e_put || type == e_build || type == e_recipe);
-	modifier_cancel_checkbox->Enable(type == e_tech || type == e_craft);
-	modifier_wait_for_checkbox->Enable(type == e_recipe || type == e_craft);
+	modifier_walk_towards_checkbox->Enable(modifier_types.walk_towards.contains(type));
+	modifier_no_order_checkbox->Enable(modifier_types.no_order.contains(type));
+	modifier_cancel_checkbox->Enable(modifier_types.cancel.contains(type));
+	modifier_wait_for_checkbox->Enable(modifier_types.wait_for.contains(type));
 }
 
 // Finds the current radio button that is choosen, 
