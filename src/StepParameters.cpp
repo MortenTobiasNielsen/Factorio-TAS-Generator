@@ -51,7 +51,10 @@ string StepParameters::ToString()
 {
 	switch (StepEnum)
 	{
-
+		case e_never_idle:
+		case e_keep_crafting:
+		case e_keep_on_path:
+		case e_keep_walking:
 		case e_pause:
 		case e_save:
 			return Step + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";

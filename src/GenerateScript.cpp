@@ -323,6 +323,19 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_idle:
 				idle(currentStep, amount, comment);
 				break;
+
+			case e_never_idle:
+				never_idle(currentStep, comment);
+				break;
+			case e_keep_crafting:
+				keep_crafting(currentStep, comment);
+				break;
+			case e_keep_on_path:
+				keep_on_path(currentStep, comment);
+				break;
+			case e_keep_walking:
+				keep_walking(currentStep, comment);
+				break;
 		}
 	}
 
@@ -896,6 +909,30 @@ void GenerateScript::speed(string step, string speed, string comment)
 void GenerateScript::pause(string step, string comment)
 {
 	step_list += Step(step, "1", "\"pause\"", comment);
+	total_steps += 1;
+}
+
+void GenerateScript::never_idle(string step, string comment)
+{
+	step_list += Step(step, "1", "\"never idle\"", comment);
+	total_steps += 1;
+}
+
+void GenerateScript::keep_walking(string step, string comment)
+{
+	step_list += Step(step, "1", "\"keep walking\"", comment);
+	total_steps += 1;
+}
+
+void GenerateScript::keep_on_path(string step, string comment) 
+{
+	step_list += Step(step, "1", "\"keep on path\"", comment);
+	total_steps += 1;
+}
+
+void GenerateScript::keep_crafting(string step, string comment) 
+{
+	step_list += Step(step, "1", "\"keep crafting\"", comment);
 	total_steps += 1;
 }
 

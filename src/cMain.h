@@ -117,6 +117,10 @@ protected:
 	void OnDropChosen(wxCommandEvent& event);
 	void OnPauseChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
+	void OnNeverIdleChosen(wxCommandEvent& event);
+	void OnKeepWalkingChosen(wxCommandEvent& event);
+	void OnKeepOnPathChosen(wxCommandEvent& event);
+	void OnKeepCraftingChosen(wxCommandEvent& event);
 
 	// Modifiers
 	void OnNoOrderClicked(wxCommandEvent& event);

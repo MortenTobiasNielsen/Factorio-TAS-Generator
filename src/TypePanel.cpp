@@ -35,7 +35,11 @@ void TypePanel::SetType(wxRadioButton * choosen_btn)
 		parent->rbtn_launch,
 		parent->rbtn_save,
 		parent->rbtn_stop,
-		parent->rbtn_cancel_crafting
+		parent->rbtn_cancel_crafting,
+		parent->rbtn_never_idle,
+		parent->rbtn_keep_walking,
+		parent->rbtn_keep_crafting,
+		parent->rbtn_keep_on_path,
 	};
 	parent->rbtn_character_panel_hidden->SetValue(true);
 	parent->rbtn_building_panel_hidden->SetValue(true);
@@ -92,6 +96,14 @@ void TypePanel::SwitchStep(StepType type)
 		case e_stop: SetType(parent->rbtn_stop);
 			break;
 		case e_cancel_crafting: SetType(parent->rbtn_cancel_crafting);
+			break;
+		case e_never_idle: SetType(parent->rbtn_never_idle);
+			break;
+		case e_keep_crafting: SetType(parent->rbtn_keep_crafting);
+			break;
+		case e_keep_on_path: SetType(parent->rbtn_keep_on_path);
+			break;
+		case e_keep_walking: SetType(parent->rbtn_keep_walking);
 			break;
 		default:
 			// ERROR: You have done something wrong
@@ -193,6 +205,18 @@ string cMain::ExtractStep()
 
 	if (rbtn_cancel_crafting->GetValue())
 		return StepNames[e_cancel_crafting];
+
+	if (rbtn_never_idle->GetValue())
+		return StepNames[e_never_idle];
+
+	if (rbtn_keep_crafting->GetValue())
+		return StepNames[e_keep_crafting];
+
+	if (rbtn_keep_on_path->GetValue())
+		return StepNames[e_keep_on_path];
+
+	if (rbtn_keep_walking->GetValue())
+		return StepNames[e_keep_walking];
 
 	return "not found";
 }
@@ -440,6 +464,38 @@ void cMain::OnGameSpeedChosen(wxCommandEvent& event)
 	type_panel->SetType(rbtn_game_speed);
 	setup_paramters(parameter_choices.game_speed);
 	SetupModifiers(e_game_speed);
+	event.Skip();
+}
+
+void cMain::OnNeverIdleChosen(wxCommandEvent& event)
+{
+	type_panel->SetType(rbtn_never_idle);
+	setup_paramters(parameter_choices.never_idle);
+	SetupModifiers(e_never_idle);
+	event.Skip();
+}
+
+void cMain::OnKeepWalkingChosen(wxCommandEvent& event)
+{
+	type_panel->SetType(rbtn_keep_walking);
+	setup_paramters(parameter_choices.keep_walking);
+	SetupModifiers(e_keep_walking);
+	event.Skip();
+}
+
+void cMain::OnKeepOnPathChosen(wxCommandEvent& event)
+{
+	type_panel->SetType(rbtn_keep_on_path);
+	setup_paramters(parameter_choices.keep_on_path);
+	SetupModifiers(e_keep_on_path);
+	event.Skip();
+}
+
+void cMain::OnKeepCraftingChosen(wxCommandEvent& event)
+{
+	type_panel->SetType(rbtn_keep_crafting);
+	setup_paramters(parameter_choices.keep_crafting);
+	SetupModifiers(e_keep_crafting);
 	event.Skip();
 }
 #pragma endregion
