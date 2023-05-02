@@ -165,11 +165,27 @@ local function end_use_all_ticks_warning_mode()
 	end
 end
 
+local warnings = {
+	never_idle = "never idle",
+	keep_walking = "keep walking",
+	keep_on_path = "keep on path",
+	keep_crafting = "keep crafting",
+}
+
+local function end_state_warning_mode(warning, extra)
+	if debug_state and global[warning] then
+		game.print(
+			{"step-warning."..warning, steps[global[warning].step][1][1], game.tick - global[warning].start, extra}
+		)
+		global[warning] = nil
+	end
+end
+
 ---@param by number
 local function change_step(by)
 	local _task = 0
 	if steps and steps[step] and steps[step][1][1] then
-		_task = steps[step][1][1] 
+		_task = steps[step][1][1]
 	end
 	step = step + by
 	script.raise_event(tas_step_change, {
@@ -1234,6 +1250,7 @@ end
 
 local function handle_pretick()
 	--pretick sets step directly so it doesn't raise too many events
+	global.state = global.state or {}
 	while run do
 		if steps[step] == nil then
 			debug_state = false
@@ -1265,6 +1282,18 @@ local function handle_pretick()
 			find_walking_pattern()
 			walking = walk()
 			change_step(1)
+		elseif steps[step][2] == warnings.never_idle then
+			global.state.never_idle = not global.state.never_idle
+			step = step + 1
+		elseif steps[step][2] == warnings.keep_walking then
+			global.state.keep_walking = not global.state.keep_walking
+			step = step + 1
+		elseif steps[step][2] == warnings.keep_on_path then
+			global.state.keep_on_path = not global.state.keep_on_path
+			step = step + 1
+		elseif steps[step][2] == warnings.keep_crafting then
+			global.state.keep_crafting = not global.state.keep_crafting
+			step = step + 1
 		else
 			return --no more to do, break loop
 		end
@@ -1398,7 +1427,43 @@ local function handle_posttick()
 		queued_save = nil
 	end
 
-	if walking.walking or mining~=0 or pickup_ticks~=0 or idle~=0 then
+	do -- check warning states
+		if global.state.keep_crafting then
+			if player.crafting_queue_size > 0 then
+				end_state_warning_mode(warnings.keep_crafting)
+			else
+				global[warnings.keep_crafting] = global[warnings.keep_crafting] or {step = step, start = game.tick}
+			end
+		end
+
+		if global.state.keep_on_path then
+			if player.character_running_speed > 0.16 then -- 0.15 is default
+				end_state_warning_mode(warnings.keep_on_path)
+			else
+				global[warnings.keep_on_path] = global[warnings.keep_on_path] or {step = step, start = game.tick}
+			end
+		end
+
+		if global.state.keep_walking then
+			if walking.walking or mining ~= 0 or idle ~= 0 then
+				end_state_warning_mode(warnings.keep_walking)
+			else
+				global[warnings.keep_walking] = global[warnings.keep_walking] or {step = step, start = game.tick}
+			end
+		end
+
+		global.last_step = global.last_step or 1
+		if global.state.never_idle and not global.step_block then
+			if step ~= global.last_step  then
+				end_state_warning_mode(warnings.never_idle)
+			else
+				global[warnings.never_idle] = global[warnings.never_idle] or {step = step, start = game.tick}
+			end
+		end
+		global.last_step = step
+	end
+
+	if walking.walking or mining~=0 or idle~=0 or pickup_ticks~=0 then
 		-- we wait to finish the previous step before we end the run
 	elseif steps[step] == nil or steps[step][1] == "break" then
 		msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
@@ -1730,10 +1795,10 @@ local function create_tas_global_state()
 		pos_pos = false,
 		pos_neg = false,
 		neg_pos = false,
- 		neg_neg = false,
- 		compatibility_mode = false,
- 		keep_x = false,
- 		keep_y = false,
+		neg_neg = false,
+		compatibility_mode = false,
+		keep_x = false,
+		keep_y = false,
 		diagonal = false,
 		never_stop = false,
 		use_all_ticks = false,
