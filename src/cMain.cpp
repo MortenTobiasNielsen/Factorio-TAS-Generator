@@ -1553,11 +1553,11 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event)
 
 void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType)
 {
-	auto& m = gridEntry->Modifiers;
-	modifier_cancel_checkbox->SetValue(m.find("cancel") != std::string::npos);
-	modifier_no_order_checkbox->SetValue(m.find("no order") != std::string::npos);
-	modifier_wait_for_checkbox->SetValue(m.find("wait for") != std::string::npos);
-	modifier_walk_towards_checkbox->SetValue(m.find("walk towards") != std::string::npos);
+	auto& modifiers = gridEntry->Modifiers;
+	modifier_cancel_checkbox->SetValue(modifiers.find("cancel") != std::string::npos);
+	modifier_no_order_checkbox->SetValue(modifiers.find("no order") != std::string::npos);
+	modifier_wait_for_checkbox->SetValue(modifiers.find("wait for") != std::string::npos);
+	modifier_walk_towards_checkbox->SetValue(modifiers.find("walk towards") != std::string::npos);
 
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 
@@ -1875,12 +1875,12 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
-	string m = "";
-	m += modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue() ? "cancel, " : "";
-	m += modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue() ? "no order, " : "";
-	m += modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue() ? "wait for, " : "";
-	m += modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue() ? "walk towards, " : "";
-	stepParameters.Modifiers = m.substr(0, m.size() > 2 ? m.size() - 2 : m.size());
+	string modifiers = "";
+	modifiers += modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue() ? "cancel, " : "";
+	modifiers += modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue() ? "no order, " : "";
+	modifiers += modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue() ? "wait for, " : "";
+	modifiers += modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue() ? "walk towards, " : "";
+	stepParameters.Modifiers = modifiers.size() > 2 ? modifiers.substr(0,  modifiers.size() - 2) : modifiers;
 
 	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;
 
