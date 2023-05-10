@@ -1258,7 +1258,7 @@ local function handle_pretick()
 			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 			change_step(1)
 			debug_state = false
-		elseif(steps[step][2] == "walk" and ( walking.walking == false or global.walk_towards_state) and idle < 1) then
+		elseif(steps[step][2] == "walk" and (walking.walking == false or global.walk_towards_state) and idle < 1) then
 			update_destination_position(steps[step][3][1], steps[step][3][2])
 			global.walk_towards_state = steps[step].walk_towards
 
