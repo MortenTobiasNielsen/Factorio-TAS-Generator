@@ -852,7 +852,7 @@ void GenerateScript::mining(string step, string x_cord, string y_cord, string du
 	// Mine the coordinates without checking distance if the user have added Override in the comment - this is mostly useful for removing wreckage. 
 	if (comment == "Override")
 	{
-		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, comment);
+		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, "");
 		total_steps += 1;
 		PaintIntermediateWalk(step, false);
 		return;
@@ -1071,7 +1071,7 @@ void GenerateScript::take(string step, string action, string x_cord, string y_co
 	if (comment == "Override")
 	{
 		item = check_item_name(item);
-		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, comment);
+		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, "");
 		total_steps += 1;
 		PaintIntermediateWalk(step, false);
 		return; 
@@ -1109,7 +1109,7 @@ void GenerateScript::put(string step, string action, string x_cord, string y_cor
 	if (comment == "Override")
 	{
 		item = check_item_name(item);
-		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, comment);
+		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, "");
 		total_steps += 1;
 		PaintIntermediateWalk(step, false);
 		return;
