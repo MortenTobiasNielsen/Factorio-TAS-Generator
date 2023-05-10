@@ -2577,13 +2577,15 @@ void cMain::OnNoOrderChecked(wxCommandEvent& event)
 		for (int row : rows)
 		{
 			auto& step = StepGridData.at(row);
+			const int size_no_order = sizeof "no order" - 1;
+			const int size_no_order_comma = sizeof "no order, " - 1;
 			if (step.Modifiers.find("no order") != std::string::npos)
 			{
 				auto size = step.Modifiers.size();
 				auto index = step.Modifiers.find("no order, ");
 				step.Modifiers = index != std::string::npos ?
-					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + 10, size - index - 10) :
-					step.Modifiers.substr(0, size - 8);
+					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_no_order_comma, size - index - size_no_order_comma) :
+					step.Modifiers.substr(0, size - size_no_order);
 				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
 				grid_steps->SetCellValue(row, 6, step.Modifiers);
 			}
