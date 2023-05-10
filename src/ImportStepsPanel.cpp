@@ -68,18 +68,21 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		}
 
 		StepParameters step(invalidX, 0);
+
+		int size = segments.size();
+		if (size < 1) continue;
 		
 		step.Step = Capitalize(segments[0]);
-		step.OriginalX = step.X = segments[1] != "" ? stod(segments[1]) : 0;
-		step.OriginalY = step.Y = segments[2] != "" ? stod(segments[2]) : 0;
-		step.Amount = segments.size() >= 3 && segments[3] != "" ? to_string(stoi(segments[3])) : "";
-		step.Item = segments.size() >= 4 && segments[4] != "" ? Capitalize(segments[4], true) : "";
-		step.Orientation = segments.size() >= 5 && segments[5] != "" ? Capitalize(segments[5]) : "";
-		step.Direction = segments.size() >= 6 && segments[6] != "" ? Capitalize(segments[6]) : "";
-		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
-		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
-		step.Comment = segments.size() == step_segment_size || segments.size() == step_segment_size_without_colour ? segments[9] : "";
-		step.Colour = segments.size() == step_segment_size ? segments[10] : "";
+		step.OriginalX = step.X = size >= 1 && segments[1] != "" ? stod(segments[1]) : 0;
+		step.OriginalY = step.Y = size >= 2 && segments[2] != "" ? stod(segments[2]) : 0;
+		step.Amount = size >= 3 && segments[3] != "" ? to_string(stoi(segments[3])) : "";
+		step.Item = size >= 4 && segments[4] != "" ? Capitalize(segments[4], true) : "";
+		step.Orientation = size >= 5 && segments[5] != "" ? Capitalize(segments[5]) : "";
+		step.Direction = size >= 6 && segments[6] != "" ? Capitalize(segments[6]) : "";
+		step.Size = size >= 7 && segments[7] != "" ? stoi(segments[7]) : 1;
+		step.Buildings = size >= 8 && segments[8] != "" ? stoi(segments[8]) : 1;
+		step.Comment = size >= 9 ? segments[9] : "";
+		step.Colour = size >= 10 ? segments[10] : "";
 
 		if (step.Step == "Start")
 		{
