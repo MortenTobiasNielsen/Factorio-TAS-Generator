@@ -838,6 +838,24 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 	}
 	wxColour colour = grid_steps->GetCellBackgroundColour(rowsBlocks[0].GetTopRow(), 1); //retrieve the colour of the first selected element
 	step_colour_picker->SetColour(colour);
+
+	if (rowsBlocks.size() < 2 && rowsBlocks[0].GetTopRow() == rowsBlocks[0].GetBottomRow())
+	{
+		modifier_no_order_checkbox->SetForegroundColour("Black");
+		SetupModifiers(ToStepType(ExtractStep()));
+		modifier_no_order_checkbox->GenerateMouseLeave();
+	}
+	else if (modifier_no_order_checkbox->Enable())
+	{
+		modifier_no_order_checkbox->SetForegroundColour("Red");
+		modifier_no_order_checkbox->GenerateMouseLeave();
+	}
+	else
+	{
+		modifier_no_order_checkbox->SetForegroundColour("Blue");
+		modifier_no_order_checkbox->GenerateMouseLeave();
+	}
+
 	event.Skip();
 }
 
@@ -2558,7 +2576,11 @@ void cMain::OnNoOrderChecked(wxCommandEvent& event)
 		if (modifier_types.no_order.contains(e))
 			continue;
 		else
+		{
+			wxMessageBox(std::format("Step {} is unable to assigned the no-order modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
+				"One or more steps can't be assigned no-order modifier");
 			return;
+		}
 	}
 	if (event.IsChecked())
 	{
