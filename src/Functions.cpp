@@ -176,8 +176,9 @@ void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, Ste
 	{
 		if (stepParameters == buildings[i])
 		{
-			string capitalized = Capitalize(stepParameters.Comment);
-			if (capitalized == "Split")
+			if (stepParameters.Modifiers.find("split") != std::string::npos ||
+				stepParameters.Modifiers.find("skip") != std::string::npos ||
+				Capitalize(stepParameters.Comment) == "Split")
 			{
 				return;
 			}

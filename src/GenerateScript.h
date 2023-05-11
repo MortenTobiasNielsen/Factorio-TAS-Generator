@@ -64,6 +64,9 @@ private:
 		bool cancel = false;
 		bool no_order = false;
 		bool walk_towards = false;
+		bool skip = false;
+		bool force = false;
+		bool split = false;
 	} modifiers;
 
 	string last_walking_comment;
