@@ -163,6 +163,14 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	shortcut_cancel_crafting = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Cancel Crafting") ) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_cancel_crafting );
 
+	wxMenuItem* shortcut_undo;
+	shortcut_undo = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Undo") ) + wxT('\t') + wxT("Ctrl+Z"), wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_undo );
+
+	wxMenuItem* shortcut_redo;
+	shortcut_redo = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Redo") ) + wxT('\t') + wxT("Ctrl+Y"), wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_redo );
+
 	main_menubar->Append( menu_shortcuts, wxT("Shortcuts") );
 
 	menu_goals = new wxMenu();
@@ -1355,6 +1363,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveUpMenuSelected ), this, shortcut_move_up->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveDownMenuSelected ), this, shortcut_move_down->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingMenuSelected ), this, shortcut_cancel_crafting->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnUndoMenuSelected ), this, shortcut_undo->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnRedoMenuSelected ), this, shortcut_redo->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuSteelAxeClicked ), this, goal_steelaxe->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuGOTLAPClicked ), this, goal_GOTLAP->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAnyPercentClicked ), this, goal_any_percent->GetId());

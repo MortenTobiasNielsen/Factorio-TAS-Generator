@@ -214,6 +214,8 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveUpMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUndoMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRedoMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuSteelAxeClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuGOTLAPClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAnyPercentClicked( wxCommandEvent& event ) { event.Skip(); }
