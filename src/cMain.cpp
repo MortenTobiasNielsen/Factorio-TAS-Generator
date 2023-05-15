@@ -810,25 +810,25 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 	return_list.reserve(steps.size());
 	return_list.push_back({steps[0], StepGridData.at(steps[0])});
 
-	vector<pair<int, int>> blocks{
-		{steps[0], 1}
-	};
-	pair<int, int>* current_block = &blocks[0];
+	
+	pair<int, int> current_block = {steps[0], 1};
+	vector<pair<int, int>> blocks{};
 	blocks.reserve(steps.size());
 	for (int i = 1; i < steps.size(); i++)
 	{
 		return_list.push_back({steps[i], StepGridData.at(steps[i])});
-
-		if (steps[i] == current_block->first + current_block->second + 1)
+		int block_size = current_block.first + current_block.second;
+		if (steps[i] == block_size)
 		{
-			current_block->second += 1;
+			current_block.second = current_block.second + 1;
 		}
 		else
 		{
-			blocks.push_back({steps[i], 1});
-			current_block++;
+			blocks.push_back(current_block);
+			current_block = {steps[i], 1};
 		}
 	}
+	blocks.push_back(current_block);
 
 	for (auto it = blocks.rbegin(); it != blocks.rend(); ++it)
 	{

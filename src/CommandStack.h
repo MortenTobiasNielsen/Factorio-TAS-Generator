@@ -16,8 +16,10 @@ enum CommandType
 };
 struct Command
 {
-	int row;				// The row the action happened at
-	CommandType type;		// The type so it can be reversed
+	// The row the action happened at
+	int row;
+	// The type so it can be reversed
+	CommandType type;
 	// List of modified rows: Tuple of row index and row data
 	vector<tuple<int, StepParameters>> rows;	 
 };
@@ -27,8 +29,8 @@ class CommandStack
 	// missing template actions
 
 private:
-	const int size = 32;
-	Command buffer[32] = {};
+	static inline const int size = 32;
+	Command buffer[size] = {};
 	int head = 0, tail = 0, hair = 0;
 
 public:
