@@ -2577,7 +2577,7 @@ void cMain::OnNoOrderChecked(wxCommandEvent& event)
 			continue;
 		else
 		{
-			wxMessageBox(std::format("Step {} is unable to assigned the no-order modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
+			wxMessageBox(std::format("Step {} is unable to be assigned the no-order modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
 				"One or more steps can't be assigned no-order modifier");
 			return;
 		}
