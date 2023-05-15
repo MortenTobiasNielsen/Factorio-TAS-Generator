@@ -11,7 +11,7 @@ void CommandStack::Push(Command command)
 Command CommandStack::Pop()
 {
 	if (head == tail) 
-		return {0, NIL, {}, 0};
+		return {0, T_NULL, {}};
 	head = (head + size - 1) % size;
 	return buffer[head];
 }
@@ -19,7 +19,7 @@ Command CommandStack::Pop()
 Command CommandStack::PopBack()
 {
 	if (head == hair)
-		return {0, NIL, {}, 0};
+		return {0, T_NULL, {}};
 	int head_copy = head;
 	head = (head + 1) % size;
 	return buffer[head_copy];

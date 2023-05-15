@@ -527,6 +527,7 @@ void cMain::UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
 
 void cMain::OnAddStepClicked(wxCommandEvent& event)
 {
+	vector<tuple<int, StepParameters>> change;
 	if (grid_steps->IsSelection())
 	{
 		if (!grid_steps->GetSelectedRows().begin())
@@ -534,11 +535,27 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 			return;
 		}
 
-		AddStep(*grid_steps->GetSelectedRows().begin());
+		change = AddStep(*grid_steps->GetSelectedRows().begin(), ExtractStepParameters());
+		if (change.size() > 0)
+		{
+			stack.Push({
+				.row = *grid_steps->GetSelectedRows().begin() - 1,
+				.type = T_ADD,
+				.rows = change,
+			});
+		}
 	}
 	else
 	{
-		AddStep(grid_steps->GetNumberRows());
+		change = AddStep(grid_steps->GetNumberRows(), ExtractStepParameters());
+		if (change.size() > 0)
+		{
+			stack.Push({
+				.row = *grid_steps->GetSelectedRows().begin() - 1,
+				.type = T_ADD,
+				.rows = change,
+			});
+		}
 	}
 	
 	no_changes = false;
@@ -547,6 +564,7 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 
 void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 {
+	vector<tuple<int, StepParameters>> change;
 	if (grid_steps->IsSelection())
 	{
 		if (!grid_steps->GetSelectedRows().Last())
@@ -554,24 +572,40 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 			return;
 		}
 
-		AddStep(grid_steps->GetSelectedRows().Last() + 1);
+		change = AddStep(grid_steps->GetSelectedRows().Last() + 1, ExtractStepParameters());
+		if (change.size() > 0)
+		{
+			stack.Push({
+				.row = grid_steps->GetSelectedRows().Last() + 1,
+				.type = T_ADD,
+				.rows = change,
+			});
+		}
 	}
 	else
 	{
-		AddStep(grid_steps->GetNumberRows());
+		change = AddStep(grid_steps->GetNumberRows(), ExtractStepParameters());
+		if (change.size() > 0)
+		{
+			stack.Push({
+				.row = grid_steps->GetNumberRows(),
+				.type = T_ADD,
+				.rows = change,
+			});
+		}
 	}
 
 	no_changes = false;
 	event.Skip();
 }
 
-void cMain::AddStep(int row)
+vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepParameters)
 {
-	auto stepParameters = ExtractStepParameters();
+	vector<tuple<int, StepParameters>> returnValue;
 
 	if (!ValidateStep(row, stepParameters))
 	{
-		return;
+		return returnValue;
 	};
 
 	string to_check;
@@ -581,6 +615,7 @@ void cMain::AddStep(int row)
 			stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
 
 			UpdateStepGrid(row , &stepParameters);
+			returnValue.push_back({row, stepParameters});
 
 			to_check = stepParameters.Item;
 
@@ -594,7 +629,8 @@ void cMain::AddStep(int row)
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
 				UpdateStepGrid(row + 1, &stepParameters);
-				return;
+				returnValue.push_back({row + 1, stepParameters});
+				return returnValue;
 			}
 
 			if (check_burner->IsChecked() && (to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler))
@@ -603,7 +639,8 @@ void cMain::AddStep(int row)
 				stepParameters.FromInto = struct_from_into_list.fuel;
 
 				UpdateStepGrid(row + 1, &stepParameters);
-				return;
+				returnValue.push_back({row + 1, stepParameters});
+				return returnValue;
 			}
 
 			if (check_lab->IsChecked() && to_check == struct_science_list.lab)
@@ -612,14 +649,16 @@ void cMain::AddStep(int row)
 				stepParameters.FromInto = struct_from_into_list.input;
 
 				UpdateStepGrid(row + 1, &stepParameters);
-				return;
+				returnValue.push_back({row + 1, stepParameters});
+				return returnValue;
 			}
 
-			return;
+			return returnValue;
 
 		case e_recipe:
 		{
 			UpdateStepGrid(row, &stepParameters);
+			returnValue.push_back({row, stepParameters});
 
 			to_check = stepParameters.Item;
 			
@@ -638,15 +677,17 @@ void cMain::AddStep(int row)
 					stepParameters.FromInto = struct_from_into_list.input;
 
 					UpdateStepGrid(row + 1, &stepParameters);
+					returnValue.push_back({row + 1, stepParameters});
 				}
 			}
 			
-			return;
+			return returnValue;
 		}
 
 		default:
-			UpdateStepGrid(row, &stepParameters);
-			return;
+			UpdateStepGrid(row, &stepParameters); 
+			returnValue.push_back({row, stepParameters});
+			return returnValue;
 	}
 }
 
@@ -675,6 +716,20 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 		return;
 	};
 
+	stack.Push({
+		.row = row,
+		.type = T_MODIFY,
+		.rows = ChangeStep(row, stepParameters)
+	});
+
+	grid_steps->SelectRow(row);
+	no_changes = false;
+}
+
+vector< tuple<int, StepParameters>> cMain::ChangeStep(int row, StepParameters stepParameters)
+{
+	vector< tuple<int, StepParameters>> change{};
+	
 	if (stepParameters.StepEnum == e_build)
 	{
 		stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
@@ -682,72 +737,39 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 
 	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
 
+	change.push_back({row, StepGridData[row]});
+	change.push_back({row, stepParameters});
+
 	StepGridData[row] = stepParameters;
 	PopulateGrid(grid_steps, row, &gridEntry);
 
 	BackgroundColorUpdate(grid_steps, row, stepParameters.StepEnum);
-
-	grid_steps->SelectRow(row);
-	no_changes = false;
+	return change;
 }
 
 void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 {
 	if (!grid_steps->IsSelection())
 	{
-		wxMessageBox("Please select row(s) to be deleted", "Selection not valid");
+		wxMessageBox("Please select one or more rows to delete", "Selection not valid");
 		return;
 	}
 
-	if (wxMessageBox("Are you sure you want to delete this step?", "Delete step", wxICON_QUESTION | wxYES_NO, this) != wxYES)
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (wxMessageBox(
+		rows == 1 ? "Are you sure you want to delete this step?" : "Are you sure you want to delete these steps?",
+		rows == 1 ? "Delete step" : "Delete steps", 
+		wxICON_QUESTION | wxYES_NO, this) != wxYES)
 	{
 		return;
 	}
-
-	row_selections.clear();
-	int startRow = 0;
-	int RowsToDelete = 0;
-	bool confirmed = false;
-
-	auto blocks = grid_steps->GetSelectedRowBlocks();
-
-	// Find the first block of rows selected - extract the first row and the amount of rows in the block
-	for (const auto& block : blocks)
-	{
-		startRow = block.GetTopRow();
-		RowsToDelete = block.GetBottomRow() - startRow + 1;
-
-		for (int i = startRow; i < (startRow + RowsToDelete); i++)
-		{
-			if (StepGridData[i].StepEnum == e_build)
-			{
-				if (wxMessageBox("At least one of the rows selected is a build step - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", "The build step(s) you are deleting could be associated with future step", wxICON_WARNING | wxYES_NO, this) != wxYES)
-				{
-					return;
-				}
-
-				confirmed = true;
-				break;
-			}
-		}
-		if (confirmed) break; // chain break
-	}
-
-	for (auto it = blocks.rbegin(); it != blocks.rend(); ++it)
-	{
-		auto& block = *it;
-		startRow = block.GetTopRow();
-		RowsToDelete = block.GetBottomRow() - startRow + 1;
-		grid_steps->DeleteRows(startRow, RowsToDelete);
-
-		auto it1 = StepGridData.begin();
-		auto it2 = StepGridData.begin();
-
-		it1 += startRow;
-		it2 += startRow + RowsToDelete;
-		
-		StepGridData.erase(it1, it2);
-	}
+	int startRow = rows.at(0);
+	auto steps = DeleteSteps(rows);
+	stack.Push({
+		.row = rows[0],
+		.type = T_DELETE,
+		.rows = steps
+	});
 
 	// The row after the deleted row(s) are selected
 	if (startRow < grid_steps->GetNumberRows())
@@ -763,14 +785,94 @@ void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 	event.Skip();
 }
 
+vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool auto_confirmed)
+{
+	vector< tuple<int, StepParameters>> return_list{};
+
+	//row_selections.clear();
+	bool confirmed = auto_confirmed;
+
+	for (const auto step : steps)
+	{
+		if (confirmed) break;
+		if (StepGridData[step].StepEnum == e_build)
+		{
+			if (wxMessageBox("At least one of the rows selected is a build step - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", 
+				"The build step(s) you are deleting could be associated with future step", 
+				wxICON_WARNING | wxYES_NO, this) != wxYES)
+			{
+				return return_list;
+			}
+			break;
+		}
+	}
+
+	return_list.reserve(steps.size());
+	return_list.push_back({steps[0], StepGridData.at(steps[0])});
+
+	vector<pair<int, int>> blocks{
+		{steps[0], 1}
+	};
+	pair<int, int>* current_block = &blocks[0];
+	blocks.reserve(steps.size());
+	for (int i = 1; i < steps.size(); i++)
+	{
+		return_list.push_back({steps[i], StepGridData.at(steps[i])});
+
+		if (steps[i] == current_block->first + current_block->second + 1)
+		{
+			current_block->second += 1;
+		}
+		else
+		{
+			blocks.push_back({steps[i], 1});
+			current_block++;
+		}
+	}
+
+	for (auto it = blocks.rbegin(); it != blocks.rend(); ++it)
+	{
+		auto& [start, count] = *it;
+		grid_steps->DeleteRows(start, count);
+
+		auto iStart = StepGridData.begin() + start;
+		auto iEnd = StepGridData.begin() + start + count;
+
+		StepGridData.erase(iStart, iEnd);
+	}
+	return_list;
+}
+
+tuple<int, StepParameters> cMain::GetRowTuple(int index)
+{
+	return {index, StepGridData.at(index)};
+}
+
+vector<tuple<int, StepParameters>> cMain::GetSelectedRowTuples()
+{
+	vector<tuple<int, StepParameters>> rows{};
+	auto selected = grid_steps->GetSelectedRows();
+	if (selected.IsEmpty()) return rows;
+	else rows.reserve(selected.size());
+	for (int i : selected)
+		rows.push_back(GetRowTuple(i));
+	return rows;
+}
+
 void cMain::OnMoveUpClicked(wxCommandEvent& event)
 {
 	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
+		return;
 	}
-
+	
 	MoveRow(grid_steps, true);
+	stack.Push({
+		.row = *grid_steps->GetSelectedRows().begin(),
+		.type = T_MOVE_UP,
+		.rows = GetSelectedRowTuples(),
+	});
 	event.Skip();
 }
 
@@ -779,9 +881,15 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event)
 	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
 	{
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
+		return;
 	}
 
-	MoveRow(grid_steps, false);
+	MoveRow(grid_steps, false);	
+	stack.Push({
+		.row = *grid_steps->GetSelectedRows().begin(),
+		.type = T_MOVE_DOWN,
+		.rows = GetSelectedRowTuples(),
+	});
 	event.Skip();
 }
 
@@ -2737,3 +2845,67 @@ void cMain::OnSkipClicked(wxCommandEvent& event)
 		}
 	}
 }
+
+void cMain::SelectRowsInGrid(vector<tuple<int, StepParameters>> rows)
+{
+	grid_steps->ClearSelection();
+	for (auto& [r, _] : rows)
+	{
+		grid_steps->SelectRow(r, true);
+	}
+}
+
+void cMain::OnUndoMenuSelected(wxCommandEvent& event)
+{
+	auto current_selected = grid_steps->GetSelectedRows();
+	
+	Command command = stack.Pop();
+
+	switch (command.type)
+	{
+		case T_NULL:
+			break;
+		case T_ADD:
+		{
+			wxArrayInt rows{};
+			for (auto& [row, _] : command.rows)
+			{
+				rows.Add(row);
+			}
+			DeleteSteps(rows, true);
+		}
+			break;
+		case T_DELETE:
+			for (auto& [row, step] : command.rows)
+			{
+				AddStep(row, step);
+			}
+			break;
+		case T_MODIFY:
+			{
+				auto& [row, param] = command.rows[0];
+				ChangeStep(command.row, param);
+			}
+			break;
+		case T_MOVE_UP:
+		{
+			SelectRowsInGrid(command.rows);
+			MoveRow(grid_steps, false);
+		}
+			break;
+		case T_MOVE_DOWN:
+		{
+			SelectRowsInGrid(command.rows);
+			MoveRow(grid_steps, true);
+		}
+			break;
+
+		default:
+			break;
+	}
+}
+void cMain::OnRedoMenuSelected(wxCommandEvent& event)
+{
+	Command command = stack.PopBack();
+}
+

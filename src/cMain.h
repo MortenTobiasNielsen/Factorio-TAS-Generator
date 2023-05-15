@@ -34,6 +34,7 @@
 #include "TasFileConstants.h"
 
 #include "../icon.xpm"
+#include "CommandStack.h"
 
 using std::string;
 using std::vector;
@@ -218,6 +219,14 @@ private:
 
 	map<string, vector<StepParameters>> template_map;
 
+	// Undo and redo
+	void OnUndoMenuSelected(wxCommandEvent& event);
+	void OnRedoMenuSelected(wxCommandEvent& event);
+	CommandStack stack;
+	vector<tuple<int, StepParameters>> GetSelectedRowTuples();
+	tuple<int, StepParameters> GetRowTuple(int index);
+	void SelectRowsInGrid(vector<tuple<int, StepParameters>> rows);
+
 	void ResetToNewWindow();
 	bool ChecksBeforeResetWindow();
 	bool CheckBeforeClose();
@@ -253,7 +262,9 @@ private:
 	int GenerateBuildingSnapShot(int end_row);
 	void PopulateStepGrid();
 
-	void AddStep(int row);
+	vector<tuple<int, StepParameters>> AddStep(int row, StepParameters step);
+	vector< tuple<int, StepParameters>> ChangeStep(int row, StepParameters stepParameters);
+	vector< tuple<int, StepParameters>> DeleteSteps(wxArrayInt steps, bool auto_confirm = false);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
 	GridEntry ExtractGridEntry(wxGrid* grid, const int& row);
 

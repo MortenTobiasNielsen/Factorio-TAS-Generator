@@ -1,20 +1,25 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <tuple>
+
+#include "StepParameters.h"
 
 using std::vector;
 using std::string;
+using std::tuple;
 
 enum CommandType
 {
-	NIL, ADD, DELETE, MODIFY, MOVE
+	T_NULL, T_ADD, T_DELETE, T_MODIFY, 
+	T_MOVE_UP, T_MOVE_FIVE_UP, T_MOVE_DOWN, T_MOVE_FIVE_DOWN
 };
 struct Command
 {
 	int row;				// The row the action happened at
 	CommandType type;		// The type so it can be reversed
-	vector<string> rows;	// Add should have one string representing a whole row. move should contain 2 rows, one for the current value and one for the new value 
-	int by;					// for move - negative values will be move up
+	// List of modified rows: Tuple of row index and row data
+	vector<tuple<int, StepParameters>> rows;	 
 };
 
 class CommandStack
