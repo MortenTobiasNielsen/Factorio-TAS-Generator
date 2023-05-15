@@ -3,8 +3,8 @@
 void CommandStack::Push(Command command)
 {
 	buffer[head] = command;
-	hair = head;
 	head = (head + 1) % size;
+	hair = head;
 	tail = head != tail ? tail : (tail + 1) % size;
 }
 

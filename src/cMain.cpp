@@ -2907,5 +2907,50 @@ void cMain::OnUndoMenuSelected(wxCommandEvent& event)
 void cMain::OnRedoMenuSelected(wxCommandEvent& event)
 {
 	Command command = stack.PopBack();
+
+	switch (command.type)
+	{
+		case T_NULL:
+			break;
+		case T_ADD:
+			{
+				for (auto& [row, step] : command.rows)
+				{
+					AddStep(row, step);
+				}
+			}
+			break;
+		case T_DELETE:
+			{
+				wxArrayInt rows{};
+				for (auto& [row, _] : command.rows)
+				{
+					rows.Add(row);
+				}
+				DeleteSteps(rows, true);
+			}
+			break;
+		case T_MODIFY:
+			{
+				auto& [row, param] = command.rows[1];
+				ChangeStep(command.row, param);
+			}
+			break;
+		case T_MOVE_UP:
+			{
+				SelectRowsInGrid(command.rows);
+				MoveRow(grid_steps, true);
+			}
+			break;
+		case T_MOVE_DOWN:
+			{
+				SelectRowsInGrid(command.rows);
+				MoveRow(grid_steps, false);
+			}
+			break;
+
+		default:
+			break;
+	}
 }
 
