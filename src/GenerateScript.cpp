@@ -89,13 +89,13 @@ void GenerateScript::AddInfoFile(string& folder_location)
 void GenerateScript::PaintIntermediateWalk(string step, bool paint)
 {
 	int row = std::stoi(step) - 1;
-	grid_steps->SetCellBackgroundColour(row, 9, paint ? *wxCYAN : *wxWHITE);
+	grid_steps->SetCellBackgroundColour(row, 10, paint ? *wxCYAN : *wxWHITE);
 }
 
 void GenerateScript::PaintWalkStep(string step, bool straight, bool diagonal)
 {
 	int row = std::stoi(step) - 1;
-	grid_steps->SetCellBackgroundColour(row, 9, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
+	grid_steps->SetCellBackgroundColour(row, 10, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
 }
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
