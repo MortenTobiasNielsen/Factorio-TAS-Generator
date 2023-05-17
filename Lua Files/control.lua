@@ -120,16 +120,18 @@ local function msg(msg)
 end
 
 --Print debug message about what the tas is doing
-local function debug(msg)
+local function debug(msg, supress_info)
 	if debug_state then
 		player.print(msg)
-        player.print(string.format(
-            "Seconds: %s, tick: %s, player position [%d, %d]",
-            game.tick / 60,
-            game.tick,
-            player.position.x,
-            player.position.y
-	))
+        if not supress_info then
+			player.print(string.format(
+				"Seconds: %s, tick: %s, player position [%d, %d]",
+				game.tick / 60,
+				game.tick,
+				player.position.x,
+				player.position.y
+			))
+		end
 	end
 end
 
@@ -371,6 +373,18 @@ local function craft()
 		return false;
 	end
 
+	if global.cancel and player.crafting_queue_size > 0 then
+		player.cancel_crafting{ index = 1, count = 1000000}
+		return false
+	elseif global.wait_for_recipe and player.crafting_queue_size > 0 then
+		warning(string.format("Step: %s, Action: %s, Step: %d - Craft [item=%s]: It is not possible to craft as the queue is not empty", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+		step_reached = step
+		return false
+	else
+		global.wait_for_recipe = nil
+	end
+	global.cancel = nil
+
 	amount = player.get_craftable_count(item)
 
 	if amount > 0 then
@@ -540,7 +554,7 @@ local function build()
 	if (item ~= "rail") then
 		if item_is_tile(item) then
 			if tile_is_in_reach() then
-				if item == "stone-brick" then 
+				if item == "stone-brick" then
 					player.surface.set_tiles({{position = target_position, name = "stone-path"}})
 				elseif (item == "hazard-concrete") or (item == "refined-hazard-concrete") then
 					player.surface.set_tiles({{position = target_position, name = item.."-left"}})
@@ -904,6 +918,13 @@ local function recipe()
 		return false;
 	end
 
+	if global.wait_for_recipe and player_selection.crafting_progress ~= 0 then
+		warning(string.format("Step: %s, Action: %s, Step: %d - Set recipe %s: The entity is still crafting.", task[1], task[2], step, item:gsub("-", " "):gsub("^%l", string.upper)))
+		step_reached = step
+		return false
+	end
+	global.wait_for_recipe = nil
+
 	local items_returned = player_selection.set_recipe(item)
 
 	for name, count_ in pairs (items_returned) do
@@ -915,6 +936,13 @@ local function recipe()
 end
 
 local function tech()
+	if global.cancel and player.force.current_research then
+		player.force.cancel_current_research()
+		return false
+	else
+		global.cancel = nil
+	end
+
 	if steps[step].comment and steps[step].comment == "Cancel" and player.force.current_research then
 		player.force.research_queue = {}
 		player.force.add_research(item)
@@ -922,8 +950,8 @@ local function tech()
 		return true
 	end
 
-	player.force.add_research(item)
-	msg(string.format("Research: %s added", item))
+	local was_addded = player.force.add_research(item)
+	msg(string.format("Research: %s%s added", item, was_addded and "" or " not"))
 	return true
 end
 
@@ -1041,6 +1069,8 @@ local function doStep(current_step)
 		count = current_step[3]
 		item = current_step[4]
 
+		global.wait_for_recipe = current_step.wait_for
+		global.cancel = current_step.cancel
 		return craft()
 
 	elseif current_step[2] == "cancel crafting" then
@@ -1092,7 +1122,7 @@ local function doStep(current_step)
         task_category = "Tech"
         task = current_step[1]
 		item = current_step[3]
-
+		global.cancel = current_step.cancel
 		return tech()
 
 	elseif current_step[2] == "recipe" then
@@ -1100,7 +1130,7 @@ local function doStep(current_step)
         task = current_step[1]
 		target_position = current_step[3]
 		item = current_step[4]
-
+		global.wait_for_recipe = current_step.wait_for
 		return recipe()
 
 	elseif current_step[2] == "limit" then
@@ -1154,6 +1184,54 @@ local function doStep(current_step)
 	end
 end
 
+local original_warning = warning
+local function load_StepBlock()
+	if global.step_block or not steps[step].no_order then return end
+	global.step_block = {}
+	debug("entering step block")
+	warning = function ()
+		--override warning with a function that does nothing
+	end
+	for i = step, #steps do
+		local _step = steps[i]
+		if not _step.no_order then
+			break
+		else
+			table.insert(global.step_block, i)
+		end
+	end
+	global.step_block_info = {
+		total_steps = #global.step_block,
+		start_tick = game.tick
+	}
+end
+
+local function execute_StepBlock()
+	local _success, _step_index, _step
+	for i = 1, #global.step_block do
+		_step_index = global.step_block[i]
+		_step = steps[_step_index]
+		_success = doStep(_step)
+		if _success then
+			debug(string.format("Executed %d - Type: %s, Step: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index), true)
+			table.remove(global.step_block, i)
+			break
+		end
+	end
+	if #global.step_block < 1 then
+		change_step(global.step_block_info.total_steps)
+		global.step_block = nil
+		global.step_block_info = nil
+		warning = original_warning
+		debug("Ending step block")
+	elseif (game.tick - global.step_block_info.start_tick) > (25 * global.step_block_info.total_steps) then
+		debug_state = true
+		warning = original_warning
+		warning("Catastrofic execution of [color=red]No order[/color] step block. Exceeeded ".. (25 * global.step_block_info.total_steps) .. " ticks.")
+		run = false
+	end
+end
+
 local function handle_pretick()
 	--pretick sets step directly so it doesn't raise too many events
 	while run do
@@ -1180,8 +1258,9 @@ local function handle_pretick()
 			msg(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 			change_step(1)
 			debug_state = false
-		elseif(steps[step][2] == "walk" and walking.walking == false and idle < 1) then
+		elseif(steps[step][2] == "walk" and (walking.walking == false or global.walk_towards_state) and idle < 1) then
 			update_destination_position(steps[step][3][1], steps[step][3][2])
+			global.walk_towards_state = steps[step].walk_towards
 
 			find_walking_pattern()
 			walking = walk()
@@ -1211,6 +1290,7 @@ local function handle_ontick()
 
 				if steps[step][2] == "walk" then
 					update_destination_position(steps[step][3][1], steps[step][3][2])
+					global.walk_towards_state = steps[step].walk_towards
 
 					find_walking_pattern()
 					walking = walk()
@@ -1222,6 +1302,7 @@ local function handle_ontick()
 		elseif steps[step][2] == "walk" then
 			if steps[step].comment then msg(steps[step].comment) end
 			update_destination_position(steps[step][3][1], steps[step][3][2])
+			global.walk_towards_state = steps[step].walk_towards
 			
 			find_walking_pattern()
 			walking = walk()
@@ -1267,7 +1348,35 @@ local function handle_ontick()
 			change_step(1)
 		end
 	else
-		if steps[step][2] ~= "walk" and steps[step][2] ~= "mine" and steps[step][2] ~= "idle" then
+		if global.walk_towards_state and steps[step][2] == "mine" then
+			if duration and duration == 0 and steps[step].comment then msg(steps[step].comment) end
+			
+			player.update_selected_entity(steps[step][3])
+
+			player.mining_state = {mining = true, position = steps[step][3]}
+
+			duration = steps[step][4]
+
+			ticks_mining = ticks_mining + 1
+
+			if ticks_mining >= duration then
+				player.mining_state = {mining = false, position = steps[step][3]}
+				change_step(1)
+				mining = 0
+				ticks_mining = 0
+			end
+
+			mining = mining + 1
+			if mining > 5 then
+				if player.character_mining_progress == 0 then
+					warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					debug_state = false
+				else
+					mining = 0
+				end
+			end
+		elseif steps[step][2] ~= "walk" and steps[step][2] ~= "idle" and steps[step][2] ~= "mine" then
+			
 			if doStep(steps[step]) then
 				-- Do step while walking
 				if steps[step].comment then msg(steps[step].comment) end
@@ -1306,8 +1415,12 @@ local function handle_tick()
 	if not run then --early end from pretick
 		return
 	end
-
-	handle_ontick()
+	load_StepBlock()
+	if global.step_block then
+		execute_StepBlock()
+	else
+		handle_ontick()
+	end
 
 	handle_posttick()
 end
@@ -1356,6 +1469,7 @@ local function backwards_compatibility()
 			end
 		elseif steps[step][2] == "walk" then
 			update_destination_position(steps[step][3][1], steps[step][3][2])
+			global.walk_towards_state = steps[step].walk_towards
 
 			find_walking_pattern()
 			walking = walk()
@@ -1529,6 +1643,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 
 	if run and steps[step] and steps[step][2] and steps[step][2] == "walk" then
 		update_destination_position(steps[step][3][1], steps[step][3][2])
+		global.walk_towards_state = steps[step].walk_towards
 
 		find_walking_pattern()
 		walking = walk()

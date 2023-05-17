@@ -116,6 +116,14 @@ void cMain::setup_paramters(const int parameters)
 	spin_building_amount->Enable(parameters & amount_of_buildings);
 }
 
+void cMain::SetupModifiers(StepType type)
+{
+	modifier_walk_towards_checkbox->Enable(modifier_types.walk_towards.contains(type));
+	modifier_no_order_checkbox->Enable(modifier_types.no_order.contains(type));
+	modifier_cancel_checkbox->Enable(modifier_types.cancel.contains(type));
+	modifier_wait_for_checkbox->Enable(modifier_types.wait_for.contains(type));
+}
+
 // Finds the current radio button that is choosen, 
 // determines which step type that is and returns the step name
 string cMain::ExtractStep()
@@ -230,6 +238,7 @@ void cMain::OnBuildChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_build);
 	setup_paramters(parameter_choices.build);
+	SetupModifiers(e_build);
 
 	UpdateCmbItem(&building_choices);
 	UpdateLabelItem(&TypePanel::item);
@@ -241,6 +250,7 @@ void cMain::OnTakeChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_take);
 	setup_paramters(parameter_choices.take);
+	SetupModifiers(e_take);
 
 	UpdateCmbItem(&item_choices);
 	UpdateLabelItem(&TypePanel::item);
@@ -255,6 +265,7 @@ void cMain::OnPutChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_put);
 	setup_paramters(parameter_choices.put);
+	SetupModifiers(e_put);
 
 	UpdateCmbItem(&item_choices);
 	UpdateLabelItem(&TypePanel::item);
@@ -269,6 +280,7 @@ void cMain::OnCraftChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_craft);
 	setup_paramters(parameter_choices.craft);
+	SetupModifiers(e_craft);
 
 	UpdateCmbItem(&handcrafted_choices);
 	UpdateLabelItem(&TypePanel::item);
@@ -280,6 +292,7 @@ void cMain::OnRotateChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_rotate);
 	setup_paramters(parameter_choices.rotate);
+	SetupModifiers(e_rotate);
 	event.Skip();
 }
 
@@ -287,6 +300,7 @@ void cMain::OnfilterChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_filter);
 	setup_paramters(parameter_choices.filter);
+	SetupModifiers(e_filter);
 
 	UpdateCmbItem(&item_choices);
 	UpdateLabelItem(&TypePanel::item);
@@ -298,6 +312,7 @@ void cMain::OnRecipeChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_recipe);
 	setup_paramters(parameter_choices.recipe);
+	SetupModifiers(e_recipe);
 
 	UpdateCmbItem(&recipe_choices);
 	UpdateLabelItem(&TypePanel::recipe);
@@ -309,6 +324,7 @@ void cMain::OnTechChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_tech);
 	setup_paramters(parameter_choices.tech);
+	SetupModifiers(e_tech);
 
 	UpdateCmbItem(&tech_choices);
 	UpdateLabelItem(&TypePanel::tech);
@@ -320,6 +336,7 @@ void cMain::OnLaunchChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_launch);
 	setup_paramters(parameter_choices.launch);
+	SetupModifiers(e_launch);
 	event.Skip();
 }
 
@@ -327,6 +344,7 @@ void cMain::OnSaveChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_save);
 	setup_paramters(parameter_choices.save);
+	SetupModifiers(e_save);
 	event.Skip();
 }
 
@@ -334,6 +352,7 @@ void cMain::OnCancelCraftingChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_cancel_crafting);
 	setup_paramters(parameter_choices.cancel_crafting);
+	SetupModifiers(e_cancel_crafting);
 
 	UpdateCmbItem(&handcrafted_choices);
 	UpdateLabelItem(&TypePanel::item);
@@ -345,6 +364,7 @@ void cMain::OnPriorityChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_priority);
 	setup_paramters(parameter_choices.priority);
+	SetupModifiers(e_priority);
 	event.Skip();
 }
 
@@ -352,12 +372,14 @@ void cMain::OnLimitChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_limit);
 	setup_paramters(parameter_choices.limit);
+	SetupModifiers(e_limit);
 	event.Skip();
 }
 
 void cMain::OnIdleChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.idle);
+	SetupModifiers(e_idle);
 	event.Skip();
 }
 
@@ -365,6 +387,7 @@ void cMain::OnPickUpChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_pick_up);
 	setup_paramters(parameter_choices.pick);
+	SetupModifiers(e_pick_up);
 	event.Skip();
 }
 
@@ -372,6 +395,7 @@ void cMain::OnDropChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_drop);
 	setup_paramters(parameter_choices.drop);
+	SetupModifiers(e_drop);
 
 	UpdateCmbItem(&item_choices);
 	UpdateLabelItem(&TypePanel::item);
@@ -383,6 +407,7 @@ void cMain::OnPauseChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_pause);
 	setup_paramters(parameter_choices.Pause);
+	SetupModifiers(e_pause);
 	event.Skip();
 }
 
@@ -390,6 +415,7 @@ void cMain::OnStopChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_stop);
 	setup_paramters(parameter_choices.stop);
+	SetupModifiers(e_stop);
 	event.Skip();
 }
 
@@ -397,6 +423,7 @@ void cMain::OnWalkChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_walk);
 	setup_paramters(parameter_choices.walk);
+	SetupModifiers(e_walk);
 	event.Skip();
 }
 
@@ -404,6 +431,7 @@ void cMain::OnMineChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_mine);
 	setup_paramters(parameter_choices.mining);
+	SetupModifiers(e_mine);
 	event.Skip();
 }
 
@@ -411,6 +439,7 @@ void cMain::OnGameSpeedChosen(wxCommandEvent& event)
 {
 	type_panel->SetType(rbtn_game_speed);
 	setup_paramters(parameter_choices.game_speed);
+	SetupModifiers(e_game_speed);
 	event.Skip();
 }
 #pragma endregion
@@ -420,10 +449,6 @@ void cMain::OnWalkMenuSelected(wxCommandEvent& event)
 {
 	type_panel->SwitchStep(e_walk);
 	OnWalkChosen(event);
-
-	//// IMPORTANT -- This can be used to change the shortcuts of menuitems
-	//wxAcceleratorEntry* plusAccel = new wxAcceleratorEntry(wxACCEL_CTRL, 50, wxID_ZOOM_IN);
-	//menu_shortcuts->FindChildItem(10001)->SetAccel(plusAccel); // 10001 is the id of the menu item and can be set to what ever you want
 	event.Skip();
 }
 

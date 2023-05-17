@@ -838,6 +838,20 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 	}
 	wxColour colour = grid_steps->GetCellBackgroundColour(rowsBlocks[0].GetTopRow(), 1); //retrieve the colour of the first selected element
 	step_colour_picker->SetColour(colour);
+
+	if (rowsBlocks.size() < 2 && rowsBlocks[0].GetTopRow() == rowsBlocks[0].GetBottomRow())
+	{
+		modifier_no_order_checkbox->Show();
+		modifier_no_order_button->Hide();
+		sizer_no_order->Layout();
+	}
+	else
+	{
+		modifier_no_order_checkbox->Hide();
+		modifier_no_order_button->Show();
+		sizer_no_order->Layout();
+	}
+
 	event.Skip();
 }
 
@@ -931,6 +945,7 @@ void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int
 	to->SetCellValue(toRow, 7, from->GetCellValue(fromRow, 7));
 	to->SetCellValue(toRow, 8, from->GetCellValue(fromRow, 8));
 	to->SetCellValue(toRow, 9, from->GetCellValue(fromRow, 9));
+	to->SetCellValue(toRow, 10, from->GetCellValue(fromRow, 10));
 }
 
 void cMain::OnTemplateChosen(wxCommandEvent& event)
@@ -1552,6 +1567,12 @@ void cMain::OnAddMenuSelected(wxCommandEvent& event)
 
 void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType)
 {
+	auto& modifiers = gridEntry->Modifiers;
+	modifier_cancel_checkbox->SetValue(modifiers.find("cancel") != std::string::npos);
+	modifier_no_order_checkbox->SetValue(modifiers.find("no order") != std::string::npos);
+	modifier_wait_for_checkbox->SetValue(modifiers.find("wait for") != std::string::npos);
+	modifier_walk_towards_checkbox->SetValue(modifiers.find("walk towards") != std::string::npos);
+
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 
 	string OrientationEnum = "";
@@ -1868,6 +1889,13 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
+	string modifiers = "";
+	modifiers += modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue() ? "cancel, " : "";
+	modifiers += modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue() ? "no order, " : "";
+	modifiers += modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue() ? "wait for, " : "";
+	modifiers += modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue() ? "walk towards, " : "";
+	stepParameters.Modifiers = modifiers.size() > 2 ? modifiers.substr(0,  modifiers.size() - 2) : modifiers;
+
 	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;
 
 	return stepParameters;
@@ -1928,6 +1956,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 {
 	GridEntry gridEntry{
 		.Step = stepParameters->Step,
+		.Modifiers = stepParameters->Modifiers,
 		.Comment = stepParameters->Comment,
 	};
 
@@ -2115,10 +2144,11 @@ GridEntry cMain::ExtractGridEntry(wxGrid* grid, const int& row)
 		.Amount = grid->GetCellValue(row, 3),
 		.Item = grid->GetCellValue(row, 4),
 		.BuildingOrientation = grid->GetCellValue(row, 5),
-		.DirectionToBuild = grid->GetCellValue(row, 6),
-		.BuildingSize = grid->GetCellValue(row, 7),
-		.AmountOfBuildings = grid->GetCellValue(row, 8),
-		.Comment = grid->GetCellValue(row, 9)
+		.Modifiers = grid->GetCellValue(row, 6),
+		.DirectionToBuild = grid->GetCellValue(row, 7),
+		.BuildingSize = grid->GetCellValue(row, 8),
+		.AmountOfBuildings = grid->GetCellValue(row, 9),
+		.Comment = grid->GetCellValue(row, 10)
 	};
 
 	return gridEntry;
@@ -2528,4 +2558,66 @@ void cMain::OnMainBookPageChanged(wxAuiNotebookEvent& event)
 		import_steps_text_import->SetFocus();
 	}
 	event.Skip();
+}
+
+void cMain::OnNoOrderRightClicked(wxMouseEvent& event)
+{
+	NoOrderButtonHandle(true);
+	event.Skip();
+}
+void cMain::OnNoOrderClicked(wxCommandEvent& event)
+{
+	NoOrderButtonHandle();
+	event.Skip();
+}
+void cMain::NoOrderButtonHandle(bool force)
+{
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (rows.size() < 2) return;
+	if (!force)
+	{
+		for (int row : rows)
+		{
+			StepType e = StepGridData.at(row).StepEnum;
+			if (modifier_types.no_order.contains(e))
+				continue;
+			else
+			{
+				wxMessageBox(std::format("Step {} is unable to be assigned the no-order modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
+					"One or more steps can't be assigned no-order modifier");
+				return;
+			}
+		}
+	}
+	if (StepGridData.at(rows.front()).Modifiers.find("no order") == std::string::npos)
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			if (modifier_types.no_order.contains(step.StepEnum) && step.Modifiers.find("no order") == std::string::npos)
+			{
+				step.Modifiers = step.Modifiers.size() == 0 ? "no order" : step.Modifiers + ", no order";
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
+	else
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			const int size_no_order = sizeof "no order" - 1;
+			const int size_no_order_comma = sizeof "no order, " - 1;
+			if (step.Modifiers.find("no order") != std::string::npos)
+			{
+				auto size = step.Modifiers.size();
+				auto index = step.Modifiers.find("no order, ");
+				step.Modifiers = index != std::string::npos ?
+					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_no_order_comma, size - index - size_no_order_comma) :
+					step.Modifiers.substr(0, size - size_no_order);
+				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
 }

@@ -54,52 +54,52 @@ string StepParameters::ToString()
 
 		case e_pause:
 		case e_save:
-			return Step + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_stop:
 		case e_game_speed:
 		case e_idle:
 		case e_pick_up:
-			return Step + ";" + ";" + ";" + Amount + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + ";" + ";" + Amount + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_build:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_craft:
-			return Step + ";" + ";" + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + ";" + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_recipe:
 		case e_filter:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_limit:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_rotate:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_mine:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_priority:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + PriorityIn + "," + PriorityOut + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + PriorityIn + "," + PriorityOut + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		[[likely]] case e_put:
 		[[likely]] case e_take:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + FromInto + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + FromInto + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_launch:
 		[[likely]] case e_walk:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_tech:
-			return Step + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_drop:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		default:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";";
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 	}
 }
 

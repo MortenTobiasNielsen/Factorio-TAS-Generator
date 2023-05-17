@@ -89,13 +89,13 @@ void GenerateScript::AddInfoFile(string& folder_location)
 void GenerateScript::PaintIntermediateWalk(string step, bool paint)
 {
 	int row = std::stoi(step) - 1;
-	grid_steps->SetCellBackgroundColour(row, 9, paint ? *wxCYAN : *wxWHITE);
+	grid_steps->SetCellBackgroundColour(row, 10, paint ? *wxCYAN : *wxWHITE);
 }
 
 void GenerateScript::PaintWalkStep(string step, bool straight, bool diagonal)
 {
 	int row = std::stoi(step) - 1;
-	grid_steps->SetCellBackgroundColour(row, 9, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
+	grid_steps->SetCellBackgroundColour(row, 10, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
 }
 
 void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
@@ -405,6 +405,12 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	building_size = to_string(stepParameters.Size);
 	amount_of_buildings = to_string(stepParameters.Buildings);
 	comment = stepParameters.Comment;
+	modifiers = {
+		.wait_for = stepParameters.Modifiers.find("wait for") != std::string::npos,
+		.cancel = stepParameters.Modifiers.find("cancel") != std::string::npos,
+		.no_order = stepParameters.Modifiers.find("no order") != std::string::npos,
+		.walk_towards = stepParameters.Modifiers.find("walk towards") != std::string::npos,
+	};
 }
 
 string GenerateScript::extract_define(string from_into, string building)
@@ -757,9 +763,20 @@ string GenerateScript::Comment(string comment)
 	return comment == "" ? "" : ", comment = \"" + comment + "\"";
 }
 
+string GenerateScript::Modifiers()
+{
+	string str = ", ";
+	str += modifiers.cancel ? " cancel = true," : "";
+	str += modifiers.no_order ? " no_order = true," : "";
+	str += modifiers.wait_for ? " wait_for = true," : "";
+	str += modifiers.walk_towards ? " walk_towards = true," : "";
+
+	return str.size() < 3 ? "" : str;
+}
+
 string GenerateScript::Step(string step, string action, string details, string comment = "")
 {
-	return signature(step, action) + details + Comment(comment) + "}\n";
+	return signature(step, action) + details + Comment(comment) + Modifiers() + "}\n";
 }
 
 void GenerateScript::walk(string step, string action, string x_cord, string y_cord, string comment)

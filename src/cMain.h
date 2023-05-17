@@ -118,6 +118,11 @@ protected:
 	void OnPauseChosen(wxCommandEvent& event);
 	void OnStopChosen(wxCommandEvent& event);
 
+	// Modifiers
+	void OnNoOrderClicked(wxCommandEvent& event);
+	void OnNoOrderRightClicked(wxMouseEvent& event);
+	void NoOrderButtonHandle(bool force = false);
+
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);
 	void OnAddStepRightClicked(wxMouseEvent & event);
@@ -221,6 +226,7 @@ private:
 	void UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
 
 	void setup_paramters(const int parameters);
+	void SetupModifiers(StepType type);
 
 	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType = true);
 

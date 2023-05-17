@@ -763,19 +763,64 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	auto_put_sizer->Add( auto_put_flex, 1, wxLEFT|wxRIGHT|wxTOP, 5 );
 
-	wxBoxSizer* bSizer65;
-	bSizer65 = new wxBoxSizer( wxHORIZONTAL );
-
-	step_colour_picker = new wxColourPickerCtrl( auto_put_panel, wxID_ANY, wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_SHOW_LABEL );
-	bSizer65->Add( step_colour_picker, 0, wxALL, 5 );
-
-
-	auto_put_sizer->Add( bSizer65, 1, wxEXPAND, 5 );
-
 
 	auto_put_panel->SetSizer( auto_put_sizer );
 	auto_put_panel->Layout();
 	auto_put_sizer->Fit( auto_put_panel );
+	step_modifier_panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_mgr.AddPane( step_modifier_panel, wxAuiPaneInfo() .Name( wxT("ModifiersPanel") ).Top() .Caption( wxT("Modifiers") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,159 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,140 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
+
+	wxBoxSizer* step_modifier_panel_sizer;
+	step_modifier_panel_sizer = new wxBoxSizer( wxVERTICAL );
+
+	wxFlexGridSizer* step_modifier_flex;
+	step_modifier_flex = new wxFlexGridSizer( 0, 1, 5, 5 );
+	step_modifier_flex->SetFlexibleDirection( wxBOTH );
+	step_modifier_flex->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	sizer_no_order = new wxBoxSizer( wxVERTICAL );
+
+	modifier_no_order_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("No order"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_no_order_checkbox->Enable( false );
+	modifier_no_order_checkbox->SetToolTip( wxT("Specifies that this step is part of a block of steps that can be executed in any order.\n\nThis allows the TAS to optimize the step's execution order.") );
+
+	sizer_no_order->Add( modifier_no_order_checkbox, 0, wxLEFT|wxRIGHT|wxTOP, 5 );
+
+	modifier_no_order_button = new wxButton( step_modifier_panel, wxID_ANY, wxT("No order"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_no_order_button->Hide();
+	modifier_no_order_button->SetToolTip( wxT("Specifies that these steps are part of a block of steps that can be executed in any order.\n\nThis allows the TAS to optimize the step's execution order.") );
+	modifier_no_order_button->SetMaxSize( wxSize( -1,18 ) );
+
+	sizer_no_order->Add( modifier_no_order_button, 0, wxLEFT|wxRIGHT|wxTOP, 5 );
+
+
+	step_modifier_flex->Add( sizer_no_order, 1, wxEXPAND, 5 );
+
+	modifier_wait_for_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Wait for"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_wait_for_checkbox->Enable( false );
+	modifier_wait_for_checkbox->SetToolTip( wxT("Waits for completion before proceeding.\n\nFor Set Recipe this means it won't proceed before the assembler is not crafting.\nFor Crafting this means it won't proceed before the crafting queue is empty.") );
+
+	step_modifier_flex->Add( modifier_wait_for_checkbox, 0, wxALL, 5 );
+
+	modifier_cancel_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Cancel others"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_cancel_checkbox->Enable( false );
+	modifier_cancel_checkbox->SetToolTip( wxT("Cancels anything else in your crafting queue or research queue, before adding the new item.") );
+
+	step_modifier_flex->Add( modifier_cancel_checkbox, 0, wxALL, 5 );
+
+	modifier_walk_towards_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Walk towards"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_walk_towards_checkbox->Enable( false );
+	modifier_walk_towards_checkbox->SetToolTip( wxT("This simplifies walking - by saying that the direction is important not the destination.\nAllowing the next walk command to be executed before the TAS reaches the destination.") );
+
+	step_modifier_flex->Add( modifier_walk_towards_checkbox, 0, wxALL, 5 );
+
+
+	step_modifier_panel_sizer->Add( step_modifier_flex, 1, wxALL|wxEXPAND, 5 );
+
+
+	step_modifier_panel->SetSizer( step_modifier_panel_sizer );
+	step_modifier_panel->Layout();
+	step_modifier_panel_sizer->Fit( step_modifier_panel );
 	main_book = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TAB_EXTERNAL_MOVE|wxAUI_NB_TAB_MOVE|wxAUI_NB_TAB_SPLIT|wxAUI_NB_TOP|wxAUI_NB_WINDOWLIST_BUTTON|wxBORDER_RAISED );
 	m_mgr.AddPane( main_book, wxAuiPaneInfo() .Name( wxT("DataBook") ).Center() .Caption( wxT("Book") ).CaptionVisible( false ).CloseButton( false ).MaximizeButton( true ).MinimizeButton( true ).PinButton( true ).Dock().Resizable().FloatingSize( wxDefaultSize ).Row( 2 ).MinSize( wxSize( 500,500 ) ).Layer( 2 ).CentrePane() );
 
@@ -932,7 +977,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template = new wxGrid( template_panel, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), 0 );
 
 	// Grid
-	grid_template->CreateGrid( 0, 10 );
+	grid_template->CreateGrid( 0, 11 );
 	grid_template->EnableEditing( false );
 	grid_template->EnableGridLines( true );
 	grid_template->EnableDragGridSize( false );
@@ -940,15 +985,16 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Columns
 	grid_template->SetColSize( 0, 75 );
-	grid_template->SetColSize( 1, 59 );
-	grid_template->SetColSize( 2, 59 );
+	grid_template->SetColSize( 1, 49 );
+	grid_template->SetColSize( 2, 49 );
 	grid_template->SetColSize( 3, 50 );
 	grid_template->SetColSize( 4, 150 );
 	grid_template->SetColSize( 5, 70 );
-	grid_template->SetColSize( 6, 70 );
-	grid_template->SetColSize( 7, 50 );
-	grid_template->SetColSize( 8, 60 );
-	grid_template->SetColSize( 9, 140 );
+	grid_template->SetColSize( 6, 60 );
+	grid_template->SetColSize( 7, 70 );
+	grid_template->SetColSize( 8, 50 );
+	grid_template->SetColSize( 9, 60 );
+	grid_template->SetColSize( 10, 139 );
 	grid_template->EnableDragColMove( false );
 	grid_template->EnableDragColSize( true );
 	grid_template->SetColLabelValue( 0, wxT("Step") );
@@ -957,14 +1003,16 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template->SetColLabelValue( 3, wxT("Amount") );
 	grid_template->SetColLabelValue( 4, wxT("Item") );
 	grid_template->SetColLabelValue( 5, wxT("Orientation") );
-	grid_template->SetColLabelValue( 6, wxT("Direction") );
-	grid_template->SetColLabelValue( 7, wxT("Size") );
-	grid_template->SetColLabelValue( 8, wxT("Buildings") );
-	grid_template->SetColLabelValue( 9, wxT("Comment") );
+	grid_template->SetColLabelValue( 6, wxT("Modifiers") );
+	grid_template->SetColLabelValue( 7, wxT("Direction") );
+	grid_template->SetColLabelValue( 8, wxT("Size") );
+	grid_template->SetColLabelValue( 9, wxT("Buildings") );
+	grid_template->SetColLabelValue( 10, wxT("Comment") );
 	grid_template->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
 	// Rows
 	grid_template->EnableDragRowSize( false );
+	grid_template->SetRowLabelSize( 60 );
 	grid_template->SetRowLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
 	// Label Appearance
@@ -1001,6 +1049,15 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_search_toggle_updown->SetValue(true);
 	step_panel_search_sizer->Add( step_search_toggle_updown, 0, wxALL, 9 );
 
+	wxBoxSizer* bSizer65;
+	bSizer65 = new wxBoxSizer( wxHORIZONTAL );
+
+	step_colour_picker = new wxColourPickerCtrl( step_panel, wxID_ANY, wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_SHOW_LABEL );
+	bSizer65->Add( step_colour_picker, 0, wxALL, 5 );
+
+
+	step_panel_search_sizer->Add( bSizer65, 1, wxEXPAND, 5 );
+
 
 	step_panel_sizer->Add( step_panel_search_sizer, 1, wxEXPAND, 5 );
 
@@ -1035,7 +1092,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_steps = new wxGrid( step_panel, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), 0 );
 
 	// Grid
-	grid_steps->CreateGrid( 0, 10 );
+	grid_steps->CreateGrid( 0, 11 );
 	grid_steps->EnableEditing( false );
 	grid_steps->EnableGridLines( true );
 	grid_steps->EnableDragGridSize( false );
@@ -1043,15 +1100,16 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Columns
 	grid_steps->SetColSize( 0, 75 );
-	grid_steps->SetColSize( 1, 59 );
-	grid_steps->SetColSize( 2, 59 );
+	grid_steps->SetColSize( 1, 49 );
+	grid_steps->SetColSize( 2, 49 );
 	grid_steps->SetColSize( 3, 58 );
-	grid_steps->SetColSize( 4, 150 );
+	grid_steps->SetColSize( 4, 140 );
 	grid_steps->SetColSize( 5, 70 );
-	grid_steps->SetColSize( 6, 70 );
-	grid_steps->SetColSize( 7, 50 );
-	grid_steps->SetColSize( 8, 60 );
-	grid_steps->SetColSize( 9, 140 );
+	grid_steps->SetColSize( 6, 80 );
+	grid_steps->SetColSize( 7, 70 );
+	grid_steps->SetColSize( 8, 50 );
+	grid_steps->SetColSize( 9, 60 );
+	grid_steps->SetColSize( 10, 112 );
 	grid_steps->EnableDragColMove( false );
 	grid_steps->EnableDragColSize( true );
 	grid_steps->SetColLabelValue( 0, wxT("Step") );
@@ -1060,14 +1118,16 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_steps->SetColLabelValue( 3, wxT("Amount") );
 	grid_steps->SetColLabelValue( 4, wxT("Item") );
 	grid_steps->SetColLabelValue( 5, wxT("Orientation") );
-	grid_steps->SetColLabelValue( 6, wxT("Direction") );
-	grid_steps->SetColLabelValue( 7, wxT("Size") );
-	grid_steps->SetColLabelValue( 8, wxT("Buildings") );
-	grid_steps->SetColLabelValue( 9, wxT("Comment") );
+	grid_steps->SetColLabelValue( 6, wxT("Modifier") );
+	grid_steps->SetColLabelValue( 7, wxT("Direction") );
+	grid_steps->SetColLabelValue( 8, wxT("Size") );
+	grid_steps->SetColLabelValue( 9, wxT("Buildings") );
+	grid_steps->SetColLabelValue( 10, wxT("Comment") );
 	grid_steps->SetColLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
 	// Rows
 	grid_steps->EnableDragRowSize( false );
+	grid_steps->SetRowLabelSize( 60 );
 	grid_steps->SetRowLabelAlignment( wxALIGN_CENTER, wxALIGN_CENTER );
 
 	// Label Appearance
@@ -1253,7 +1313,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_pause->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
 	rbtn_stop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
 	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
-	step_colour_picker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
+	modifier_no_order_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
+	modifier_no_order_button->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
 	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
@@ -1270,6 +1331,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::StepSeachOnSearchButton ), NULL, this );
 	step_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::StepSeachOnText ), NULL, this );
 	step_search_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::StepSeachOnTextEnter ), NULL, this );
+	step_colour_picker->Connect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
 	btn_add_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddStepClicked ), NULL, this );
 	btn_add_step->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnAddStepRightClicked ), NULL, this );
 	btn_change_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeStepClicked ), NULL, this );
@@ -1319,7 +1381,8 @@ GUI_Base::~GUI_Base()
 	rbtn_pause->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
 	rbtn_stop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
 	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
-	step_colour_picker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
+	modifier_no_order_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
+	modifier_no_order_button->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
 	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
@@ -1336,6 +1399,7 @@ GUI_Base::~GUI_Base()
 	step_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::StepSeachOnSearchButton ), NULL, this );
 	step_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::StepSeachOnText ), NULL, this );
 	step_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::StepSeachOnTextEnter ), NULL, this );
+	step_colour_picker->Disconnect( wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler( GUI_Base::OnStepColourPickerColourChanged ), NULL, this );
 	btn_add_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddStepClicked ), NULL, this );
 	btn_add_step->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnAddStepRightClicked ), NULL, this );
 	btn_change_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeStepClicked ), NULL, this );
