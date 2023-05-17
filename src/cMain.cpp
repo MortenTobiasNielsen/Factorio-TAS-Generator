@@ -841,19 +841,15 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 
 	if (rowsBlocks.size() < 2 && rowsBlocks[0].GetTopRow() == rowsBlocks[0].GetBottomRow())
 	{
-		modifier_no_order_checkbox->SetForegroundColour("Black");
-		SetupModifiers(ToStepType(ExtractStep()));
-		modifier_no_order_checkbox->GenerateMouseLeave();
-	}
-	else if (modifier_no_order_checkbox->Enable())
-	{
-		modifier_no_order_checkbox->SetForegroundColour("Red");
-		modifier_no_order_checkbox->GenerateMouseLeave();
+		modifier_no_order_checkbox->Show();
+		modifier_no_order_button->Hide();
+		sizer_no_order->Layout();
 	}
 	else
 	{
-		modifier_no_order_checkbox->SetForegroundColour("Blue");
-		modifier_no_order_checkbox->GenerateMouseLeave();
+		modifier_no_order_checkbox->Hide();
+		modifier_no_order_button->Show();
+		sizer_no_order->Layout();
 	}
 
 	event.Skip();
@@ -2564,7 +2560,7 @@ void cMain::OnMainBookPageChanged(wxAuiNotebookEvent& event)
 	event.Skip();
 }
 
-void cMain::OnNoOrderChecked(wxCommandEvent& event)
+void cMain::OnNoOrderClicked(wxCommandEvent& event)
 {
 	event.Skip();
 	wxArrayInt rows = grid_steps->GetSelectedRows();
@@ -2582,7 +2578,7 @@ void cMain::OnNoOrderChecked(wxCommandEvent& event)
 			return;
 		}
 	}
-	if (event.IsChecked())
+	if (StepGridData.at(rows.front()).Modifiers.find("no order") == std::string::npos)
 	{
 		for (int row : rows)
 		{

@@ -119,7 +119,9 @@ class GUI_Base : public wxFrame
 		wxCheckBox* check_lab;
 		wxCheckBox* check_recipe;
 		wxPanel* step_modifier_panel;
+		wxBoxSizer* sizer_no_order;
 		wxCheckBox* modifier_no_order_checkbox;
+		wxButton* modifier_no_order_button;
 		wxCheckBox* modifier_wait_for_checkbox;
 		wxCheckBox* modifier_cancel_checkbox;
 		wxCheckBox* modifier_walk_towards_checkbox;
@@ -230,7 +232,7 @@ class GUI_Base : public wxFrame
 		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnNoOrderChecked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnNoOrderClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }

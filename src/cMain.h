@@ -119,7 +119,7 @@ protected:
 	void OnStopChosen(wxCommandEvent& event);
 
 	// Modifiers
-	void OnNoOrderChecked(wxCommandEvent& event);
+	void OnNoOrderClicked(wxCommandEvent& event);
 
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);
