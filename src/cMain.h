@@ -120,6 +120,8 @@ protected:
 
 	// Modifiers
 	void OnNoOrderClicked(wxCommandEvent& event);
+	void OnNoOrderRightClicked(wxMouseEvent& event);
+	void NoOrderButtonHandle(bool force = false);
 
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);

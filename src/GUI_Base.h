@@ -233,6 +233,7 @@ class GUI_Base : public wxFrame
 		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNoOrderClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnNoOrderRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }

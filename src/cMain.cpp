@@ -2560,22 +2560,33 @@ void cMain::OnMainBookPageChanged(wxAuiNotebookEvent& event)
 	event.Skip();
 }
 
+void cMain::OnNoOrderRightClicked(wxMouseEvent& event)
+{
+	NoOrderButtonHandle(true);
+	event.Skip();
+}
 void cMain::OnNoOrderClicked(wxCommandEvent& event)
 {
+	NoOrderButtonHandle();
 	event.Skip();
+}
+void cMain::NoOrderButtonHandle(bool force)
+{
 	wxArrayInt rows = grid_steps->GetSelectedRows();
 	if (rows.size() < 2) return;
-
-	for (int row : rows)
+	if (!force)
 	{
-		StepType e = StepGridData.at(row).StepEnum; 
-		if (modifier_types.no_order.contains(e))
-			continue;
-		else
+		for (int row : rows)
 		{
-			wxMessageBox(std::format("Step {} is unable to be assigned the no-order modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
-				"One or more steps can't be assigned no-order modifier");
-			return;
+			StepType e = StepGridData.at(row).StepEnum;
+			if (modifier_types.no_order.contains(e))
+				continue;
+			else
+			{
+				wxMessageBox(std::format("Step {} is unable to be assigned the no-order modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
+					"One or more steps can't be assigned no-order modifier");
+				return;
+			}
 		}
 	}
 	if (StepGridData.at(rows.front()).Modifiers.find("no order") == std::string::npos)
@@ -2583,7 +2594,7 @@ void cMain::OnNoOrderClicked(wxCommandEvent& event)
 		for (int row : rows)
 		{
 			auto& step = StepGridData.at(row);
-			if (step.Modifiers.find("no order") == std::string::npos)
+			if (modifier_types.no_order.contains(step.StepEnum) && step.Modifiers.find("no order") == std::string::npos)
 			{
 				step.Modifiers = step.Modifiers.size() == 0 ? "no order" : step.Modifiers + ", no order";
 				grid_steps->SetCellValue(row, 6, step.Modifiers);
