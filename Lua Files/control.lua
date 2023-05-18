@@ -1865,7 +1865,10 @@ script.on_init(function()
 	migrate_global()
 end)
 
-script.on_load(migrate_global)
+script.on_load(function ()
+	migrate_global()
+	if player then player.clear_console() end
+end)
 
 local function raise_state_change()
 	script.raise_event(tas_state_change, {
