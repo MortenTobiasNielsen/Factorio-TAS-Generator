@@ -835,27 +835,33 @@ void cMain::OnStepsGridDoubleRightClick(wxGridEvent& event)
 
 void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 {
-	wxGridBlockCoordsVector rowsBlocks = grid_steps->GetSelectedRowBlocks();
-	if (rowsBlocks.empty()){ //prevents a crash due to somehow selecting zero rows??
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (rows.empty()){ //prevents a crash due to somehow selecting zero rows??
 		event.Skip();
 		return;
 	}
-	wxColour colour = grid_steps->GetCellBackgroundColour(rowsBlocks[0].GetTopRow(), 1); //retrieve the colour of the first selected element
+	wxColour colour = grid_steps->GetCellBackgroundColour(rows[0], 1); //retrieve the colour of the first selected element
 	step_colour_picker->SetColour(colour);
 
-	if (rowsBlocks.size() < 2 && rowsBlocks[0].GetTopRow() == rowsBlocks[0].GetBottomRow())
+	if (rows.size() == 1)
 	{
 		modifier_no_order_checkbox->Show();
 		modifier_no_order_button->Hide();
 		sizer_no_order->Layout();
+		modifier_skip_checkbox->Show();
+		modifier_skip_button->Hide();
+		sizer_skip->Layout();
 	}
 	else
 	{
 		modifier_no_order_checkbox->Hide();
 		modifier_no_order_button->Show();
 		sizer_no_order->Layout();
+		modifier_skip_checkbox->Hide();
+		modifier_skip_button->Show();
+		sizer_skip->Layout();
+
 	}
-	modifier_skip_checkbox->GenerateMouseLeave();
 	
 	event.Skip();
 }
@@ -2693,13 +2699,13 @@ void cMain::NoOrderButtonHandle(bool force)
 	}
 }
 
-void cMain::OnSkipChecked(wxCommandEvent& event)
+void cMain::OnSkipClicked(wxCommandEvent& event)
 {
 	event.Skip();
 	wxArrayInt rows = grid_steps->GetSelectedRows();
 	if (rows.size() < 2) return;
 
-	if (event.IsChecked())
+	if (StepGridData.at(rows.front()).Modifiers.find("skip") == std::string::npos)
 	{
 		for (int row : rows)
 		{

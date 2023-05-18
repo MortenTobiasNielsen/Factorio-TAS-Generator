@@ -833,17 +833,27 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	modifier_no_order_button = new wxButton( step_modifier_panel, wxID_ANY, wxT("No order"), wxDefaultPosition, wxDefaultSize, 0 );
 	modifier_no_order_button->Hide();
 	modifier_no_order_button->SetToolTip( wxT("Specifies that these steps are part of a block of steps that can be executed in any order.\n\nThis allows the TAS to optimize the step's execution order.") );
-	modifier_no_order_button->SetMaxSize( wxSize( -1,18 ) );
 
-	sizer_no_order->Add( modifier_no_order_button, 0, wxLEFT|wxRIGHT|wxTOP, 5 );
+	sizer_no_order->Add( modifier_no_order_button, 0, 0, 5 );
 
 
 	step_modifier_flex->Add( sizer_no_order, 1, wxEXPAND, 5 );
 
-	modifier_skip_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Skip"), wxDefaultPosition, wxDefaultSize, 0 );
-	modifier_skip_checkbox->SetToolTip( wxT("Tells the generator to skip over this step. Allowing you to plan steps without them being executed.\n\nThis checkbox has a clickhandler to modify multiple selected steps at the same time.") );
+	sizer_skip = new wxBoxSizer( wxVERTICAL );
 
-	step_modifier_flex->Add( modifier_skip_checkbox, 0, wxALL, 5 );
+	modifier_skip_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Skip"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_skip_checkbox->SetToolTip( wxT("Tells the generator to skip over this step. Allowing you to plan steps without them being executed.") );
+
+	sizer_skip->Add( modifier_skip_checkbox, 0, wxALL, 5 );
+
+	modifier_skip_button = new wxButton( step_modifier_panel, wxID_ANY, wxT("Skip"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_skip_button->Hide();
+	modifier_skip_button->SetToolTip( wxT("Tells the generator to skip over these steps. Allowing you to plan steps without them being executed.") );
+
+	sizer_skip->Add( modifier_skip_button, 0, 0, 5 );
+
+
+	step_modifier_flex->Add( sizer_skip, 1, wxEXPAND, 5 );
 
 	modifier_wait_for_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Wait for"), wxDefaultPosition, wxDefaultSize, 0 );
 	modifier_wait_for_checkbox->Enable( false );
@@ -1382,7 +1392,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_keep_crafting->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepCraftingChosen ), NULL, this );
 	modifier_no_order_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
 	modifier_no_order_button->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
-	modifier_skip_checkbox->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipChecked ), NULL, this );
+	modifier_skip_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipClicked ), NULL, this );
 	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
@@ -1457,7 +1467,7 @@ GUI_Base::~GUI_Base()
 	rbtn_keep_crafting->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepCraftingChosen ), NULL, this );
 	modifier_no_order_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
 	modifier_no_order_button->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
-	modifier_skip_checkbox->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipChecked ), NULL, this );
+	modifier_skip_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipClicked ), NULL, this );
 	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
