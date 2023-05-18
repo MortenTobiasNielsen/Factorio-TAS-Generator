@@ -113,6 +113,8 @@ protected:
 	void OnPriorityChosen(wxCommandEvent& event);
 	void OnLimitChosen(wxCommandEvent& event);
 	void OnIdleChosen(wxCommandEvent& event);
+	void OnShootChosen(wxCommandEvent& event);
+	void OnThrowChosen(wxCommandEvent& event);
 	void OnPickUpChosen(wxCommandEvent& event);
 	void OnDropChosen(wxCommandEvent& event);
 	void OnPauseChosen(wxCommandEvent& event);

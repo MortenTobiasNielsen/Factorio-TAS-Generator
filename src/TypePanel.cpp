@@ -40,6 +40,8 @@ void TypePanel::SetType(wxRadioButton * choosen_btn)
 		parent->rbtn_keep_walking,
 		parent->rbtn_keep_crafting,
 		parent->rbtn_keep_on_path,
+		parent->rbtn_shoot,
+		parent->rbtn_throw,
 	};
 	parent->rbtn_character_panel_hidden->SetValue(true);
 	parent->rbtn_building_panel_hidden->SetValue(true);
@@ -104,6 +106,10 @@ void TypePanel::SwitchStep(StepType type)
 		case e_keep_on_path: SetType(parent->rbtn_keep_on_path);
 			break;
 		case e_keep_walking: SetType(parent->rbtn_keep_walking);
+			break;
+		case e_shoot: SetType(parent->rbtn_shoot);
+			break;
+		case e_throw: SetType(parent->rbtn_throw);
 			break;
 		default:
 			// ERROR: You have done something wrong
@@ -220,6 +226,12 @@ string cMain::ExtractStep()
 
 	if (rbtn_keep_walking->GetValue())
 		return StepNames[e_keep_walking];
+
+	if (rbtn_shoot->GetValue())
+		return StepNames[e_shoot];
+
+	if (rbtn_throw->GetValue())
+		return StepNames[e_throw];
 
 	return "not found";
 }
@@ -407,6 +419,22 @@ void cMain::OnIdleChosen(wxCommandEvent& event)
 {
 	setup_paramters(parameter_choices.idle);
 	SetupModifiers(e_idle);
+	event.Skip();
+}
+
+void cMain::OnShootChosen(wxCommandEvent& event)
+{
+	type_panel->SetType(rbtn_shoot);
+	setup_paramters(parameter_choices.shoot);
+	SetupModifiers(e_shoot);
+	event.Skip();
+}
+
+void cMain::OnThrowChosen(wxCommandEvent& event)
+{
+	type_panel->SetType(rbtn_throw);
+	setup_paramters(parameter_choices._throw);
+	SetupModifiers(e_throw);
 	event.Skip();
 }
 

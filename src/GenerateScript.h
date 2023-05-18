@@ -169,6 +169,9 @@ private:
 	void idle(string step, string amount, string comment);
 	void pick(string step, string amount, string comment);
 
+	void shoot(string step, string x_cord, string y_cord, string amount, string comment);
+	void _throw(string step, string x_cord, string y_cord, string item, string comment);
+
 	void rotate(string step, string action, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment = "");
 	void row_rotate(string step, string x_cord, string y_cord, string times, string item, string OrientationEnum, string direction, string number_of_buildings, string building_size, string comment);
 	

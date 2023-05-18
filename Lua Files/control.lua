@@ -1075,6 +1075,68 @@ local function launch()
 	return player_selection.launch_rocket()
 end
 
+local function shoot()
+	global.tas_shooting_amount = global.tas_shooting_amount or amount
+	---@cast player LuaPlayer
+	player.update_selected_entity(target_position)
+	local can_shoot = player.character.can_shoot(player.selected, target_position)
+	if can_shoot then
+		player.shooting_state = {state = defines.shooting.shooting_selected, position = target_position}
+		global.tas_shooting_amount = global.tas_shooting_amount - 1
+	else
+		warning(string.format("Step: %s, Action: %s, Step: %d - Shoot: %d can't shoot location", task[1], task[2], step, amount ))
+	end
+
+	if global.tas_shooting_amount == 0 then
+		global.tas_shooting_amount = nil
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Shoot", task[1], task[2], step ))
+		return true
+	end
+
+	return false
+end
+
+local function throw()
+	---@cast item string
+	---@cast player LuaPlayer
+	item = string.lower(item:gsub(" ", "-"))
+	if player.get_item_count (item) > 0 then
+		local stack, index = player.get_main_inventory().find_item_stack(item)
+		if not stack or not index then
+			warning(string.format("Step: %s, Action: %s, Step: %d - throw: [item=%s] can't find item in player inventory", task[1], task[2], step, item ))
+			return false
+		end
+
+		local prototype = stack.prototype
+		if not prototype.capsule_action then 
+			warning(string.format("Step: %s, Action: %s, Step: %d - throw: [item=%s] is not a throwable type", task[1], task[2], step, item ))
+		end
+		if prototype.capsule_action.type ~= "throw" then 
+			warning(string.format("Step: %s, Action: %s, Step: %d - throw: [item=%s] is not a throwable type", task[1], task[2], step, item ))
+		end
+		local dist = math.sqrt(
+			math.abs(player.position.x - target_position[1])^2 + math.abs(player.position.y - target_position[2])^2
+		)
+		local can_reach = prototype.capsule_action.attack_parameters.range > dist and dist > prototype.capsule_action.attack_parameters.min_range
+		if not can_reach then
+			warning(string.format("Step: %s, Action: %s, Step: %d - throw: [item=%s] target is out of range", task[1], task[2], step, item ))
+			return false
+		end
+
+		global.tas_throw_cooldown = global.tas_throw_cooldown or 0
+		if game.tick < global.tas_throw_cooldown then
+			warning(string.format("Step: %s, Action: %s, Step: %d - throw: [item=%s] is still on cooldown", task[1], task[2], step, item ))
+			return false
+		end
+
+		global.tas_throw_cooldown = game.tick + prototype.capsule_action.attack_parameters.cooldown
+		local created_entities = stack.use_capsule(player.character, target_position)
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Throw: [item=%s]", task[1], task[2], step, item ))
+		return created_entities and #created_entities > 0
+	end
+	return false
+end
+
 -- Routing function to perform one of the many available steps
 -- True: Indicates the calling function should advance the step. 
 -- False: Indicates the calling function should not advance step.
@@ -1195,8 +1257,22 @@ local function doStep(current_step)
 		task_category = "launch"
         task = current_step[1]
 		target_position = current_step[3]
-
 		return launch()
+
+	elseif current_step[2] == "shoot" then
+		task_category = "shoot"
+        task = current_step[1]
+		target_position = current_step[3]
+		amount = current_step[4]
+		return shoot()
+
+	elseif current_step[2] == "throw" then
+		task_category = "throw"
+        task = current_step[1]
+		target_position = current_step[3]
+		item = current_step[4]
+		return throw()
+		
 	end
 end
 

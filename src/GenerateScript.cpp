@@ -337,6 +337,12 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_keep_walking:
 				keep_walking(currentStep, comment);
 				break;
+			case e_shoot:
+				shoot(currentStep, x_cord, y_cord, amount, comment);
+				break;
+			case e_throw:
+				_throw(currentStep, x_cord, y_cord, item, comment);
+				break;
 		}
 	}
 
@@ -971,6 +977,18 @@ void GenerateScript::idle(string step, string amount, string comment)
 void GenerateScript::pick(string step, string amount, string comment)
 {
 	step_list += Step(step, "1", "\"pick\", \"" + amount + "\"", comment);
+	total_steps += 1;
+}
+
+void GenerateScript::shoot(string step, string x_cord, string y_cord, string amount, string comment)
+{
+	step_list += Step(step, "1", "\"shoot\", {" + x_cord + ", " + y_cord + "}, \"" + amount + "\"", comment);
+	total_steps += 1;
+}
+
+void GenerateScript::_throw(string step, string x_cord, string y_cord, string item, string comment)
+{
+	step_list += Step(step, "1", "\"throw\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\"", comment);
 	total_steps += 1;
 }
 
