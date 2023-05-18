@@ -72,4 +72,28 @@ static struct ModifierTypeSets{
 		e_recipe,
 		e_craft,
 	};
+	set<StepType> skip{
+		//all
+		e_stop, e_build, e_craft, e_game_speed, e_pause, e_save, e_recipe, e_limit,
+		e_filter, e_rotate, e_priority, e_put, e_take, e_mine, e_launch, e_walk, e_tech, e_drop, e_pick_up, e_idle, e_cancel_crafting,
+		e_never_idle, e_keep_walking, e_keep_on_path, e_keep_crafting
+	};
+	set<StepType> force{
+		//character steps
+		e_drop, 
+		e_mine,
+		//building steps
+		e_take, 
+		e_put, 
+		e_build, 
+		e_recipe, 
+		e_limit,
+		e_filter,
+		e_priority,
+		e_launch,
+		e_rotate,
+	};
+	set<StepType> split{
+		e_mine,
+	};
 } modifier_types;

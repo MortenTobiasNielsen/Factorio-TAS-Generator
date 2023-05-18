@@ -855,7 +855,8 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 		modifier_no_order_button->Show();
 		sizer_no_order->Layout();
 	}
-
+	modifier_skip_checkbox->GenerateMouseLeave();
+	
 	event.Skip();
 }
 
@@ -1576,6 +1577,9 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	modifier_no_order_checkbox->SetValue(modifiers.find("no order") != std::string::npos);
 	modifier_wait_for_checkbox->SetValue(modifiers.find("wait for") != std::string::npos);
 	modifier_walk_towards_checkbox->SetValue(modifiers.find("walk towards") != std::string::npos);
+	modifier_skip_checkbox->SetValue(modifiers.find("skip") != std::string::npos);
+	modifier_force_checkbox->SetValue(modifiers.find("force") != std::string::npos);
+	modifier_split_checkbox->SetValue(modifiers.find("split") != std::string::npos);
 
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 
@@ -1918,6 +1922,9 @@ StepParameters cMain::ExtractStepParameters()
 	modifiers += modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue() ? "no order, " : "";
 	modifiers += modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue() ? "wait for, " : "";
 	modifiers += modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue() ? "walk towards, " : "";
+	modifiers += modifier_skip_checkbox->IsEnabled() && modifier_skip_checkbox->GetValue() ? "skip, " : "";
+	modifiers += modifier_force_checkbox->IsEnabled() && modifier_force_checkbox->GetValue() ? "force, " : "";
+	modifiers += modifier_split_checkbox->IsEnabled() && modifier_split_checkbox->GetValue() ? "split, " : "";
 	stepParameters.Modifiers = modifiers.size() > 2 ? modifiers.substr(0,  modifiers.size() - 2) : modifiers;
 
 	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;
@@ -2647,6 +2654,45 @@ void cMain::NoOrderButtonHandle(bool force)
 				step.Modifiers = index != std::string::npos ?
 					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_no_order_comma, size - index - size_no_order_comma) :
 					step.Modifiers.substr(0, size - size_no_order);
+				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
+}
+
+void cMain::OnSkipChecked(wxCommandEvent& event)
+{
+	event.Skip();
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (rows.size() < 2) return;
+
+	if (event.IsChecked())
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			if (step.Modifiers.find("skip") == std::string::npos)
+			{
+				step.Modifiers = step.Modifiers.size() == 0 ? "skip" : step.Modifiers + ", skip";
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
+	else
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			const int size_skip = sizeof "skip" - 1;
+			const int size_skip_comma = sizeof "skip, " - 1;
+			if (step.Modifiers.find("skip") != std::string::npos)
+			{
+				auto size = step.Modifiers.size();
+				auto index = step.Modifiers.find("skip, ");
+				step.Modifiers = index != std::string::npos ?
+					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_skip_comma, size - index - size_skip_comma) :
+					step.Modifiers.substr(0, size - size_skip);
 				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
 				grid_steps->SetCellValue(row, 6, step.Modifiers);
 			}
