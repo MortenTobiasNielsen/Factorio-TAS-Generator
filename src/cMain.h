@@ -128,7 +128,7 @@ protected:
 	void OnNoOrderClicked(wxCommandEvent& event);
 	void OnNoOrderRightClicked(wxMouseEvent& event);
 	void NoOrderButtonHandle(bool force = false);
-	void OnSkipChecked(wxCommandEvent& event);
+	void OnSkipClicked(wxCommandEvent& event);
 
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);

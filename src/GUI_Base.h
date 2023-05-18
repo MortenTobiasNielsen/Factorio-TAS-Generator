@@ -128,7 +128,9 @@ class GUI_Base : public wxFrame
 		wxBoxSizer* sizer_no_order;
 		wxCheckBox* modifier_no_order_checkbox;
 		wxButton* modifier_no_order_button;
+		wxBoxSizer* sizer_skip;
 		wxCheckBox* modifier_skip_checkbox;
+		wxButton* modifier_skip_button;
 		wxCheckBox* modifier_wait_for_checkbox;
 		wxCheckBox* modifier_force_checkbox;
 		wxCheckBox* modifier_cancel_checkbox;
@@ -249,7 +251,7 @@ class GUI_Base : public wxFrame
 		virtual void OnKeepCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNoOrderClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNoOrderRightClicked( wxMouseEvent& event ) { event.Skip(); }
-		virtual void OnSkipChecked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSkipClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }
