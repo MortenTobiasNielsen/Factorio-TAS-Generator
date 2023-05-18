@@ -857,9 +857,16 @@ void GenerateScript::walk(string step, string action, string x_cord, string y_co
 void GenerateScript::mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment)
 { 
 	// Mine the coordinates without checking distance if the user have added Override in the comment - this is mostly useful for removing wreckage. 
-	if (modifiers.force || comment == "Override")
+	if (modifiers.force)
 	{
 		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, comment);
+		total_steps += 1;
+		PaintIntermediateWalk(step, false);
+		return;
+	}
+	else if (comment == "Override")
+	{
+		step_list += Step(step, "1", "\"mine\", {" + x_cord + ", " + y_cord + "}, " + duration, "");
 		total_steps += 1;
 		PaintIntermediateWalk(step, false);
 		return;
@@ -1075,13 +1082,21 @@ void GenerateScript::row_build(string step, string x_cord, string y_cord, string
 
 void GenerateScript::take(string step, string action, string x_cord, string y_cord, string amount, string item, string from, string building, string OrientationEnum, string comment)
 {
-	if (modifiers.force || comment == "Override")
+	if (modifiers.force)
 	{
 		item = check_item_name(item);
 		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, comment);
 		total_steps += 1;
 		PaintIntermediateWalk(step, false);
 		return; 
+	}
+	else if (comment == "Override")
+	{
+		item = check_item_name(item);
+		step_list += Step(step, action, "\"take\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + from, "");
+		total_steps += 1;
+		PaintIntermediateWalk(step, false);
+		return;
 	}
 
 	if (OrientationEnum == "Wreck")
@@ -1113,10 +1128,18 @@ void GenerateScript::row_take(string step, string x_cord, string y_cord, string 
 
 void GenerateScript::put(string step, string action, string x_cord, string y_cord, string amount, string item, string into, string building, string OrientationEnum, string comment)
 {
-	if (modifiers.force || comment == "Override")
+	if (modifiers.force)
 	{
 		item = check_item_name(item);
 		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, comment);
+		total_steps += 1;
+		PaintIntermediateWalk(step, false);
+		return;
+	}
+	else if (comment == "Override")
+	{
+		item = check_item_name(item);
+		step_list += Step(step, action, "\"put\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + amount + ", " + into, "");
 		total_steps += 1;
 		PaintIntermediateWalk(step, false);
 		return;
