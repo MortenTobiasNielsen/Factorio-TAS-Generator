@@ -294,8 +294,15 @@ local function put()
 		return false
 	end
 
+	local item_stack = player.get_main_inventory().find_item_stack(item)
+	local durability = 1
+	if item_stack.is_tool then
+		durability = item_stack.durability
+	end
+
 	amount=target_inventory.insert{
 		name=item,
+		durability=durability,
 		count=amount,
 	}
 
@@ -306,6 +313,7 @@ local function put()
 
 	amount = player.remove_item{
 		name=item,
+		durability=durability,
 		count=amount,
 	}
 
@@ -362,9 +370,16 @@ local function take()
 		return false
 	end
 
+	local item_stack = target_inventory.find_item_stack(item)
+	local durability = 1
+	if item_stack.is_tool then
+		durability = item_stack.durability
+	end
+
 	amount = player.insert{
 		name=item,
-		count=target_inventory.remove{name=item, count=amount}
+		durability=durability,
+		count=target_inventory.remove{name=item, count=amount, durability=durability}
 	}
 
 	local text = string.format("+%d %s (%d)", amount, format_name(item), player.get_item_count(item)) --"+2 Iron plate (5)"
