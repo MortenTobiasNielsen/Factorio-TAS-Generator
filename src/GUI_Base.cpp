@@ -715,6 +715,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	type_sizer_Stop = new wxBoxSizer( wxHORIZONTAL );
 
 	rbtn_stop = new wxRadioButton( game_panel, wxID_ANY, wxT("Stop"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_stop->SetToolTip( wxT("Stops the generator from processing further. Effectively marking this as the end of the TAS instead of using the end of the file.") );
+
 	type_sizer_Stop->Add( rbtn_stop, 0, wxALL, 5 );
 
 
