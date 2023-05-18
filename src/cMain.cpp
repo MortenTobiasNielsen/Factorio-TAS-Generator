@@ -1783,6 +1783,24 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 			txt_comment->SetValue(gridEntry->Comment);
 		
 			return;
+
+		case e_shoot:
+			if (changeType) OnShootChosen(event);
+			spin_x->SetValue(gridEntry->X);
+			spin_y->SetValue(gridEntry->Y);
+			spin_amount->SetValue(gridEntry->Amount);
+			txt_comment->SetValue(gridEntry->Comment);
+
+			return;
+
+		case e_throw:
+			if (changeType) OnThrowChosen(event);
+			spin_x->SetValue(gridEntry->X);
+			spin_y->SetValue(gridEntry->Y);
+			cmb_item->SetValue(gridEntry->Item);
+			txt_comment->SetValue(gridEntry->Comment);
+
+			return;
 		case e_cancel_crafting:
 			if (changeType) OnCancelCraftingMenuSelected(event);
 			cmb_item->SetValue(gridEntry->Item);
@@ -2009,6 +2027,18 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.Item = stepParameters->Item;
 			break;
 
+		case e_throw:
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Item = stepParameters->Item;
+			break;
+
+		case e_shoot:
+			gridEntry.X = std::to_string(stepParameters->X);
+			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.Amount = stepParameters->Amount;
+			break;
+
 		case e_walk:
 		case e_launch:
 			gridEntry.X = std::to_string(stepParameters->X);
@@ -2200,6 +2230,8 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 		case e_keep_crafting:
 		case e_keep_on_path:
 		case e_keep_walking:
+		case e_shoot:
+		case e_throw:
 			return true;
 
 		case e_build:

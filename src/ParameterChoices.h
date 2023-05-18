@@ -51,7 +51,9 @@ const struct parameter_choices_struct
 	const int walk = point | comment,
 	pick = amount | comment,
 	idle = amount | comment,
-	mining = point | amount | comment;
+	mining = point | amount | comment,
+	shoot = point | amount | comment,
+	_throw = point | item | comment;
 
 	//building interactions
 	const int build = building | item,

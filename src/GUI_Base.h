@@ -95,6 +95,8 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_drop;
 		wxRadioButton* rbtn_cancel_crafting;
 		wxRadioButton* rbtn_mine;
+		wxRadioButton* rbtn_throw;
+		wxRadioButton* rbtn_shoot;
 		wxRadioButton* rbtn_character_panel_hidden;
 		wxPanel* building_panel;
 		wxRadioButton* rbtn_take;
@@ -223,6 +225,8 @@ class GUI_Base : public wxFrame
 		virtual void OnDropChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMineChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnThrowChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnShootChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTakeChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPutChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnBuildChosen( wxCommandEvent& event ) { event.Skip(); }

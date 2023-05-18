@@ -532,6 +532,28 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	fgSizer4->Add( type_sizer_Mine, 1, wxEXPAND, 5 );
 
+	wxBoxSizer* type_sizer_Throw;
+	type_sizer_Throw = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_throw = new wxRadioButton( character_panel, wxID_ANY, wxT("Throw"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_throw->SetToolTip( wxT("Makes the character throw a grenade or combat robot, at the target location.") );
+
+	type_sizer_Throw->Add( rbtn_throw, 0, wxALL, 5 );
+
+
+	fgSizer4->Add( type_sizer_Throw, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* type_sizer_Shoot;
+	type_sizer_Shoot = new wxBoxSizer( wxVERTICAL );
+
+	rbtn_shoot = new wxRadioButton( character_panel, wxID_ANY, wxT("Shoot"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_shoot->SetToolTip( wxT("Makes the character shoot at a target for Amount ticks") );
+
+	type_sizer_Shoot->Add( rbtn_shoot, 0, wxALL, 5 );
+
+
+	fgSizer4->Add( type_sizer_Shoot, 1, wxEXPAND, 5 );
+
 	rbtn_character_panel_hidden = new wxRadioButton( character_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_character_panel_hidden->SetValue( true );
 	rbtn_character_panel_hidden->Hide();
@@ -1320,6 +1342,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_drop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnDropChosen ), NULL, this );
 	rbtn_cancel_crafting->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
 	rbtn_mine->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnMineChosen ), NULL, this );
+	rbtn_throw->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnThrowChosen ), NULL, this );
+	rbtn_shoot->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnShootChosen ), NULL, this );
 	rbtn_take->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeChosen ), NULL, this );
 	rbtn_put->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPutChosen ), NULL, this );
 	rbtn_build->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildChosen ), NULL, this );
@@ -1392,6 +1416,8 @@ GUI_Base::~GUI_Base()
 	rbtn_drop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnDropChosen ), NULL, this );
 	rbtn_cancel_crafting->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingChosen ), NULL, this );
 	rbtn_mine->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnMineChosen ), NULL, this );
+	rbtn_throw->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnThrowChosen ), NULL, this );
+	rbtn_shoot->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnShootChosen ), NULL, this );
 	rbtn_take->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeChosen ), NULL, this );
 	rbtn_put->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPutChosen ), NULL, this );
 	rbtn_build->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildChosen ), NULL, this );
