@@ -36,7 +36,11 @@ const struct parameter_choices_struct
 	const int Pause = comment,
 	stop = comment,
 	save = comment,
-	game_speed = amount | comment;
+	game_speed = amount | comment,
+	never_idle = comment,
+	keep_walking = comment,
+	keep_on_path = comment,
+	keep_crafting = comment;
 
 	//game state interactions
 	const int craft = amount | item | comment,

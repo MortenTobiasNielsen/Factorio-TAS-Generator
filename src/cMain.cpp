@@ -493,6 +493,10 @@ void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType Step)
 		case e_game_speed:
 		case e_pause:
 		case e_save:
+		case e_keep_crafting:
+		case e_keep_on_path:
+		case e_keep_walking:
+		case e_never_idle:
 			grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
 			return;
 		default:
@@ -1621,6 +1625,26 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 			txt_comment->SetValue(gridEntry->Comment);
 
 			return;
+		case e_never_idle:
+			if (changeType) OnNeverIdleChosen(event);
+			txt_comment->SetValue(gridEntry->Comment);
+
+			return;
+		case e_keep_walking:
+			if (changeType) OnKeepWalkingChosen(event);
+			txt_comment->SetValue(gridEntry->Comment);
+
+			return;
+		case e_keep_crafting:
+			if (changeType) OnKeepCraftingChosen(event);
+			txt_comment->SetValue(gridEntry->Comment);
+
+			return;
+		case e_keep_on_path:
+			if (changeType) OnKeepOnPathChosen(event);
+			txt_comment->SetValue(gridEntry->Comment);
+
+			return;
 		case e_recipe:
 			if (changeType) OnRecipeMenuChosen(event);
 			spin_x->SetValue(gridEntry->X);
@@ -1967,6 +1991,10 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 
 		case e_pause:
 		case e_save:
+		case e_never_idle:
+		case e_keep_crafting:
+		case e_keep_on_path:
+		case e_keep_walking:
 			break;
 
 		case e_game_speed:
@@ -2168,6 +2196,10 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 		case e_idle:
 		case e_drop:
 		case e_cancel_crafting:
+		case e_never_idle:
+		case e_keep_crafting:
+		case e_keep_on_path:
+		case e_keep_walking:
 			return true;
 
 		case e_build:

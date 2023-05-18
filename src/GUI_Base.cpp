@@ -440,7 +440,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	character_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer4;
-	fgSizer4 = new wxFlexGridSizer( 4, 3, 10, 10 );
+	fgSizer4 = new wxFlexGridSizer( 5, 3, 5, 10 );
 	fgSizer4->SetFlexibleDirection( wxBOTH );
 	fgSizer4->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -546,7 +546,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	building_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer5;
-	fgSizer5 = new wxFlexGridSizer( 4, 3, 10, 10 );
+	fgSizer5 = new wxFlexGridSizer( 4, 3, 5, 10 );
 	fgSizer5->SetFlexibleDirection( wxBOTH );
 	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -659,11 +659,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	building_panel->SetSizer( fgSizer5 );
 	building_panel->Layout();
 	fgSizer5->Fit( building_panel );
-	type_sizer->Add( building_panel, 1, wxEXPAND | wxALL, 5 );
+	type_sizer->Add( building_panel, 1, wxBOTTOM|wxEXPAND|wxTOP, 5 );
 
 	game_panel = new wxPanel( type_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxTAB_TRAVERSAL );
 	wxFlexGridSizer* fgSizer6;
-	fgSizer6 = new wxFlexGridSizer( 4, 2, 10, 10 );
+	fgSizer6 = new wxFlexGridSizer( 5, 2, 5, 10 );
 	fgSizer6->SetFlexibleDirection( wxBOTH );
 	fgSizer6->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
@@ -708,6 +708,26 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 
 	fgSizer6->Add( type_sizer_Save, 1, wxEXPAND, 5 );
+
+	rbtn_never_idle = new wxRadioButton( game_panel, wxID_ANY, wxT("Never Idle"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_never_idle->SetToolTip( wxT("Toggles that the TAS that it should execute a step in every tick.\nIf it can't it will raise a warning through the console so you can improve the script.") );
+
+	fgSizer6->Add( rbtn_never_idle, 0, wxALL, 5 );
+
+	rbtn_keep_walking = new wxRadioButton( game_panel, wxID_ANY, wxT("Keep Walking"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_keep_walking->SetToolTip( wxT("Toggles that the TAS should never stand still in one spot.\nIf it can't it will raise a warning through the console so you can improve the script.") );
+
+	fgSizer6->Add( rbtn_keep_walking, 0, wxALL, 5 );
+
+	rbtn_keep_on_path = new wxRadioButton( game_panel, wxID_ANY, wxT("Keep on Path"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_keep_on_path->SetToolTip( wxT("Toggles that the TAS should stay on pathing, such stone-path or concrete.\nIf it can't it will raise a warning through the console so you can improve the script.\n\nThis uses simple detection of: character speed > base speed. So it will be inaccurate if the speed is modified in other ways than tiles.") );
+
+	fgSizer6->Add( rbtn_keep_on_path, 0, wxALL, 5 );
+
+	rbtn_keep_crafting = new wxRadioButton( game_panel, wxID_ANY, wxT("Keep Crafting"), wxDefaultPosition, wxDefaultSize, 0 );
+	rbtn_keep_crafting->SetToolTip( wxT("Toggles that the TAS should keep the handcrafting queued active.\nIf it can't it will raise a warning through the console so you can improve the script.") );
+
+	fgSizer6->Add( rbtn_keep_crafting, 0, wxALL, 5 );
 
 	rbtn_game_panel_hidden = new wxRadioButton( game_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	rbtn_game_panel_hidden->SetValue( true );
@@ -1313,6 +1333,10 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	rbtn_pause->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
 	rbtn_stop->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
 	rbtn_save->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
+	rbtn_never_idle->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnNeverIdleChosen ), NULL, this );
+	rbtn_keep_walking->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepWalkingChosen ), NULL, this );
+	rbtn_keep_on_path->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepOnPathChosen ), NULL, this );
+	rbtn_keep_crafting->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepCraftingChosen ), NULL, this );
 	modifier_no_order_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
 	modifier_no_order_button->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
 	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
@@ -1381,6 +1405,10 @@ GUI_Base::~GUI_Base()
 	rbtn_pause->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseChosen ), NULL, this );
 	rbtn_stop->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnStopChosen ), NULL, this );
 	rbtn_save->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveChosen ), NULL, this );
+	rbtn_never_idle->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnNeverIdleChosen ), NULL, this );
+	rbtn_keep_walking->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepWalkingChosen ), NULL, this );
+	rbtn_keep_on_path->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepOnPathChosen ), NULL, this );
+	rbtn_keep_crafting->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepCraftingChosen ), NULL, this );
 	modifier_no_order_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
 	modifier_no_order_button->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
 	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );

@@ -157,6 +157,10 @@ private:
 	void tech(string step, string tech_to_research, string comment);
 	void speed(string step, string speed, string comment);
 	void pause(string step, string comment);
+	void never_idle(string step, string comment);
+	void keep_walking(string step, string comment);
+	void keep_on_path(string step, string comment);
+	void keep_crafting(string step, string comment);
 	void launch(string step, string x_cord, string y_cord, string comment);
 	void save(string step, string nameOfSaveGame);
 	void idle(string step, string amount, string comment);

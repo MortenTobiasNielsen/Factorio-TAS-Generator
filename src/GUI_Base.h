@@ -112,6 +112,10 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_pause;
 		wxRadioButton* rbtn_stop;
 		wxRadioButton* rbtn_save;
+		wxRadioButton* rbtn_never_idle;
+		wxRadioButton* rbtn_keep_walking;
+		wxRadioButton* rbtn_keep_on_path;
+		wxRadioButton* rbtn_keep_crafting;
 		wxRadioButton* rbtn_game_panel_hidden;
 		wxPanel* auto_put_panel;
 		wxCheckBox* check_furnace;
@@ -232,6 +236,10 @@ class GUI_Base : public wxFrame
 		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnNeverIdleChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnKeepWalkingChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnKeepOnPathChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnKeepCraftingChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNoOrderClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNoOrderRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
