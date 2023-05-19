@@ -483,7 +483,7 @@
                         <property name="label">Save</property>
                         <property name="name">shortcut_Save</property>
                         <property name="permission">none</property>
-                        <property name="shortcut">Alt+Q</property>
+                        <property name="shortcut">Ctrl+S</property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">OnSaveMenuSelected</event>
                     </object>
@@ -5582,7 +5582,7 @@
                                         <property name="border">5</property>
                                         <property name="flag">wxALL</property>
                                         <property name="proportion">0</property>
-                                <object class="wxCheckBox" expanded="1">
+                                        <object class="wxCheckBox" expanded="1">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
                                             <property name="RightDockable">1</property>
