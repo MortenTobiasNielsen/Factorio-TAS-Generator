@@ -547,11 +547,12 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 	}
 	else
 	{
-		change = AddStep(grid_steps->GetNumberRows(), ExtractStepParameters());
+		int row = grid_steps->GetNumberRows();
+		change = AddStep(row, ExtractStepParameters());
 		if (change.size() > 0)
 		{
 			stack.Push({
-				.row = *grid_steps->GetSelectedRows().begin() - 1,
+				.row = row,
 				.type = T_ADD,
 				.rows = change,
 			});
@@ -584,11 +585,12 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 	}
 	else
 	{
-		change = AddStep(grid_steps->GetNumberRows(), ExtractStepParameters());
+		int row = grid_steps->GetNumberRows();
+		change = AddStep(row, ExtractStepParameters());
 		if (change.size() > 0)
 		{
 			stack.Push({
-				.row = grid_steps->GetNumberRows(),
+				.row = row,
 				.type = T_ADD,
 				.rows = change,
 			});
@@ -599,7 +601,7 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 	event.Skip();
 }
 
-vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepParameters)
+vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepParameters, bool auto_put)
 {
 	vector<tuple<int, StepParameters>> returnValue;
 
@@ -622,37 +624,39 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 			stepParameters.StepEnum = e_put;
 			stepParameters.Step = StepNames[e_put];
 			stepParameters.Amount = "1";
-
-			if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
+			if (auto_put)
 			{
-				stepParameters.Item = struct_fuel_list.coal;
-				stepParameters.FromInto = struct_from_into_list.fuel;
+				if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
+				{
+					stepParameters.Item = struct_fuel_list.coal;
+					stepParameters.FromInto = struct_from_into_list.fuel;
 
-				UpdateStepGrid(row + 1, &stepParameters);
-				returnValue.push_back({row + 1, stepParameters});
-				return returnValue;
+					UpdateStepGrid(row + 1, &stepParameters);
+					returnValue.push_back({row + 1, stepParameters});
+					return returnValue;
+				}
+
+				if (check_burner->IsChecked() && (to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler))
+				{
+					stepParameters.Item = struct_fuel_list.coal;
+					stepParameters.FromInto = struct_from_into_list.fuel;
+
+					UpdateStepGrid(row + 1, &stepParameters);
+					returnValue.push_back({row + 1, stepParameters});
+					return returnValue;
+				}
+
+				if (check_lab->IsChecked() && to_check == struct_science_list.lab)
+				{
+					stepParameters.Item = "Automation science pack";
+					stepParameters.FromInto = struct_from_into_list.input;
+
+					UpdateStepGrid(row + 1, &stepParameters);
+					returnValue.push_back({row + 1, stepParameters});
+					return returnValue;
+				}
 			}
-
-			if (check_burner->IsChecked() && (to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler))
-			{
-				stepParameters.Item = struct_fuel_list.coal;
-				stepParameters.FromInto = struct_from_into_list.fuel;
-
-				UpdateStepGrid(row + 1, &stepParameters);
-				returnValue.push_back({row + 1, stepParameters});
-				return returnValue;
-			}
-
-			if (check_lab->IsChecked() && to_check == struct_science_list.lab)
-			{
-				stepParameters.Item = "Automation science pack";
-				stepParameters.FromInto = struct_from_into_list.input;
-
-				UpdateStepGrid(row + 1, &stepParameters);
-				returnValue.push_back({row + 1, stepParameters});
-				return returnValue;
-			}
-
+			
 			return returnValue;
 
 		case e_recipe:
@@ -664,7 +668,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 			
 			int multiplier = stoi(stepParameters.Amount);
 
-			if (0 < multiplier && check_recipe->IsChecked())
+			if (auto_put && 0 < multiplier && check_recipe->IsChecked())
 			{
 				vector<string> recipe = recipes.find(to_check)->second;
 
@@ -2878,7 +2882,7 @@ void cMain::OnUndoMenuSelected(wxCommandEvent& event)
 		case T_DELETE:
 			for (auto& [row, step] : command.rows)
 			{
-				AddStep(row, step);
+				AddStep(row, step, false);
 			}
 			break;
 		case T_MODIFY:
@@ -2916,7 +2920,7 @@ void cMain::OnRedoMenuSelected(wxCommandEvent& event)
 			{
 				for (auto& [row, step] : command.rows)
 				{
-					AddStep(row, step);
+					AddStep(row, step, false);
 				}
 			}
 			break;

@@ -262,7 +262,7 @@ private:
 	int GenerateBuildingSnapShot(int end_row);
 	void PopulateStepGrid();
 
-	vector<tuple<int, StepParameters>> AddStep(int row, StepParameters step);
+	vector<tuple<int, StepParameters>> AddStep(int row, StepParameters step, bool auto_put = true);
 	vector< tuple<int, StepParameters>> ChangeStep(int row, StepParameters stepParameters);
 	vector< tuple<int, StepParameters>> DeleteSteps(wxArrayInt steps, bool auto_confirm = false);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
