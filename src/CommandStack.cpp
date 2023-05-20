@@ -1,5 +1,12 @@
 #include "CommandStack.h"
 
+void CommandStack::Clear()
+{
+	tail = 0;
+	head = 0;
+	hair = 0;
+}
+
 void CommandStack::Push(Command command)
 {
 	buffer[head] = command;

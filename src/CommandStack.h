@@ -36,6 +36,7 @@ private:
 public:
 	CommandStack() {}
 
+	void Clear();
 	void Push(Command command);
 	Command Pop();
 	Command PopBack();

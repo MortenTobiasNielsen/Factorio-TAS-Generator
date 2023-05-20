@@ -200,6 +200,8 @@ void cMain::ResetToNewWindow()
 	}
 
 	SetLabel(window_title);
+
+	stack.Clear();
 }
 
 bool cMain::CheckBeforeClose()
@@ -844,7 +846,7 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 
 		StepGridData.erase(iStart, iEnd);
 	}
-	return_list;
+	return return_list;
 }
 
 tuple<int, StepParameters> cMain::GetRowTuple(int index)
@@ -2278,17 +2280,9 @@ void cMain::UpdateStepGrid(int row, StepParameters* stepParameters)
 
 	PopulateGrid(grid_steps, row, &gridEntry);
 
-	if (grid_steps->IsSelection())
-	{
-		auto it1 = StepGridData.begin();
-		it1 += row;
-
-		StepGridData.insert(it1, *stepParameters);
-	}
-	else
-	{
-		StepGridData.push_back(*stepParameters);
-	}
+	auto it1 = StepGridData.begin();
+	it1 += row;
+	StepGridData.insert(it1, *stepParameters);
 
 	BackgroundColorUpdate(grid_steps, row, stepParameters->StepEnum);
 }
@@ -2853,9 +2847,9 @@ void cMain::OnSkipClicked(wxCommandEvent& event)
 void cMain::SelectRowsInGrid(vector<tuple<int, StepParameters>> rows)
 {
 	grid_steps->ClearSelection();
-	for (auto& [r, _] : rows)
+	for (auto& [row, _] : rows)
 	{
-		grid_steps->SelectRow(r, true);
+		grid_steps->SelectRow(row, true);
 	}
 }
 
@@ -2908,6 +2902,7 @@ void cMain::OnUndoMenuSelected(wxCommandEvent& event)
 			break;
 	}
 }
+
 void cMain::OnRedoMenuSelected(wxCommandEvent& event)
 {
 	Command command = stack.PopBack();
