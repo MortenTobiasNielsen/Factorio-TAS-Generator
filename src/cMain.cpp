@@ -846,6 +846,7 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 
 		StepGridData.erase(iStart, iEnd);
 	}
+
 	return return_list;
 }
 
@@ -2847,9 +2848,9 @@ void cMain::OnSkipClicked(wxCommandEvent& event)
 void cMain::SelectRowsInGrid(vector<tuple<int, StepParameters>> rows)
 {
 	grid_steps->ClearSelection();
-	for (auto& [row, _] : rows)
+	for (auto& [index, data] : rows)
 	{
-		grid_steps->SelectRow(row, true);
+		grid_steps->SelectRow(index, true);
 	}
 }
 
