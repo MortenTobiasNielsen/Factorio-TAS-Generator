@@ -167,6 +167,7 @@
     <ClCompile Include="BuildingNameToIndex.cpp" />
     <ClCompile Include="cApp.cpp" />
     <ClCompile Include="cMain.cpp" />
+    <ClCompile Include="CommandStack.cpp" />
     <ClCompile Include="DialogProgressBar.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="GenerateScript.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="BuildingNameToIndex.h" />
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
+    <ClInclude Include="CommandStack.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />

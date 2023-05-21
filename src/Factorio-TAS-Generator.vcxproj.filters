@@ -24,6 +24,7 @@
     </ClCompile>
     <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="ImportStepsPanel.cpp" />
+    <ClCompile Include="CommandStack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -68,6 +69,7 @@
     <ClInclude Include="Orientation.h" />
     <ClInclude Include="Priority.h" />
     <ClInclude Include="TasFileConstants.h" />
+    <ClInclude Include="CommandStack.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Lua Files\control.lua">
