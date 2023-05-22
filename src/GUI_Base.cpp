@@ -1179,6 +1179,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_search_ctrl->ShowSearchButton( true );
 	#endif
 	step_search_ctrl->ShowCancelButton( true );
+	step_search_ctrl->SetToolTip( wxT("Search for a step.\n\n( ; ) Semicolon to have multiple search terms [ term1; term2; term3 ].\n( : ) Colon to specify column [ column:term ].") );
+
 	step_panel_search_sizer->Add( step_search_ctrl, 0, wxALL, 5 );
 
 	step_search_toggle_updown = new wxCheckBox( step_panel, wxID_ANY, wxT("Search up"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -1189,6 +1191,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer65 = new wxBoxSizer( wxHORIZONTAL );
 
 	step_colour_picker = new wxColourPickerCtrl( step_panel, wxID_ANY, wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_SHOW_LABEL );
+	step_colour_picker->SetToolTip( wxT("Select a number of rows to set the colour on them.\nThe colour is automaticly matches the first row of the selected area.") );
+
 	bSizer65->Add( step_colour_picker, 0, wxALL, 5 );
 
 
@@ -1201,21 +1205,27 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_panel_control_sizer = new wxBoxSizer( wxHORIZONTAL );
 
 	btn_add_step = new wxButton( step_panel, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_add_step->SetToolTip( wxT("Adds a new step to the list above the selected area.\nRight click: Add the step under the selected area instead.\n\nIf no rows are selected then it will be placed at the end of the list.\n") );
+
 	step_panel_control_sizer->Add( btn_add_step, 0, wxALIGN_CENTER|wxALL, 5 );
 
 	btn_change_step = new wxButton( step_panel, wxID_ANY, wxT("Change"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_change_step->SetToolTip( wxT("Changes the currently selected step to the input.\nRight click: ignore warnings.") );
+
 	step_panel_control_sizer->Add( btn_change_step, 0, wxALL, 5 );
 
 	btn_delete_step = new wxButton( step_panel, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_delete_step->SetToolTip( wxT("Deletes the selected step or steps.\nRight click: ignore warnings.") );
+
 	step_panel_control_sizer->Add( btn_delete_step, 0, wxALL, 5 );
 
 	btn_move_up = new wxButton( step_panel, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0 );
-	btn_move_up->SetToolTip( wxT("Right-click to move 5 but be patient") );
+	btn_move_up->SetToolTip( wxT("Moves the step up.\nRight click: move 5 but be patient") );
 
 	step_panel_control_sizer->Add( btn_move_up, 0, wxALL, 5 );
 
 	btn_move_down = new wxButton( step_panel, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0 );
-	btn_move_down->SetToolTip( wxT("Right-click to move 5 but be patient") );
+	btn_move_down->SetToolTip( wxT("Moves the step down.\nRight click: move 5 but be patient") );
 
 	step_panel_control_sizer->Add( btn_move_down, 0, wxALL, 5 );
 
