@@ -546,6 +546,20 @@ void cMain::OnMineMenuSelected(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::OnThrowMenuSelected(wxCommandEvent& event)
+{
+	type_panel->SwitchStep(e_throw);
+	OnThrowChosen(event);
+	event.Skip();
+}
+
+void cMain::OnShootMenuSelected(wxCommandEvent& event)
+{
+	type_panel->SwitchStep(e_shoot);
+	OnShootChosen(event);
+	event.Skip();
+}
+
 void cMain::OnGameSpeedMenuSelected(wxCommandEvent& event)
 {
 	type_panel->SwitchStep(e_game_speed);
@@ -669,6 +683,34 @@ void cMain::OnSaveMenuSelected(wxCommandEvent& event)
 {
 	type_panel->SwitchStep(e_save);
 	OnSaveChosen(event);
+	event.Skip();
+}
+
+void cMain::OnNeverIdleMenuSelected(wxCommandEvent& event)
+{
+	type_panel->SwitchStep(e_never_idle);
+	OnNeverIdleChosen(event);
+	event.Skip();
+}
+
+void cMain::OnKeepWalkingMenuSelected(wxCommandEvent& event)
+{
+	type_panel->SwitchStep(e_keep_walking);
+	OnKeepWalkingChosen(event);
+	event.Skip();
+}
+
+void cMain::OnKeepOnPathMenuSelected(wxCommandEvent& event)
+{
+	type_panel->SwitchStep(e_keep_on_path);
+	OnKeepOnPathChosen(event);
+	event.Skip();
+}
+
+void cMain::OnKeepCraftingMenuSelected(wxCommandEvent& event)
+{
+	type_panel->SwitchStep(e_keep_crafting);
+	OnKeepCraftingChosen(event);
 	event.Skip();
 }
 

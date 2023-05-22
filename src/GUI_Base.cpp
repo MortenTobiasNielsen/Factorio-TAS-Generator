@@ -54,114 +54,171 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	main_menubar->Append( menu_script, wxT("Script") );
 
+	menu_steptypes = new wxMenu();
+	wxMenuItem* shortcut_walk;
+	shortcut_walk = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Walk") ) + wxT('\t') + wxT("Ctrl+2"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_walk );
+
+	wxMenuItem* shortcut_craft;
+	shortcut_craft = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Craft") ) + wxT('\t') + wxT("Ctrl+1"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_craft );
+
+	wxMenuItem* shortcut_tech;
+	shortcut_tech = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Tech") ) + wxT('\t') + wxT("Alt+3"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_tech );
+
+	wxMenuItem* shortcut_idle;
+	shortcut_idle = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Idle") ) + wxT('\t') + wxT("Alt+6"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_idle );
+
+	wxMenuItem* shortcut_pick_up;
+	shortcut_pick_up = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Pick Up") ) + wxT('\t') + wxT("Shift+4"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_pick_up );
+
+	wxMenuItem* shortcut_drop;
+	shortcut_drop = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Drop") ) + wxT('\t') + wxT("Shift+5"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_drop );
+
+	wxMenuItem* shortcut_cancel_crafting;
+	shortcut_cancel_crafting = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Cancel Crafting") ) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_cancel_crafting );
+
+	wxMenuItem* shortcut_mine;
+	shortcut_mine = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Mine") ) + wxT('\t') + wxT("Alt+1"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_mine );
+
+	wxMenuItem* shortcut_throw;
+	shortcut_throw = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Throw") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_throw );
+
+	wxMenuItem* shortcut_shoot;
+	shortcut_shoot = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Shoot") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_shoot );
+
+	menu_steptypes->AppendSeparator();
+
+	wxMenuItem* shortcut_take;
+	shortcut_take = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Take") ) + wxT('\t') + wxT("Alt+4"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_take );
+
+	wxMenuItem* shortcut_put;
+	shortcut_put = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Put") ) + wxT('\t') + wxT("Alt+5"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_put );
+
+	wxMenuItem* shortcut_build;
+	shortcut_build = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Build") ) + wxT('\t') + wxT("Alt+2"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_build );
+
+	wxMenuItem* shortcut_recipe;
+	shortcut_recipe = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Recipe") ) + wxT('\t') + wxT("Ctrl+5"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_recipe );
+
+	wxMenuItem* shortcut_limit;
+	shortcut_limit = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Limit") ) + wxT('\t') + wxT("Shift+2"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_limit );
+
+	wxMenuItem* shortcut_filter;
+	shortcut_filter = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Filter") ) + wxT('\t') + wxT("Shift+3"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_filter );
+
+	wxMenuItem* shortcut_priority;
+	shortcut_priority = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Priority") ) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_priority );
+
+	wxMenuItem* shortcut_launch;
+	shortcut_launch = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Launch") ) + wxT('\t') + wxT("Shift+6"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_launch );
+
+	wxMenuItem* shortcut_rotate;
+	shortcut_rotate = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Rotate") ) + wxT('\t') + wxT("Ctrl+4"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_rotate );
+
+	menu_steptypes->AppendSeparator();
+
+	wxMenuItem* shortcut_game_speed;
+	shortcut_game_speed = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Game Speed") ) + wxT('\t') + wxT("Ctrl+3"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_game_speed );
+
+	wxMenuItem* shortcut_pause;
+	shortcut_pause = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Pause") ) + wxT('\t') + wxT("Alt+R"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_pause );
+
+	wxMenuItem* shortcut_stop;
+	shortcut_stop = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Stop") ) + wxT('\t') + wxT("Ctrl+6"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_stop );
+
+	wxMenuItem* shortcut_save;
+	shortcut_save = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Save") ) + wxT('\t') + wxT("Alt+Q"), wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_save );
+
+	wxMenuItem* shortcut_never_idle;
+	shortcut_never_idle = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Never idle") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_never_idle );
+
+	wxMenuItem* shortcut_keep_walking;
+	shortcut_keep_walking = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Keep walking") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_keep_walking );
+
+	wxMenuItem* shortcut_keep_on_path;
+	shortcut_keep_on_path = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Keep on path") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_keep_on_path );
+
+	wxMenuItem* shortcut_keep_crafting;
+	shortcut_keep_crafting = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Keep crafting") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( shortcut_keep_crafting );
+
+	main_menubar->Append( menu_steptypes, wxT("Step types") );
+
 	menu_shortcuts = new wxMenu();
 	wxMenuItem* shortcut_changer;
 	shortcut_changer = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Change shortcuts") ) , wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_changer );
 
-	wxMenuItem* shortcut_craft;
-	shortcut_craft = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Craft") ) + wxT('\t') + wxT("Ctrl+1"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_craft );
-
-	wxMenuItem* shortcut_walk;
-	shortcut_walk = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Walk") ) + wxT('\t') + wxT("Ctrl+2"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_walk );
-
-	wxMenuItem* shortcut_game_speed;
-	shortcut_game_speed = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Game Speed") ) + wxT('\t') + wxT("Ctrl+3"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_game_speed );
-
-	wxMenuItem* shortcut_rotate;
-	shortcut_rotate = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Rotate") ) + wxT('\t') + wxT("Ctrl+4"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_rotate );
-
-	wxMenuItem* shortcut_recipe;
-	shortcut_recipe = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Recipe") ) + wxT('\t') + wxT("Ctrl+5"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_recipe );
-
-	wxMenuItem* shortcut_stop;
-	shortcut_stop = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Stop") ) + wxT('\t') + wxT("Ctrl+6"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_stop );
-
-	wxMenuItem* shortcut_mine;
-	shortcut_mine = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Mine") ) + wxT('\t') + wxT("Alt+1"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_mine );
-
-	wxMenuItem* shortcut_build;
-	shortcut_build = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Build") ) + wxT('\t') + wxT("Alt+2"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_build );
-
-	wxMenuItem* shortcut_tech;
-	shortcut_tech = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Tech") ) + wxT('\t') + wxT("Alt+3"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_tech );
-
-	wxMenuItem* shortcut_take;
-	shortcut_take = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Take") ) + wxT('\t') + wxT("Alt+4"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_take );
-
-	wxMenuItem* shortcut_put;
-	shortcut_put = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Put") ) + wxT('\t') + wxT("Alt+5"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_put );
-
-	wxMenuItem* shortcut_idle;
-	shortcut_idle = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Idle") ) + wxT('\t') + wxT("Alt+6"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_idle );
-
-	wxMenuItem* shortcut_priority;
-	shortcut_priority = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Priority") ) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_priority );
-
-	wxMenuItem* shortcut_limit;
-	shortcut_limit = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Limit") ) + wxT('\t') + wxT("Shift+2"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_limit );
-
-	wxMenuItem* shortcut_filter;
-	shortcut_filter = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Filter") ) + wxT('\t') + wxT("Shift+3"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_filter );
-
-	wxMenuItem* shortcut_pick_up;
-	shortcut_pick_up = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Pick Up") ) + wxT('\t') + wxT("Shift+4"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_pick_up );
-
-	wxMenuItem* shortcut_drop;
-	shortcut_drop = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Drop") ) + wxT('\t') + wxT("Shift+5"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_drop );
-
-	wxMenuItem* shortcut_launch;
-	shortcut_launch = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Launch") ) + wxT('\t') + wxT("Shift+6"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_launch );
-
-	wxMenuItem* shortcut_Save;
-	shortcut_Save = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Save") ) + wxT('\t') + wxT("Alt+Q"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_Save );
-
-	wxMenuItem* shortcut_pause;
-	shortcut_pause = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Pause") ) + wxT('\t') + wxT("Alt+R"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_pause );
+	menu_shortcuts->AppendSeparator();
 
 	wxMenuItem* shortcut_add_step;
 	shortcut_add_step = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Add Step") ) + wxT('\t') + wxT("Alt+A"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_add_step );
 
+	wxMenuItem* shortcut_add_step_alt;
+	shortcut_add_step_alt = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Add Step Under") ) + wxT('\t') + wxT("Ctrl+A"), wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_add_step_alt );
+
 	wxMenuItem* shortcut_change_step;
 	shortcut_change_step = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Change Step") ) + wxT('\t') + wxT("Alt+C"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_change_step );
+
+	wxMenuItem* shortcut_change_step_alt;
+	shortcut_change_step_alt = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Change Step Force") ) + wxT('\t') + wxT("Ctrl+Alt+C"), wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_change_step_alt );
 
 	wxMenuItem* shortcut_delete_step;
 	shortcut_delete_step = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Delete Step") ) + wxT('\t') + wxT("Del"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_delete_step );
 
+	wxMenuItem* shortcut_delete_step_alt;
+	shortcut_delete_step_alt = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Delete Step Force") ) + wxT('\t') + wxT("Ctrl+Del"), wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_delete_step_alt );
+
 	wxMenuItem* shortcut_move_up;
 	shortcut_move_up = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Move Up") ) + wxT('\t') + wxT("Alt+W"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_move_up );
+
+	wxMenuItem* shortcut_move_up_alt;
+	shortcut_move_up_alt = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Move Up 5") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_move_up_alt );
 
 	wxMenuItem* shortcut_move_down;
 	shortcut_move_down = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Move Down") ) + wxT('\t') + wxT("Alt+S"), wxEmptyString, wxITEM_NORMAL );
 	menu_shortcuts->Append( shortcut_move_down );
 
-	wxMenuItem* shortcut_cancel_crafting;
-	shortcut_cancel_crafting = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Cancel Crafting") ) + wxT('\t') + wxT("Shift+1"), wxEmptyString, wxITEM_NORMAL );
-	menu_shortcuts->Append( shortcut_cancel_crafting );
+	wxMenuItem* shortcut_move_down_alt;
+	shortcut_move_down_alt = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Move Down 5") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_move_down_alt );
+
+	wxMenuItem* shortcut_search;
+	shortcut_search = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Search") ) + wxT('\t') + wxT("Ctrl+F"), wxT("Finds the nearest searchbox and focuses on it"), wxITEM_NORMAL );
+	menu_shortcuts->Append( shortcut_search );
 
 	wxMenuItem* shortcut_undo;
 	shortcut_undo = new wxMenuItem( menu_shortcuts, wxID_ANY, wxString( wxT("Undo") ) + wxT('\t') + wxT("Ctrl+Z"), wxEmptyString, wxITEM_NORMAL );
@@ -1336,33 +1393,45 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChooseLocation ), this, menu_script_choose_location->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnGenerateScript ), this, menu_script_generate_script->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnOnlyGenerateSteps ), this, menu_script_only_generate_steps->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnWalkMenuSelected ), this, shortcut_walk->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftMenuSelected ), this, shortcut_craft->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnTechMenuSelected ), this, shortcut_tech->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnIdleMenuSelected ), this, shortcut_idle->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPickUpMenuSelected ), this, shortcut_pick_up->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnDropMenuSelected ), this, shortcut_drop->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingMenuSelected ), this, shortcut_cancel_crafting->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMineMenuSelected ), this, shortcut_mine->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnThrowMenuSelected ), this, shortcut_throw->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnShootMenuSelected ), this, shortcut_shoot->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeMenuSelected ), this, shortcut_take->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPutMenuSelected ), this, shortcut_put->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildMenuSelected ), this, shortcut_build->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnRecipeMenuChosen ), this, shortcut_recipe->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnLimitMenuSelected ), this, shortcut_limit->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnFilterMenuSelected ), this, shortcut_filter->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPriorityMenuSelected ), this, shortcut_priority->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchMenuSelected ), this, shortcut_launch->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnRotateMenuSelected ), this, shortcut_rotate->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnGameSpeedMenuSelected ), this, shortcut_game_speed->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseMenuSelected ), this, shortcut_pause->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnStopMenuSelected ), this, shortcut_stop->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveMenuSelected ), this, shortcut_save->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnNeverIdleMenuSelected ), this, shortcut_never_idle->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepWalkingMenuSelected ), this, shortcut_keep_walking->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepOnPathMenuSelected ), this, shortcut_keep_on_path->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnKeepCraftingMenuSelected ), this, shortcut_keep_crafting->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChangeShortcutMenuSelected ), this, shortcut_changer->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftMenuSelected ), this, shortcut_craft->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnWalkMenuSelected ), this, shortcut_walk->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnGameSpeedMenuSelected ), this, shortcut_game_speed->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnRotateMenuSelected ), this, shortcut_rotate->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnRecipeMenuChosen ), this, shortcut_recipe->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnStopMenuSelected ), this, shortcut_stop->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMineMenuSelected ), this, shortcut_mine->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnBuildMenuSelected ), this, shortcut_build->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnTechMenuSelected ), this, shortcut_tech->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnTakeMenuSelected ), this, shortcut_take->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPutMenuSelected ), this, shortcut_put->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnIdleMenuSelected ), this, shortcut_idle->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPriorityMenuSelected ), this, shortcut_priority->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnLimitMenuSelected ), this, shortcut_limit->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnFilterMenuSelected ), this, shortcut_filter->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPickUpMenuSelected ), this, shortcut_pick_up->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnDropMenuSelected ), this, shortcut_drop->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnLaunchMenuSelected ), this, shortcut_launch->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnSaveMenuSelected ), this, shortcut_Save->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnPauseMenuSelected ), this, shortcut_pause->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnAddMenuSelected ), this, shortcut_add_step->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnAddAltMenuSelected ), this, shortcut_add_step_alt->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChangeMenuSelected ), this, shortcut_change_step->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChangeAltMenuSelected ), this, shortcut_change_step_alt->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnDeleteMenuSelected ), this, shortcut_delete_step->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnDeleteAltMenuSelected ), this, shortcut_delete_step_alt->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveUpMenuSelected ), this, shortcut_move_up->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveUpAltMenuSelected ), this, shortcut_move_up_alt->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveDownMenuSelected ), this, shortcut_move_down->GetId());
-	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCancelCraftingMenuSelected ), this, shortcut_cancel_crafting->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMoveDownAltMenuSelected ), this, shortcut_move_down_alt->GetId());
+	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnSearchMenuSelected ), this, shortcut_search->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnUndoMenuSelected ), this, shortcut_undo->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnRedoMenuSelected ), this, shortcut_redo->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuSteelAxeClicked ), this, goal_steelaxe->GetId());
@@ -1423,7 +1492,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_add_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddStepClicked ), NULL, this );
 	btn_add_step->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnAddStepRightClicked ), NULL, this );
 	btn_change_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeStepClicked ), NULL, this );
+	btn_change_step->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnChangeStepRightClicked ), NULL, this );
 	btn_delete_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteStepClicked ), NULL, this );
+	btn_delete_step->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnDeleteStepRightClicked ), NULL, this );
 	btn_move_up->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpClicked ), NULL, this );
 	btn_move_up->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
@@ -1498,7 +1569,9 @@ GUI_Base::~GUI_Base()
 	btn_add_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnAddStepClicked ), NULL, this );
 	btn_add_step->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnAddStepRightClicked ), NULL, this );
 	btn_change_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnChangeStepClicked ), NULL, this );
+	btn_change_step->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnChangeStepRightClicked ), NULL, this );
 	btn_delete_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteStepClicked ), NULL, this );
+	btn_delete_step->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnDeleteStepRightClicked ), NULL, this );
 	btn_move_up->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveUpClicked ), NULL, this );
 	btn_move_up->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
@@ -1569,6 +1642,21 @@ Shortcut_changer::Shortcut_changer( wxWindow* parent, wxWindowID id, const wxStr
 	sc_panel_script->Layout();
 	sc_script_sizer->Fit( sc_panel_script );
 	sc_item_book->AddPage( sc_panel_script, wxT("Script"), false );
+	sc_panel_steptypes = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	sc_steptypes_sizer = new wxBoxSizer( wxVERTICAL );
+
+	sc_grid_sizer_steptypes = new wxFlexGridSizer( 0, 3, 5, 5 );
+	sc_grid_sizer_steptypes->SetFlexibleDirection( wxBOTH );
+	sc_grid_sizer_steptypes->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	sc_steptypes_sizer->Add( sc_grid_sizer_steptypes, 1, wxEXPAND, 5 );
+
+
+	sc_panel_steptypes->SetSizer( sc_steptypes_sizer );
+	sc_panel_steptypes->Layout();
+	sc_steptypes_sizer->Fit( sc_panel_steptypes );
+	sc_item_book->AddPage( sc_panel_steptypes, wxT("Step types"), false );
 	sc_panel_shortcuts = new wxPanel( sc_item_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	sc_shortcuts_sizer = new wxBoxSizer( wxVERTICAL );
 
