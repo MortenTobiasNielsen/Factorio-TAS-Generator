@@ -48,10 +48,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_script_generate_script = new wxMenuItem( menu_script, wxID_ANY, wxString( wxT("Generate Script") ) + wxT('\t') + wxT("Alt+G"), wxEmptyString, wxITEM_NORMAL );
 	menu_script->Append( menu_script_generate_script );
 
-	wxMenuItem* menu_script_only_generate_steps;
-	menu_script_only_generate_steps = new wxMenuItem( menu_script, wxID_ANY, wxString( wxT("Only Generate Steps File") ) , wxEmptyString, wxITEM_CHECK );
-	menu_script->Append( menu_script_only_generate_steps );
-
 	main_menubar->Append( menu_script, wxT("Script") );
 
 	menu_shortcuts = new wxMenu();
@@ -1335,7 +1331,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuExit ), this, menu_file_exit->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChooseLocation ), this, menu_script_choose_location->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnGenerateScript ), this, menu_script_generate_script->GetId());
-	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnOnlyGenerateSteps ), this, menu_script_only_generate_steps->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChangeShortcutMenuSelected ), this, shortcut_changer->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftMenuSelected ), this, shortcut_craft->GetId());
 	menu_shortcuts->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnWalkMenuSelected ), this, shortcut_walk->GetId());
