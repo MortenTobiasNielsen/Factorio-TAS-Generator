@@ -1789,235 +1789,107 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	modifier_split_checkbox->SetValue(modifiers.find("split") != std::string::npos);
 
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
+	int parameters = listStepTypeToParameterChoices[step];
 
-	string OrientationEnum = "";
+	string OrientationEnum = gridEntry->BuildingOrientation.ToStdString();
 	float speed;
-	long long pos;
+	size_t pos = OrientationEnum.find(",");
+
+	using enum choice_bit_vector;
+	if (parameters & x_coordinate) spin_x->SetValue(gridEntry->X);
+	if (parameters & y_coordinate) spin_y->SetValue(gridEntry->Y);
+	if (parameters & amount) spin_amount->SetValue(gridEntry->Amount);
+	if (parameters & item) cmb_item->SetValue(gridEntry->Item);
+	if (parameters & from_to) cmb_from_into->SetValue(gridEntry->BuildingOrientation);
+	if (parameters & input) radio_input->Select(map_input_output[OrientationEnum.substr(0, pos)]);
+	if (parameters & output) radio_output->Select(map_input_output[OrientationEnum.substr(pos + 1)]);
+	if (parameters & building_orientation) cmb_building_orientation->SetValue(gridEntry->BuildingOrientation);
+	if (parameters & direction_to_build) cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
+	if (parameters & building_size) spin_building_size->SetValue(gridEntry->BuildingSize);
+	if (parameters & amount_of_buildings) spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
+	if (parameters & comment) txt_comment->SetValue(gridEntry->Comment);
+
 	switch (step)
 	{
-		case e_stop:
-			if (changeType) OnStopMenuSelected(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
-			return;
 		case e_build:
 			if (changeType) OnBuildMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			cmb_item->SetValue(gridEntry->Item);
-			cmb_building_orientation->SetValue(gridEntry->BuildingOrientation);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_craft:
 			if (changeType) OnCraftMenuSelected(event);
-			spin_amount->SetValue(gridEntry->Amount);
-			cmb_item->SetValue(gridEntry->Item);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_game_speed:
 			if (changeType) OnGameSpeedMenuSelected(event);
 			speed = stof(gridEntry->Amount.ToStdString()) * 100.0;
 			spin_amount->SetValue(speed);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_pause:
 			if (changeType) OnPauseMenuSelected(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_save:
 			if (changeType) OnSaveMenuSelected(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_never_idle:
-			if (changeType) OnNeverIdleChosen(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
+			if (changeType) OnNeverIdleMenuSelected(event);
 			return;
 		case e_keep_walking:
-			if (changeType) OnKeepWalkingChosen(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
+			if (changeType) OnKeepWalkingMenuSelected(event);
 			return;
 		case e_keep_crafting:
-			if (changeType) OnKeepCraftingChosen(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
+			if (changeType) OnKeepCraftingMenuSelected(event);
 			return;
 		case e_keep_on_path:
-			if (changeType) OnKeepOnPathChosen(event);
-			txt_comment->SetValue(gridEntry->Comment);
-
+			if (changeType) OnKeepOnPathMenuSelected(event);
 			return;
 		case e_recipe:
 			if (changeType) OnRecipeMenuChosen(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-			cmb_item->SetValue(gridEntry->Item);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_limit:
 			if (changeType) OnLimitMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_filter:
 			if (changeType) OnFilterMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			cmb_item->SetValue(gridEntry->Item);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_rotate:
 			if (changeType) OnRotateMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			txt_comment->SetValue(gridEntry->Comment);
-
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-
 			return;
 		case e_priority:
 			if (changeType) OnPriorityMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-
-			OrientationEnum = gridEntry->BuildingOrientation.ToStdString();
-			pos = OrientationEnum.find(",");
-
-			radio_input->Select(map_input_output[OrientationEnum.substr(0, pos)]);
-			radio_output->Select(map_input_output[OrientationEnum.substr(pos + 1)]);
-
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_put:
 			if (changeType) OnPutMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			cmb_item->SetValue(gridEntry->Item);
-			cmb_from_into->SetValue(gridEntry->BuildingOrientation);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_take:
 			if (changeType) OnTakeMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			cmb_item->SetValue(gridEntry->Item);
-			cmb_from_into->SetValue(gridEntry->BuildingOrientation);
-			cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
-			spin_building_size->SetValue(gridEntry->BuildingSize);
-			spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_mine:
 			if (changeType) OnMineMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_launch:
 			if (changeType) OnLaunchMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_walk:
-			OnWalkMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			txt_comment->SetValue(gridEntry->Comment);
-
+			if (changeType) OnWalkMenuSelected(event);
 			return;
 		case e_tech:
 			if (changeType) OnTechMenuSelected(event);
-			cmb_item->SetValue(gridEntry->Item);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_drop:
 			if (changeType) OnDropMenuSelected(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			cmb_item->SetValue(gridEntry->Item);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_pick_up:
 			if (changeType) OnPickUpMenuSelected(event);
-			spin_amount->SetValue(gridEntry->Amount);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		case e_idle:
 			if (changeType) OnIdleMenuSelected(event);
-			spin_amount->SetValue(gridEntry->Amount);
-			txt_comment->SetValue(gridEntry->Comment);
-		
 			return;
-
 		case e_shoot:
-			if (changeType) OnShootChosen(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			spin_amount->SetValue(gridEntry->Amount);
-			txt_comment->SetValue(gridEntry->Comment);
-
+			if (changeType) OnShootMenuSelected(event);
 			return;
-
 		case e_throw:
-			if (changeType) OnThrowChosen(event);
-			spin_x->SetValue(gridEntry->X);
-			spin_y->SetValue(gridEntry->Y);
-			cmb_item->SetValue(gridEntry->Item);
-			txt_comment->SetValue(gridEntry->Comment);
-
+			if (changeType) OnThrowMenuSelected(event);
 			return;
 		case e_cancel_crafting:
 			if (changeType) OnCancelCraftingMenuSelected(event);
-			cmb_item->SetValue(gridEntry->Item);
-			spin_amount->SetValue(gridEntry->Amount);
-			txt_comment->SetValue(gridEntry->Comment);
-
 			return;
 		default:
 			return;

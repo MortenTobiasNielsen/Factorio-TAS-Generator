@@ -61,7 +61,7 @@ const struct parameter_choices_struct
 	put = building | container,
 	rotate = building | amount,
 	limit = building | amount,
-	priority = building | priority_io,
+	priority = building - building_orientation | priority_io,
 	recipe = building | amount | item,
 	filter = building | amount | item,
 	launch = point | comment;
@@ -69,3 +69,35 @@ const struct parameter_choices_struct
 	//misc
 	const int drop = point | item | comment;
 } parameter_choices;
+
+// vector StepType to parameter_choices
+const vector<int> listStepTypeToParameterChoices = {
+	0, // for indexing
+	parameter_choices.stop, 
+	parameter_choices.build, 
+	parameter_choices.craft, 
+	parameter_choices.game_speed, 
+	parameter_choices.Pause, 
+	parameter_choices.save, 
+	parameter_choices.recipe, 
+	parameter_choices.limit, 
+	parameter_choices.filter, 
+	parameter_choices.rotate, 
+	parameter_choices.priority, 
+	parameter_choices.put, 
+	parameter_choices.take, 
+	parameter_choices.mining,
+	parameter_choices.launch, 
+	parameter_choices.walk, 
+	parameter_choices.tech, 
+	parameter_choices.drop, 
+	parameter_choices.pick, 
+	parameter_choices.idle, 
+	parameter_choices.cancel_crafting,
+	parameter_choices.never_idle, 
+	parameter_choices.keep_walking, 
+	parameter_choices.keep_on_path, 
+	parameter_choices.keep_crafting, 
+	parameter_choices.shoot, 
+	parameter_choices._throw
+};
