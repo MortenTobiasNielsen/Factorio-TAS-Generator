@@ -188,20 +188,6 @@
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">OnGenerateScript</event>
                     </object>
-                    <object class="wxMenuItem" expanded="0">
-                        <property name="bitmap"></property>
-                        <property name="checked">0</property>
-                        <property name="enabled">1</property>
-                        <property name="help"></property>
-                        <property name="id">wxID_ANY</property>
-                        <property name="kind">wxITEM_CHECK</property>
-                        <property name="label">Only Generate Steps File</property>
-                        <property name="name">menu_script_only_generate_steps</property>
-                        <property name="permission">none</property>
-                        <property name="shortcut"></property>
-                        <property name="unchecked_bitmap"></property>
-                        <event name="OnMenuSelection">OnOnlyGenerateSteps</event>
-                    </object>
                 </object>
                 <object class="wxMenu" expanded="1">
                     <property name="label">Step types</property>
@@ -8028,7 +8014,7 @@
                                         </object>
                                     </object>
                                     <object class="sizeritem" expanded="1">
-                                        <property name="border">9</property>
+                                        <property name="border">7</property>
                                         <property name="flag">wxALL</property>
                                         <property name="proportion">0</property>
                                         <object class="wxCheckBox" expanded="1">
@@ -8078,7 +8064,7 @@
                                             <property name="pos"></property>
                                             <property name="resize">Resizable</property>
                                             <property name="show">1</property>
-                                            <property name="size"></property>
+                                            <property name="size">72,20</property>
                                             <property name="style"></property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
@@ -8151,7 +8137,7 @@
                                                     <property name="pos"></property>
                                                     <property name="resize">Resizable</property>
                                                     <property name="show">1</property>
-                                                    <property name="size"></property>
+                                                    <property name="size">75,25</property>
                                                     <property name="style">wxCLRP_DEFAULT_STYLE|wxCLRP_SHOW_LABEL</property>
                                                     <property name="subclass">; ; forward_declare</property>
                                                     <property name="toolbar_pane">0</property>

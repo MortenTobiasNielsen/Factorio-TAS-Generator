@@ -98,7 +98,7 @@ void GenerateScript::PaintWalkStep(string step, bool straight, bool diagonal)
 	grid_steps->SetCellBackgroundColour(row, 10, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
 }
 
-void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, bool only_generate_script, string goal)
+void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal)
 {
 	this->name = folder_location.substr(folder_location.find_last_of('\\') + 1);
 	reset();
@@ -362,23 +362,20 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 		}
 	}
 
-	if (!only_generate_script)
-	{
-		//add locale directory
-		fs::create_directories(folder_location + "\\locale\\en");
+	//add locale directory
+	fs::create_directories(folder_location + "\\locale\\en");
 
-		bool exist = fs::exists("..\\Lua Files\\locale.cfg");
-		string pre_fix = exist ? "..\\Lua Files\\" : "";
+	bool exist = fs::exists("..\\Lua Files\\locale.cfg");
+	string pre_fix = exist ? "..\\Lua Files\\" : "";
 
-		fs::copy_file(pre_fix + "locale.cfg", folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);
+	fs::copy_file(pre_fix + "locale.cfg", folder_location + "\\locale\\en\\locale.cfg", fs::copy_options::update_existing);
 
-		//copy lua files to tas mod if they are newer
-		fs::copy_file(pre_fix + "control.lua", folder_location + "\\control.lua", fs::copy_options::update_existing);
-		fs::copy_file(pre_fix + "settings.lua", folder_location + "\\settings.lua", fs::copy_options::update_existing);
+	//copy lua files to tas mod if they are newer
+	fs::copy_file(pre_fix + "control.lua", folder_location + "\\control.lua", fs::copy_options::update_existing);
+	fs::copy_file(pre_fix + "settings.lua", folder_location + "\\settings.lua", fs::copy_options::update_existing);
 
-		//always copy goal file
-		fs::copy_file(pre_fix + goal, folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
-	}
+	//always copy goal file
+	fs::copy_file(pre_fix + goal, folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
 
 	AddInfoFile(folder_location);
 

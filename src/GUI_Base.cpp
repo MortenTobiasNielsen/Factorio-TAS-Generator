@@ -48,10 +48,6 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_script_generate_script = new wxMenuItem( menu_script, wxID_ANY, wxString( wxT("Generate Script") ) + wxT('\t') + wxT("Alt+G"), wxEmptyString, wxITEM_NORMAL );
 	menu_script->Append( menu_script_generate_script );
 
-	wxMenuItem* menu_script_only_generate_steps;
-	menu_script_only_generate_steps = new wxMenuItem( menu_script, wxID_ANY, wxString( wxT("Only Generate Steps File") ) , wxEmptyString, wxITEM_CHECK );
-	menu_script->Append( menu_script_only_generate_steps );
-
 	main_menubar->Append( menu_script, wxT("Script") );
 
 	menu_steptypes = new wxMenu();
@@ -1183,14 +1179,14 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	step_panel_search_sizer->Add( step_search_ctrl, 0, wxALL, 5 );
 
-	step_search_toggle_updown = new wxCheckBox( step_panel, wxID_ANY, wxT("Search up"), wxDefaultPosition, wxDefaultSize, 0 );
+	step_search_toggle_updown = new wxCheckBox( step_panel, wxID_ANY, wxT("Search up"), wxDefaultPosition, wxSize( 72,20 ), 0 );
 	step_search_toggle_updown->SetValue(true);
-	step_panel_search_sizer->Add( step_search_toggle_updown, 0, wxALL, 9 );
+	step_panel_search_sizer->Add( step_search_toggle_updown, 0, wxALL, 7 );
 
 	wxBoxSizer* bSizer65;
 	bSizer65 = new wxBoxSizer( wxHORIZONTAL );
 
-	step_colour_picker = new wxColourPickerCtrl( step_panel, wxID_ANY, wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ), wxDefaultPosition, wxDefaultSize, wxCLRP_DEFAULT_STYLE|wxCLRP_SHOW_LABEL );
+	step_colour_picker = new wxColourPickerCtrl( step_panel, wxID_ANY, wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ), wxDefaultPosition, wxSize( 75,25 ), wxCLRP_DEFAULT_STYLE|wxCLRP_SHOW_LABEL );
 	step_colour_picker->SetToolTip( wxT("Select a number of rows to set the colour on them.\nThe colour is automaticly matches the first row of the selected area.") );
 
 	bSizer65->Add( step_colour_picker, 0, wxALL, 5 );

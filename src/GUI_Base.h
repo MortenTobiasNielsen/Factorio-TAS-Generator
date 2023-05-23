@@ -187,7 +187,8 @@ class GUI_Base : public wxFrame
 		virtual void OnMenuExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnChooseLocation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGenerateScript( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnOnlyGenerateSteps( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeShortcutMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCraftMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWalkMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCraftMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTechMenuSelected( wxCommandEvent& event ) { event.Skip(); }
