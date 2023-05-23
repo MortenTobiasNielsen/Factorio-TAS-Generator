@@ -716,21 +716,7 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 		}
 	}
 
-	auto stepParameters = ExtractStepParameters();
-
-	if (!ValidateStep(row, stepParameters))
-	{
-		return;
-	};
-
-	stack.Push({
-		.row = row,
-		.type = T_MODIFY,
-		.rows = ChangeStep(row, stepParameters)
-	});
-
-	grid_steps->SelectRow(row);
-	no_changes = false;
+	OnChangeStepInternal(rows, row);
 }
 
 void cMain::OnChangeStepRightClicked(wxMouseEvent& event)
@@ -742,9 +728,12 @@ void cMain::OnChangeStepRightClicked(wxMouseEvent& event)
 		wxMessageBox("Please select a row to change", "Selection not valid");
 		return;
 	}
-	
-	int row = *rows.begin();
-	
+
+	OnChangeStepInternal(rows, *rows.begin());
+}
+
+void cMain::OnChangeStepInternal(wxArrayInt& rows, int row)
+{
 	auto stepParameters = ExtractStepParameters();
 
 	if (!ValidateStep(row, stepParameters))
@@ -802,25 +791,7 @@ void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 		return;
 	}
 
-	int startRow = rows.at(0);
-	auto steps = DeleteSteps(rows);
-	stack.Push({
-		.row = rows[0],
-		.type = T_DELETE,
-		.rows = steps
-	});
-
-	// The row after the deleted row(s) are selected
-	if (startRow < grid_steps->GetNumberRows())
-	{
-		grid_steps->SelectRow(startRow);
-	}
-	else if(startRow - 1 >= 0)
-	{
-		grid_steps->SelectRow(startRow - 1);
-	}
-
-	no_changes = false;
+	OnDeleteStepInternal(rows, false);
 }
 
 void cMain::OnDeleteStepRightClicked(wxMouseEvent& event)
@@ -834,8 +805,13 @@ void cMain::OnDeleteStepRightClicked(wxMouseEvent& event)
 		return;
 	}
 
+	OnDeleteStepInternal(rows, true);
+}
+
+void cMain::OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm)
+{
 	int startRow = rows.at(0);
-	auto steps = DeleteSteps(rows, true);
+	auto steps = DeleteSteps(rows, auto_confirm);
 	stack.Push({
 		.row = rows[0],
 		.type = T_DELETE,

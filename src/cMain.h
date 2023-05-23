@@ -154,8 +154,10 @@ protected:
 	void OnAddStepRightClicked(wxMouseEvent & event);
 	void OnChangeStepClicked(wxCommandEvent& event);
 	void OnChangeStepRightClicked(wxMouseEvent& event);
+	void OnChangeStepInternal(wxArrayInt& rows, int row);
 	void OnDeleteStepClicked(wxCommandEvent& event);
 	void OnDeleteStepRightClicked(wxMouseEvent& event);
+	void OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm);
 	void OnMoveUpClicked(wxCommandEvent& event);
 	void OnMoveDownClicked(wxCommandEvent& event);
 	void OnMoveUpFiveClicked(wxMouseEvent& event);
