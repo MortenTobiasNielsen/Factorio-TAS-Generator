@@ -14,13 +14,9 @@ void ShortcutChanger::Build(wxMenuBar* menu)
 		for (auto& [key, value] : map)
 		{
 			if (s.shortcuts[menu].contains(key))
-				continue;
-			else
-				s.shortcuts[menu][key] = value;
+				state.shortcuts[menu][key] = s.shortcuts[menu][key];
 		}
 	}
-
-	state = s;
 
 	vector<std::tuple<wxGridSizer*, string, wxPanel*, wxSizer*> > grids = {
 		{sc_grid_sizer_file, "File", sc_panel_file, sc_file_sizer},
