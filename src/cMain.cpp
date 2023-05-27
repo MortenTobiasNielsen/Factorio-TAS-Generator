@@ -1713,7 +1713,10 @@ void cMain::OnChangeMenuSelected(wxCommandEvent& event)
 void cMain::OnChangeAltMenuSelected(wxCommandEvent& event)
 {
 	if (btn_change_step->IsEnabled())
-		OnChangeStepClicked(event);
+	{
+		auto new_event = wxMouseEvent();
+		OnChangeStepRightClicked(new_event);
+	}
 	else
 		wxMessageBox("Please select 1 row to change", "Selection not valid");
 	event.Skip();
