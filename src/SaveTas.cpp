@@ -13,6 +13,7 @@ bool SaveTas::Save(
 	string folder_location,
 	string folder_location_generate,
 	string goal,
+	log_config logconfig,
 	wxGridBlockCoordsVector selected_rows,
 	bool set_last_location)
 {
@@ -99,7 +100,8 @@ bool SaveTas::Save(
 	string s_selected_rows = "";
 	for (auto p : selected_rows) 
 		s_selected_rows += to_string(p.GetTopRow()) + ";" + to_string(p.GetBottomRow()) + ";";
-	myfile << "selected rows;" << s_selected_rows;
+	myfile << "selected rows;" << s_selected_rows << std::endl;
+	myfile << logging_indicator << ";" << logconfig.to_string();
 
 	myfile.close();
 

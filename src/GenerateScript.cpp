@@ -40,16 +40,7 @@ void GenerateScript::ClearSteps()
 	total_steps = 1;
 	step_list = "";
 	std::stringstream ss (step_list);
-	ss << endl << "local tas_generator = {" << endl
-		<< tab << "name = \"" << generator_thumbprint.name << "\"" << comma_endl
-		<< tab << "version = \"" << generator_thumbprint.version << "\"" << comma_endl
-		<< tab << "tas = {" << endl
-		<< tab << tab << "name = \"" << name << "\"" << comma_endl
-		<< tab << tab << "timestamp = \"" << timestamp << "\"" << comma_endl
-		<< tab << "}" << comma_endl
-		<< "}" << endl
-		<< endl
-		<< "local step = {}" << endl
+	ss << "local step = {}" << endl
 		<< endl;
 	step_list = ss.str();
 }
@@ -57,7 +48,7 @@ void GenerateScript::ClearSteps()
 string GenerateScript::EndSteps()
 {
 	string last_step = "step[" + std::to_string(total_steps) + "] = {\"break\"}\n\n";
-	const string return_line = "tas_generator.steps = step\nreturn tas_generator\n";
+	const string return_line = "return step\n";
 	return step_list + last_step + return_line;
 }
 
@@ -65,6 +56,40 @@ void GenerateScript::UnexpectedError(DialogProgressBar* dialog_progress_bar, int
 {
 	wxMessageBox("Unexpected error on step "+std::to_string(i+1)+"\nPlease make an issue at our repository on github with step by step of what happened.\nhttps://github.com/MortenTobiasNielsen/Factorio-TAS-Generator", "Unexpected error");
 	dialog_progress_bar->Close();
+}
+
+inline const char* const bool_to_string(bool b)
+{
+	return b ? "true" : "false";
+}
+
+void GenerateScript::AddVariableFile(string& folder_location, string& goal, log_config logconfig)
+{
+	using std::endl;
+	std::ofstream saver;
+
+	saver.open(folder_location + "\\variables.lua");
+
+	saver << "--[[ GENERATED FILE - do not modify this file as it is controlled from the FTG GUI ]]" << endl << endl;
+	
+	saver << "GOAL" << " = \"" << goal << "\"" << endl;
+	saver << "LOGLEVEL" << " = " << std::to_string(logconfig.level) << endl;
+	saver << "PRINT_SAVEGAME" << " = " << bool_to_string(logconfig.savegame) << endl;
+	saver << "PRINT_TECH" << " = " << bool_to_string(logconfig.tech) << endl;
+	saver << "PRINT_COMMENT" << " = " << bool_to_string(logconfig.comment) << endl << endl;
+
+	saver << "local tas_generator = {" << endl;
+	saver << "\t" << "name = \"" << generator_thumbprint.name << "\"," << endl;
+	saver << "\t" << "version = \"" << generator_thumbprint.version << "\"," << endl;
+	saver << "\t" << "tas = {" << endl;
+	saver << "\t" << "\t" << "name = \"" << name << "\"," << endl;
+	saver << "\t" << "\t" << "timestamp = \"" << currentDateTime() << "\"," << endl;
+	saver << "\t" << "}," << endl;
+	saver << "}" << endl << endl;
+
+	saver << "return tas_generator" << endl;
+
+	saver.close();
 }
 
 void GenerateScript::AddInfoFile(string& folder_location)
@@ -98,7 +123,7 @@ void GenerateScript::PaintWalkStep(string step, bool straight, bool diagonal)
 	grid_steps->SetCellBackgroundColour(row, 10, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
 }
 
-void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal)
+void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal, log_config logconfig)
 {
 	this->name = folder_location.substr(folder_location.find_last_of('\\') + 1);
 	reset();
@@ -373,10 +398,9 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	//copy lua files to tas mod if they are newer
 	fs::copy_file(pre_fix + "control.lua", folder_location + "\\control.lua", fs::copy_options::update_existing);
 	fs::copy_file(pre_fix + "settings.lua", folder_location + "\\settings.lua", fs::copy_options::update_existing);
+	fs::copy_file(pre_fix + "goals.lua", folder_location + "\\goals.lua", fs::copy_options::update_existing);
 
-	//always copy goal file
-	fs::copy_file(pre_fix + goal, folder_location + "\\goal.lua", fs::copy_options::overwrite_existing);
-
+	AddVariableFile(folder_location, goal, logconfig);
 	AddInfoFile(folder_location);
 
 	std::ofstream saver;

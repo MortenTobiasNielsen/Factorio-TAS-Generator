@@ -60,6 +60,10 @@ class GUI_Base : public wxFrame
 		wxMenu* menu_steptypes;
 		wxMenu* menu_shortcuts;
 		wxMenu* menu_goals;
+		wxMenu* menu_loglevel;
+		wxMenuItem* logging_savegame;
+		wxMenuItem* logging_tech;
+		wxMenuItem* logging_comment;
 		wxMenu* menu_auto_close;
 		wxPanel* detail_panel;
 		wxStaticText* label_x_cord;
@@ -231,7 +235,12 @@ class GUI_Base : public wxFrame
 		virtual void OnMenuSteelAxeClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuGOTLAPClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAnyPercentClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMenuDebugClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoggingSavegameSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoggingTechSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLoggingCommentSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMenuLogDebugSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMenuLogDevelopmentSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMenuLogReleaseSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAutoCloseGenerateScriptClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAutoCloseOpenClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAutoCloseSaveClicked( wxCommandEvent& event ) { event.Skip(); }
