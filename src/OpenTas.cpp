@@ -69,6 +69,9 @@ open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std
 		}
 	}
 
+	if (!extract_log_config(file))
+		return_data.success = false;
+
 	return &return_data;
 }
 
@@ -627,6 +630,32 @@ bool OpenTas::extract_auto_put(std::ifstream& file)
 
 	return_data.auto_put_recipe = segments[1] == "true";
 
+	return true;
+}
+
+bool OpenTas::extract_log_config(std::ifstream& file)
+{
+	if (!update_segment(file)) // logconfig doesn't exist so default
+	{
+		return_data.logconfig = {
+			.savegame = true,
+			.tech = true,
+			.comment = true,
+			.level = log_config::leveltype::DEV,
+		};
+		return true;
+	}
+	else if (segments[0] != logging_indicator)
+	{
+		return false;
+	}
+	size_t s = segments.size();
+	return_data.logconfig = {
+		.savegame = s < 2 || segments[1] == "1" ? true : false,
+		.tech = s < 3 || segments[2] == "1" ? true : false,
+		.comment = s < 4 || segments[3] == "1" ? true : false,
+		.level = (log_config::leveltype) (s < 5 ? 1 : std::stoi(segments[4])),
+	};
 	return true;
 }
 

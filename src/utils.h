@@ -1107,3 +1107,16 @@ static const struct
 	std::string yellow_science = "utility-science-pack";
 	std::string white_science = "space-science-pack";
 } struct_science_list;
+
+struct log_config
+{
+	enum leveltype {DEBUG, DEV, RELEASE};
+	bool savegame,
+		tech,
+		comment;
+	leveltype level;
+	std::string to_string()
+	{
+		return std::to_string(savegame) + ";" + std::to_string(tech) + ";" + std::to_string(comment) + ";" + std::to_string(level) + ";";
+	}
+};

@@ -24,6 +24,7 @@ static const string save_file_indicator = "Save file location:";
 static const string code_file_indicator = "Step folder location:";
 static const string auto_close_indicator = "Auto close settings:";
 static const string auto_put_indicator = "Auto put settings:";
+static const string logging_indicator = "logging";
 
 static const string auto_close_generate_script_text = "Generate Script";
 static const string auto_close_open_text = "Open";
@@ -37,5 +38,5 @@ static const string auto_put_recipe_text = "Recipe";
 
 static const string goal_steelaxe_text = "Steel Axe";
 static const string goal_GOTLAP_text = "Getting On Track Like A Pro";
-static const string goal_any_percent_text = "Any %";
+static const string goal_any_percent_text = "Any%", goal_any_percent_text_old = "Any %";
 static const string goal_debug_text = "Debug";

@@ -180,14 +180,40 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_goals->Append( goal_GOTLAP );
 
 	wxMenuItem* goal_any_percent;
-	goal_any_percent = new wxMenuItem( menu_goals, wxID_ANY, wxString( wxT("Any %") ) , wxEmptyString, wxITEM_RADIO );
+	goal_any_percent = new wxMenuItem( menu_goals, wxID_ANY, wxString( wxT("Any%") ) , wxEmptyString, wxITEM_RADIO );
 	menu_goals->Append( goal_any_percent );
 
-	wxMenuItem* goal_debug;
-	goal_debug = new wxMenuItem( menu_goals, wxID_ANY, wxString( wxT("Debug") ) , wxEmptyString, wxITEM_RADIO );
-	menu_goals->Append( goal_debug );
-
 	main_menubar->Append( menu_goals, wxT("Goal") );
+
+	menu_loglevel = new wxMenu();
+	logging_savegame = new wxMenuItem( menu_loglevel, wxID_ANY, wxString( wxT("Print savegame") ) , wxEmptyString, wxITEM_CHECK );
+	menu_loglevel->Append( logging_savegame );
+	logging_savegame->Check( true );
+
+	logging_tech = new wxMenuItem( menu_loglevel, wxID_ANY, wxString( wxT("Print tech") ) , wxT("Print changes to the research queue to the console"), wxITEM_CHECK );
+	menu_loglevel->Append( logging_tech );
+	logging_tech->Check( true );
+
+	logging_comment = new wxMenuItem( menu_loglevel, wxID_ANY, wxString( wxT("Print comment") ) , wxT("Print step comments to the console"), wxITEM_CHECK );
+	menu_loglevel->Append( logging_comment );
+	logging_comment->Check( true );
+
+	menu_loglevel->AppendSeparator();
+
+	wxMenuItem* loglevel_debug;
+	loglevel_debug = new wxMenuItem( menu_loglevel, wxID_ANY, wxString( wxT("Debug") ) , wxT("This is geared towards Debugging. Where all messages are printed to console."), wxITEM_RADIO );
+	menu_loglevel->Append( loglevel_debug );
+
+	wxMenuItem* loglevel_development;
+	loglevel_development = new wxMenuItem( menu_loglevel, wxID_ANY, wxString( wxT("Development") ) , wxT("This is geared towards TAS Development. Where some messages are printed to the console and some are filtered out."), wxITEM_RADIO );
+	menu_loglevel->Append( loglevel_development );
+	loglevel_development->Check( true );
+
+	wxMenuItem* loglevel_release;
+	loglevel_release = new wxMenuItem( menu_loglevel, wxID_ANY, wxString( wxT("Release") ) , wxT("This is geared towards TAS Release. Where almost all messages are filtered out, except critical errors."), wxITEM_RADIO );
+	menu_loglevel->Append( loglevel_release );
+
+	main_menubar->Append( menu_loglevel, wxT("Log level") );
 
 	menu_auto_close = new wxMenu();
 	wxMenuItem* auto_close_generate_script;
@@ -1363,7 +1389,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuSteelAxeClicked ), this, goal_steelaxe->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuGOTLAPClicked ), this, goal_GOTLAP->GetId());
 	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAnyPercentClicked ), this, goal_any_percent->GetId());
-	menu_goals->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuDebugClicked ), this, goal_debug->GetId());
+	menu_loglevel->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnLoggingSavegameSelected ), this, logging_savegame->GetId());
+	menu_loglevel->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnLoggingTechSelected ), this, logging_tech->GetId());
+	menu_loglevel->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnLoggingCommentSelected ), this, logging_comment->GetId());
+	menu_loglevel->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuLogDebugSelected ), this, loglevel_debug->GetId());
+	menu_loglevel->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuLogDevelopmentSelected ), this, loglevel_development->GetId());
+	menu_loglevel->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuLogReleaseSelected ), this, loglevel_release->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAutoCloseGenerateScriptClicked ), this, auto_close_generate_script->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAutoCloseOpenClicked ), this, auto_close_open->GetId());
 	menu_auto_close->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuAutoCloseSaveClicked ), this, auto_close_save->GetId());
