@@ -144,6 +144,43 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	}
 }
 
+void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
+{
+	int row_count = grid_steps->GetNumberRows();
+	int first_row_index = grid_steps->GetSelectedRowBlocks()[0].GetTopRow();
+
+	if (event.IsChecked())
+	{
+		int last_save = 0;
+		for (int i = StepGridData.size() - 1; i >= 0; i--)
+		{
+			if (StepGridData[i].StepEnum == StepType::e_save && StepGridData[i].Modifiers.find("skip") == std::string::npos)
+			{
+				last_save = i;
+				break;
+			}
+		}
+		if (last_save > 0)
+		{
+			for (int i = 0; i < last_save; i++)
+			{
+				grid_steps->HideRow(i);
+			}
+
+			grid_steps->GoToCell(row_count - 1, 0);
+			grid_steps->GoToCell(first_row_index + (first_row_index < last_save ? last_save - first_row_index : 0), 0);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < row_count; i++)
+			grid_steps->ShowRow(i);
+
+		grid_steps->GoToCell(row_count - 1, 0);
+		grid_steps->GoToCell(first_row_index - (first_row_index > 4 ? 3 : 0), 0); // move the grid to first selected row
+	}
+}
+
 void cMain::StepSeachOnText(wxCommandEvent& event)
 {
 	bool up = step_search_toggle_updown->GetValue();

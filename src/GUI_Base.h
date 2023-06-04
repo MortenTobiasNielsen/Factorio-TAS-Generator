@@ -167,6 +167,7 @@ class GUI_Base : public wxFrame
 		wxSearchCtrl* step_search_ctrl;
 		wxCheckBox* step_search_toggle_updown;
 		wxColourPickerCtrl* step_colour_picker;
+		wxCheckBox* steps_focus_checkbox;
 		wxButton* btn_add_step;
 		wxButton* btn_change_step;
 		wxButton* btn_delete_step;
@@ -292,6 +293,7 @@ class GUI_Base : public wxFrame
 		virtual void StepSeachOnText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void StepSeachOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStepColourPickerColourChanged( wxColourPickerEvent& event ) { event.Skip(); }
+		virtual void OnStepsFocusCheckbox( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddStepRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
