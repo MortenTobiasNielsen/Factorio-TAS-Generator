@@ -62,33 +62,51 @@ protected:
 	void OnChooseLocation(wxCommandEvent& event);
 	void OnGenerateScript(wxCommandEvent& event);
 
-	void OnChangeShortcutMenuSelected(wxCommandEvent & event);
+	// Step types menu
 	void OnWalkMenuSelected(wxCommandEvent& event);
+	void OnCraftMenuSelected(wxCommandEvent& event);
+	void OnTechMenuSelected(wxCommandEvent& event);
+	void OnIdleMenuSelected(wxCommandEvent& event);
+	void OnPickUpMenuSelected(wxCommandEvent& event);
+	void OnDropMenuSelected(wxCommandEvent& event);
+	void OnCancelCraftingMenuSelected(wxCommandEvent& event);
 	void OnMineMenuSelected(wxCommandEvent& event);
-	void OnGameSpeedMenuSelected(wxCommandEvent& event);
-	void OnBuildMenuSelected(wxCommandEvent& event);
+	void OnThrowMenuSelected(wxCommandEvent& event);
+	void OnShootMenuSelected(wxCommandEvent& event);
+
 	void OnTakeMenuSelected(wxCommandEvent& event);
 	void OnPutMenuSelected(wxCommandEvent& event);
-	void OnCraftMenuSelected(wxCommandEvent& event);
-	void OnCancelCraftingMenuSelected(wxCommandEvent& event);
+	void OnBuildMenuSelected(wxCommandEvent& event);
 	void OnRecipeMenuChosen(wxCommandEvent& event);
-	void OnRotateMenuSelected(wxCommandEvent& event);
-	void OnAddMenuSelected(wxCommandEvent& event);
-	void OnTechMenuSelected(wxCommandEvent& event);
-	void OnChangeMenuSelected(wxCommandEvent& event);
-	void OnDeleteMenuSelected(wxCommandEvent& event);
-	void OnMoveUpMenuSelected(wxCommandEvent& event);
-	void OnMoveDownMenuSelected(wxCommandEvent& event);
-	void OnPriorityMenuSelected(wxCommandEvent& event);
 	void OnLimitMenuSelected(wxCommandEvent& event);
 	void OnFilterMenuSelected(wxCommandEvent& event);
-	void OnStopMenuSelected(wxCommandEvent& event);
-	void OnIdleMenuSelected(wxCommandEvent& event);
+	void OnPriorityMenuSelected(wxCommandEvent& event);
 	void OnLaunchMenuSelected(wxCommandEvent& event);
-	void OnDropMenuSelected(wxCommandEvent& event);
-	void OnPickUpMenuSelected(wxCommandEvent& event);
-	void OnSaveMenuSelected(wxCommandEvent& event);
+	void OnRotateMenuSelected(wxCommandEvent& event);
+
+	void OnGameSpeedMenuSelected(wxCommandEvent& event);
 	void OnPauseMenuSelected(wxCommandEvent& event);
+	void OnStopMenuSelected(wxCommandEvent& event);
+	void OnSaveMenuSelected(wxCommandEvent& event);
+	void OnNeverIdleMenuSelected(wxCommandEvent& event);
+	void OnKeepWalkingMenuSelected(wxCommandEvent& event);
+	void OnKeepOnPathMenuSelected(wxCommandEvent& event);
+	void OnKeepCraftingMenuSelected(wxCommandEvent& event);
+
+	// Shortcut menu
+	void OnChangeShortcutMenuSelected(wxCommandEvent& event);
+
+	void OnAddMenuSelected(wxCommandEvent& event);
+	void OnAddAltMenuSelected(wxCommandEvent& event);
+	void OnChangeMenuSelected(wxCommandEvent& event);
+	void OnChangeAltMenuSelected(wxCommandEvent& event);
+	void OnDeleteMenuSelected(wxCommandEvent& event);
+	void OnDeleteAltMenuSelected(wxCommandEvent& event);
+	void OnMoveUpMenuSelected(wxCommandEvent& event);
+	void OnMoveUpAltMenuSelected(wxCommandEvent& event);
+	void OnMoveDownMenuSelected(wxCommandEvent& event);
+	void OnMoveDownAltMenuSelected(wxCommandEvent& event);
+	void OnSearchMenuSelected(wxCommandEvent& event);
 
 	// Auto-close menu items
 	void OnMenuAutoCloseGenerateScriptClicked(wxCommandEvent& event);
@@ -135,7 +153,11 @@ protected:
 	void OnAddStepClicked(wxCommandEvent& event);
 	void OnAddStepRightClicked(wxMouseEvent & event);
 	void OnChangeStepClicked(wxCommandEvent& event);
+	void OnChangeStepRightClicked(wxMouseEvent& event);
+	void OnChangeStepInternal(wxArrayInt& rows, int row);
 	void OnDeleteStepClicked(wxCommandEvent& event);
+	void OnDeleteStepRightClicked(wxMouseEvent& event);
+	void OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm);
 	void OnMoveUpClicked(wxCommandEvent& event);
 	void OnMoveDownClicked(wxCommandEvent& event);
 	void OnMoveUpFiveClicked(wxMouseEvent& event);

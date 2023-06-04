@@ -699,14 +699,15 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 
 void cMain::OnChangeStepClicked(wxCommandEvent& event)
 {
-	if (!grid_steps->IsSelection() || !grid_steps->GetSelectedRows().begin())
+	event.Skip();
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (!grid_steps->IsSelection() || rows.empty())
 	{
-		wxMessageBox("Please select a row to change", "Selection not valid");
-		event.Skip();
+		wxMessageBox("Please select a row to change", "Selection not valid");	
 		return;
 	}
 
-	int row = *grid_steps->GetSelectedRows().begin();
+	int row = *rows.begin();
 	if (StepGridData[row].StepEnum == e_build)
 	{
 		if (wxMessageBox("The row selected is a build step - are you sure you want to make this change?\nEnsure that you delete associated steps.", "The build step you are changing could be associated with future step", wxICON_WARNING | wxYES_NO, this) != wxYES)
@@ -715,6 +716,24 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 		}
 	}
 
+	OnChangeStepInternal(rows, row);
+}
+
+void cMain::OnChangeStepRightClicked(wxMouseEvent& event)
+{
+	event.Skip();
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (!grid_steps->IsSelection() || rows.empty())
+	{
+		wxMessageBox("Please select a row to change", "Selection not valid");
+		return;
+	}
+
+	OnChangeStepInternal(rows, *rows.begin());
+}
+
+void cMain::OnChangeStepInternal(wxArrayInt& rows, int row)
+{
 	auto stepParameters = ExtractStepParameters();
 
 	if (!ValidateStep(row, stepParameters))
@@ -755,13 +774,15 @@ vector< tuple<int, StepParameters>> cMain::ChangeStep(int row, StepParameters st
 
 void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 {
-	if (!grid_steps->IsSelection())
+	event.Skip();
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+
+	if (!grid_steps->IsSelection() || rows.IsEmpty())
 	{
 		wxMessageBox("Please select one or more rows to delete", "Selection not valid");
 		return;
 	}
 
-	wxArrayInt rows = grid_steps->GetSelectedRows();
 	if (wxMessageBox(
 		rows == 1 ? "Are you sure you want to delete this step?" : "Are you sure you want to delete these steps?",
 		rows == 1 ? "Delete step" : "Delete steps", 
@@ -769,8 +790,28 @@ void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 	{
 		return;
 	}
+
+	OnDeleteStepInternal(rows, false);
+}
+
+void cMain::OnDeleteStepRightClicked(wxMouseEvent& event)
+{
+	event.Skip();
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+
+	if (!grid_steps->IsSelection() || rows.IsEmpty())
+	{
+		wxMessageBox("Please select one or more rows to delete", "Selection not valid");
+		return;
+	}
+
+	OnDeleteStepInternal(rows, true);
+}
+
+void cMain::OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm)
+{
 	int startRow = rows.at(0);
-	auto steps = DeleteSteps(rows);
+	auto steps = DeleteSteps(rows, auto_confirm);
 	stack.Push({
 		.row = rows[0],
 		.type = T_DELETE,
@@ -782,13 +823,12 @@ void cMain::OnDeleteStepClicked(wxCommandEvent& event)
 	{
 		grid_steps->SelectRow(startRow);
 	}
-	else if(startRow - 1 >= 0)
+	else if (startRow - 1 >= 0)
 	{
 		grid_steps->SelectRow(startRow - 1);
 	}
 
 	no_changes = false;
-	event.Skip();
 }
 
 vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool auto_confirmed)
@@ -950,11 +990,12 @@ void cMain::OnStepsGridDoubleRightClick(wxGridEvent& event)
 
 void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 {
+	event.Skip();
 	wxArrayInt rows = grid_steps->GetSelectedRows();
 	if (rows.empty()){ //prevents a crash due to somehow selecting zero rows??
-		event.Skip();
 		return;
 	}
+
 	wxColour colour = grid_steps->GetCellBackgroundColour(rows[0], 1); //retrieve the colour of the first selected element
 	step_colour_picker->SetColour(colour);
 
@@ -966,6 +1007,7 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 		modifier_skip_checkbox->Show();
 		modifier_skip_button->Hide();
 		sizer_skip->Layout();
+		btn_change_step->Enable();
 	}
 	else
 	{
@@ -975,10 +1017,8 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 		modifier_skip_checkbox->Hide();
 		modifier_skip_button->Show();
 		sizer_skip->Layout();
-
-	}
-	
-	event.Skip();
+		btn_change_step->Disable();
+	}	
 }
 
 void cMain::OnStepColourPickerColourChanged(wxColourPickerEvent& event)
@@ -1663,7 +1703,22 @@ void cMain::OnMenuAutoCloseSaveAsClicked(wxCommandEvent& event)
 
 void cMain::OnChangeMenuSelected(wxCommandEvent& event)
 {
-	OnChangeStepClicked(event);
+	if (btn_change_step->IsEnabled())
+		OnChangeStepClicked(event);
+	else
+		wxMessageBox("Please select 1 row to change", "Selection not valid");
+	event.Skip();
+}
+
+void cMain::OnChangeAltMenuSelected(wxCommandEvent& event)
+{
+	if (btn_change_step->IsEnabled())
+	{
+		auto new_event = wxMouseEvent();
+		OnChangeStepRightClicked(new_event);
+	}
+	else
+		wxMessageBox("Please select 1 row to change", "Selection not valid");
 	event.Skip();
 }
 
@@ -1673,9 +1728,23 @@ void cMain::OnDeleteMenuSelected(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::OnDeleteAltMenuSelected(wxCommandEvent& event)
+{
+	auto new_event = wxMouseEvent();
+	OnDeleteStepRightClicked(new_event);
+	event.Skip();
+}
+
 void cMain::OnMoveUpMenuSelected(wxCommandEvent& event)
 {
 	OnMoveUpClicked(event);
+	event.Skip();
+}
+
+void cMain::OnMoveUpAltMenuSelected(wxCommandEvent& event)
+{
+	auto new_event = wxMouseEvent();
+	OnMoveUpFiveClicked(new_event);
 	event.Skip();
 }
 
@@ -1685,9 +1754,29 @@ void cMain::OnMoveDownMenuSelected(wxCommandEvent& event)
 	event.Skip();
 }
 
+void cMain::OnMoveDownAltMenuSelected(wxCommandEvent& event)
+{
+	auto new_event = wxMouseEvent();
+	OnMoveDownFiveClicked(new_event);
+	event.Skip();
+}
+
+void cMain::OnSearchMenuSelected(wxCommandEvent& event)
+{
+	step_search_ctrl->SetFocus();
+	event.Skip();
+}
+
 void cMain::OnAddMenuSelected(wxCommandEvent& event)
 {
 	OnAddStepClicked(event);
+	event.Skip();
+}
+
+void cMain::OnAddAltMenuSelected(wxCommandEvent& event)
+{
+	auto new_event = wxMouseEvent();
+	OnAddStepRightClicked(new_event);
 	event.Skip();
 }
 

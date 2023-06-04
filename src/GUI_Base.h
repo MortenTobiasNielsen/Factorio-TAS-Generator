@@ -57,6 +57,7 @@ class GUI_Base : public wxFrame
 		wxMenuBar* main_menubar;
 		wxMenu* menu_file;
 		wxMenu* menu_script;
+		wxMenu* menu_steptypes;
 		wxMenu* menu_shortcuts;
 		wxMenu* menu_goals;
 		wxMenu* menu_auto_close;
@@ -186,33 +187,45 @@ class GUI_Base : public wxFrame
 		virtual void OnMenuExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnChooseLocation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGenerateScript( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnChangeShortcutMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnCraftMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWalkMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnGameSpeedMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnRotateMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnRecipeMenuChosen( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnStopMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMineMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnBuildMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnCraftMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTechMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnTakeMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPutMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnIdleMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPriorityMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnLimitMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnFilterMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPickUpMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDropMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnLaunchMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSaveMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPauseMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnAddMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnChangeMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDeleteMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMoveUpMenuSelected( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnMoveDownMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCancelCraftingMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMineMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnThrowMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnShootMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTakeMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPutMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnBuildMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRecipeMenuChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLimitMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnFilterMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPriorityMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnLaunchMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnRotateMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGameSpeedMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnPauseMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnStopMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSaveMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnNeverIdleMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnKeepWalkingMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnKeepOnPathMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnKeepCraftingMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeShortcutMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnAddAltMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeAltMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeleteMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeleteAltMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMoveUpMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMoveUpAltMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMoveDownMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMoveDownAltMenuSelected( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSearchMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnUndoMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRedoMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuSteelAxeClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -273,7 +286,9 @@ class GUI_Base : public wxFrame
 		virtual void OnAddStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnAddStepRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeStepRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnDeleteStepClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeleteStepRightClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveUpFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -319,6 +334,9 @@ class Shortcut_changer : public wxDialog
 		wxPanel* sc_panel_script;
 		wxBoxSizer* sc_script_sizer;
 		wxFlexGridSizer* sc_grid_sizer_script;
+		wxPanel* sc_panel_steptypes;
+		wxBoxSizer* sc_steptypes_sizer;
+		wxFlexGridSizer* sc_grid_sizer_steptypes;
 		wxPanel* sc_panel_shortcuts;
 		wxBoxSizer* sc_shortcuts_sizer;
 		wxFlexGridSizer* sc_grid_sizer_shortcuts;
