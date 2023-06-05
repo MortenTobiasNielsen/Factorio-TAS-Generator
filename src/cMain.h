@@ -60,6 +60,8 @@ protected:
 
 	// Script menu items
 	void OnChooseLocation(wxCommandEvent& event);
+	std::string GetGoalConfig();
+	log_config GetLogConfig();
 	void OnGenerateScript(wxCommandEvent& event);
 
 	// Step types menu

@@ -75,22 +75,13 @@
     <CopyFileToFolders Include="..\Lua Files\control.lua">
       <Filter>lua</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Lua Files\goal_any_percent.lua">
-      <Filter>lua</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Lua Files\goal_debug.lua">
-      <Filter>lua</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Lua Files\goal_gotlap.lua">
-      <Filter>lua</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Lua Files\goal_steelaxe.lua">
-      <Filter>lua</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="..\Lua Files\locale.cfg">
       <Filter>lua</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\Lua Files\settings.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\settings-updates.lua">
       <Filter>lua</Filter>
     </CopyFileToFolders>
   </ItemGroup>

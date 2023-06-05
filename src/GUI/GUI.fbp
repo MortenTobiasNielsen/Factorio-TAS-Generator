@@ -824,26 +824,105 @@
                         <property name="help"></property>
                         <property name="id">wxID_ANY</property>
                         <property name="kind">wxITEM_RADIO</property>
-                        <property name="label">Any %</property>
+                        <property name="label">Any%</property>
                         <property name="name">goal_any_percent</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
                         <event name="OnMenuSelection">OnMenuAnyPercentClicked</event>
                     </object>
-                    <object class="wxMenuItem" expanded="0">
+                </object>
+                <object class="wxMenu" expanded="1">
+                    <property name="label">Log level</property>
+                    <property name="name">menu_loglevel</property>
+                    <property name="permission">protected</property>
+                    <object class="wxMenuItem" expanded="1">
                         <property name="bitmap"></property>
-                        <property name="checked">0</property>
+                        <property name="checked">1</property>
                         <property name="enabled">1</property>
                         <property name="help"></property>
                         <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_CHECK</property>
+                        <property name="label">Print savegame</property>
+                        <property name="name">logging_savegame</property>
+                        <property name="permission">protected</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">OnLoggingSavegameSelected</event>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">1</property>
+                        <property name="enabled">1</property>
+                        <property name="help">Print changes to the research queue to the console</property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_CHECK</property>
+                        <property name="label">Print tech</property>
+                        <property name="name">logging_tech</property>
+                        <property name="permission">protected</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">OnLoggingTechSelected</event>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">1</property>
+                        <property name="enabled">1</property>
+                        <property name="help">Print step comments to the console</property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_CHECK</property>
+                        <property name="label">Print comment</property>
+                        <property name="name">logging_comment</property>
+                        <property name="permission">protected</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">OnLoggingCommentSelected</event>
+                    </object>
+                    <object class="separator" expanded="1">
+                        <property name="name">loglevel_separaretor</property>
+                        <property name="permission">none</property>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help">This is geared towards Debugging. Where all messages are printed to console.</property>
+                        <property name="id">wxID_ANY</property>
                         <property name="kind">wxITEM_RADIO</property>
                         <property name="label">Debug</property>
-                        <property name="name">goal_debug</property>
+                        <property name="name">loglevel_debug</property>
                         <property name="permission">none</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
-                        <event name="OnMenuSelection">OnMenuDebugClicked</event>
+                        <event name="OnMenuSelection">OnMenuLogDebugSelected</event>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">1</property>
+                        <property name="enabled">1</property>
+                        <property name="help">This is geared towards TAS Development. Where some messages are printed to the console and some are filtered out.</property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_RADIO</property>
+                        <property name="label">Development</property>
+                        <property name="name">loglevel_development</property>
+                        <property name="permission">none</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">OnMenuLogDevelopmentSelected</event>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help">This is geared towards TAS Release. Where almost all messages are filtered out, except critical errors.</property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_RADIO</property>
+                        <property name="label">Release</property>
+                        <property name="name">loglevel_release</property>
+                        <property name="permission">none</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">OnMenuLogReleaseSelected</event>
                     </object>
                 </object>
                 <object class="wxMenu" expanded="0">

@@ -1425,19 +1425,26 @@ void cMain::Open(std::ifstream * file)
 	{
 		menu_goals->GetMenuItems()[1]->Check();
 	}
-	else if (result->goal == goal_any_percent_text)
+	else if (result->goal == goal_any_percent_text || result->goal == goal_any_percent_text_old)
 	{
 		menu_goals->GetMenuItems()[2]->Check();
 	}
 	else if (result->goal == goal_debug_text)
 	{
-		menu_goals->GetMenuItems()[3]->Check();
+		menu_goals->GetMenuItems()[0]->Check();
 	}
 	else
 	{
 		malformed_saved_file_message();
 		return;
 	}
+
+	log_config logconfig = result->logconfig;
+	auto& logmenu = menu_loglevel->GetMenuItems();
+	logmenu[0]->Check(logconfig.savegame);
+	logmenu[1]->Check(logconfig.tech);
+	logmenu[2]->Check(logconfig.comment);
+	logmenu[4 + (int)logconfig.level]->Check();
 
 	menu_auto_close->GetMenuItems()[0]->Check(result->auto_close_generate_script);
 	auto_close_generate_script = result->auto_close_generate_script;
@@ -1627,21 +1634,29 @@ void cMain::OnChooseLocation(wxCommandEvent& event)
 	event.Skip();
 }
 
+std::string cMain::GetGoalConfig()
+{
+	auto& goals_items = menu_goals->GetMenuItems();
+	return goals_items[0]->IsChecked() ? goal_steelaxe_text : goals_items[1]->IsChecked() ? goal_GOTLAP_text : goal_any_percent_text;
+}
+
+log_config cMain::GetLogConfig()
+{
+	auto& logging_items = menu_loglevel->GetMenuItems();
+	log_config logconfig{
+		.savegame = logging_items[0]->IsChecked(),
+		.tech = logging_items[1]->IsChecked(),
+		.comment = logging_items[2]->IsChecked(),
+		.level = logging_items[4]->IsChecked() ? log_config::leveltype::DEBUG : logging_items[5]->IsChecked() ? log_config::leveltype::DEV : log_config::leveltype::RELEASE,
+	};
+	return logconfig;
+}
+
 void cMain::OnGenerateScript(wxCommandEvent& event)
 {
-	std::string goal = "goal_debug.lua";
-	if (menu_goals->GetMenuItems()[0]->IsChecked())
-	{
-		goal = "goal_steelaxe.lua";
-	}
-	else if (menu_goals->GetMenuItems()[1]->IsChecked())
-	{
-		goal = "goal_gotlap.lua";
-	}
-	else if (menu_goals->GetMenuItems()[2]->IsChecked())
-	{
-		goal = "goal_any_percent.lua";
-	}
+	string goal = GetGoalConfig();
+
+	log_config logconfig = GetLogConfig();
 
 	if (!ValidateAllSteps())
 	{
@@ -1649,7 +1664,7 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 	};
 
 	GenerateScript generate_script(grid_steps);
-	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, goal);
+	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, goal, logconfig);
 
 	AutoSave();
 
@@ -1921,24 +1936,6 @@ bool cMain::Save(string filename, bool save_as, bool set_last_location)
 		auto_close_save,
 	};
 
-	std::string goal;
-	if (menu_goals->GetMenuItems()[0]->IsChecked())
-	{
-		goal = goal_steelaxe_text;
-	}
-	else if (menu_goals->GetMenuItems()[1]->IsChecked())
-	{
-		goal = goal_GOTLAP_text;
-	}
-	else if (menu_goals->GetMenuItems()[2]->IsChecked())
-	{
-		goal = goal_any_percent_text;
-	}
-	else
-	{
-		goal = goal_debug_text;
-	}
-
 	SaveTas save;
 	return save.Save(
 		this,
@@ -1949,7 +1946,8 @@ bool cMain::Save(string filename, bool save_as, bool set_last_location)
 		template_map,
 		filename,
 		generate_code_folder_location,
-		goal,
+		GetGoalConfig(),
+		GetLogConfig(),
 		grid_steps->GetSelectedRowBlocks(),
 		set_last_location);
 }

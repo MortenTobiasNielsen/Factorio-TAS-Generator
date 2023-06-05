@@ -11,6 +11,7 @@
 #include "DialogProgressBar.h"
 #include "StepParameters.h"
 #include "TasFileConstants.h"
+#include "utils.h"
 
 using std::string;
 using std::vector;
@@ -29,6 +30,7 @@ public:
 		string folder_location,
 		string folder_location_generate,
 		string goal,
+		log_config logconfig,
 		wxGridBlockCoordsVector selected_rows,
 		bool set_last_location = true
 	);
