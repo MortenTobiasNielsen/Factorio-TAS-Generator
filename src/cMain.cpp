@@ -147,7 +147,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
 {
 	int row_count = grid_steps->GetNumberRows();
-	int first_row_index = grid_steps->IsSelection() ? grid_steps->GetSelectedRowBlocks()[0].GetTopRow() : grid_steps->GetNumberRows() - 1;
+	int first_row_index = grid_steps->IsSelection() ? grid_steps->GetSelectedRowBlocks()[0].GetTopRow() : row_count - 1;
 
 	if (event.IsChecked())
 	{
@@ -163,8 +163,10 @@ void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
 		if (last_save > 0)
 		{
 			grid_steps->BeginBatch();
-			for (int i = 0; i < last_save; i++)
-				grid_steps->HideRow(i);
+			{
+				for (int i = 0; i < last_save; i++)
+					grid_steps->HideRow(i);
+			}
 			grid_steps->EndBatch();
 
 			grid_steps->GoToCell(row_count - 1, 0);
@@ -174,8 +176,10 @@ void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
 	else
 	{
 		grid_steps->BeginBatch();
-		for (int i = 0; i < row_count; i++)
-			grid_steps->ShowRow(i);
+		{
+			for (int i = 0; i < row_count; i++)
+				grid_steps->ShowRow(i);
+		}
 		grid_steps->EndBatch();
 
 		grid_steps->GoToCell(row_count - 1, 0);
