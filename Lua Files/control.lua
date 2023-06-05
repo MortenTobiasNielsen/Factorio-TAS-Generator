@@ -116,9 +116,9 @@ end
 
 ---Print message intended for viewers
 ---@param message LocalisedString
----@param color Color | nil
+---@param color Color | nil Message color or default white
 local function Message(message, color)
-    player.print(message, color or {})
+    player.print(message, color or {1,1,1})
 end
 
 ---Print commment message intended for viewers
@@ -223,12 +223,12 @@ end
 local function save(task, nameOfSaveGame)
 	save_global()
 	if game.is_multiplayer() then
-		if PRINT_SAVEGAME then Debug(string.format("Step: %s, saving game as %s", task, nameOfSaveGame)) end
+		if PRINT_SAVEGAME then Message(string.format("Step: %s, saving game as %s", task, nameOfSaveGame)) end
 		game.server_save(nameOfSaveGame)
 		return true
 	end
 
-	if PRINT_SAVEGAME then Debug(string.format("Step: %s, saving game as _autosave-%s", task, nameOfSaveGame)) end
+	if PRINT_SAVEGAME then Message(string.format("Step: %s, saving game as _autosave-%s", task, nameOfSaveGame)) end
 	game.auto_save(nameOfSaveGame)
 	return true;
 end
