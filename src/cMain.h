@@ -171,6 +171,7 @@ protected:
 	void OnStepColourPickerColourChanged(wxColourPickerEvent& event);
 
 	void OnStepsFocusCheckbox(wxCommandEvent & event);
+	void HandleFocusMode(bool checked);
 
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
