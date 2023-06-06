@@ -150,9 +150,14 @@ void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
 	auto selectedRows = grid_steps->GetSelectedRows();
 	const int first_row_index = grid_steps->IsSelection() ? selectedRows[0] : row_count - 1;
 
-	HandleFocusMode(event.IsChecked(), true);
-	grid_steps->GoToCell(row_count - 1, 0);
-	grid_steps->GoToCell(first_row_index - (first_row_index > 4 ? 3 : 0), 0); // move the grid to first selected row
+	steps_focus_checkbox->Disable();
+	{
+		HandleFocusMode(event.IsChecked(), true);
+
+		grid_steps->GoToCell(row_count - 1, 0);
+		grid_steps->GoToCell(first_row_index - (first_row_index > 4 ? 3 : 0), 0); // move the grid to first selected row
+	}
+	steps_focus_checkbox->Enable();
 }
 
 void cMain::HandleFocusMode(bool checked, bool changed)
