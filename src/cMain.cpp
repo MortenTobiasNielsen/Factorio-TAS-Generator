@@ -146,13 +146,18 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
 {
-	HandleFocusMode(event.IsChecked());
+	const int row_count = grid_steps->GetNumberRows();
+	auto selectedRows = grid_steps->GetSelectedRows();
+	const int first_row_index = grid_steps->IsSelection() ? selectedRows[0] : row_count - 1;
+
+	HandleFocusMode(event.IsChecked(), true);
+	grid_steps->GoToCell(row_count - 1, 0);
+	grid_steps->GoToCell(first_row_index - (first_row_index > 4 ? 3 : 0), 0); // move the grid to first selected row
 }
 
-void cMain::HandleFocusMode(bool checked)
+void cMain::HandleFocusMode(bool checked, bool changed)
 {
-	int row_count = grid_steps->GetNumberRows();
-	int first_row_index = grid_steps->IsSelection() ? grid_steps->GetSelectedRowBlocks()[0].GetTopRow() : row_count - 1;
+	const int row_count = grid_steps->GetNumberRows();
 
 	if (checked)
 	{
@@ -170,14 +175,21 @@ void cMain::HandleFocusMode(bool checked)
 			grid_steps->BeginBatch();
 			{
 				for (int i = 0; i < last_save; i++)
+				{
 					grid_steps->HideRow(i);
-				for (int i = last_save; i < row_count; i++)
-					grid_steps->ShowRow(i);
+					if (changed && i % 800 == 799)
+					{
+						grid_steps->EndBatch();
+						this->Update();
+						grid_steps->BeginBatch();
+					}
+				}
 			}
 			grid_steps->EndBatch();
+		
 
-			grid_steps->GoToCell(row_count - 1, 0);
-			grid_steps->GoToCell(first_row_index + (first_row_index < last_save ? last_save - first_row_index : 0), 0);
+			for (int i = last_save; i < row_count; i++)
+				grid_steps->ShowRow(i);
 		}
 	}
 	else
@@ -185,12 +197,18 @@ void cMain::HandleFocusMode(bool checked)
 		grid_steps->BeginBatch();
 		{
 			for (int i = 0; i < row_count; i++)
+			{
 				grid_steps->ShowRow(i);
+				if (changed && i % 800 == 799)
+				{
+					grid_steps->GoToCell(row_count - 1, 0);
+					grid_steps->EndBatch();
+					this->Update();
+					grid_steps->BeginBatch();
+				}
+			}
 		}
 		grid_steps->EndBatch();
-
-		grid_steps->GoToCell(row_count - 1, 0);
-		grid_steps->GoToCell(first_row_index - (first_row_index > 4 ? 3 : 0), 0); // move the grid to first selected row
 	}
 }
 
@@ -1481,6 +1499,7 @@ void cMain::Open(std::ifstream * file)
 		return;
 	}
 
+	steps_focus_checkbox->SetValue(false);
 	StepGridData = result->steps;
 	template_map = result->template_map;
 	save_file_location = result->save_file_location;
