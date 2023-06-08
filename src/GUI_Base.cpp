@@ -51,6 +51,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	main_menubar->Append( menu_script, wxT("Script") );
 
 	menu_steptypes = new wxMenu();
+	steptypecolour_changer = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Change colours") ) , wxEmptyString, wxITEM_NORMAL );
+	menu_steptypes->Append( steptypecolour_changer );
+
+	menu_steptypes->AppendSeparator();
+
 	wxMenuItem* shortcut_walk;
 	shortcut_walk = new wxMenuItem( menu_steptypes, wxID_ANY, wxString( wxT("Walk") ) + wxT('\t') + wxT("Ctrl+2"), wxEmptyString, wxITEM_NORMAL );
 	menu_steptypes->Append( shortcut_walk );
@@ -1424,6 +1429,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	menu_file->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnMenuExit ), this, menu_file_exit->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChooseLocation ), this, menu_script_choose_location->GetId());
 	menu_script->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnGenerateScript ), this, menu_script_generate_script->GetId());
+	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnChangeSteptypeColoursMenuSelected ), this, steptypecolour_changer->GetId());
 	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnWalkMenuSelected ), this, shortcut_walk->GetId());
 	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnCraftMenuSelected ), this, shortcut_craft->GetId());
 	menu_steptypes->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( GUI_Base::OnTechMenuSelected ), this, shortcut_tech->GetId());
@@ -1846,5 +1852,96 @@ BaseForDialogProgress::~BaseForDialogProgress()
 {
 	// Disconnect Events
 	btn_dialog_progress_done->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( BaseForDialogProgress::GenerateScriptOnClick ), NULL, this );
+
+}
+
+StepTypeColoursDialog::StepTypeColoursDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	StepTypeColoursDialog_sizer = new wxBoxSizer( wxVERTICAL );
+
+	steptype_colour_label = new wxStaticText( this, wxID_ANY, wxT("label"), wxDefaultPosition, wxDefaultSize, 0 );
+	steptype_colour_label->Wrap( -1 );
+	StepTypeColoursDialog_sizer->Add( steptype_colour_label, 0, wxALL, 5 );
+
+	steptype_colour_book = new wxListbook( this, wxID_ANY, wxDefaultPosition, wxSize( 900,700 ), wxLB_DEFAULT );
+	steptype_colour_book->SetMinSize( wxSize( 700,500 ) );
+	steptype_colour_book->SetMaxSize( wxSize( 1200,1000 ) );
+
+	steptype_colour_character_panel = new wxPanel( steptype_colour_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	stc_character_sizer = new wxBoxSizer( wxVERTICAL );
+
+	stc_character_grid_sizer = new wxFlexGridSizer( 0, 2, 0, 0 );
+	stc_character_grid_sizer->SetFlexibleDirection( wxBOTH );
+	stc_character_grid_sizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	stc_character_sizer->Add( stc_character_grid_sizer, 1, wxEXPAND, 5 );
+
+
+	steptype_colour_character_panel->SetSizer( stc_character_sizer );
+	steptype_colour_character_panel->Layout();
+	stc_character_sizer->Fit( steptype_colour_character_panel );
+	steptype_colour_book->AddPage( steptype_colour_character_panel, wxT("Character"), false );
+	steptype_colour_building_panel = new wxPanel( steptype_colour_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	stc_building_sizer = new wxBoxSizer( wxVERTICAL );
+
+	stc_building_grid_sizer = new wxFlexGridSizer( 0, 2, 0, 0 );
+	stc_building_grid_sizer->SetFlexibleDirection( wxBOTH );
+	stc_building_grid_sizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	stc_building_sizer->Add( stc_building_grid_sizer, 1, wxEXPAND, 5 );
+
+
+	steptype_colour_building_panel->SetSizer( stc_building_sizer );
+	steptype_colour_building_panel->Layout();
+	stc_building_sizer->Fit( steptype_colour_building_panel );
+	steptype_colour_book->AddPage( steptype_colour_building_panel, wxT("Building"), false );
+	steptype_colour_game_panel = new wxPanel( steptype_colour_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	stc_game_sizer = new wxBoxSizer( wxVERTICAL );
+
+	stc_game_grid_sizer = new wxFlexGridSizer( 0, 2, 0, 0 );
+	stc_game_grid_sizer->SetFlexibleDirection( wxBOTH );
+	stc_game_grid_sizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+
+	stc_game_sizer->Add( stc_game_grid_sizer, 1, wxEXPAND, 5 );
+
+
+	steptype_colour_game_panel->SetSizer( stc_game_sizer );
+	steptype_colour_game_panel->Layout();
+	stc_game_sizer->Fit( steptype_colour_game_panel );
+	steptype_colour_book->AddPage( steptype_colour_game_panel, wxT("Game"), false );
+	#ifdef __WXGTK__ // Small icon style not supported in GTK
+	wxListView* steptype_colour_bookListView = steptype_colour_book->GetListView();
+	long steptype_colour_bookFlags = steptype_colour_bookListView->GetWindowStyleFlag();
+	if( steptype_colour_bookFlags & wxLC_SMALL_ICON )
+	{
+		steptype_colour_bookFlags = ( steptype_colour_bookFlags & ~wxLC_SMALL_ICON ) | wxLC_ICON;
+	}
+	steptype_colour_bookListView->SetWindowStyleFlag( steptype_colour_bookFlags );
+	#endif
+
+	StepTypeColoursDialog_sizer->Add( steptype_colour_book, 1, wxEXPAND | wxALL, 5 );
+
+
+	this->SetSizer( StepTypeColoursDialog_sizer );
+	this->Layout();
+	StepTypeColoursDialog_sizer->Fit( this );
+
+	this->Centre( wxBOTH );
+
+	// Connect Events
+	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( StepTypeColoursDialog::OnCloseStepTypeColoursChanger ) );
+	this->Connect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( StepTypeColoursDialog::OnInitStepTypeColoursDialog ) );
+}
+
+StepTypeColoursDialog::~StepTypeColoursDialog()
+{
+	// Disconnect Events
+	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( StepTypeColoursDialog::OnCloseStepTypeColoursChanger ) );
+	this->Disconnect( wxEVT_INIT_DIALOG, wxInitDialogEventHandler( StepTypeColoursDialog::OnInitStepTypeColoursDialog ) );
 
 }

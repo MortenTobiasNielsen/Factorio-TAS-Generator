@@ -68,7 +68,9 @@ void ShortcutChanger::DefaultShortcuts()
 
 void ShortcutChanger::OnCloseShortcutChanger(wxCloseEvent& event)
 {
-	settings::SaveSettingFile(&state);
+	settings::setting setting = settings::ReadSettingFile();
+	setting.shortcuts = state.shortcuts;
+	settings::SaveSettingFile(&setting);
 
 	event.Skip();
 }

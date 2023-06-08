@@ -25,6 +25,7 @@
     <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="ImportStepsPanel.cpp" />
     <ClCompile Include="CommandStack.cpp" />
+    <ClCompile Include="SteptypeColour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -70,6 +71,7 @@
     <ClInclude Include="Priority.h" />
     <ClInclude Include="TasFileConstants.h" />
     <ClInclude Include="CommandStack.h" />
+    <ClInclude Include="SteptypeColour.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Lua Files\control.lua">
@@ -79,9 +81,6 @@
       <Filter>lua</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="..\Lua Files\settings.lua">
-      <Filter>lua</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Lua Files\settings-updates.lua">
       <Filter>lua</Filter>
     </CopyFileToFolders>
   </ItemGroup>
@@ -113,5 +112,8 @@
     <ResourceCompile Include="Factorio-TAS-Generator.rc">
       <Filter>misc</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Lua Files\goals.lua" />
   </ItemGroup>
 </Project>

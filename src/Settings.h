@@ -32,6 +32,9 @@ namespace settings
         //entry string for json : shortcuts map
         const string shortcuts = "shortcuts";
 
+        //entry string for json : colours
+        const string colours = "colours";
+
         //filename for settings json
         const string filename = "generator-settings.json";
 
@@ -236,13 +239,15 @@ namespace settings
         {
             string last_tas;
             map<string, map<string, string>> shortcuts;
+            map<string, string> colours;
         };
 
         static void to_json(json& j, const setting& s)
         {
             j = json{
                 {"last_tas", s.last_tas},
-                {"shortcuts", s.shortcuts}
+                {"shortcuts", s.shortcuts},
+                {"colours", s.colours}
             };
         }
 
@@ -260,6 +265,16 @@ namespace settings
                 }
             else
                 s.shortcuts = {};
+
+            if (j.contains(file::colours))
+            {
+                for (auto& [key, value] : j.at(file::colours).items())
+                {
+                    s.colours.insert({key, value});
+                }
+            }
+            else
+                s.colours = {};
         }
     }
 

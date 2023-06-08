@@ -65,6 +65,8 @@ protected:
 	void OnGenerateScript(wxCommandEvent& event);
 
 	// Step types menu
+	void OnChangeSteptypeColoursMenuSelected(wxCommandEvent& event);
+
 	void OnWalkMenuSelected(wxCommandEvent& event);
 	void OnCraftMenuSelected(wxCommandEvent& event);
 	void OnTechMenuSelected(wxCommandEvent& event);
