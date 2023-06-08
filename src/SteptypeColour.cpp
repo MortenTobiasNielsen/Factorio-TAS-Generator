@@ -123,10 +123,10 @@ void SteptypeColourHandler::Build()
 			if (steptypeToGridtype[ToStepType(stepname)] != gridtype) continue; //paging
 
 			wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-			wxStaticText* label = new wxStaticText(panel, wxID_ANY, wxString(stepname), wxDefaultPosition, wxSize(110, -1), wxALIGN_RIGHT);
-			label->Wrap(105);
+			wxStaticText* label = new wxStaticText(panel, wxID_ANY, wxString(stepname), wxDefaultPosition, wxSize(80, -1), wxALIGN_RIGHT);
+			label->Wrap(75);
 			sizer->Add(label, 0, wxALL, 5);
-			wxColourPickerCtrl* input = new wxColourPickerCtrl(panel, wxID_ANY, wxColour(std::string(colour)), wxDefaultPosition, wxSize(90, -1), wxCLRP_DEFAULT_STYLE | wxCLRP_SHOW_LABEL);
+			wxColourPickerCtrl* input = new wxColourPickerCtrl(panel, wxID_ANY, wxColour(std::string(colour)), wxDefaultPosition, wxSize(70, -1), wxCLRP_DEFAULT_STYLE | wxCLRP_SHOW_LABEL);
 			input->Connect(wxEVT_COMMAND_COLOURPICKER_CHANGED, wxColourPickerEventHandler(SteptypeColourHandler::OnSteptypeColoursPickerColourChanged), NULL, this);
 			mapCtrl.insert({stepname, input});
 			sizer->Add(input, 0, wxALL, 5);

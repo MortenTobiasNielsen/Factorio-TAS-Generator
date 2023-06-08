@@ -1863,10 +1863,12 @@ StepTypeColoursDialog::StepTypeColoursDialog( wxWindow* parent, wxWindowID id, c
 
 	steptype_colour_label = new wxStaticText( this, wxID_ANY, wxT("label"), wxDefaultPosition, wxDefaultSize, 0 );
 	steptype_colour_label->Wrap( -1 );
+	steptype_colour_label->Hide();
+
 	StepTypeColoursDialog_sizer->Add( steptype_colour_label, 0, wxALL, 5 );
 
-	steptype_colour_book = new wxListbook( this, wxID_ANY, wxDefaultPosition, wxSize( 900,700 ), wxLB_DEFAULT );
-	steptype_colour_book->SetMinSize( wxSize( 700,500 ) );
+	steptype_colour_book = new wxListbook( this, wxID_ANY, wxDefaultPosition, wxSize( 600,600 ), wxLB_DEFAULT );
+	steptype_colour_book->SetMinSize( wxSize( 430,200 ) );
 	steptype_colour_book->SetMaxSize( wxSize( 1200,1000 ) );
 
 	steptype_colour_character_panel = new wxPanel( steptype_colour_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );

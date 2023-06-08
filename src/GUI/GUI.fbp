@@ -10574,7 +10574,7 @@
                         <property name="floatable">1</property>
                         <property name="font"></property>
                         <property name="gripper">0</property>
-                        <property name="hidden">0</property>
+                        <property name="hidden">1</property>
                         <property name="id">wxID_ANY</property>
                         <property name="label">label</property>
                         <property name="markup">0</property>
@@ -10644,7 +10644,7 @@
                         <property name="maximum_size">1200,1000</property>
                         <property name="min_size"></property>
                         <property name="minimize_button">0</property>
-                        <property name="minimum_size">700,500</property>
+                        <property name="minimum_size">430,200</property>
                         <property name="moveable">1</property>
                         <property name="name">steptype_colour_book</property>
                         <property name="pane_border">1</property>
@@ -10655,7 +10655,7 @@
                         <property name="pos"></property>
                         <property name="resize">Resizable</property>
                         <property name="show">1</property>
-                        <property name="size">900,700</property>
+                        <property name="size">600,600</property>
                         <property name="style">wxLB_DEFAULT</property>
                         <property name="subclass">; ; forward_declare</property>
                         <property name="toolbar_pane">0</property>
