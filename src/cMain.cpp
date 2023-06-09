@@ -1666,6 +1666,8 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 	GenerateScript generate_script(grid_steps);
 	generate_script.generate(this, dialog_progress_bar, StepGridData, generate_code_folder_location, auto_close_generate_script, goal, logconfig);
 
+	grid_steps->Update();
+
 	AutoSave();
 
 	event.Skip();
