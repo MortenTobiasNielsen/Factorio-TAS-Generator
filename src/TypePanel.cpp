@@ -117,6 +117,30 @@ void TypePanel::SwitchStep(StepType type)
 	}
 }
 
+void TypePanel::IncrementStateCounter(StepType steptype)
+{
+	cMain* parent = ((cMain*)this->GetParent());
+	switch (steptype)
+	{
+		case e_never_idle:
+			parent->rbtn_never_idle->SetForegroundColour(warnings_states_counters.never_idle++ % 2 == 0 ? "Green" : "Black");
+			parent->rbtn_never_idle->GenerateMouseLeave();
+			break;
+		case e_keep_on_path:
+			parent->rbtn_keep_on_path->SetForegroundColour(warnings_states_counters.keep_on_path++ % 2 == 0 ? "Green" : "Black");
+			parent->rbtn_keep_on_path->GenerateMouseLeave();
+			break;
+		case e_keep_crafting:
+			parent->rbtn_keep_crafting->SetForegroundColour(warnings_states_counters.keep_crafting++ % 2 == 0 ? "Green" : "Black");
+			parent->rbtn_keep_crafting->GenerateMouseLeave();
+			break;
+		case e_keep_walking:
+			parent->rbtn_keep_walking->SetForegroundColour(warnings_states_counters.keep_walking++ % 2 == 0 ? "Green" : "Black");
+			parent->rbtn_keep_walking->GenerateMouseLeave();
+			break;
+	}
+}
+
 #pragma region cMain
 void cMain::setup_paramters(const int parameters)
 {

@@ -128,6 +128,8 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 	int buildingsInSnapShot = 0;
 	int position = 0;
 
+	return_data.warnings_states_counters = WarningsStatesCounters();
+
 	while (update_segment(file))
 	{
 		if (segments.size() != step_segment_size && 
@@ -248,6 +250,20 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
+
+			case e_never_idle:
+				return_data.warnings_states_counters.never_idle++;
+				break;
+			case e_keep_on_path:
+				return_data.warnings_states_counters.keep_on_path++;
+				break;
+			case e_keep_crafting:
+				return_data.warnings_states_counters.keep_crafting++;
+				break;
+			case e_keep_walking:
+				return_data.warnings_states_counters.keep_walking++;
+				break;
+
 			default:
 				break;
 		}

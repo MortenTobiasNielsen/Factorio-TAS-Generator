@@ -1120,3 +1120,15 @@ struct log_config
 		return std::to_string(savegame) + ";" + std::to_string(tech) + ";" + std::to_string(comment) + ";" + std::to_string(level) + ";";
 	}
 };
+
+struct WarningsStatesCounters
+{
+	int never_idle = 0;
+	int keep_walking = 0;
+	int keep_on_path = 0;
+	int keep_crafting = 0;
+	WarningsStatesCounters()
+	{
+		never_idle = 0; keep_walking = 0; keep_on_path = 0; keep_crafting = 0;
+	}
+};
