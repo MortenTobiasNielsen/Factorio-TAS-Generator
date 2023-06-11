@@ -32,10 +32,6 @@ const std::string GenerateScript::currentDateTime()
 void GenerateScript::ClearSteps()
 {
 	const string endl = "\n";
-	const string tab = "\t";
-	const string comma_endl = ",\n";
-
-	string timestamp = currentDateTime();
 
 	total_steps = 1;
 	step_list = "";
