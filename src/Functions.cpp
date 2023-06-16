@@ -51,27 +51,19 @@ void find_coordinates(std::string& x_cord, std::string& y_cord, std::string& dir
 	}
 }
 
-string Capitalize(const wxString& stringToCapitalize, const bool isItem)
+string inline Capitalize_std(const std::string& stringToCapitalize, const bool isItem)
 {
-	if (stringToCapitalize == "")
-	{
-		return stringToCapitalize.ToStdString();
-	}
+	if (stringToCapitalize.empty()) return stringToCapitalize;
+	std::string capitalizedString = stringToCapitalize;
+	const int stringLength = capitalizedString.length();
 
-	string capitalizedString = stringToCapitalize.ToStdString();
 	capitalizedString[0] = std::toupper(stringToCapitalize[0]);
-	for (int i = 1; i < capitalizedString.length(); ++i)
+	for (int i = 1; i < stringLength; ++i)
 	{
 		capitalizedString[i] = tolower(stringToCapitalize[i]);
 	}
 
-	if (!isItem)
-	{
-		return capitalizedString;
-	}
-
-	int stringLength = capitalizedString.length();
-	if (stringLength > 3 &&  capitalizedString.substr(stringLength - 3, 3) == "mk2")
+	if (isItem && stringLength > 3 && capitalizedString.substr(stringLength - 3, 3) == "mk2")
 	{
 		capitalizedString[stringLength - 3] = 'M';
 		capitalizedString[stringLength - 2] = 'K';
@@ -79,6 +71,16 @@ string Capitalize(const wxString& stringToCapitalize, const bool isItem)
 	}
 
 	return capitalizedString;
+}
+
+string inline Capitalize(const wxString& stringToCapitalize, const bool isItem)
+{
+	if (stringToCapitalize == "")
+	{
+		return "";
+	}
+
+	return Capitalize_std(stringToCapitalize.ToStdString(), isItem);
 }
 
 bool equals_ignore_case(const std::string_view& lhs, const std::string_view& rhs)

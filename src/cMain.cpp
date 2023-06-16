@@ -1666,7 +1666,7 @@ void cMain::PopulateStepGrid()
 	}
 
 	size_t steps = StepGridData.size();
-
+	grid_steps->BeginBatch();
 	grid_steps->InsertRows(0, steps);
 
 	for (int i = 0; i < steps; i++)
@@ -1685,6 +1685,7 @@ void cMain::PopulateStepGrid()
 			grid_steps->SetCellBackgroundColour(i, 3, colour);
 		}
 	}
+	grid_steps->EndBatch();
 }
 
 void cMain::OnMenuSave(wxCommandEvent& event)
