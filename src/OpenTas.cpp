@@ -138,11 +138,11 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			segment_size != step_segment_size_without_comment_and_colour &&
 			segment_size != step_segment_size_without_comment_and_colour_and_modifiers)
 		{
-			if (segments[0] == save_templates_indicator)
+			if (segment_size >= 0 && segments[0] == save_templates_indicator)
 			{
 				return Template;
 			}
-			else if (segment_size == 1 && (segments[0] == save_groups_indicator))
+			else if (segment_size >= 0 && segments[0] == save_groups_indicator)
 			{
 				return Group;
 			}
@@ -151,7 +151,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				return Invalid;
 			}
 		}
-			
+
 		StepParameters step(invalidX, 0);
 
 		if (segments[1] != "")
