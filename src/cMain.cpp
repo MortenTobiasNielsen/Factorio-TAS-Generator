@@ -758,7 +758,8 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 			return returnValue;
 		}
 
-		default:
+		default:			
+			type_panel->IncrementStateCounter(stepParameters.StepEnum);
 			UpdateStepGrid(row, &stepParameters); 
 			returnValue.push_back({row, stepParameters});
 			return returnValue;
@@ -827,7 +828,11 @@ vector< tuple<int, StepParameters>> cMain::ChangeStep(int row, StepParameters st
 	if (stepParameters.StepEnum == e_build)
 	{
 		stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
-	};
+	}
+	else if (stepParameters.StepEnum != StepGridData[row].StepEnum)
+	{
+		type_panel->IncrementStateCounter(stepParameters.StepEnum);
+	}
 
 	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
 
@@ -904,8 +909,6 @@ void cMain::OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm)
 vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool auto_confirmed)
 {
 	vector< tuple<int, StepParameters>> return_list{};
-
-	//row_selections.clear();
 	bool confirmed = auto_confirmed;
 
 	for (const auto step : steps)
@@ -923,9 +926,13 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 		}
 	}
 
+	for (const auto step : steps)
+	{
+		type_panel->IncrementStateCounter(StepGridData[step].StepEnum); break;
+	}
+
 	return_list.reserve(steps.size());
 	return_list.push_back({steps[0], StepGridData.at(steps[0])});
-
 	
 	pair<int, int> current_block = {steps[0], 1};
 	vector<pair<int, int>> blocks{};
@@ -1603,6 +1610,14 @@ void cMain::Open(std::ifstream * file)
 			}
 			
 		}
+	}
+
+	{
+		type_panel->warnings_states_counters = result->warnings_states_counters;
+		rbtn_never_idle->SetForegroundColour(type_panel->warnings_states_counters.never_idle % 2 == 1 ? "Green" : "Black");
+		rbtn_keep_on_path->SetForegroundColour(type_panel->warnings_states_counters.keep_on_path % 2 == 1 ? "Green" : "Black");
+		rbtn_keep_walking->SetForegroundColour(type_panel->warnings_states_counters.keep_walking % 2 == 1 ? "Green" : "Black");
+		rbtn_keep_crafting->SetForegroundColour(type_panel->warnings_states_counters.keep_crafting % 2 == 1 ? "Green" : "Black");
 	}
 
 	no_changes = true;

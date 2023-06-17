@@ -3,6 +3,7 @@
 #include <wx/radiobut.h>
 #include <wx/string.h>
 
+#include "utils.h"
 #include "StepNameToEnum.h"
 
 //Top center panel with radio buttons
@@ -37,4 +38,8 @@ public:
 		output = "Output",
 		from = "From:",
 		into = "Into:";
+
+	WarningsStatesCounters warnings_states_counters;
+
+	void IncrementStateCounter(StepType steptype);
 };

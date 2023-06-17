@@ -12,6 +12,7 @@ GenerateScript::GenerateScript(wxGrid* grid_steps) : grid_steps(grid_steps)
 
 void GenerateScript::reset()
 {
+	warning_state_counters = WarningsStatesCounters();
 	ClearSteps();
 	player_x_cord = 0.0f;
 	player_y_cord = 0.0f;
@@ -105,6 +106,12 @@ void GenerateScript::AddInfoFile(string& folder_location)
 	saver << "\n}";
 
 	saver.close();
+}
+
+void GenerateScript::PaintWarningStateChanged(string step, int counter)
+{
+	int row = std::stoi(step) - 1;
+	grid_steps->SetCellBackgroundColour(row, 10, counter % 2 ? *wxRED : *wxGREEN);
 }
 
 void GenerateScript::PaintIntermediateWalk(string step, bool paint)
@@ -951,24 +958,28 @@ void GenerateScript::pause(string step, string comment)
 
 void GenerateScript::never_idle(string step, string comment)
 {
+	PaintWarningStateChanged(step, warning_state_counters.never_idle++);
 	step_list += Step(step, "1", "\"never idle\"", comment);
 	total_steps += 1;
 }
 
 void GenerateScript::keep_walking(string step, string comment)
 {
+	PaintWarningStateChanged(step, warning_state_counters.keep_walking++);
 	step_list += Step(step, "1", "\"keep walking\"", comment);
 	total_steps += 1;
 }
 
 void GenerateScript::keep_on_path(string step, string comment) 
 {
+	PaintWarningStateChanged(step, warning_state_counters.keep_on_path++);
 	step_list += Step(step, "1", "\"keep on path\"", comment);
 	total_steps += 1;
 }
 
 void GenerateScript::keep_crafting(string step, string comment) 
 {
+	PaintWarningStateChanged(step, warning_state_counters.keep_crafting++);
 	step_list += Step(step, "1", "\"keep crafting\"", comment);
 	total_steps += 1;
 }

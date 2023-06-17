@@ -44,6 +44,7 @@ struct open_file_return_data
 	bool auto_put_recipe = false;
 
 	log_config logconfig;
+	WarningsStatesCounters warnings_states_counters;
 };
 
 enum Category
