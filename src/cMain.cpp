@@ -144,6 +144,79 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	}
 }
 
+void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
+{
+	const int row_count = grid_steps->GetNumberRows();
+	auto selectedRows = grid_steps->GetSelectedRows();
+	const int first_row_index = grid_steps->IsSelection() ? selectedRows[0] : row_count - 1;
+
+	steps_focus_checkbox->Disable();
+	{
+		HandleFocusMode(event.IsChecked(), true);
+
+		grid_steps->GoToCell(row_count - 1, 0);
+		grid_steps->GoToCell(first_row_index - (first_row_index > 4 ? 3 : 0), 0); // move the grid to first selected row
+	}
+	steps_focus_checkbox->Enable();
+}
+
+void cMain::HandleFocusMode(bool checked, bool changed)
+{
+	const int row_count = grid_steps->GetNumberRows();
+
+	if (checked)
+	{
+		int last_save = 0;
+		for (int i = StepGridData.size() - 1; i >= 0; i--)
+		{
+			if (StepGridData[i].StepEnum == StepType::e_save && StepGridData[i].Modifiers.find("skip") == std::string::npos)
+			{
+				last_save = i;
+				break;
+			}
+		}
+		if (last_save > 0)
+		{
+			grid_steps->BeginBatch();
+			{
+				for (int i = 0; i < last_save; i++)
+				{
+					grid_steps->HideRow(i);
+					if (changed && i % 800 == 799)
+					{
+						grid_steps->EndBatch();
+						this->Update();
+						grid_steps->BeginBatch();
+					}
+				}
+			}
+			grid_steps->EndBatch();
+		
+
+			for (int i = last_save; i < row_count; i++)
+				grid_steps->ShowRow(i);
+		}
+	}
+	else
+	{
+		grid_steps->BeginBatch();
+		{
+			for (int i = 0; i < row_count; i++)
+			{
+				grid_steps->ShowRow(i);
+				if (changed && i % 800 == 799)
+				{
+					grid_steps->GoToCell(row_count - 1, 0);
+					grid_steps->EndBatch();
+					this->Update();
+					grid_steps->BeginBatch();
+				}
+			}
+		}
+		grid_steps->EndBatch();
+	}
+}
+
 void cMain::StepSeachOnText(wxCommandEvent& event)
 {
 	bool up = step_search_toggle_updown->GetValue();
@@ -317,6 +390,7 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 		}
 	}
 
+	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	no_changes = false;
 }
 
@@ -615,6 +689,20 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 	string to_check;
 	switch (stepParameters.StepEnum)
 	{
+		case e_save:
+			UpdateStepGrid(row, &stepParameters);
+			returnValue.push_back({row, stepParameters});
+
+			if (!steps_focus_checkbox->IsChecked() || modifier_skip_checkbox->IsChecked()) return returnValue;
+
+			grid_steps->BeginBatch();
+			{
+				for (int i = 0; i < row; i++)
+					grid_steps->HideRow(i);
+			}
+			grid_steps->EndBatch();
+			return returnValue;
+
 		case e_build:
 			stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
 
@@ -748,6 +836,7 @@ void cMain::OnChangeStepInternal(wxArrayInt& rows, int row)
 	});
 
 	grid_steps->SelectRow(row);
+	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	no_changes = false;
 }
 
@@ -769,6 +858,7 @@ vector< tuple<int, StepParameters>> cMain::ChangeStep(int row, StepParameters st
 	PopulateGrid(grid_steps, row, &gridEntry);
 
 	BackgroundColorUpdate(grid_steps, row, stepParameters.StepEnum);
+	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	return change;
 }
 
@@ -886,6 +976,8 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 
 		StepGridData.erase(iStart, iEnd);
 	}
+
+	HandleFocusMode(steps_focus_checkbox->IsChecked());
 
 	return return_list;
 }
@@ -1412,6 +1504,7 @@ void cMain::Open(std::ifstream * file)
 		return;
 	}
 
+	steps_focus_checkbox->SetValue(false);
 	StepGridData = result->steps;
 	template_map = result->template_map;
 	save_file_location = result->save_file_location;

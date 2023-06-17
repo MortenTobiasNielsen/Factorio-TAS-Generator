@@ -170,6 +170,9 @@ protected:
 	void OnStepsGridRangeSelect(wxGridRangeSelectEvent& event);
 	void OnStepColourPickerColourChanged(wxColourPickerEvent& event);
 
+	void OnStepsFocusCheckbox(wxCommandEvent & event);
+	void HandleFocusMode(bool checked, bool changed = false);
+
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
 	void OnDeleteTemplateClicked(wxCommandEvent& event);
