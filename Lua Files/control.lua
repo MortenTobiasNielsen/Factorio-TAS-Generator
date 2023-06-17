@@ -1315,13 +1315,13 @@ local function doStep(current_step)
 	end
 end
 
-local original_warning = warning
+local original_warning = Warning
 local function load_StepBlock()
 	if global.step_block or not steps[step].no_order then return end
 	global.step_block = {}
 	Debug("entering step block")
-	warning = function ()
-		--override warning with a function that does nothing
+	Warning = function ()
+		--override Warning with a function that does nothing
 	end
 	for i = step, #steps do
 		local _step = steps[i]
@@ -1353,10 +1353,10 @@ local function execute_StepBlock()
 		change_step(global.step_block_info.total_steps)
 		global.step_block = nil
 		global.step_block_info = nil
-		warning = original_warning
+		Warning = original_warning
 		Debug("Ending step block")
 	elseif (game.tick - global.step_block_info.start_tick) > (25 * global.step_block_info.total_steps) then
-		warning = original_warning
+		Warning = original_warning
 		Error("Catastrofic execution of No order step block. Exceeeded ".. (25 * global.step_block_info.total_steps) .. " ticks.")
 		run = false
 	end
