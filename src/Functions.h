@@ -20,6 +20,7 @@ using std::stringstream;
 
 bool check_input(const string& item, const vector<string>& all_items);
 
+string Capitalize(const std::string& stringToCapitalize, const bool isItem = false);
 string Capitalize(const wxString& stringToCapitalize, const bool isItem = false);
 
 bool equals_ignore_case(const std::string_view& lhs, const std::string_view& rhs);

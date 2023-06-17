@@ -132,28 +132,24 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 
 	while (update_segment(file))
 	{
-		if (segments.size() != step_segment_size && 
-			segments.size() != step_segment_size_without_colour &&
-			segments.size() != step_segment_size_without_comment_and_colour &&
-			segments.size() != step_segment_size_without_comment_and_colour_and_modifiers)
+		const size_t segment_size = segments.size();
+		if (segment_size != step_segment_size &&
+			segment_size != step_segment_size_without_colour &&
+			segment_size != step_segment_size_without_comment_and_colour &&
+			segment_size != step_segment_size_without_comment_and_colour_and_modifiers)
 		{
-			if (segments[0] == save_templates_indicator)
+			if (segment_size >= 0 && segments[0] == save_templates_indicator)
 			{
 				return Template;
 			}
-
-			if (segments.size() == 1 && (segments[0] == save_groups_indicator))
+			else if (segment_size >= 0 && segments[0] == save_groups_indicator)
 			{
 				return Group;
 			}
-
-			return Invalid;
-		}
-
-		string comment = "";
-		if (segments.size() == step_segment_size || segments.size() == step_segment_size_without_colour)
-		{
-			comment = segments[9];
+			else
+			{
+				return Invalid;
+			}
 		}
 
 		StepParameters step(invalidX, 0);
@@ -161,19 +157,9 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		if (segments[1] != "")
 		{
 			step.X = stod(segments[1]);
-			step.OriginalX = stod(segments[1]);
+			step.OriginalX = step.X;
 			step.Y = stod(segments[2]);
-			step.OriginalY = stod(segments[2]);
-		}
-
-		if (segments[7] != "")
-		{
-			step.Size = stoi(segments[7]);
-		}
-
-		if (segments[8] != "")
-		{
-			step.Buildings = stoi(segments[8]);
+			step.OriginalY = step.Y;
 		}
 
 		step.Step = Capitalize(segments[0]);
@@ -181,18 +167,12 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Item = Capitalize(segments[4], true);
 		step.Orientation = Capitalize(segments[5]);
 		step.Direction = Capitalize(segments[6]);
-		step.Modifiers = segments.size() == step_segment_size ? segments[11] : "";
-		step.Comment = comment;
-
-		if (segments.size() == step_segment_size)
-		{
-			step.Colour = segments[10];
-		}
-		else
-		{
-			step.Colour = "";
-		}
-
+		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
+		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
+		step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? segments[9] : "";
+		step.Colour = segment_size == step_segment_size ? segments[10] : "";
+		step.Modifiers = segment_size == step_segment_size ? segments[11] : "";
+		
 		if (step.Step == "Start")
 		{
 			continue; // Ignore start steps, given that they are obsolete.
@@ -272,7 +252,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 
 		lines_processed++;
 
-		if (lines_processed > 0 && lines_processed % 25 == 0)
+		if (lines_processed > 0 && lines_processed % 250 == 0)
 		{
 			dialog_progress_bar->set_progress(static_cast<float>(lines_processed) / static_cast<float>(total_lines) * 100.0f - 50);
 			wxYield();
@@ -685,7 +665,8 @@ bool OpenTas::update_segment(std::ifstream& file)
 	{
 		data_line.str(line);
 
-		segments = {};
+		segments.clear();
+		segments.reserve(16);
 
 		while (std::getline(data_line, segment, ';'))
 		{
