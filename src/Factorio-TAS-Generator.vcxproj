@@ -179,6 +179,7 @@
     <ClCompile Include="StepParameters.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
     <ClCompile Include="StepNameToEnum.cpp" />
+    <ClCompile Include="SteptypeColour.cpp" />
     <ClCompile Include="TypePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +207,7 @@
     <ClInclude Include="GridEntry.h" />
     <ClInclude Include="StepParameters.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SteptypeColour.h" />
     <ClInclude Include="TasFileConstants.h" />
     <ClInclude Include="TypePanel.h" />
     <ClInclude Include="utils.h" />

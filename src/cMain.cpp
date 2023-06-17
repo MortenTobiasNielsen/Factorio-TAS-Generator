@@ -2,6 +2,7 @@
 
 #include "cMain.h"
 #include "ShortcutChanger.h"
+#include "SteptypeColour.h"
 
 cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSize(1840, 950))
 {
@@ -136,6 +137,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	//set shortcuts from settings file
 	ShortcutChanger::UpdateShortcutsFromFile(main_menubar);
+	SteptypeColourHandler::UpdateSteptypeColoursFromFile();
 	settings::setting settings = settings::ReadSettingFile();
 	if (settings.last_tas != "")
 	{
@@ -553,31 +555,9 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 	return true;
 }
 
-void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType Step)
+void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType step)
 {
-	switch (Step)
-	{
-		case e_stop:
-			grid->SetCellBackgroundColour(row, 0, *wxRED);
-			return;
-		case e_build:
-			grid->SetCellBackgroundColour(row, 0, *wxCYAN);
-			return;
-		case e_craft:
-			grid->SetCellBackgroundColour(row, 0, *wxLIGHT_GREY);
-			return;
-		case e_game_speed:
-		case e_pause:
-		case e_save:
-		case e_keep_crafting:
-		case e_keep_on_path:
-		case e_keep_walking:
-		case e_never_idle:
-			grid->SetCellBackgroundColour(row, 0, *wxYELLOW);
-			return;
-		default:
-			grid->SetCellBackgroundColour(row, 0, *wxWHITE);
-	}
+	grid->SetCellBackgroundColour(row, 0, SteptypeColourHandler::GetStepColourOrDefault(step));
 }
 
 void cMain::UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
@@ -1768,10 +1748,6 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 
 void cMain::OnChangeShortcutMenuSelected(wxCommandEvent& event)
 {
-	// open state file
-	// create changer
-	// send file & menu items to changer
-
 	ShortcutChanger * sc = new ShortcutChanger(this, 
 		wxID_ANY,
 		wxT("Change shortcuts"), 
@@ -1780,6 +1756,24 @@ void cMain::OnChangeShortcutMenuSelected(wxCommandEvent& event)
 		wxCAPTION | wxCLOSE_BOX | wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP | wxBORDER_DEFAULT);
 
 	sc->Build(main_menubar);	
+
+	sc->Show();
+
+	event.Skip();
+}
+
+void cMain::OnChangeSteptypeColoursMenuSelected(wxCommandEvent& event)
+{
+	SteptypeColourHandler* sc = new SteptypeColourHandler(this,
+		grid_steps, 
+		grid_template,
+		wxID_ANY,
+		wxT("Change colours"),
+		wxDefaultPosition,
+		wxDefaultSize,
+		wxCAPTION | wxCLOSE_BOX | wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP | wxBORDER_DEFAULT);
+
+	sc->Build();
 
 	sc->Show();
 

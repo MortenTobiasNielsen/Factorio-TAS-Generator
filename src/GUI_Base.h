@@ -58,6 +58,7 @@ class GUI_Base : public wxFrame
 		wxMenu* menu_file;
 		wxMenu* menu_script;
 		wxMenu* menu_steptypes;
+		wxMenuItem* steptypecolour_changer;
 		wxMenu* menu_shortcuts;
 		wxMenu* menu_goals;
 		wxMenu* menu_loglevel;
@@ -192,6 +193,7 @@ class GUI_Base : public wxFrame
 		virtual void OnMenuExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnChooseLocation( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGenerateScript( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnChangeSteptypeColoursMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWalkMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnCraftMenuSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTechMenuSelected( wxCommandEvent& event ) { event.Skip(); }
@@ -397,6 +399,40 @@ class BaseForDialogProgress : public wxDialog
 		BaseForDialogProgress( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Generating Script"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
 
 		~BaseForDialogProgress();
+
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class StepTypeColoursDialog
+///////////////////////////////////////////////////////////////////////////////
+class StepTypeColoursDialog : public wxDialog
+{
+	private:
+
+	protected:
+		wxBoxSizer* StepTypeColoursDialog_sizer;
+		wxStaticText* steptype_colour_label;
+		wxListbook* steptype_colour_book;
+		wxPanel* steptype_colour_character_panel;
+		wxBoxSizer* stc_character_sizer;
+		wxFlexGridSizer* stc_character_grid_sizer;
+		wxPanel* steptype_colour_building_panel;
+		wxBoxSizer* stc_building_sizer;
+		wxFlexGridSizer* stc_building_grid_sizer;
+		wxPanel* steptype_colour_game_panel;
+		wxBoxSizer* stc_game_sizer;
+		wxFlexGridSizer* stc_game_grid_sizer;
+
+		// Virtual event handlers, override them in your derived class
+		virtual void OnCloseStepTypeColoursChanger( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnInitStepTypeColoursDialog( wxInitDialogEvent& event ) { event.Skip(); }
+
+
+	public:
+
+		StepTypeColoursDialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Step type colours"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxBORDER_RAISED|wxTAB_TRAVERSAL );
+
+		~StepTypeColoursDialog();
 
 };
 
