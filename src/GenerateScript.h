@@ -79,6 +79,8 @@ private:
 	void AddVariableFile(string& folder_location, string& goal, log_config logconfig);
 	void AddInfoFile(string& folder_location);
 
+	void PaintWarningStateChanged(string step, int counter);
+
 	/// <summary>Paints the step to indicate walk sub-step was added</summary>
 	/// <param name="step">The index of the step using a start of 1</param>
 	void PaintIntermediateWalk(string step, bool paint = true);
@@ -153,6 +155,7 @@ private:
 	string Comment(string comment);
 	string Modifiers();
 	string Step(string step, string action, string details, string comment);
+	WarningsStatesCounters warning_state_counters;
 
 	void walk(string step, string action, string x_cord, string y_cord, string comment);
 	void mining(string step, string x_cord, string y_cord, string duration, string building_name, string OrientationEnum, bool is_building, string comment);
