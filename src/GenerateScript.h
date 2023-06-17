@@ -10,9 +10,10 @@
 #include <filesystem>
 #include <map>
 
+#include "Shared functions\Functions.h"
+
 #include "BuildingNameToIndex.h"
 #include "DialogProgressBar.h"
-#include "Functions.h"
 #include "StepParameters.h"
 #include "StepNameToEnum.h"
 #include "utils.h"

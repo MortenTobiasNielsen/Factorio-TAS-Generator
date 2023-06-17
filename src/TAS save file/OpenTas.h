@@ -10,7 +10,8 @@
 #include <sstream>
 #include <filesystem>
 
-#include "..\Functions.h"
+#include "..\Shared functions\Functions.h"
+
 #include "..\StepParameters.h"
 #include "..\BuildingNameToIndex.h"
 #include "..\utils.h"

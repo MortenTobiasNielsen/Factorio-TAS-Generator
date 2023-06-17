@@ -17,7 +17,6 @@
 
 #include "Building.h"
 #include "BuildingNameToIndex.h"
-#include "Functions.h"
 #include "GUI_Base.h"
 #include "GenerateScript.h"
 #include "GridEntry.h"
@@ -33,6 +32,8 @@
 #include "TAS save file\OpenTas.h"
 #include "TAS save file\SaveTas.h"
 #include "TAS save file\TasFileConstants.h"
+
+#include "Shared functions\Functions.h"
 
 #include "../icon.xpm"
 #include "CommandStack.h"

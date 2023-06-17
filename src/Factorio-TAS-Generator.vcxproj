@@ -169,10 +169,10 @@
     <ClCompile Include="cMain.cpp" />
     <ClCompile Include="CommandStack.cpp" />
     <ClCompile Include="DialogProgressBar.cpp" />
-    <ClCompile Include="Functions.cpp" />
     <ClCompile Include="GenerateScript.cpp" />
     <ClCompile Include="GUI_Base.cpp" />
     <ClCompile Include="ImportStepsPanel.cpp" />
+    <ClCompile Include="Shared functions\Functions.cpp" />
     <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="StepParameters.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
@@ -188,7 +188,6 @@
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
     <ClInclude Include="CommandStack.h" />
-    <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="ImportStepsPanel.h" />
@@ -198,6 +197,7 @@
     <ClInclude Include="ParameterChoices.h" />
     <ClInclude Include="Priority.h" />
     <ClInclude Include="SearchUtil.h" />
+    <ClInclude Include="Shared functions\Functions.h" />
     <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="StepNameToEnum.h" />
     <ClInclude Include="resource.h" />

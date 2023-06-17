@@ -1,7 +1,8 @@
 #pragma once
 #include "cMain.h"
 
-#include "Functions.h"
+#include "Shared functions\Functions.h"
+
 #include "BuildingNameToIndex.h"
 #include "utils.h"
 
