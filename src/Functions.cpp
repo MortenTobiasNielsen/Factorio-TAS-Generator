@@ -51,7 +51,7 @@ void find_coordinates(std::string& x_cord, std::string& y_cord, std::string& dir
 	}
 }
 
-string inline Capitalize_std(const std::string& stringToCapitalize, const bool isItem)
+string Capitalize(const std::string& stringToCapitalize, const bool isItem)
 {
 	if (stringToCapitalize.empty()) return stringToCapitalize;
 	std::string capitalizedString = stringToCapitalize;
@@ -73,14 +73,14 @@ string inline Capitalize_std(const std::string& stringToCapitalize, const bool i
 	return capitalizedString;
 }
 
-string inline Capitalize(const wxString& stringToCapitalize, const bool isItem)
+string Capitalize(const wxString& stringToCapitalize, const bool isItem)
 {
 	if (stringToCapitalize == "")
 	{
 		return "";
 	}
 
-	return Capitalize_std(stringToCapitalize.ToStdString(), isItem);
+	return Capitalize(stringToCapitalize.ToStdString(), isItem);
 }
 
 bool equals_ignore_case(const std::string_view& lhs, const std::string_view& rhs)

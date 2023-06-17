@@ -162,11 +162,11 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			step.OriginalY = step.Y;
 		}
 
-		step.Step = Capitalize_std(segments[0]);
-		step.Amount = Capitalize_std(segments[3]);
-		step.Item = Capitalize_std(segments[4], true);
-		step.Orientation = Capitalize_std(segments[5]);
-		step.Direction = Capitalize_std(segments[6]);
+		step.Step = Capitalize(segments[0]);
+		step.Amount = Capitalize(segments[3]);
+		step.Item = Capitalize(segments[4], true);
+		step.Orientation = Capitalize(segments[5]);
+		step.Direction = Capitalize(segments[6]);
 		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
 		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
 		step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? segments[9] : "";
