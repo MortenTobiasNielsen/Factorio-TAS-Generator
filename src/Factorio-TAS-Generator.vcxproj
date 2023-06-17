@@ -173,13 +173,13 @@
     <ClCompile Include="GenerateScript.cpp" />
     <ClCompile Include="GUI_Base.cpp" />
     <ClCompile Include="ImportStepsPanel.cpp" />
-    <ClCompile Include="OpenTas.cpp" />
-    <ClCompile Include="SaveTas.cpp" />
     <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="StepParameters.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
     <ClCompile Include="StepNameToEnum.cpp" />
     <ClCompile Include="SteptypeColour.cpp" />
+    <ClCompile Include="TAS save file\OpenTas.cpp" />
+    <ClCompile Include="TAS save file\SaveTas.cpp" />
     <ClCompile Include="TypePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -200,15 +200,15 @@
     <ClInclude Include="SearchUtil.h" />
     <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="StepNameToEnum.h" />
-    <ClInclude Include="OpenTas.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SaveTas.h" />
     <ClInclude Include="DialogProgressBar.h" />
     <ClInclude Include="GridEntry.h" />
     <ClInclude Include="StepParameters.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SteptypeColour.h" />
-    <ClInclude Include="TasFileConstants.h" />
+    <ClInclude Include="TAS save file\OpenTas.h" />
+    <ClInclude Include="TAS save file\SaveTas.h" />
+    <ClInclude Include="TAS save file\TasFileConstants.h" />
     <ClInclude Include="TypePanel.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

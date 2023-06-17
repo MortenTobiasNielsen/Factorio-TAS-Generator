@@ -21,8 +21,6 @@
 #include "GUI_Base.h"
 #include "GenerateScript.h"
 #include "GridEntry.h"
-#include "OpenTas.h"
-#include "SaveTas.h"
 #include "StepParameters.h"
 #include "SearchUtil.h"
 #include "DialogProgressBar.h"
@@ -31,7 +29,10 @@
 #include "ParameterChoices.h"
 #include "Inventory.h"
 #include "Priority.h"
-#include "TasFileConstants.h"
+
+#include "TAS save file\OpenTas.h"
+#include "TAS save file\SaveTas.h"
+#include "TAS save file\TasFileConstants.h"
 
 #include "../icon.xpm"
 #include "CommandStack.h"

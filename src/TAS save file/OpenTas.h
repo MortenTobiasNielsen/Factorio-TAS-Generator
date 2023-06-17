@@ -10,11 +10,11 @@
 #include <sstream>
 #include <filesystem>
 
-#include "Functions.h"
-#include "StepParameters.h"
-#include "BuildingNameToIndex.h"
-#include "utils.h"
-#include "DialogProgressBar.h"
+#include "..\Functions.h"
+#include "..\StepParameters.h"
+#include "..\BuildingNameToIndex.h"
+#include "..\utils.h"
+#include "..\DialogProgressBar.h"
 #include "TasFileConstants.h"
 
 using std::string;
