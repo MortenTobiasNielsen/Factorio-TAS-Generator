@@ -3,8 +3,9 @@
 
 #include "Shared functions\Functions.h"
 
-#include "BuildingNameToIndex.h"
-#include "utils.h"
+#include "Structures\BuildingNameToIndex.h"
+
+#include "Data\utils.h"
 
 using std::string;
 using std::stod;

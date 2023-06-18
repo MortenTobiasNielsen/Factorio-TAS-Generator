@@ -15,19 +15,21 @@
 #include <codecvt>
 #include <filesystem>
 
-#include "Building.h"
-#include "BuildingNameToIndex.h"
 #include "GUI_Base.h"
 #include "GenerateScript.h"
-#include "GridEntry.h"
-#include "StepParameters.h"
 #include "SearchUtil.h"
 #include "DialogProgressBar.h"
-#include "StepNameToEnum.h"
-#include "utils.h"
-#include "ParameterChoices.h"
-#include "Inventory.h"
-#include "Priority.h"
+
+#include "Data\utils.h"
+
+#include "Structures\Building.h"
+#include "Structures\ParameterChoices.h"
+#include "Structures\Inventory.h"
+#include "Structures\Priority.h"
+#include "Structures\StepNameToEnum.h"
+#include "Structures\GridEntry.h"
+#include "Structures\StepParameters.h"
+#include "Structures\BuildingNameToIndex.h"
 
 #include "TAS save file\OpenTas.h"
 #include "TAS save file\SaveTas.h"

@@ -1,6 +1,8 @@
 #include <wx/clrpicker.h>
+
+#include "Structures\StepNameToEnum.h"
+
 #include "SteptypeColour.h"
-#include "StepNameToEnum.h"
 #include "Settings.h"
 
 using json = nlohmann::json;

@@ -3,7 +3,7 @@
 #include <string>
 #include <tuple>
 
-#include "StepParameters.h"
+#include "Structures\StepParameters.h"
 
 using std::vector;
 using std::string;

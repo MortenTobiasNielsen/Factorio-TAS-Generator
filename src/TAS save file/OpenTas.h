@@ -12,10 +12,13 @@
 
 #include "..\Shared functions\Functions.h"
 
-#include "..\StepParameters.h"
-#include "..\BuildingNameToIndex.h"
-#include "..\utils.h"
+#include "..\Structures\StepParameters.h"
+#include "..\Structures\BuildingNameToIndex.h"
+
+#include "..\Data\utils.h"
+
 #include "..\DialogProgressBar.h"
+
 #include "TasFileConstants.h"
 
 using std::string;

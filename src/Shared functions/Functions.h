@@ -9,10 +9,10 @@
 #include <ranges>
 #include <algorithm>
 
-#include "..\Building.h"
-#include "..\GridEntry.h"
-#include "..\StepParameters.h"
-#include "..\Orientation.h"
+#include "..\Structures\Building.h"
+#include "..\Structures\GridEntry.h"
+#include "..\Structures\StepParameters.h"
+#include "..\Structures\Orientation.h"
 
 using std::vector;
 using std::string;

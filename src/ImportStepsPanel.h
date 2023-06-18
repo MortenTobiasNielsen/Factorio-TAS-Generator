@@ -13,8 +13,8 @@
 #include <sstream>
 #include <vector>
 
-#include "Building.h"
-#include "StepParameters.h"
+#include "Structures\Building.h"
+#include "Structures\StepParameters.h"
 
 class ImportStepsPanel : public wxPanel
 {

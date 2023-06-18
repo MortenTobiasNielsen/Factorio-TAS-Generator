@@ -8,9 +8,10 @@
 #include <vector>
 #include <map>
 
+#include "..\Structures\StepParameters.h"
 #include "..\DialogProgressBar.h"
-#include "..\StepParameters.h"
-#include "..\utils.h"
+
+#include "..\Data\utils.h"
 
 #include "TasFileConstants.h"
 
