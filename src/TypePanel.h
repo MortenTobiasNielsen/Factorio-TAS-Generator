@@ -4,7 +4,7 @@
 #include <wx/string.h>
 
 #include "Data\utils.h"
-#include "Structures\StepNameToEnum.h"
+#include "Structures\StepType.h"
 
 //Top center panel with radio buttons
 class TypePanel : public wxPanel

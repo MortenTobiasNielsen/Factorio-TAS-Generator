@@ -27,7 +27,7 @@
 #include "Structures\Building.h"
 #include "Structures\ParameterChoices.h"
 #include "Structures\Priority.h"
-#include "Structures\StepNameToEnum.h"
+#include "Structures\StepType.h"
 #include "Structures\GridEntry.h"
 #include "Structures\StepParameters.h"
 
