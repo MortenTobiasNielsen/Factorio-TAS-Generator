@@ -69,7 +69,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 		tech_choices.Add(s);
 	}
 
-	for (auto& s : build_orientations)
+	for (auto& s : orientation_list)
 	{
 		building_orientation_choices.Add(s);
 	}
@@ -90,14 +90,14 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 
 	cmb_building_orientation->Clear();
 	cmb_direction_to_build->Clear();
-	for (auto it = build_orientations.begin(); it < build_orientations.end(); it++)
+	for (auto it = orientation_list.begin(); it < orientation_list.end(); it++)
 	{
 		cmb_building_orientation->Append(*it);
 		cmb_direction_to_build->Append(*it);
 	}
-	cmb_building_orientation->SetValue(*build_orientations.begin());
+	cmb_building_orientation->SetValue(*orientation_list.begin());
 	cmb_building_orientation->AutoComplete(building_orientation_choices);
-	cmb_direction_to_build->SetValue(*build_orientations.begin());
+	cmb_direction_to_build->SetValue(*orientation_list.begin());
 	cmb_direction_to_build->AutoComplete(building_orientation_choices);
 
 	cmb_item->Clear();
@@ -2489,13 +2489,13 @@ bool cMain::IsValidBuildStep(StepParameters& stepParameters)
 		return false;
 	}
 
-	if (!check_input(stepParameters.Orientation, build_orientations))
+	if (!check_input(stepParameters.Orientation, orientation_list))
 	{
 		wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
 		return false;
 	}
 
-	if (!check_input(stepParameters.Direction, build_orientations))
+	if (!check_input(stepParameters.Direction, orientation_list))
 	{
 		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 		return false;
@@ -2588,7 +2588,7 @@ bool cMain::IsValidPutTakeStep(StepParameters& stepParameters)
 		return false;
 	}
 
-	if (!check_input(stepParameters.Direction, build_orientations))
+	if (!check_input(stepParameters.Direction, orientation_list))
 	{
 		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 		return false;
@@ -2757,7 +2757,7 @@ bool cMain::ValidateAllSteps()
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType.find(step.Item)->second;
-				step.OrientationEnum = OrientationToEnum.find(step.Orientation)->second;
+				step.OrientationEnum = MapStringToOrientation.find(step.Orientation)->second;
 
 				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, step);
 				break;
