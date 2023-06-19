@@ -428,9 +428,9 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 {
-	if (step->FromInto == struct_from_into_list.wreck)
+	if (step->FromInto == inventory_types.wreck)
 	{
-		building = struct_from_into_list.wreck;
+		building = inventory_types.wreck;
 		return;
 	}
 
@@ -462,55 +462,55 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 
 string GenerateScript::extract_define(string from_into, string building)
 {
-	if (from_into == struct_from_into_list.wreck)
+	if (from_into == inventory_types.wreck)
 	{
-		return struct_take_put_list.chest;
+		return inventory_defines.chest;
 	}
 
-	if (from_into == struct_from_into_list.chest)
+	if (from_into == inventory_types.chest)
 	{
-		return struct_take_put_list.chest;
+		return inventory_defines.chest;
 	}
 
-	if (from_into == struct_from_into_list.fuel)
+	if (from_into == inventory_types.fuel)
 	{
-		return struct_take_put_list.fuel;
+		return inventory_defines.fuel;
 	}
 
 	if (building == struct_science_list.lab)
 	{
-		if (from_into == struct_from_into_list.input)
+		if (from_into == inventory_types.input)
 		{
-			return struct_take_put_list.lab_input;
+			return inventory_defines.lab_input;
 		}
-		else if (from_into == struct_from_into_list.modules)
+		else if (from_into == inventory_types.modules)
 		{
-			return struct_take_put_list.lab_modules;
+			return inventory_defines.lab_modules;
 		}
 	}
 
 	if (check_input(building, drills_list))
 	{
-		return struct_take_put_list.drill_modules;
+		return inventory_defines.drill_modules;
 	}
 
 	if (building == "Beacon")
 	{
-		return struct_take_put_list.beacon_modules;
+		return inventory_defines.beacon_modules;
 	}
 
-	if (from_into == struct_from_into_list.input)
+	if (from_into == inventory_types.input)
 	{
-		return struct_take_put_list.assembly_input;
+		return inventory_defines.assembly_input;
 	}
 
-	if (from_into == struct_from_into_list.modules)
+	if (from_into == inventory_types.modules)
 	{
-		return struct_take_put_list.assembly_modules;
+		return inventory_defines.assembly_modules;
 	}
-	if (from_into == struct_from_into_list.output)
+	if (from_into == inventory_types.output)
 	{
-		return struct_take_put_list.assembly_output;
+		return inventory_defines.assembly_output;
 	}
 
 	return "Not Found";
