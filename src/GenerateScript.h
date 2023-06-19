@@ -10,13 +10,16 @@
 #include <filesystem>
 #include <map>
 
-#include "BuildingNameToIndex.h"
+#include "Shared functions\Functions.h"
+
+#include "Structures\BuildingNameToIndex.h"
+#include "Structures\StepParameters.h"
+#include "Structures\StepNameToEnum.h"
+#include "Structures\Inventory.h"
+
+#include "Data\utils.h"
+
 #include "DialogProgressBar.h"
-#include "Functions.h"
-#include "StepParameters.h"
-#include "StepNameToEnum.h"
-#include "utils.h"
-#include "Inventory.h"
 
 using std::string;
 using std::vector;

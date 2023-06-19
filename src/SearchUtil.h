@@ -7,7 +7,7 @@
 #include <vector>
 #include <tuple>
 
-#include "Functions.h"
+#include "Shared functions\Functions.h"
 
 using std::string;
 using std::vector;

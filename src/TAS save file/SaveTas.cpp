@@ -1,7 +1,8 @@
 #pragma once
 
+#include "..\Settings.h"
+
 #include "SaveTas.h"
-#include "Settings.h"
 
 bool SaveTas::Save(
 	wxWindow* parent,

@@ -3,8 +3,8 @@
 #include <wx/radiobut.h>
 #include <wx/string.h>
 
-#include "utils.h"
-#include "StepNameToEnum.h"
+#include "Data\utils.h"
+#include "Structures\StepNameToEnum.h"
 
 //Top center panel with radio buttons
 class TypePanel : public wxPanel

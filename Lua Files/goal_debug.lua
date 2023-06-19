@@ -1,2 +1,0 @@
--- Debug mode
-return true

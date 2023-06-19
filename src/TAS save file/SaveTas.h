@@ -8,10 +8,12 @@
 #include <vector>
 #include <map>
 
-#include "DialogProgressBar.h"
-#include "StepParameters.h"
+#include "..\Structures\StepParameters.h"
+#include "..\DialogProgressBar.h"
+
+#include "..\Data\utils.h"
+
 #include "TasFileConstants.h"
-#include "utils.h"
 
 using std::string;
 using std::vector;

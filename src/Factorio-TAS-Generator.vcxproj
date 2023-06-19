@@ -164,53 +164,53 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BuildingNameToIndex.cpp" />
     <ClCompile Include="cApp.cpp" />
     <ClCompile Include="cMain.cpp" />
     <ClCompile Include="CommandStack.cpp" />
     <ClCompile Include="DialogProgressBar.cpp" />
-    <ClCompile Include="Functions.cpp" />
     <ClCompile Include="GenerateScript.cpp" />
     <ClCompile Include="GUI_Base.cpp" />
     <ClCompile Include="ImportStepsPanel.cpp" />
-    <ClCompile Include="OpenTas.cpp" />
-    <ClCompile Include="SaveTas.cpp" />
+    <ClCompile Include="Shared functions\Functions.cpp" />
     <ClCompile Include="ShortcutChanger.cpp" />
-    <ClCompile Include="StepParameters.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
-    <ClCompile Include="StepNameToEnum.cpp" />
     <ClCompile Include="SteptypeColour.cpp" />
+    <ClCompile Include="Structures\BuildingNameToIndex.cpp" />
+    <ClCompile Include="Structures\StepNameToEnum.cpp" />
+    <ClCompile Include="Structures\StepParameters.cpp" />
+    <ClCompile Include="TAS save file\OpenTas.cpp" />
+    <ClCompile Include="TAS save file\SaveTas.cpp" />
     <ClCompile Include="TypePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Building.h" />
-    <ClInclude Include="BuildingNameToIndex.h" />
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
     <ClInclude Include="CommandStack.h" />
-    <ClInclude Include="Functions.h" />
+    <ClInclude Include="Data\utils.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
     <ClInclude Include="ImportStepsPanel.h" />
-    <ClInclude Include="Inventory.h" />
     <ClInclude Include="nlohmann\json.hpp" />
-    <ClInclude Include="Orientation.h" />
-    <ClInclude Include="ParameterChoices.h" />
-    <ClInclude Include="Priority.h" />
     <ClInclude Include="SearchUtil.h" />
+    <ClInclude Include="Shared functions\Functions.h" />
     <ClInclude Include="ShortcutChanger.h" />
-    <ClInclude Include="StepNameToEnum.h" />
-    <ClInclude Include="OpenTas.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SaveTas.h" />
     <ClInclude Include="DialogProgressBar.h" />
-    <ClInclude Include="GridEntry.h" />
-    <ClInclude Include="StepParameters.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SteptypeColour.h" />
-    <ClInclude Include="TasFileConstants.h" />
+    <ClInclude Include="Structures\Building.h" />
+    <ClInclude Include="Structures\BuildingNameToIndex.h" />
+    <ClInclude Include="Structures\GridEntry.h" />
+    <ClInclude Include="Structures\Inventory.h" />
+    <ClInclude Include="Structures\Orientation.h" />
+    <ClInclude Include="Structures\ParameterChoices.h" />
+    <ClInclude Include="Structures\Priority.h" />
+    <ClInclude Include="Structures\StepNameToEnum.h" />
+    <ClInclude Include="Structures\StepParameters.h" />
+    <ClInclude Include="TAS save file\OpenTas.h" />
+    <ClInclude Include="TAS save file\SaveTas.h" />
+    <ClInclude Include="TAS save file\TasFileConstants.h" />
     <ClInclude Include="TypePanel.h" />
-    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon.ico" />

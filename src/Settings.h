@@ -22,6 +22,8 @@ namespace settings
     using std::map;
     using std::fstream;
 
+    typedef unsigned char byte;
+
     namespace file
     {
 #pragma region filepath

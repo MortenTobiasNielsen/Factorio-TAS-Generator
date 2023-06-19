@@ -1,9 +1,11 @@
 #pragma once
 #include "cMain.h"
 
-#include "Functions.h"
-#include "BuildingNameToIndex.h"
-#include "utils.h"
+#include "Shared functions\Functions.h"
+
+#include "Structures\BuildingNameToIndex.h"
+
+#include "Data\utils.h"
 
 using std::string;
 using std::stod;
