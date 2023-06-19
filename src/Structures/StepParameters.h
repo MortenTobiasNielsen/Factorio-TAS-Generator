@@ -27,9 +27,8 @@ struct StepParameters
 	string Modifiers;
 
 	Orientation OrientationEnum;
-	StepType StepEnum;
+	StepType type;
 
-	string Step;
 	string Item;
 	string FromInto;
 	string Orientation;

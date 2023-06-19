@@ -162,7 +162,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			step.OriginalY = step.Y;
 		}
 
-		step.Step = Capitalize(segments[0]);
+		step.type = ToStepType(Capitalize(segments[0]));
 		step.Amount = segments[3] == "" || segments[3] == "All" ? 0 : stoi(segments[3]);
 		step.Item = Capitalize(segments[4], true);
 		step.Orientation = Capitalize(segments[5]);
@@ -172,21 +172,8 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? segments[9] : "";
 		step.Colour = segment_size == step_segment_size ? segments[10] : "";
 		step.Modifiers = segment_size == step_segment_size ? segments[11] : "";
-		
-		if (step.Step == "Start")
-		{
-			continue; // Ignore start steps, given that they are obsolete.
-		}
 
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
-		{
-			return Invalid;
-		}
-
-		step.StepEnum = mappedtype->second;
-
-		switch (step.StepEnum)
+		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
@@ -326,27 +313,14 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Step = Capitalize(segments[1]);
+		step.type = ToStepType(Capitalize(segments[1]));
 		step.Amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		if (step.Step == "Start")
-		{
-			continue; // Ignore start steps, given that they are obsolete.
-		}
-
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
-		{
-			return false;
-		}
-
-		step.StepEnum = mappedtype->second;
-
-		switch (step.StepEnum)
+		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
@@ -463,27 +437,14 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Step = Capitalize(segments[1]);
+		step.type = ToStepType(Capitalize(segments[1]));
 		step.Amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);
 		step.Comment = comment;
 
-		if (step.Step == "Start")
-		{
-			continue; // Ignore start steps, given that they are obsolete.
-		}
-
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
-		{
-			return false;
-		}
-
-		step.StepEnum = mappedtype->second;
-
-		switch (step.StepEnum)
+		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];

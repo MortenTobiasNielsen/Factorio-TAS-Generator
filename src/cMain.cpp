@@ -171,7 +171,7 @@ void cMain::HandleFocusMode(bool checked, bool changed)
 		int last_save = 0;
 		for (int i = StepGridData.size() - 1; i >= 0; i--)
 		{
-			if (StepGridData[i].StepEnum == StepType::e_save && StepGridData[i].Modifiers.find("skip") == std::string::npos)
+			if (StepGridData[i].type == StepType::e_save && StepGridData[i].Modifiers.find("skip") == std::string::npos)
 			{
 				last_save = i;
 				break;
@@ -549,7 +549,7 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 
 	PopulateGrid(grid, rowNum, &gridEntry);
 
-	BackgroundColorUpdate(grid, rowNum, step.StepEnum);
+	BackgroundColorUpdate(grid, rowNum, step.type);
 
 	no_changes = false;
 	return true;
@@ -575,7 +575,7 @@ void cMain::UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
 
 		PopulateGrid(grid, i, &gridEntry);
 
-		BackgroundColorUpdate(grid, i, steps[i].StepEnum);
+		BackgroundColorUpdate(grid, i, steps[i].type);
 	}
 
 	no_changes = false;
@@ -667,7 +667,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 	};
 
 	string to_check;
-	switch (stepParameters.StepEnum)
+	switch (stepParameters.type)
 	{
 		case e_save:
 			UpdateStepGrid(row, &stepParameters);
@@ -691,8 +691,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 
 			to_check = stepParameters.Item;
 
-			stepParameters.StepEnum = e_put;
-			stepParameters.Step = StepNames[e_put];
+			stepParameters.type = e_put;
 			stepParameters.Amount = 1;
 			if (auto_put)
 			{
@@ -744,8 +743,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
-					stepParameters.StepEnum = e_put;
-					stepParameters.Step = StepNames[e_put];
+					stepParameters.type = e_put;
 					stepParameters.Amount = stoi(recipe[i + 1]) * multiplier;
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = inventory_types.input;
@@ -759,7 +757,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 		}
 
 		default:			
-			type_panel->IncrementStateCounter(stepParameters.StepEnum);
+			type_panel->IncrementStateCounter(stepParameters.type);
 			UpdateStepGrid(row, &stepParameters); 
 			returnValue.push_back({row, stepParameters});
 			return returnValue;
@@ -777,7 +775,7 @@ void cMain::OnChangeStepClicked(wxCommandEvent& event)
 	}
 
 	int row = *rows.begin();
-	if (StepGridData[row].StepEnum == e_build)
+	if (StepGridData[row].type == e_build)
 	{
 		if (wxMessageBox("The row selected is a build step - are you sure you want to make this change?\nEnsure that you delete associated steps.", "The build step you are changing could be associated with future step", wxICON_WARNING | wxYES_NO, this) != wxYES)
 		{
@@ -825,13 +823,13 @@ vector< tuple<int, StepParameters>> cMain::ChangeStep(int row, StepParameters st
 {
 	vector< tuple<int, StepParameters>> change{};
 	
-	if (stepParameters.StepEnum == e_build)
+	if (stepParameters.type == e_build)
 	{
 		stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
 	}
-	else if (stepParameters.StepEnum != StepGridData[row].StepEnum)
+	else if (stepParameters.type != StepGridData[row].type)
 	{
-		type_panel->IncrementStateCounter(stepParameters.StepEnum);
+		type_panel->IncrementStateCounter(stepParameters.type);
 	}
 
 	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
@@ -842,7 +840,7 @@ vector< tuple<int, StepParameters>> cMain::ChangeStep(int row, StepParameters st
 	StepGridData[row] = stepParameters;
 	PopulateGrid(grid_steps, row, &gridEntry);
 
-	BackgroundColorUpdate(grid_steps, row, stepParameters.StepEnum);
+	BackgroundColorUpdate(grid_steps, row, stepParameters.type);
 	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	return change;
 }
@@ -914,7 +912,7 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 	for (const auto step : steps)
 	{
 		if (confirmed) break;
-		if (StepGridData[step].StepEnum == e_build)
+		if (StepGridData[step].type == e_build)
 		{
 			if (wxMessageBox("At least one of the rows selected is a build step - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", 
 				"The build step(s) you are deleting could be associated with future step", 
@@ -928,7 +926,7 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 
 	for (const auto step : steps)
 	{
-		type_panel->IncrementStateCounter(StepGridData[step].StepEnum); break;
+		type_panel->IncrementStateCounter(StepGridData[step].type); break;
 	}
 
 	return_list.reserve(steps.size());
@@ -1163,7 +1161,7 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 		{
 			GridTransfer(grid_steps, i, grid, moveTo);
 
-			BackgroundColorUpdate(grid, moveTo, StepGridData[i].StepEnum);
+			BackgroundColorUpdate(grid, moveTo, StepGridData[i].type);
 
 			auto it1 = steps.begin();
 			it1 += moveTo;
@@ -1675,7 +1673,7 @@ void cMain::PopulateStepGrid()
 
 		PopulateGrid(grid_steps, i, &gridEntry);
 
-		BackgroundColorUpdate(grid_steps, i, StepGridData[i].StepEnum);
+		BackgroundColorUpdate(grid_steps, i, StepGridData[i].type);
 
 		if (StepGridData[i].Colour != "")
 		{
@@ -2108,7 +2106,7 @@ StepParameters cMain::ExtractStepParameters()
 
 	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
 
-	stepParameters.Step = ExtractStep();
+	stepParameters.type = ExtractStep();
 	stepParameters.Amount = stoi(ExtractAmount());
 	stepParameters.Item = Capitalize(cmb_item->GetValue(), true);
 	stepParameters.FromInto = Capitalize(cmb_from_into->GetValue());
@@ -2129,8 +2127,6 @@ StepParameters cMain::ExtractStepParameters()
 	modifiers += modifier_force_checkbox->IsEnabled() && modifier_force_checkbox->GetValue() ? "force, " : "";
 	modifiers += modifier_split_checkbox->IsEnabled() && modifier_split_checkbox->GetValue() ? "split, " : "";
 	stepParameters.Modifiers = modifiers.size() > 2 ? modifiers.substr(0,  modifiers.size() - 2) : modifiers;
-
-	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;
 
 	return stepParameters;
 }
@@ -2189,12 +2185,12 @@ std::string cMain::ExtractAmount()
 GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 {
 	GridEntry gridEntry{
-		.Step = stepParameters->Step,
+		.Step = StepNames[stepParameters->type],
 		.Modifiers = stepParameters->Modifiers,
 		.Comment = stepParameters->Comment,
 	};
 
-	switch (stepParameters->StepEnum)
+	switch (stepParameters->type)
 	{
 		case e_stop:
 			gridEntry.Comment = "";
@@ -2349,7 +2345,7 @@ void cMain::UpdateStepGrid(int row, StepParameters* stepParameters)
 	it1 += row;
 	StepGridData.insert(it1, *stepParameters);
 
-	BackgroundColorUpdate(grid_steps, row, stepParameters->StepEnum);
+	BackgroundColorUpdate(grid_steps, row, stepParameters->type);
 }
 
 int cMain::GenerateBuildingSnapShot(int end_row)
@@ -2358,7 +2354,7 @@ int cMain::GenerateBuildingSnapShot(int end_row)
 
 	for (int i = 0; i < end_row; i++)
 	{
-		switch (StepGridData[i].StepEnum)
+		switch (StepGridData[i].type)
 		{
 			case e_build:
 				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, StepGridData[i]);
@@ -2399,7 +2395,7 @@ GridEntry cMain::ExtractGridEntry(wxGrid* grid, const int& row)
 bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool validateBuildSteps)
 {
 	// Cases where an association with a building isn't needed
-	switch (stepParameters.StepEnum)
+	switch (stepParameters.type)
 	{
 		case e_walk:
 		case e_game_speed:
@@ -2437,7 +2433,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 	}
 
 	int amountOfBuildings = GenerateBuildingSnapShot(row);
-	switch (stepParameters.StepEnum)
+	switch (stepParameters.type)
 	{
 		case e_recipe:
 			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
@@ -2711,7 +2707,7 @@ bool cMain::ExtraBuildingChecks(StepParameters& stepParameters)
 {
 	auto buildingName = FindBuildingName(stepParameters.BuildingIndex);
 
-	switch (stepParameters.StepEnum)
+	switch (stepParameters.type)
 	{
 		case e_limit:
 			if (check_input(buildingName, chest_list))
@@ -2753,7 +2749,7 @@ bool cMain::ValidateAllSteps()
 	{
 		StepParameters& step = StepGridData[i];
 
-		switch (step.StepEnum)
+		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType.find(step.Item)->second;
@@ -2826,7 +2822,7 @@ void cMain::NoOrderButtonHandle(bool force)
 	{
 		for (int row : rows)
 		{
-			StepType e = StepGridData.at(row).StepEnum;
+			StepType e = StepGridData.at(row).type;
 			if (modifier_types.no_order.contains(e))
 				continue;
 			else
@@ -2842,7 +2838,7 @@ void cMain::NoOrderButtonHandle(bool force)
 		for (int row : rows)
 		{
 			auto& step = StepGridData.at(row);
-			if (modifier_types.no_order.contains(step.StepEnum) && step.Modifiers.find("no order") == std::string::npos)
+			if (modifier_types.no_order.contains(step.type) && step.Modifiers.find("no order") == std::string::npos)
 			{
 				step.Modifiers = step.Modifiers.size() == 0 ? "no order" : step.Modifiers + ", no order";
 				grid_steps->SetCellValue(row, 6, step.Modifiers);

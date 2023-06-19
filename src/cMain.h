@@ -283,7 +283,7 @@ private:
 	bool AutoSave();
 	bool SaveFile(bool save_as);
 
-	string ExtractStep();
+	StepType ExtractStep();
 	string ExtractAmount();
 
 	void malformed_saved_file_message();

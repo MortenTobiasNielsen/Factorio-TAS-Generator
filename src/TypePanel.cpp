@@ -171,93 +171,93 @@ void cMain::SetupModifiers(StepType type)
 
 // Finds the current radio button that is choosen, 
 // determines which step type that is and returns the step name
-string cMain::ExtractStep()
+StepType cMain::ExtractStep()
 {
 	//row 1
 	if (rbtn_take->GetValue())
-		return StepNames[e_take];
+		return e_take;
 
 	if (rbtn_put->GetValue())
-		return StepNames[e_put];
+		return e_put;
 
 	if (rbtn_game_speed->GetValue())
-		return StepNames[e_game_speed];
+		return e_game_speed;
 
 	if (rbtn_craft->GetValue())
-		return StepNames[e_craft];
+		return e_craft;
 
 	if (rbtn_walk->GetValue())
-		return StepNames[e_walk];
+		return e_walk;
 
 	if (rbtn_mine->GetValue())
-		return StepNames[e_mine];
+		return e_mine;
 
 	if (rbtn_pause->GetValue())
-		return StepNames[e_pause];
+		return e_pause;
 
 	//row 2
 	if (rbtn_build->GetValue())
-		return StepNames[e_build];
+		return e_build;
 
 	if (rbtn_recipe->GetValue())
-		return StepNames[e_recipe];
+		return e_recipe;
 
 	if (rbtn_tech->GetValue())
-		return StepNames[e_tech];
+		return e_tech;
 
 	if (rbtn_limit->GetValue())
-		return StepNames[e_limit];
+		return e_limit;
 
 	if (rbtn_idle->GetValue())
-		return StepNames[e_idle];
+		return e_idle;
 
 	if (rbtn_filter->GetValue())
-		return StepNames[e_filter];
+		return e_filter;
 
 	if (rbtn_stop->GetValue())
-		return StepNames[e_stop];
+		return e_stop;
 
 	//row 3
 	if (rbtn_priority->GetValue())
-		return StepNames[e_priority];
+		return e_priority;
 
 	if (rbtn_rotate->GetValue())
-		return StepNames[e_rotate];
+		return e_rotate;
 
 	if (rbtn_pick_up->GetValue())
-		return StepNames[e_pick_up];
+		return e_pick_up;
 
 	if (rbtn_drop->GetValue())
-		return StepNames[e_drop];
+		return e_drop;
 
 	if (rbtn_launch->GetValue())
-		return StepNames[e_launch];
+		return e_launch;
 
 	if (rbtn_save->GetValue())
-		return StepNames[e_save];
+		return e_save;
 
 	if (rbtn_cancel_crafting->GetValue())
-		return StepNames[e_cancel_crafting];
+		return e_cancel_crafting;
 
 	if (rbtn_never_idle->GetValue())
-		return StepNames[e_never_idle];
+		return e_never_idle;
 
 	if (rbtn_keep_crafting->GetValue())
-		return StepNames[e_keep_crafting];
+		return e_keep_crafting;
 
 	if (rbtn_keep_on_path->GetValue())
-		return StepNames[e_keep_on_path];
+		return e_keep_on_path;
 
 	if (rbtn_keep_walking->GetValue())
-		return StepNames[e_keep_walking];
+		return e_keep_walking;
 
 	if (rbtn_shoot->GetValue())
-		return StepNames[e_shoot];
+		return e_shoot;
 
 	if (rbtn_throw->GetValue())
-		return StepNames[e_throw];
+		return e_throw;
 
-	return "not found";
+	throw "not found";
 }
 
 void cMain::UpdateCmbItem(wxArrayString* new_list)
