@@ -12,11 +12,11 @@
 
 #include "Shared functions\Functions.h"
 
-#include "Structures\BuildingNameToIndex.h"
 #include "Structures\StepParameters.h"
 #include "Structures\StepNameToEnum.h"
 #include "Structures\Inventory.h"
 
+#include "Data\BuildingNames.h"
 #include "Data\utils.h"
 
 #include "DialogProgressBar.h"

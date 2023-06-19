@@ -8,14 +8,6 @@ using std::map;
 using std::string;
 using std::vector;
 
-
-/// <summary>
-/// Safe way to get a building name by index
-/// </summary>
-/// <param name="index">building type</param>
-/// <returns>Building name as string or "N/A" if index is out of bounds</returns>
-string FindBuildingName(int index);
-
 enum Assemblers
 {
 	StoneFurnace = 67,
@@ -29,8 +21,12 @@ enum Assemblers
 	Centrifuge,
 };
 
-static inline vector<string> BuildingNames = {
-	"NONE", // for alignment
+static inline const int not_a_building_int = 0;
+static inline const string not_a_building_string = "N/A";
+
+static inline const vector<string> BuildingNames
+{
+	not_a_building_string, // for alignment
 	"Wooden chest",
 	"Iron chest",
 	"Steel chest",
@@ -130,8 +126,9 @@ static inline vector<string> BuildingNames = {
 	"Landfill"
 };
 
-static inline map<string, int> BuildingNameToType =
+static inline map<string, int> BuildingNameToType
 {
+	{not_a_building_string, not_a_building_int},
 	{"Wooden chest", 1},
 	{"Iron chest", 2},
 	{"Steel chest", 3},
@@ -230,3 +227,17 @@ static inline map<string, int> BuildingNameToType =
 	{"Refined hazard concrete right", 96},
 	{"Landfill", 97},
 };
+
+/// <summary>
+/// Safe way to get a building name by index
+/// </summary>
+/// <param name="index">building type</param>
+/// <returns>Building name as string or "N/A" if index is out of bounds</returns>
+static const string FindBuildingName(const int index)
+{
+	static const size_t building_names_size = BuildingNames.size();
+	if (index < not_a_building_int || index >= building_names_size)
+		return not_a_building_string;
+	else 
+		return BuildingNames[index];
+}
