@@ -442,7 +442,7 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 {
 	x_cord = to_string(stepParameters.X);
 	y_cord = to_string(stepParameters.Y);
-	amount = stepParameters.Amount;
+	amount = to_string(stepParameters.Amount);
 	item = stepParameters.Item;
 	build_orientation = stepParameters.Orientation;
 	direction_to_build = stepParameters.Direction;

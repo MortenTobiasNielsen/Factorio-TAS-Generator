@@ -163,7 +163,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		step.Step = Capitalize(segments[0]);
-		step.Amount = Capitalize(segments[3]);
+		step.Amount = segments[3] == "" || segments[3] == "All" ? 0 : stoi(segments[3]);
 		step.Item = Capitalize(segments[4], true);
 		step.Orientation = Capitalize(segments[5]);
 		step.Direction = Capitalize(segments[6]);
@@ -327,7 +327,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		}
 
 		step.Step = Capitalize(segments[1]);
-		step.Amount = Capitalize(segments[4]);
+		step.Amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);
@@ -464,7 +464,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		step.Step = Capitalize(segments[1]);
-		step.Amount = Capitalize(segments[4]);
+		step.Amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.Orientation = Capitalize(segments[6]);
 		step.Direction = Capitalize(segments[7]);

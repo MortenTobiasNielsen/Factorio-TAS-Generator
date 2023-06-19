@@ -693,7 +693,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 
 			stepParameters.StepEnum = e_put;
 			stepParameters.Step = StepNames[e_put];
-			stepParameters.Amount = "1";
+			stepParameters.Amount = 1;
 			if (auto_put)
 			{
 				if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
@@ -736,7 +736,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 
 			to_check = stepParameters.Item;
 			
-			int multiplier = stoi(stepParameters.Amount);
+			int multiplier = stepParameters.Amount;
 
 			if (auto_put && 0 < multiplier && check_recipe->IsChecked())
 			{
@@ -746,7 +746,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 				{
 					stepParameters.StepEnum = e_put;
 					stepParameters.Step = StepNames[e_put];
-					stepParameters.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
+					stepParameters.Amount = stoi(recipe[i + 1]) * multiplier;
 					stepParameters.Item = recipe[i];
 					stepParameters.FromInto = inventory_types.input;
 
@@ -1357,19 +1357,19 @@ void cMain::TemplateAlterStep(StepParameters& step)
 		step.OriginalY += spin_y_offset->GetValue();
 	}
 
-	if (step.Amount == "" || step.Amount == "All")
+	if (step.Amount == 0)
 	{
 		return;
 	}
 
 	if (spin_amount_offset->GetValue() != 0)
 	{
-		step.Amount = to_string(stoi(step.Amount) + spin_amount_offset->GetValue());
+		step.Amount += spin_amount_offset->GetValue();
 	}
 
 	if (spin_amount_multiplier->GetValue() != 0)
 	{
-		step.Amount = to_string(stoi(step.Amount) * spin_amount_multiplier->GetValue());
+		step.Amount *= spin_amount_multiplier->GetValue();
 	}
 }
 
@@ -2109,7 +2109,7 @@ StepParameters cMain::ExtractStepParameters()
 	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
 
 	stepParameters.Step = ExtractStep();
-	stepParameters.Amount = ExtractAmount();
+	stepParameters.Amount = stoi(ExtractAmount());
 	stepParameters.Item = Capitalize(cmb_item->GetValue(), true);
 	stepParameters.FromInto = Capitalize(cmb_from_into->GetValue());
 	stepParameters.Orientation = Capitalize(cmb_building_orientation->GetValue());
@@ -2210,12 +2210,12 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_game_speed:
 		case e_idle:
 		case e_pick_up:
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			break;
 
 		case e_craft:
 		case e_cancel_crafting:
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = stepParameters->Item;
 			break;
 
@@ -2228,7 +2228,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_shoot:
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			break;
 
 		case e_walk:
@@ -2246,14 +2246,14 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			break;
 
 		case e_rotate:
 
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
 			gridEntry.DirectionToBuild = stepParameters->Direction;
 			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
@@ -2275,7 +2275,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_put:
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = stepParameters->Item;
 			gridEntry.BuildingOrientation = stepParameters->FromInto;
 			gridEntry.DirectionToBuild = stepParameters->Direction;
@@ -2290,7 +2290,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_recipe:
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = stepParameters->Item;
 			gridEntry.DirectionToBuild = stepParameters->Direction;
 			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
@@ -2301,7 +2301,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			stepParameters->Orientation = "Chest";
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.BuildingOrientation = "Chest";
 			gridEntry.DirectionToBuild = stepParameters->Direction;
 			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
@@ -2326,7 +2326,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_filter:
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = stepParameters->Item;
 			gridEntry.DirectionToBuild = stepParameters->Direction;
 			gridEntry.BuildingSize = std::to_string(stepParameters->Size);

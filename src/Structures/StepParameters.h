@@ -19,6 +19,7 @@ struct StepParameters
 	double Y;
 	double OriginalX;
 	double OriginalY;
+	int Amount; // 0 => ALL, for game_speed amount is in percentage
 	int Size;
 	int Buildings;
 	int BuildingIndex;
@@ -29,7 +30,6 @@ struct StepParameters
 	StepType StepEnum;
 
 	string Step;
-	string Amount;
 	string Item;
 	string FromInto;
 	string Orientation;
