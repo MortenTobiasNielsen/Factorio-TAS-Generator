@@ -50,6 +50,7 @@ void StepParameters::Next()
 string StepParameters::ToString()
 {
 	string step = StepNames[type];
+	string Colour = colour.GetAsString().ToStdString();
 	switch (type)
 	{
 		case e_never_idle:

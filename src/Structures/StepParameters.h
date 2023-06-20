@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#include <wx/colour.h>
 
 #include "Building.h"
 #include "StepType.h"
@@ -36,7 +37,7 @@ struct StepParameters
 	string PriorityIn;
 	string PriorityOut;
 	string Comment;
-	string Colour;
+	wxColour colour;
 
 	void Reset();
 	void Next();

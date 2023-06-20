@@ -170,7 +170,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
 		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
 		step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? segments[9] : "";
-		step.Colour = segment_size == step_segment_size ? segments[10] : "";
+		step.colour = segment_size == step_segment_size ? wxColour(segments[10]) : wxNullColour;
 		step.Modifiers = segment_size == step_segment_size ? segments[11] : "";
 
 		switch (step.type)
