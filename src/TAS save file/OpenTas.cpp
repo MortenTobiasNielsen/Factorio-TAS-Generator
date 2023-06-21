@@ -188,13 +188,8 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 
 			case e_priority:
 				position = step.orientation.find(",");
-				step.PriorityIn = step.orientation.substr(0, position);
-				step.PriorityOut = Capitalize(step.orientation.substr(position + 1));
-
-				if (step.PriorityOut[0] == ' ')
-				{
-					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
-				}
+				step.priority.input = MapStringToPriority[step.orientation.substr(0, position)];
+				step.priority.output = MapStringToPriority[step.orientation.substr(position + 1)];
 
 				step.orientation = "";
 
@@ -329,14 +324,8 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 
 			case e_priority:
 				position = step.orientation.find(",");
-				step.PriorityIn = step.orientation.substr(0, position);
-				step.PriorityOut = Capitalize(step.orientation.substr(position + 1));
-
-				if (step.PriorityOut[0] == ' ')
-				{
-					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
-				}
-
+				step.priority.input = MapStringToPriority[step.orientation.substr(0, position)];
+				step.priority.output = MapStringToPriority[step.orientation.substr(position + 1)];
 				step.orientation = "";
 				break;
 
@@ -453,14 +442,8 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 
 			case e_priority:
 				position = step.orientation.find(",");
-				step.PriorityIn = step.orientation.substr(0, position);
-				step.PriorityOut = Capitalize(step.orientation.substr(position + 1));
-
-				if (step.PriorityOut[0] == ' ')
-				{
-					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
-				}
-
+				step.priority.input = MapStringToPriority[step.orientation.substr(0, position)];
+				step.priority.output = MapStringToPriority[step.orientation.substr(position + 1)];
 				step.orientation = "";
 				break;
 

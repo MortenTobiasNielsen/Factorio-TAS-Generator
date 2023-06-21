@@ -7,6 +7,7 @@
 #include "Building.h"
 #include "StepType.h"
 #include "Orientation.h"
+#include "Priority.h"
 
 using std::string;
 using std::ofstream;
@@ -31,10 +32,15 @@ struct StepParameters
 	string Item;
 	string FromInto;
 	string orientation;
-	string PriorityIn;
-	string PriorityOut;
+
 	string Comment;
 	wxColour colour;
+
+	struct Priority_struct
+	{
+		Priority input = NONE;
+		Priority output = NONE;
+	} priority;
 
 	struct MultiBuild
 	{

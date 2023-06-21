@@ -4,21 +4,27 @@
 #include <map>
 #include <string>
 
-enum INPUT_OUTPUT
+enum Priority
 {
 	LEFT, NONE, RIGHT
 };
 
-static const std::vector<std::string> input_output =
+static const std::vector<std::string> PriorityStrings =
 {
 	"Left",
 	"None",
 	"Right"
 };
 
-static inline std::map<std::string, INPUT_OUTPUT> map_input_output =
+static inline std::map<std::string, Priority> MapStringToPriority =
 {
-	{input_output[0], LEFT},
-	{input_output[1], NONE},
-	{input_output[2], RIGHT}
+	{PriorityStrings[0], LEFT},
+	{PriorityStrings[1], NONE},
+	{PriorityStrings[2], RIGHT},
+	{"LEFT", LEFT},
+	{"NONE", NONE},
+	{"RIGHT", RIGHT},
+	{"left", LEFT},
+	{"none", NONE},
+	{"right", RIGHT},
 };

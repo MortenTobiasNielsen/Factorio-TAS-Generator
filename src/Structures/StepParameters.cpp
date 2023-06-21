@@ -77,7 +77,7 @@ string StepParameters::ToString()
 			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_priority:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + PriorityIn + "," + PriorityOut + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + PriorityStrings[priority.input] + "," + PriorityStrings[priority.output] + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		[[likely]] case e_put:
 		[[likely]] case e_take:

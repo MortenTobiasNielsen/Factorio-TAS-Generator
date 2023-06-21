@@ -74,7 +74,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 		building_orientation_choices.Add(s);
 	}
 
-	for (auto& s : input_output)
+	for (auto& s : PriorityStrings)
 	{
 		input_output_choices.Add(s);
 	}
@@ -1912,9 +1912,9 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 	int parameters = listStepTypeToParameterChoices[step];
 
-	string OrientationEnum = gridEntry->BuildingOrientation.ToStdString();
+	string orientationString = gridEntry->BuildingOrientation.ToStdString();
 	float speed;
-	size_t pos = OrientationEnum.find(",");
+	size_t pos = orientationString.find(",");
 
 	switch (step)
 	{
@@ -2114,8 +2114,8 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.multi_build.size = spin_building_size->GetValue();
 	stepParameters.multi_build.buildings = spin_building_amount->GetValue();
 	stepParameters.multi_build.direction = MapStringToOrientation[cmb_direction_to_build->GetValue().ToStdString()];
-	stepParameters.PriorityIn = input_output[radio_input->GetSelection()];
-	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
+	stepParameters.priority.input = (Priority)radio_input->GetSelection();
+	stepParameters.priority.output = (Priority)radio_output->GetSelection();
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
 	string modifiers = "";
@@ -2309,7 +2309,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_priority:
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.BuildingOrientation = stepParameters->PriorityIn + "," + stepParameters->PriorityOut;
+			gridEntry.BuildingOrientation = PriorityStrings[stepParameters->priority.input] + "," + PriorityStrings[stepParameters->priority.output];
 			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
 			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
 			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);

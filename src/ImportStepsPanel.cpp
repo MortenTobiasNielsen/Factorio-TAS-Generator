@@ -100,14 +100,8 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 
 			case e_priority:
 				position = step.orientation.find(",");
-				step.PriorityIn = step.orientation.substr(0, position);
-				step.PriorityOut = Capitalize(step.orientation.substr(position + 1));
-
-				if (step.PriorityOut[0] == ' ')
-				{
-					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
-				}
-
+				step.priority.input = MapStringToPriority[step.orientation.substr(0, position)];
+				step.priority.output = MapStringToPriority[step.orientation.substr(position + 1)];
 				step.orientation = "";
 
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
