@@ -444,10 +444,10 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	y_cord = to_string(stepParameters.Y);
 	amount = to_string(stepParameters.Amount);
 	item = stepParameters.Item;
-	build_orientation = stepParameters.Orientation;
-	direction_to_build = stepParameters.Direction;
-	building_size = to_string(stepParameters.Size);
-	amount_of_buildings = to_string(stepParameters.Buildings);
+	build_orientation = stepParameters.orientation;
+	direction_to_build = stepParameters.multi_build.direction;
+	building_size = to_string(stepParameters.multi_build.size);
+	amount_of_buildings = to_string(stepParameters.multi_build.buildings);
 	comment = stepParameters.Comment;
 	modifiers = {
 		.wait_for = stepParameters.Modifiers.find("wait for") != std::string::npos,

@@ -54,5 +54,9 @@ static inline std::map<std::string, Orientation> MapStringToOrientation
 	{orientation_list[North], North},
 	{orientation_list[East], East},
 	{orientation_list[South], South},
-	{orientation_list[West], West}
+	{orientation_list[West], West},
+	{"north", North},
+	{"east", East},
+	{"south", South},
+	{"west", West}
 };

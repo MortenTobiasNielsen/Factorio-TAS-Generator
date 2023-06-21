@@ -21,8 +21,6 @@ struct StepParameters
 	double OriginalX;
 	double OriginalY;
 	int Amount; // 0 => ALL, for game_speed amount is in percentage
-	int Size;
-	int Buildings;
 	int BuildingIndex;
 
 	string Modifiers;
@@ -32,12 +30,18 @@ struct StepParameters
 
 	string Item;
 	string FromInto;
-	string Orientation;
-	string Direction;
+	string orientation;
 	string PriorityIn;
 	string PriorityOut;
 	string Comment;
 	wxColour colour;
+
+	struct MultiBuild
+	{
+		int size = 1;
+		int buildings = 1;
+		Orientation direction = North;
+	} multi_build;
 
 	void Reset();
 	void Next();

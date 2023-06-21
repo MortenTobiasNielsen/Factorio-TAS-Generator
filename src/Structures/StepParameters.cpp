@@ -9,8 +9,6 @@ StepParameters::StepParameters(double InitialX, double InitialY)
 
 	OrientationEnum = North;
 	type = e_stop;
-	Size = 1;
-	Buildings = 1;
 	BuildingIndex = 0;
 }
 
@@ -22,28 +20,20 @@ void StepParameters::Reset()
 
 void StepParameters::Next()
 {
-	if (Direction == orientation_list[North])
+	switch (multi_build.direction)
 	{
-		Y -= Size;
-		return;
-	}
-
-	if (Direction == orientation_list[South])
-	{
-		Y += Size;
-		return;
-	}
-
-	if (Direction == orientation_list[East])
-	{
-		X += Size;
-		return;
-	}
-
-	if (Direction == orientation_list[West])
-	{
-		X -= Size;
-		return;
+		case North:
+			Y -= multi_build.size;
+			break;
+		case South:
+			Y += multi_build.size;
+			break;
+		case East:
+			X += multi_build.size;
+			break;
+		case West:
+			X -= multi_build.size;
+			break;
 	}
 }
 
@@ -68,30 +58,30 @@ string StepParameters::ToString()
 			return step + ";" + ";" + ";" + to_string(Amount) + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_build:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_craft:
 			return step + ";" + ";" + ";" + to_string(Amount) + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_recipe:
 		case e_filter:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_limit:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + ";" + orientation + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_rotate:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_mine:
 			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_priority:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + PriorityIn + "," + PriorityOut + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + PriorityIn + "," + PriorityOut + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		[[likely]] case e_put:
 		[[likely]] case e_take:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + FromInto + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + FromInto + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_launch:
 		[[likely]] case e_walk:
@@ -101,7 +91,7 @@ string StepParameters::ToString()
 			return step + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_drop:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		case e_shoot:
 			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
@@ -109,7 +99,7 @@ string StepParameters::ToString()
 			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + ";" + ";" + ";" + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 
 		default:
-			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
+			return step + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(Amount) + ";" + Item + ";" + orientation + ";" + orientation_list[multi_build.direction] + ";" + to_string(multi_build.size) + ";" + to_string(multi_build.buildings) + ";" + Comment + ";" + Colour + ";" + Modifiers + ";";
 	}
 }
 
@@ -137,17 +127,17 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 		return true;
 	}
 
-	if (toCompare.Buildings < 2)
+	if (toCompare.multi_build.buildings < 2)
 	{
 		return false;
 	}
 
-	int amountOfBuildings = toCompare.Buildings;
-	int size = toCompare.Size;
+	int amountOfBuildings = toCompare.multi_build.buildings;
+	int size = toCompare.multi_build.size;
 
 	if (toCompare.X == X)
 	{
-		if (toCompare.Direction == orientation_list[South])
+		if (toCompare.multi_build.direction == South)
 		{
 			if (toCompare.Y > Y)
 			{
@@ -156,14 +146,14 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 			for (int i = 1; i < amountOfBuildings; i++)
 			{
-				if (Y == toCompare.Y + i * toCompare.Size)
+				if (Y == toCompare.Y + i * toCompare.multi_build.size)
 				{
 					return true;
 				}
 			}
 		}
 
-		if (toCompare.Direction == orientation_list[North])
+		if (toCompare.multi_build.direction == North)
 		{
 			if (toCompare.Y < Y)
 			{
@@ -172,7 +162,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 			for (int i = 1; i < amountOfBuildings; i++)
 			{
-				if (Y == toCompare.Y - i * toCompare.Size)
+				if (Y == toCompare.Y - i * toCompare.multi_build.size)
 				{
 					return true;
 				}
@@ -182,7 +172,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 	if (toCompare.Y == Y)
 	{
-		if (toCompare.Direction == orientation_list[East])
+		if (toCompare.multi_build.direction == East)
 		{
 			if (toCompare.X > X)
 			{
@@ -191,14 +181,14 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 			for (int i = 1; i < amountOfBuildings; i++)
 			{
-				if (X == toCompare.X + i * toCompare.Size)
+				if (X == toCompare.X + i * toCompare.multi_build.size)
 				{
 					return true;
 				}
 			}
 		}
 
-		if (toCompare.Direction == orientation_list[West])
+		if (toCompare.multi_build.direction == West)
 		{
 			if (toCompare.X < X)
 			{
@@ -207,7 +197,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 			for (int i = 1; i < amountOfBuildings; i++)
 			{
-				if (X == toCompare.X - i * toCompare.Size)
+				if (X == toCompare.X - i * toCompare.multi_build.size)
 				{
 					return true;
 				}

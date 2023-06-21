@@ -165,10 +165,10 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		step.type = ToStepType(Capitalize(segments[0]));
 		step.Amount = segments[3] == "" || segments[3] == "All" ? 0 : stoi(segments[3]);
 		step.Item = Capitalize(segments[4], true);
-		step.Orientation = Capitalize(segments[5]);
-		step.Direction = Capitalize(segments[6]);
-		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
-		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
+		step.orientation = Capitalize(segments[5]);
+		step.multi_build.direction = MapStringToOrientation[Capitalize(segments[6])];
+		step.multi_build.size = segments[7] != "" ? stoi(segments[7]) : 1;
+		step.multi_build.buildings = segments[8] != "" ? stoi(segments[8]) : 1;
 		step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? segments[9] : "";
 		step.colour = segment_size == step_segment_size ? wxColour(segments[10]) : wxNullColour;
 		step.Modifiers = segment_size == step_segment_size ? segments[11] : "";
@@ -177,7 +177,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation[step.orientation];
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -187,16 +187,16 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				break;
 
 			case e_priority:
-				position = step.Orientation.find(",");
-				step.PriorityIn = step.Orientation.substr(0, position);
-				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+				position = step.orientation.find(",");
+				step.PriorityIn = step.orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.orientation.substr(position + 1));
 
 				if (step.PriorityOut[0] == ' ')
 				{
 					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
 				}
 
-				step.Orientation = "";
+				step.orientation = "";
 
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
@@ -213,7 +213,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.FromInto = step.orientation;
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -305,45 +305,45 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 
 		if (segments[8] != "")
 		{
-			step.Size = stoi(segments[8]);
+			step.multi_build.size = stoi(segments[8]);
 		}
 
 		if (segments[9] != "")
 		{
-			step.Buildings = stoi(segments[9]);
+			step.multi_build.buildings = stoi(segments[9]);
 		}
 
 		step.type = ToStepType(Capitalize(segments[1]));
 		step.Amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
-		step.Orientation = Capitalize(segments[6]);
-		step.Direction = Capitalize(segments[7]);
+		step.orientation = Capitalize(segments[6]);
+		step.multi_build.direction = MapStringToOrientation[Capitalize(segments[7])];
 		step.Comment = comment;
 
 		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation[step.orientation];
 				break;
 
 			case e_priority:
-				position = step.Orientation.find(",");
-				step.PriorityIn = step.Orientation.substr(0, position);
-				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+				position = step.orientation.find(",");
+				step.PriorityIn = step.orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.orientation.substr(position + 1));
 
 				if (step.PriorityOut[0] == ' ')
 				{
 					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
 				}
 
-				step.Orientation = "";
+				step.orientation = "";
 				break;
 
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.FromInto = step.orientation;
 				break;
 			default:
 				break;
@@ -429,45 +429,45 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 
 		if (segments[8] != "")
 		{
-			step.Size = stoi(segments[8]);
+			step.multi_build.size = stoi(segments[8]);
 		}
 
 		if (segments[9] != "")
 		{
-			step.Buildings = stoi(segments[9]);
+			step.multi_build.buildings = stoi(segments[9]);
 		}
 
 		step.type = ToStepType(Capitalize(segments[1]));
 		step.Amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
-		step.Orientation = Capitalize(segments[6]);
-		step.Direction = Capitalize(segments[7]);
+		step.orientation = Capitalize(segments[6]);
+		step.multi_build.direction = MapStringToOrientation[Capitalize(segments[7])];
 		step.Comment = comment;
 
 		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation[step.orientation];
 				break;
 
 			case e_priority:
-				position = step.Orientation.find(",");
-				step.PriorityIn = step.Orientation.substr(0, position);
-				step.PriorityOut = Capitalize(step.Orientation.substr(position + 1));
+				position = step.orientation.find(",");
+				step.PriorityIn = step.orientation.substr(0, position);
+				step.PriorityOut = Capitalize(step.orientation.substr(position + 1));
 
 				if (step.PriorityOut[0] == ' ')
 				{
 					step.PriorityOut = Capitalize(step.PriorityOut.substr(1));
 				}
 
-				step.Orientation = "";
+				step.orientation = "";
 				break;
 
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.FromInto = step.orientation;
 				break;
 			default:
 				break;

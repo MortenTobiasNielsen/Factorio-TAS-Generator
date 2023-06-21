@@ -2110,10 +2110,10 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.Amount = stoi(ExtractAmount());
 	stepParameters.Item = Capitalize(cmb_item->GetValue(), true);
 	stepParameters.FromInto = Capitalize(cmb_from_into->GetValue());
-	stepParameters.Orientation = Capitalize(cmb_building_orientation->GetValue());
-	stepParameters.Direction = Capitalize(cmb_direction_to_build->GetValue());
-	stepParameters.Size = spin_building_size->GetValue();
-	stepParameters.Buildings = spin_building_amount->GetValue();
+	stepParameters.orientation = Capitalize(cmb_building_orientation->GetValue());
+	stepParameters.multi_build.size = spin_building_size->GetValue();
+	stepParameters.multi_build.buildings = spin_building_amount->GetValue();
+	stepParameters.multi_build.direction = MapStringToOrientation[cmb_direction_to_build->GetValue().ToStdString()];
 	stepParameters.PriorityIn = input_output[radio_input->GetSelection()];
 	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
@@ -2184,6 +2184,8 @@ std::string cMain::ExtractAmount()
 
 GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 {
+	// TODO:  this feels like something that belongs in it's own class/file
+
 	GridEntry gridEntry{
 		.Step = StepNames[stepParameters->type],
 		.Modifiers = stepParameters->Modifiers,
@@ -2251,9 +2253,9 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
+			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);
 			stepParameters->Item = gridEntry.Item;
 			break;
 
@@ -2261,10 +2263,10 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Item = stepParameters->Item;
-			gridEntry.BuildingOrientation = stepParameters->Orientation;
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.BuildingOrientation = stepParameters->orientation;
+			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
+			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);
 			break;
 
 		case e_take:
@@ -2274,9 +2276,9 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = stepParameters->Item;
 			gridEntry.BuildingOrientation = stepParameters->FromInto;
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
+			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);
 			break;
 
 		case e_tech:
@@ -2288,29 +2290,29 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = stepParameters->Item;
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
+			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);
 			break;
 
 		case e_limit:
-			stepParameters->Orientation = "Chest";
+			stepParameters->orientation = "Chest";
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.BuildingOrientation = "Chest";
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
+			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);
 			break;
 
 		case e_priority:
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.BuildingOrientation = stepParameters->PriorityIn + "," + stepParameters->PriorityOut;
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
+			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);
 			break;
 
 		case e_drop:
@@ -2324,9 +2326,9 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 			gridEntry.Y = std::to_string(stepParameters->Y);
 			gridEntry.Amount = to_string(stepParameters->Amount);
 			gridEntry.Item = stepParameters->Item;
-			gridEntry.DirectionToBuild = stepParameters->Direction;
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.DirectionToBuild = orientation_list[stepParameters->multi_build.direction];
+			gridEntry.BuildingSize = std::to_string(stepParameters->multi_build.size);
+			gridEntry.AmountOfBuildings = std::to_string(stepParameters->multi_build.buildings);
 			break;
 	}
 
@@ -2485,17 +2487,17 @@ bool cMain::IsValidBuildStep(StepParameters& stepParameters)
 		return false;
 	}
 
-	if (!check_input(stepParameters.Orientation, orientation_list))
+	if (!check_input(stepParameters.orientation, orientation_list))
 	{
 		wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
 		return false;
 	}
 
-	if (!check_input(stepParameters.Direction, orientation_list))
+	/*if (!check_input(stepParameters.direction, orientation_list))
 	{
 		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 		return false;
-	}
+	}*/
 
 	return true;
 }
@@ -2584,11 +2586,11 @@ bool cMain::IsValidPutTakeStep(StepParameters& stepParameters)
 		return false;
 	}
 
-	if (!check_input(stepParameters.Direction, orientation_list))
+	/*if (!check_input(stepParameters.direction, orientation_list))
 	{
 		wxMessageBox("The direction to build is not valid - please try again", "Please use the direction to build dropdown menu");
 		return false;
-	}
+	}*/
 
 	return true;
 }
@@ -2753,7 +2755,7 @@ bool cMain::ValidateAllSteps()
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType.find(step.Item)->second;
-				step.OrientationEnum = MapStringToOrientation.find(step.Orientation)->second;
+				step.OrientationEnum = MapStringToOrientation[step.orientation];
 
 				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, step);
 				break;
