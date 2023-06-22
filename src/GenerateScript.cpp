@@ -450,13 +450,13 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	amount_of_buildings = to_string(stepParameters.multi_build.buildings);
 	comment = stepParameters.Comment;
 	modifiers = {
-		.wait_for = stepParameters.Modifiers.find("wait for") != std::string::npos,
-		.cancel = stepParameters.Modifiers.find("cancel") != std::string::npos,
-		.no_order = stepParameters.Modifiers.find("no order") != std::string::npos,
-		.walk_towards = stepParameters.Modifiers.find("walk towards") != std::string::npos,
-		.skip = stepParameters.Modifiers.find("skip") != std::string::npos,
-		.force = stepParameters.Modifiers.find("force") != std::string::npos,
-		.split = stepParameters.Modifiers.find("split") != std::string::npos,
+		.wait_for = stepParameters.modifiers.wait_for,
+		.cancel = stepParameters.modifiers.cancel,
+		.no_order = stepParameters.modifiers.no_order,
+		.walk_towards = stepParameters.modifiers.walk_towards,
+		.skip = stepParameters.modifiers.skip,
+		.force = stepParameters.modifiers.force,
+		.split = stepParameters.modifiers.split,
 	};
 }
 

@@ -13,6 +13,27 @@ using std::string;
 using std::ofstream;
 using std::to_string;
 
+struct Modifiers
+{
+	static const size_t base_size = 7;
+	bool walk_towards = false;
+	bool no_order = false;
+	bool cancel = false;
+	bool wait_for = false;
+	bool skip = false;
+	bool force = false;
+	bool split = false;
+
+	Modifiers(){}
+	Modifiers(string);
+	void FromString(string);
+	string ToString();
+
+	static inline vector<string> Strings = {
+		"walk towards", "no order", "cancel", "wait for", "skip", "force", "split"
+	};
+};
+
 struct StepParameters
 {
 	StepParameters(double InitialX, double InitialY);
@@ -24,8 +45,6 @@ struct StepParameters
 	int Amount; // 0 => ALL, for game_speed amount is in percentage
 	int BuildingIndex;
 
-	string Modifiers;
-
 	Orientation OrientationEnum;
 	StepType type;
 
@@ -35,6 +54,7 @@ struct StepParameters
 
 	string Comment;
 	wxColour colour;
+	Modifiers modifiers;
 
 	struct Priority_struct
 	{

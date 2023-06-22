@@ -171,7 +171,7 @@ void cMain::HandleFocusMode(bool checked, bool changed)
 		int last_save = 0;
 		for (int i = StepGridData.size() - 1; i >= 0; i--)
 		{
-			if (StepGridData[i].type == StepType::e_save && StepGridData[i].Modifiers.find("skip") == std::string::npos)
+			if (StepGridData[i].type == StepType::e_save && StepGridData[i].modifiers.skip)
 			{
 				last_save = i;
 				break;
@@ -2107,7 +2107,7 @@ StepParameters cMain::ExtractStepParameters()
 	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
 
 	stepParameters.type = ExtractStep();
-	stepParameters.Amount = stoi(ExtractAmount());
+	stepParameters.Amount = ExtractAmount();
 	stepParameters.Item = Capitalize(cmb_item->GetValue(), true);
 	stepParameters.FromInto = Capitalize(cmb_from_into->GetValue());
 	stepParameters.orientation = Capitalize(cmb_building_orientation->GetValue());
@@ -2118,68 +2118,55 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.priority.output = (Priority)radio_output->GetSelection();
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
-	string modifiers = "";
-	modifiers += modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue() ? "cancel, " : "";
-	modifiers += modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue() ? "no order, " : "";
-	modifiers += modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue() ? "wait for, " : "";
-	modifiers += modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue() ? "walk towards, " : "";
-	modifiers += modifier_skip_checkbox->IsEnabled() && modifier_skip_checkbox->GetValue() ? "skip, " : "";
-	modifiers += modifier_force_checkbox->IsEnabled() && modifier_force_checkbox->GetValue() ? "force, " : "";
-	modifiers += modifier_split_checkbox->IsEnabled() && modifier_split_checkbox->GetValue() ? "split, " : "";
-	stepParameters.Modifiers = modifiers.size() > 2 ? modifiers.substr(0,  modifiers.size() - 2) : modifiers;
+	stepParameters.modifiers.cancel = modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue();
+	stepParameters.modifiers.no_order = modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue();
+	stepParameters.modifiers.wait_for = modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue();
+	stepParameters.modifiers.walk_towards = modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue();
+	stepParameters.modifiers.skip = modifier_skip_checkbox->IsEnabled() && modifier_skip_checkbox->GetValue();
+	stepParameters.modifiers.force = modifier_force_checkbox->IsEnabled() && modifier_force_checkbox->GetValue();
+	stepParameters.modifiers.split = modifier_split_checkbox->IsEnabled() && modifier_split_checkbox->GetValue();
 
 	return stepParameters;
 }
 
-std::string cMain::ExtractAmount()
+int cMain::ExtractAmount()
 {
 	int amount = spin_amount->GetValue();
 
-	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_pick_up->GetValue()))
+	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_pick_up->GetValue() || rbtn_game_speed->GetValue() || rbtn_stop->GetValue()))
 	{
-		return "1";
+		return 1;
 	}
 
 	if (amount < 1 && rbtn_recipe->GetValue())
 	{
-		return "0";
+		return 0;
 	}
 
 	if (amount < 0 && rbtn_limit->GetValue())
 	{
-		return "0";
+		return 0;
 	}
 
 	if (rbtn_filter->GetValue())
 	{
 		if (amount < 1)
 		{
-			return "1";
+			return 1;
 		}
 
 		if (amount > 5)
 		{
-			return "5";
+			return 5;
 		}
-	}
-
-	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue())
-	{
-		float speed = static_cast<float>(amount) / 100.0;
-		if (speed < 0.01)
-		{
-			return "0.01";
-		}
-
-		return std::to_string(speed);
 	}
 
 	if (amount < 1)
 	{
-		return "All";
+		return 0;
 	}
 
-	return std::to_string(amount);
+	return amount;
 }
 
 GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
@@ -2188,7 +2175,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 
 	GridEntry gridEntry{
 		.Step = StepNames[stepParameters->type],
-		.Modifiers = stepParameters->Modifiers,
+		.Modifiers = stepParameters->modifiers.ToString(),
 		.Comment = stepParameters->Comment,
 	};
 
@@ -2835,15 +2822,15 @@ void cMain::NoOrderButtonHandle(bool force)
 			}
 		}
 	}
-	if (StepGridData.at(rows.front()).Modifiers.find("no order") == std::string::npos)
+	if (!StepGridData.at(rows.front()).modifiers.no_order)
 	{
 		for (int row : rows)
 		{
 			auto& step = StepGridData.at(row);
-			if (modifier_types.no_order.contains(step.type) && step.Modifiers.find("no order") == std::string::npos)
+			if (modifier_types.no_order.contains(step.type) && !step.modifiers.no_order)
 			{
-				step.Modifiers = step.Modifiers.size() == 0 ? "no order" : step.Modifiers + ", no order";
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
+				step.modifiers.no_order = true;
+				grid_steps->SetCellValue(row, 6, step.modifiers.ToString());
 			}
 		}
 	}
@@ -2852,17 +2839,10 @@ void cMain::NoOrderButtonHandle(bool force)
 		for (int row : rows)
 		{
 			auto& step = StepGridData.at(row);
-			const int size_no_order = sizeof "no order" - 1;
-			const int size_no_order_comma = sizeof "no order, " - 1;
-			if (step.Modifiers.find("no order") != std::string::npos)
+			if (step.modifiers.no_order)
 			{
-				auto size = step.Modifiers.size();
-				auto index = step.Modifiers.find("no order, ");
-				step.Modifiers = index != std::string::npos ?
-					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_no_order_comma, size - index - size_no_order_comma) :
-					step.Modifiers.substr(0, size - size_no_order);
-				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
+				step.modifiers.no_order = false;
+				grid_steps->SetCellValue(row, 6, step.modifiers.ToString());
 			}
 		}
 	}
@@ -2874,15 +2854,15 @@ void cMain::OnSkipClicked(wxCommandEvent& event)
 	wxArrayInt rows = grid_steps->GetSelectedRows();
 	if (rows.size() < 2) return;
 
-	if (StepGridData.at(rows.front()).Modifiers.find("skip") == std::string::npos)
+	if (StepGridData.at(rows.front()).modifiers.skip)
 	{
 		for (int row : rows)
 		{
 			auto& step = StepGridData.at(row);
-			if (step.Modifiers.find("skip") == std::string::npos)
+			if (step.modifiers.skip)
 			{
-				step.Modifiers = step.Modifiers.size() == 0 ? "skip" : step.Modifiers + ", skip";
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
+				step.modifiers.skip = false;
+				grid_steps->SetCellValue(row, 6, step.modifiers.ToString());
 			}
 		}
 	}
@@ -2891,17 +2871,10 @@ void cMain::OnSkipClicked(wxCommandEvent& event)
 		for (int row : rows)
 		{
 			auto& step = StepGridData.at(row);
-			const int size_skip = sizeof "skip" - 1;
-			const int size_skip_comma = sizeof "skip, " - 1;
-			if (step.Modifiers.find("skip") != std::string::npos)
+			if (!step.modifiers.skip)
 			{
-				auto size = step.Modifiers.size();
-				auto index = step.Modifiers.find("skip, ");
-				step.Modifiers = index != std::string::npos ?
-					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_skip_comma, size - index - size_skip_comma) :
-					step.Modifiers.substr(0, size - size_skip);
-				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
+				step.modifiers.skip = true;
+				grid_steps->SetCellValue(row, 6, step.modifiers.ToString());
 			}
 		}
 	}

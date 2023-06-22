@@ -284,7 +284,7 @@ private:
 	bool SaveFile(bool save_as);
 
 	StepType ExtractStep();
-	string ExtractAmount();
+	int ExtractAmount();
 
 	void malformed_saved_file_message();
 
