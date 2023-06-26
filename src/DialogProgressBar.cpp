@@ -11,7 +11,7 @@ void DialogProgressBar::set_progress(const int& progress)
 void DialogProgressBar::set_button_enable(bool enabled)
 {
 	btn_dialog_progress_done->Enable(enabled);
-	btn_dialog_progress_done->SetFocus();
+	if (enabled) btn_dialog_progress_done->SetFocus();
 };
 
 void DialogProgressBar::set_text(const string& text)
