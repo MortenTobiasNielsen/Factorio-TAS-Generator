@@ -1918,6 +1918,92 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	float speed;
 	size_t pos = OrientationEnum.find(",");
 
+	switch (step)
+	{
+		case e_build:
+			if (changeType) OnBuildMenuSelected(event);
+			break;
+		case e_craft:
+			if (changeType) OnCraftMenuSelected(event);
+			break;
+		case e_game_speed:
+			if (changeType) OnGameSpeedMenuSelected(event);
+			speed = stof(gridEntry->Amount.ToStdString()) * 100.0;
+			spin_amount->SetValue(speed);
+			break;
+		case e_pause:
+			if (changeType) OnPauseMenuSelected(event);
+			break;
+		case e_save:
+			if (changeType) OnSaveMenuSelected(event);
+			break;
+		case e_never_idle:
+			if (changeType) OnNeverIdleMenuSelected(event);
+			break;
+		case e_keep_walking:
+			if (changeType) OnKeepWalkingMenuSelected(event);
+			break;
+		case e_keep_crafting:
+			if (changeType) OnKeepCraftingMenuSelected(event);
+			break;
+		case e_keep_on_path:
+			if (changeType) OnKeepOnPathMenuSelected(event);
+			break;
+		case e_recipe:
+			if (changeType) OnRecipeMenuChosen(event);
+			break;
+		case e_limit:
+			if (changeType) OnLimitMenuSelected(event);
+			break;
+		case e_filter:
+			if (changeType) OnFilterMenuSelected(event);
+			break;
+		case e_rotate:
+			if (changeType) OnRotateMenuSelected(event);
+			break;
+		case e_priority:
+			if (changeType) OnPriorityMenuSelected(event);
+			break;
+		case e_put:
+			if (changeType) OnPutMenuSelected(event);
+			break;
+		case e_take:
+			if (changeType) OnTakeMenuSelected(event);
+			break;
+		case e_mine:
+			if (changeType) OnMineMenuSelected(event);
+			break;
+		case e_launch:
+			if (changeType) OnLaunchMenuSelected(event);
+			break;
+		case e_walk:
+			if (changeType) OnWalkMenuSelected(event);
+			break;
+		case e_tech:
+			if (changeType) OnTechMenuSelected(event);
+			break;
+		case e_drop:
+			if (changeType) OnDropMenuSelected(event);
+			break;
+		case e_pick_up:
+			if (changeType) OnPickUpMenuSelected(event);
+			break;
+		case e_idle:
+			if (changeType) OnIdleMenuSelected(event);
+			break;
+		case e_shoot:
+			if (changeType) OnShootMenuSelected(event);
+			break;
+		case e_throw:
+			if (changeType) OnThrowMenuSelected(event);
+			break;
+		case e_cancel_crafting:
+			if (changeType) OnCancelCraftingMenuSelected(event);
+			break;
+		default:
+			break;
+	}
+
 	using enum choice_bit_vector;
 	if (parameters & x_coordinate) spin_x->SetValue(gridEntry->X);
 	if (parameters & y_coordinate) spin_y->SetValue(gridEntry->Y);
@@ -1931,92 +2017,6 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	if (parameters & building_size) spin_building_size->SetValue(gridEntry->BuildingSize);
 	if (parameters & amount_of_buildings) spin_building_amount->SetValue(gridEntry->AmountOfBuildings);
 	if (parameters & comment) txt_comment->SetValue(gridEntry->Comment);
-
-	switch (step)
-	{
-		case e_build:
-			if (changeType) OnBuildMenuSelected(event);
-			return;
-		case e_craft:
-			if (changeType) OnCraftMenuSelected(event);
-			return;
-		case e_game_speed:
-			if (changeType) OnGameSpeedMenuSelected(event);
-			speed = stof(gridEntry->Amount.ToStdString()) * 100.0;
-			spin_amount->SetValue(speed);
-			return;
-		case e_pause:
-			if (changeType) OnPauseMenuSelected(event);
-			return;
-		case e_save:
-			if (changeType) OnSaveMenuSelected(event);
-			return;
-		case e_never_idle:
-			if (changeType) OnNeverIdleMenuSelected(event);
-			return;
-		case e_keep_walking:
-			if (changeType) OnKeepWalkingMenuSelected(event);
-			return;
-		case e_keep_crafting:
-			if (changeType) OnKeepCraftingMenuSelected(event);
-			return;
-		case e_keep_on_path:
-			if (changeType) OnKeepOnPathMenuSelected(event);
-			return;
-		case e_recipe:
-			if (changeType) OnRecipeMenuChosen(event);
-			return;
-		case e_limit:
-			if (changeType) OnLimitMenuSelected(event);
-			return;
-		case e_filter:
-			if (changeType) OnFilterMenuSelected(event);
-			return;
-		case e_rotate:
-			if (changeType) OnRotateMenuSelected(event);
-			return;
-		case e_priority:
-			if (changeType) OnPriorityMenuSelected(event);
-			return;
-		case e_put:
-			if (changeType) OnPutMenuSelected(event);
-			return;
-		case e_take:
-			if (changeType) OnTakeMenuSelected(event);
-			return;
-		case e_mine:
-			if (changeType) OnMineMenuSelected(event);
-			return;
-		case e_launch:
-			if (changeType) OnLaunchMenuSelected(event);
-			return;
-		case e_walk:
-			if (changeType) OnWalkMenuSelected(event);
-			return;
-		case e_tech:
-			if (changeType) OnTechMenuSelected(event);
-			return;
-		case e_drop:
-			if (changeType) OnDropMenuSelected(event);
-			return;
-		case e_pick_up:
-			if (changeType) OnPickUpMenuSelected(event);
-			return;
-		case e_idle:
-			if (changeType) OnIdleMenuSelected(event);
-			return;
-		case e_shoot:
-			if (changeType) OnShootMenuSelected(event);
-			return;
-		case e_throw:
-			if (changeType) OnThrowMenuSelected(event);
-			return;
-		case e_cancel_crafting:
-			if (changeType) OnCancelCraftingMenuSelected(event);
-			return;
-		default:
-			return;
-	}
 }
 
 void cMain::malformed_saved_file_message()
