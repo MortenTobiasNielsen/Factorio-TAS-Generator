@@ -96,7 +96,7 @@ local function save_global()
 	global.tas.step_executed = step_executed
 	global.tas.not_same_step = not_same_step
 end
-
+local skipintro = false
 --recreate crash site
 local on_player_created = function(event)
 	if remote.interfaces["freeplay"] == nil then return end
@@ -105,6 +105,13 @@ local on_player_created = function(event)
 	local surface = player.surface
 	local crashed_ship_items = remote.call("freeplay", "get_ship_items")
 	local crashed_debris_items = remote.call("freeplay", "get_debris_items")
+
+	if skipintro then
+		util.remove_safe(player, crashed_ship_items)
+		util.remove_safe(player, crashed_debris_items)
+		return
+	end
+
 	util.insert_safe(player, global.created_items)
 
     surface.daytime = 0.7
@@ -112,6 +119,7 @@ local on_player_created = function(event)
     util.remove_safe(player, crashed_ship_items)
     util.remove_safe(player, crashed_debris_items)
     player.get_main_inventory().sort_and_merge()
+	--game.auto_save("Start steel axe TAS")
 end
 
 ---Print message intended for viewers
@@ -1830,10 +1838,12 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 end)
 
 -- Skips the freeplay intro
-script.on_event(defines.events.on_game_created_from_scenario, function()
-
-	remote.call("freeplay", "set_skip_intro", true)
-
+script.on_event(defines.events.on_game_created_from_scenario, function(event)
+	if event.tick ~= 0 then
+		skipintro = true
+	else
+		remote.call("freeplay", "set_skip_intro", true)
+	end
 end)
 
 -- Triggered on script built
