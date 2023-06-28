@@ -46,15 +46,9 @@ bool ImportStepsPanel::update_segment()
 	return false;
 }
 
-bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& step_parameters)
+bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& step_parameters, vector<Building> buildingSnapshot, int buildings_in_snap_shot)
 {
-	buildingSnapshot.clear();
-	buildingSnapshot.reserve(1000);
-	for (int i = 0; i < buildingSnapshot.capacity(); i++)
-	{
-		buildingSnapshot.emplace_back(invalidX);
-	}
-
+	buildingsInSnapShot = buildings_in_snap_shot;
 	int counter = 0;
 	data = {};
 	data.str(steps.ToStdString());
@@ -239,12 +233,14 @@ void cMain::OnImportStepsIntoStepsBtnClick(wxCommandEvent& event)
 	// validate steps
 	wxString steps = import_steps_text_import->GetValue();
 	vector<StepParameters> step_parameters = {};
-	if (!import_steps_panel->extract_steps(steps, step_parameters)) return;
 
 	// import steps
 	int row = import_steps_into_steps_ctrl->GetValue();
 	int rows = grid_steps->GetNumberRows();
 	int start = row >= 0 ? row : rows + row + 1;
+
+	if (!import_steps_panel->extract_steps(steps, step_parameters, BuildingsSnapShot, GenerateBuildingSnapShot(start))) return;
+
 	size_t steps_size = step_parameters.size();
 
 	grid_steps->InsertRows(start, steps_size);
@@ -314,10 +310,18 @@ void cMain::OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event)
 {
 	if (!validateTemplateName()) return;
 
+	std::vector<Building> buildingSnapshot{};
+	buildingSnapshot.clear();
+	buildingSnapshot.reserve(1000);
+	for (int i = 0; i < buildingSnapshot.capacity(); i++)
+	{
+		buildingSnapshot.emplace_back(invalidX);
+	}
+
 	// validate steps
 	wxString steps = import_steps_text_import->GetValue();
 	vector<StepParameters> step_parameters = {};
-	if (!import_steps_panel->extract_steps(steps, step_parameters)) return;
+	if (!import_steps_panel->extract_steps(steps, step_parameters, BuildingsSnapShot, 0)) return;
 
 	// create template
 	std::string name = import_steps_into_template_ctrl_validator.ToStdString();
