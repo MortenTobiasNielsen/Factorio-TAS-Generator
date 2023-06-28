@@ -190,7 +190,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation[step.Orientation];
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -350,7 +350,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation[step.Orientation];
 				break;
 
 			case e_priority:
@@ -487,7 +487,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation[step.Orientation];
 				break;
 
 			case e_priority:
