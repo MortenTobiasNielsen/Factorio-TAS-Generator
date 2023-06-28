@@ -21,6 +21,7 @@
 #include "DialogProgressBar.h"
 
 #include "Data\utils.h"
+#include "Data\BuildingNames.h"
 
 #include "Structures\Building.h"
 #include "Structures\ParameterChoices.h"
@@ -29,7 +30,6 @@
 #include "Structures\StepNameToEnum.h"
 #include "Structures\GridEntry.h"
 #include "Structures\StepParameters.h"
-#include "Structures\BuildingNameToIndex.h"
 
 #include "TAS save file\OpenTas.h"
 #include "TAS save file\SaveTas.h"

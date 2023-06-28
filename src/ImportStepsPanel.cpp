@@ -3,8 +3,7 @@
 
 #include "Shared functions\Functions.h"
 
-#include "Structures\BuildingNameToIndex.h"
-
+#include "Data\BuildingNames.h"
 #include "Data\utils.h"
 
 using std::string;
