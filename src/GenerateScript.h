@@ -14,9 +14,9 @@
 
 #include "Structures\StepParameters.h"
 #include "Structures\StepNameToEnum.h"
-#include "Structures\Inventory.h"
 
 #include "Data\BuildingNames.h"
+#include "Data\Inventory.h"
 #include "Data\utils.h"
 
 #include "DialogProgressBar.h"
@@ -145,7 +145,6 @@ private:
 		{"personal-MK2-battery", "battery mk2 equipment"},
 	};
 
-	string extract_define(string from_into, string building);
 	string convert_string(string input);
 	string check_item_name(string item);
 

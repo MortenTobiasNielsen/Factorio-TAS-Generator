@@ -59,7 +59,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 		building_choices.Add(s);
 	}
 
-	for (auto& s : take_from)
+	for (auto& s : inventory_types_list)
 	{
 		take_from_choices.Add(s);
 	}
@@ -109,11 +109,11 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	cmb_item->AutoComplete(item_choices);
 
 	cmb_from_into->Clear();
-	for (auto it = take_from.begin(); it < take_from.end(); it++)
+	for (auto it = inventory_types_list.begin(); it < inventory_types_list.end(); it++)
 	{
 		cmb_from_into->Append(*it);
 	}
-	cmb_from_into->SetValue(*take_from.begin());
+	cmb_from_into->SetValue(*inventory_types_list.begin());
 	cmb_from_into->AutoComplete(take_from_choices);
 
 	// set steps grid formatting
@@ -699,7 +699,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 				if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
 				{
 					stepParameters.Item = struct_fuel_list.coal;
-					stepParameters.FromInto = struct_from_into_list.fuel;
+					stepParameters.FromInto = inventory_types.fuel;
 
 					UpdateStepGrid(row + 1, &stepParameters);
 					returnValue.push_back({row + 1, stepParameters});
@@ -709,7 +709,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 				if (check_burner->IsChecked() && (to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler))
 				{
 					stepParameters.Item = struct_fuel_list.coal;
-					stepParameters.FromInto = struct_from_into_list.fuel;
+					stepParameters.FromInto = inventory_types.fuel;
 
 					UpdateStepGrid(row + 1, &stepParameters);
 					returnValue.push_back({row + 1, stepParameters});
@@ -719,7 +719,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 				if (check_lab->IsChecked() && to_check == struct_science_list.lab)
 				{
 					stepParameters.Item = "Automation science pack";
-					stepParameters.FromInto = struct_from_into_list.input;
+					stepParameters.FromInto = inventory_types.input;
 
 					UpdateStepGrid(row + 1, &stepParameters);
 					returnValue.push_back({row + 1, stepParameters});
@@ -748,7 +748,7 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 					stepParameters.Step = StepNames[e_put];
 					stepParameters.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
 					stepParameters.Item = recipe[i];
-					stepParameters.FromInto = struct_from_into_list.input;
+					stepParameters.FromInto = inventory_types.input;
 
 					UpdateStepGrid(row + 1, &stepParameters);
 					returnValue.push_back({row + 1, stepParameters});

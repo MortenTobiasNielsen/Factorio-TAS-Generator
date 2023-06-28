@@ -186,6 +186,7 @@
     <ClInclude Include="cMain.h" />
     <ClInclude Include="CommandStack.h" />
     <ClInclude Include="Data\BuildingNames.h" />
+    <ClInclude Include="Data\Inventory.h" />
     <ClInclude Include="Data\utils.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
@@ -200,7 +201,6 @@
     <ClInclude Include="SteptypeColour.h" />
     <ClInclude Include="Structures\Building.h" />
     <ClInclude Include="Structures\GridEntry.h" />
-    <ClInclude Include="Structures\Inventory.h" />
     <ClInclude Include="Structures\Orientation.h" />
     <ClInclude Include="Structures\ParameterChoices.h" />
     <ClInclude Include="Structures\Priority.h" />
