@@ -156,6 +156,9 @@ protected:
 	void OnNoOrderRightClicked(wxMouseEvent& event);
 	void NoOrderButtonHandle(bool force = false);
 	void OnSkipClicked(wxCommandEvent& event);
+	void OnForceClicked(wxCommandEvent& event);
+	void OnForceRightClicked(wxMouseEvent& event);
+	void ForceButtonHandle(bool force = false);
 
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);
