@@ -45,6 +45,6 @@ protected:
 	
 public:
 	bool update_segment();
-	bool extract_steps(wxString steps, vector<StepParameters>& step_parameters);
+	bool extract_steps(wxString steps, vector<StepParameters>& step_parameters, vector<Building> BuildingsSnapShot, int buildings_in_snap_shot);
 
 };
