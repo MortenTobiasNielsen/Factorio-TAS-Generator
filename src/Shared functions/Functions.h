@@ -1,13 +1,12 @@
 #pragma once
 
-#include <wx/wx.h>
+#include <wx/string.h>
 #include <wx/grid.h>
+#include <wx/arrstr.h>
+
 #include <string>
-#include <sstream>
 #include <vector>
 #include <map>
-#include <ranges>
-#include <algorithm>
 
 #include "..\Structures\Building.h"
 #include "..\Structures\GridEntry.h"
