@@ -14,6 +14,7 @@
 #include "..\Structures\Orientation.h"
 
 using std::vector;
+using std::map;
 using std::string;
 using std::stringstream;
 

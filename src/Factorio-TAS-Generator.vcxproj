@@ -175,7 +175,6 @@
     <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
     <ClCompile Include="SteptypeColour.cpp" />
-    <ClCompile Include="Structures\StepNameToEnum.cpp" />
     <ClCompile Include="Structures\StepParameters.cpp" />
     <ClCompile Include="TAS save file\OpenTas.cpp" />
     <ClCompile Include="TAS save file\SaveTas.cpp" />
@@ -204,8 +203,8 @@
     <ClInclude Include="Structures\Orientation.h" />
     <ClInclude Include="Structures\ParameterChoices.h" />
     <ClInclude Include="Structures\Priority.h" />
-    <ClInclude Include="Structures\StepNameToEnum.h" />
     <ClInclude Include="Structures\StepParameters.h" />
+    <ClInclude Include="Structures\StepType.h" />
     <ClInclude Include="TAS save file\OpenTas.h" />
     <ClInclude Include="TAS save file\SaveTas.h" />
     <ClInclude Include="TAS save file\TasFileConstants.h" />
