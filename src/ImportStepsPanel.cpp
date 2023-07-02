@@ -97,7 +97,7 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		{
 			[[likely]] case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = OrientationToEnum[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation[step.Orientation];
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;

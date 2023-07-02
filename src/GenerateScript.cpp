@@ -315,7 +315,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 			case e_drop:
 				building = "Item on ground";
-				build_orientation = build_orientations[1];
+				build_orientation = orientation_list[0];
 
 				drop(currentStep, "1", x_cord, y_cord, item, building, comment);
 				break;
@@ -435,7 +435,7 @@ void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 	}
 
 	building = FindBuildingName(step->BuildingIndex);
-	build_orientation = build_orientations[step->OrientationEnum];
+	build_orientation = orientation_list[step->OrientationEnum];
 }
 
 void GenerateScript::TransferParameters(StepParameters& stepParameters)
@@ -1088,26 +1088,7 @@ void GenerateScript::build(string step, string action, string x_cord, string y_c
 
 	item = check_item_name(item);
 
-	if (OrientationEnum == "North")
-	{
-		OrientationEnum = build_direction_struct.north;
-	}
-	else if (OrientationEnum == "South")
-	{
-		OrientationEnum = build_direction_struct.south;
-	}
-	else if (OrientationEnum == "East")
-	{
-		OrientationEnum = build_direction_struct.east;
-	}
-	else if (OrientationEnum == "West")
-	{
-		OrientationEnum = build_direction_struct.west;
-	}
-	else
-	{
-		return;
-	}
+	OrientationEnum = orientation_defines_list[MapStringToOrientation[OrientationEnum]];
 
 	step_list += Step(step, action, "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + OrientationEnum, comment);
 	total_steps += 1;
