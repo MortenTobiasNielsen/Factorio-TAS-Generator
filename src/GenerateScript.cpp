@@ -234,7 +234,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_take:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = extract_define(steps[i].FromInto, building);
+				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
 
 				if (from_into == "Not Found")
 				{
@@ -248,7 +248,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_put:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = extract_define(steps[i].FromInto, building);
+				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
 
 				if (from_into == "Not Found")
 				{
@@ -277,7 +277,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_limit:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = extract_define(steps[i].FromInto, building);
+				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
 
 				if (from_into == "Not Found")
 				{
@@ -428,9 +428,9 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 {
-	if (step->FromInto == struct_from_into_list.wreck)
+	if (step->FromInto == inventory_types.wreck)
 	{
-		building = struct_from_into_list.wreck;
+		building = inventory_types.wreck;
 		return;
 	}
 
@@ -458,62 +458,6 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 		.force = stepParameters.Modifiers.find("force") != std::string::npos,
 		.split = stepParameters.Modifiers.find("split") != std::string::npos,
 	};
-}
-
-string GenerateScript::extract_define(string from_into, string building)
-{
-	if (from_into == struct_from_into_list.wreck)
-	{
-		return struct_take_put_list.chest;
-	}
-
-	if (from_into == struct_from_into_list.chest)
-	{
-		return struct_take_put_list.chest;
-	}
-
-	if (from_into == struct_from_into_list.fuel)
-	{
-		return struct_take_put_list.fuel;
-	}
-
-	if (building == struct_science_list.lab)
-	{
-		if (from_into == struct_from_into_list.input)
-		{
-			return struct_take_put_list.lab_input;
-		}
-		else if (from_into == struct_from_into_list.modules)
-		{
-			return struct_take_put_list.lab_modules;
-		}
-	}
-
-	if (check_input(building, drills_list))
-	{
-		return struct_take_put_list.drill_modules;
-	}
-
-	if (building == "Beacon")
-	{
-		return struct_take_put_list.beacon_modules;
-	}
-
-	if (from_into == struct_from_into_list.input)
-	{
-		return struct_take_put_list.assembly_input;
-	}
-
-	if (from_into == struct_from_into_list.modules)
-	{
-		return struct_take_put_list.assembly_modules;
-	}
-	if (from_into == struct_from_into_list.output)
-	{
-		return struct_take_put_list.assembly_output;
-	}
-
-	return "Not Found";
 }
 
 string GenerateScript::convert_string(string input)

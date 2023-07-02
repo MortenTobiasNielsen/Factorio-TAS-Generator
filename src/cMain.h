@@ -21,11 +21,11 @@
 #include "DialogProgressBar.h"
 
 #include "Data\utils.h"
+#include "Data\Inventory.h"
 #include "Data\BuildingNames.h"
 
 #include "Structures\Building.h"
 #include "Structures\ParameterChoices.h"
-#include "Structures\Inventory.h"
 #include "Structures\Priority.h"
 #include "Structures\StepNameToEnum.h"
 #include "Structures\GridEntry.h"
