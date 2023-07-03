@@ -1086,6 +1086,9 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 		modifier_skip_checkbox->Show();
 		modifier_skip_button->Hide();
 		sizer_skip->Layout();
+		modifier_force_checkbox->Show();
+		modifier_force_button->Hide();
+		sizer_force->Layout();
 		btn_change_step->Enable();
 	}
 	else
@@ -1096,6 +1099,9 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 		modifier_skip_checkbox->Hide();
 		modifier_skip_button->Show();
 		sizer_skip->Layout();
+		modifier_force_checkbox->Hide();
+		modifier_force_button->Show();
+		sizer_force->Layout();
 		btn_change_step->Disable();
 	}	
 }
@@ -2863,6 +2869,68 @@ void cMain::NoOrderButtonHandle(bool force)
 				step.Modifiers = index != std::string::npos ?
 					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_no_order_comma, size - index - size_no_order_comma) :
 					step.Modifiers.substr(0, size - size_no_order);
+				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
+}
+
+void cMain::OnForceRightClicked(wxMouseEvent& event)
+{
+	ForceButtonHandle(true);
+	event.Skip();
+}
+void cMain::OnForceClicked(wxCommandEvent& event)
+{
+	ForceButtonHandle();
+	event.Skip();
+}
+void cMain::ForceButtonHandle(bool force)
+{
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	if (rows.size() < 2) return;
+	if (!force)
+	{
+		for (int row : rows)
+		{
+			StepType e = StepGridData.at(row).StepEnum;
+			if (modifier_types.force.contains(e))
+				continue;
+			else
+			{
+				wxMessageBox(std::format("Step {} is unable to be assigned the force modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
+					"One or more steps can't be assigned force modifier");
+				return;
+			}
+		}
+	}
+	if (StepGridData.at(rows.front()).Modifiers.find("force") == std::string::npos)
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			if (modifier_types.force.contains(step.StepEnum) && step.Modifiers.find("force") == std::string::npos)
+			{
+				step.Modifiers = step.Modifiers.size() == 0 ? "force" : step.Modifiers + ", force";
+				grid_steps->SetCellValue(row, 6, step.Modifiers);
+			}
+		}
+	}
+	else
+	{
+		for (int row : rows)
+		{
+			auto& step = StepGridData.at(row);
+			const int size_force = sizeof "force" - 1;
+			const int size_force_comma = sizeof "force, " - 1;
+			if (step.Modifiers.find("force") != std::string::npos)
+			{
+				auto size = step.Modifiers.size();
+				auto index = step.Modifiers.find("force, ");
+				step.Modifiers = index != std::string::npos ?
+					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_force_comma, size - index - size_force_comma) :
+					step.Modifiers.substr(0, size - size_force);
 				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
 				grid_steps->SetCellValue(row, 6, step.Modifiers);
 			}

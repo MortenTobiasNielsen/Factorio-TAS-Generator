@@ -953,11 +953,21 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	step_modifier_flex->Add( modifier_wait_for_checkbox, 0, wxALL, 5 );
 
+	sizer_force = new wxBoxSizer( wxVERTICAL );
+
 	modifier_force_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Force"), wxDefaultPosition, wxDefaultSize, 0 );
-	modifier_force_checkbox->Enable( false );
 	modifier_force_checkbox->SetToolTip( wxT("Tells the generator to not check if the character can reach the entity. This prevents intermediate walk steps which can mess up your execution but it can also leave your character stranded on a step that cannot be executed.") );
 
-	step_modifier_flex->Add( modifier_force_checkbox, 0, wxALL, 5 );
+	sizer_force->Add( modifier_force_checkbox, 0, wxALL, 5 );
+
+	modifier_force_button = new wxButton( step_modifier_panel, wxID_ANY, wxT("Force"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_force_button->Hide();
+	modifier_force_button->SetToolTip( wxT("Tells the generator to ignore distance calculations for these steps.") );
+
+	sizer_force->Add( modifier_force_button, 0, 0, 5 );
+
+
+	step_modifier_flex->Add( sizer_force, 1, wxEXPAND, 5 );
 
 	modifier_cancel_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("Cancel others"), wxDefaultPosition, wxDefaultSize, 0 );
 	modifier_cancel_checkbox->Enable( false );
@@ -1519,6 +1529,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	modifier_no_order_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
 	modifier_no_order_button->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
 	modifier_skip_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipClicked ), NULL, this );
+	modifier_force_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnForceClicked ), NULL, this );
+	modifier_force_button->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnSkipRightClicked ), NULL, this );
 	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
@@ -1597,6 +1609,8 @@ GUI_Base::~GUI_Base()
 	modifier_no_order_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNoOrderClicked ), NULL, this );
 	modifier_no_order_button->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnNoOrderRightClicked ), NULL, this );
 	modifier_skip_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipClicked ), NULL, this );
+	modifier_force_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnForceClicked ), NULL, this );
+	modifier_force_button->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnSkipRightClicked ), NULL, this );
 	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
