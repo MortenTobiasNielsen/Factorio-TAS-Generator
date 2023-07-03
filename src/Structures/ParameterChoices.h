@@ -57,8 +57,8 @@ const struct parameter_choices_struct
 
 	//building interactions
 	const int build = building | item,
-	take = building | container,
-	put = building | container,
+	take = building - building_orientation | container,
+	put = building - building_orientation | container,
 	rotate = building | amount,
 	limit = building | amount,
 	priority = building - building_orientation | priority_io,
