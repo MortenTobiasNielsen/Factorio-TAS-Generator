@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include "Building.h"
-#include "StepNameToEnum.h"
+#include "StepType.h"
 #include "Orientation.h"
 
 using std::string;

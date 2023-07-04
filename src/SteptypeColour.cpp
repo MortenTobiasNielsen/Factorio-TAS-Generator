@@ -1,6 +1,6 @@
 #include <wx/clrpicker.h>
 
-#include "Structures\StepNameToEnum.h"
+#include "Structures\StepType.h"
 
 #include "SteptypeColour.h"
 #include "Settings.h"

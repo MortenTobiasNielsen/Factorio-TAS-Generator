@@ -13,7 +13,7 @@
 #include "Shared functions\Functions.h"
 
 #include "Structures\StepParameters.h"
-#include "Structures\StepNameToEnum.h"
+#include "Structures\StepType.h"
 
 #include "Data\BuildingNames.h"
 #include "Data\Inventory.h"
