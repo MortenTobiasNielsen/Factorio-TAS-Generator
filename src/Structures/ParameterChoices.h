@@ -72,7 +72,6 @@ const struct parameter_choices_struct
 
 // vector StepType to parameter_choices
 const vector<int> listStepTypeToParameterChoices = {
-	0, // for indexing
 	parameter_choices.stop, 
 	parameter_choices.build, 
 	parameter_choices.craft, 
