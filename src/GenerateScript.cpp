@@ -450,13 +450,13 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	amount_of_buildings = to_string(stepParameters.Buildings);
 	comment = stepParameters.Comment;
 	modifiers = {
-		.wait_for = stepParameters.Modifiers.find("wait for") != std::string::npos,
-		.cancel = stepParameters.Modifiers.find("cancel") != std::string::npos,
-		.no_order = stepParameters.Modifiers.find("no order") != std::string::npos,
-		.walk_towards = stepParameters.Modifiers.find("walk towards") != std::string::npos,
-		.skip = stepParameters.Modifiers.find("skip") != std::string::npos,
-		.force = stepParameters.Modifiers.find("force") != std::string::npos,
-		.split = stepParameters.Modifiers.find("split") != std::string::npos,
+		.no_order = stepParameters.Modifiers.no_order,
+		.skip = stepParameters.Modifiers.skip,
+		.wait_for = stepParameters.Modifiers.wait_for,
+		.force = stepParameters.Modifiers.force,
+		.cancel_others = stepParameters.Modifiers.cancel_others,
+		.split = stepParameters.Modifiers.split,
+		.walk_towards = stepParameters.Modifiers.walk_towards,
 	};
 }
 
@@ -754,23 +754,9 @@ string GenerateScript::Comment(string comment)
 	return comment == "" ? "" : ", comment = \"" + comment + "\"";
 }
 
-string GenerateScript::Modifiers()
-{
-	string str = ", ";
-	str += modifiers.cancel ? " cancel = true," : "";
-	str += modifiers.no_order ? " no_order = true," : "";
-	str += modifiers.wait_for ? " wait_for = true," : "";
-	str += modifiers.walk_towards ? " walk_towards = true," : "";
-	//str += modifiers.skip ? " skip = true," : "";
-	//str += modifiers.force ? " force = true," : "";
-	//str += modifiers.split ? " split = true," : "";
-
-	return str.size() < 3 ? "" : str;
-}
-
 string GenerateScript::Step(string step, string action, string details, string comment = "")
 {
-	return signature(step, action) + details + Comment(comment) + Modifiers() + "}\n";
+	return signature(step, action) + details + Comment(comment) + modifiers.ToLua() + "}\n";
 }
 
 void GenerateScript::walk(string step, string action, string x_cord, string y_cord, string comment)

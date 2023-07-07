@@ -171,7 +171,7 @@ void cMain::HandleFocusMode(bool checked, bool changed)
 		int last_save = 0;
 		for (int i = StepGridData.size() - 1; i >= 0; i--)
 		{
-			if (StepGridData[i].StepEnum == StepType::e_save && StepGridData[i].Modifiers.find("skip") == std::string::npos)
+			if (StepGridData[i].StepEnum == StepType::e_save && !StepGridData[i].Modifiers.skip)
 			{
 				last_save = i;
 				break;
@@ -2109,8 +2109,8 @@ bool cMain::SaveFile(bool save_as)
 
 StepParameters cMain::ExtractStepParameters()
 {
-	spin_y->SetFocus();
-	spin_x->SetFocus();
+	if (spin_y->IsEnabled()) spin_y->SetFocus();
+	if (spin_x->IsEnabled()) spin_x->SetFocus();
 
 	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
 
@@ -2126,15 +2126,15 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
-	string modifiers = "";
-	modifiers += modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue() ? "cancel, " : "";
-	modifiers += modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue() ? "no order, " : "";
-	modifiers += modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue() ? "wait for, " : "";
-	modifiers += modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue() ? "walk towards, " : "";
-	modifiers += modifier_skip_checkbox->IsEnabled() && modifier_skip_checkbox->GetValue() ? "skip, " : "";
-	modifiers += modifier_force_checkbox->IsEnabled() && modifier_force_checkbox->GetValue() ? "force, " : "";
-	modifiers += modifier_split_checkbox->IsEnabled() && modifier_split_checkbox->GetValue() ? "split, " : "";
-	stepParameters.Modifiers = modifiers.size() > 2 ? modifiers.substr(0,  modifiers.size() - 2) : modifiers;
+	stepParameters.Modifiers = {
+		.no_order = modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue(),
+		.skip = modifier_skip_checkbox->IsEnabled() && modifier_skip_checkbox->GetValue(),
+		.wait_for = modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue(),
+		.force = modifier_force_checkbox->IsEnabled() && modifier_force_checkbox->GetValue(),
+		.cancel_others = modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue(),
+		.split = modifier_split_checkbox->IsEnabled() && modifier_split_checkbox->GetValue(),
+		.walk_towards = modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue(),
+	};
 
 	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;
 
@@ -2196,7 +2196,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 {
 	GridEntry gridEntry{
 		.Step = stepParameters->Step,
-		.Modifiers = stepParameters->Modifiers,
+		.Modifiers = stepParameters->Modifiers.ToString(),
 		.Comment = stepParameters->Comment,
 	};
 
@@ -2817,12 +2817,10 @@ void cMain::OnMainBookPageChanged(wxAuiNotebookEvent& event)
 void cMain::OnNoOrderRightClicked(wxMouseEvent& event)
 {
 	NoOrderButtonHandle(true);
-	event.Skip();
 }
 void cMain::OnNoOrderClicked(wxCommandEvent& event)
 {
 	NoOrderButtonHandle();
-	event.Skip();
 }
 void cMain::NoOrderButtonHandle(bool force)
 {
@@ -2833,9 +2831,7 @@ void cMain::NoOrderButtonHandle(bool force)
 		for (int row : rows)
 		{
 			StepType e = StepGridData.at(row).StepEnum;
-			if (modifier_types.no_order.contains(e))
-				continue;
-			else
+			if (! modifier_types.no_order.contains(e)) 
 			{
 				wxMessageBox(std::format("Step {} is unable to be assigned the no-order modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
 					"One or more steps can't be assigned no-order modifier");
@@ -2843,35 +2839,15 @@ void cMain::NoOrderButtonHandle(bool force)
 			}
 		}
 	}
-	if (StepGridData.at(rows.front()).Modifiers.find("no order") == std::string::npos)
+	bool modifier_value = StepGridData.at(rows.front()).Modifiers.no_order;
+	for (int row : rows)
 	{
-		for (int row : rows)
+		auto& step = StepGridData.at(row);
+		if (step.Modifiers.no_order == modifier_value && 
+			modifier_types.no_order.contains(step.StepEnum))
 		{
-			auto& step = StepGridData.at(row);
-			if (modifier_types.no_order.contains(step.StepEnum) && step.Modifiers.find("no order") == std::string::npos)
-			{
-				step.Modifiers = step.Modifiers.size() == 0 ? "no order" : step.Modifiers + ", no order";
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
-			}
-		}
-	}
-	else
-	{
-		for (int row : rows)
-		{
-			auto& step = StepGridData.at(row);
-			const int size_no_order = sizeof "no order" - 1;
-			const int size_no_order_comma = sizeof "no order, " - 1;
-			if (step.Modifiers.find("no order") != std::string::npos)
-			{
-				auto size = step.Modifiers.size();
-				auto index = step.Modifiers.find("no order, ");
-				step.Modifiers = index != std::string::npos ?
-					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_no_order_comma, size - index - size_no_order_comma) :
-					step.Modifiers.substr(0, size - size_no_order);
-				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
-			}
+			step.Modifiers.no_order = !modifier_value;
+			grid_steps->SetCellValue(row, 6, step.Modifiers.ToString());
 		}
 	}
 }
@@ -2879,12 +2855,10 @@ void cMain::NoOrderButtonHandle(bool force)
 void cMain::OnForceRightClicked(wxMouseEvent& event)
 {
 	ForceButtonHandle(true);
-	event.Skip();
 }
 void cMain::OnForceClicked(wxCommandEvent& event)
 {
 	ForceButtonHandle();
-	event.Skip();
 }
 void cMain::ForceButtonHandle(bool force)
 {
@@ -2895,9 +2869,7 @@ void cMain::ForceButtonHandle(bool force)
 		for (int row : rows)
 		{
 			StepType e = StepGridData.at(row).StepEnum;
-			if (modifier_types.force.contains(e))
-				continue;
-			else
+			if (! modifier_types.force.contains(e))
 			{
 				wxMessageBox(std::format("Step {} is unable to be assigned the force modifier. \n As it is of the type {}.", row + 1, StepNames[e]),
 					"One or more steps can't be assigned force modifier");
@@ -2905,74 +2877,32 @@ void cMain::ForceButtonHandle(bool force)
 			}
 		}
 	}
-	if (StepGridData.at(rows.front()).Modifiers.find("force") == std::string::npos)
+	bool modifier_value = StepGridData.at(rows.front()).Modifiers.force;
+	for (int row : rows)
 	{
-		for (int row : rows)
+		auto& step = StepGridData.at(row);
+		if (step.Modifiers.force == modifier_value &&
+			modifier_types.force.contains(step.StepEnum))
 		{
-			auto& step = StepGridData.at(row);
-			if (modifier_types.force.contains(step.StepEnum) && step.Modifiers.find("force") == std::string::npos)
-			{
-				step.Modifiers = step.Modifiers.size() == 0 ? "force" : step.Modifiers + ", force";
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
-			}
-		}
-	}
-	else
-	{
-		for (int row : rows)
-		{
-			auto& step = StepGridData.at(row);
-			const int size_force = sizeof "force" - 1;
-			const int size_force_comma = sizeof "force, " - 1;
-			if (step.Modifiers.find("force") != std::string::npos)
-			{
-				auto size = step.Modifiers.size();
-				auto index = step.Modifiers.find("force, ");
-				step.Modifiers = index != std::string::npos ?
-					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_force_comma, size - index - size_force_comma) :
-					step.Modifiers.substr(0, size - size_force);
-				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
-			}
+			step.Modifiers.force = !modifier_value;
+			grid_steps->SetCellValue(row, 6, step.Modifiers.ToString());
 		}
 	}
 }
 
 void cMain::OnSkipClicked(wxCommandEvent& event)
 {
-	event.Skip();
 	wxArrayInt rows = grid_steps->GetSelectedRows();
 	if (rows.size() < 2) return;
 
-	if (StepGridData.at(rows.front()).Modifiers.find("skip") == std::string::npos)
+	bool modifier_value = StepGridData.at(rows.front()).Modifiers.skip;
+	for (int row : rows)
 	{
-		for (int row : rows)
+		auto& step = StepGridData.at(row);
+		if (step.Modifiers.skip == modifier_value)
 		{
-			auto& step = StepGridData.at(row);
-			if (step.Modifiers.find("skip") == std::string::npos)
-			{
-				step.Modifiers = step.Modifiers.size() == 0 ? "skip" : step.Modifiers + ", skip";
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
-			}
-		}
-	}
-	else
-	{
-		for (int row : rows)
-		{
-			auto& step = StepGridData.at(row);
-			const int size_skip = sizeof "skip" - 1;
-			const int size_skip_comma = sizeof "skip, " - 1;
-			if (step.Modifiers.find("skip") != std::string::npos)
-			{
-				auto size = step.Modifiers.size();
-				auto index = step.Modifiers.find("skip, ");
-				step.Modifiers = index != std::string::npos ?
-					step.Modifiers.substr(0, index) + step.Modifiers.substr(index + size_skip_comma, size - index - size_skip_comma) :
-					step.Modifiers.substr(0, size - size_skip);
-				if (step.Modifiers.ends_with(", ")) step.Modifiers = step.Modifiers.substr(0, step.Modifiers.size() - 2);
-				grid_steps->SetCellValue(row, 6, step.Modifiers);
-			}
+			step.Modifiers.skip = !modifier_value;
+			grid_steps->SetCellValue(row, 6, step.Modifiers.ToString());
 		}
 	}
 }

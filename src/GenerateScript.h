@@ -61,16 +61,7 @@ private:
 	string priority_out;
 	string building;
 
-	struct
-	{
-		bool wait_for = false;
-		bool cancel = false;
-		bool no_order = false;
-		bool walk_towards = false;
-		bool skip = false;
-		bool force = false;
-		bool split = false;
-	} modifiers;
+	StepModifiers modifiers;
 
 	string last_walking_comment;
 
@@ -155,7 +146,6 @@ private:
 
 	string signature(string step, string action);
 	string Comment(string comment);
-	string Modifiers();
 	string Step(string step, string action, string details, string comment);
 	WarningsStatesCounters warning_state_counters;
 

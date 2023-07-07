@@ -6,6 +6,7 @@
 #include "Building.h"
 #include "StepType.h"
 #include "Orientation.h"
+#include "StepModifiers.h"
 
 using std::string;
 using std::ofstream;
@@ -23,7 +24,7 @@ struct StepParameters
 	int Buildings;
 	int BuildingIndex;
 
-	string Modifiers;
+	StepModifiers Modifiers;
 
 	Orientation OrientationEnum;
 	StepType StepEnum;
