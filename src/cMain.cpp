@@ -74,7 +74,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 		building_orientation_choices.Add(s);
 	}
 
-	for (auto& s : input_output)
+	for (auto& s : Priority::Names)
 	{
 		input_output_choices.Add(s);
 	}
@@ -2018,8 +2018,8 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	if (parameters & amount) spin_amount->SetValue(gridEntry->Amount);
 	if (parameters & item) cmb_item->SetValue(gridEntry->Item);
 	if (parameters & from_to) cmb_from_into->SetValue(gridEntry->BuildingOrientation);
-	if (parameters & input) radio_input->Select(map_input_output[OrientationEnum.substr(0, pos)]);
-	if (parameters & output) radio_output->Select(map_input_output[OrientationEnum.substr(pos + 1)]);
+	if (parameters & input) radio_input->Select(Priority::MapNameToType[OrientationEnum.substr(0, pos)]);
+	if (parameters & output) radio_output->Select(Priority::MapNameToType[OrientationEnum.substr(pos + 1)]);
 	if (parameters & building_orientation) cmb_building_orientation->SetValue(gridEntry->BuildingOrientation);
 	if (parameters & direction_to_build) cmb_direction_to_build->SetValue(gridEntry->DirectionToBuild);
 	if (parameters & building_size) spin_building_size->SetValue(gridEntry->BuildingSize);
@@ -2124,8 +2124,8 @@ StepParameters cMain::ExtractStepParameters()
 	stepParameters.Direction = Capitalize(cmb_direction_to_build->GetValue());
 	stepParameters.Size = spin_building_size->GetValue();
 	stepParameters.Buildings = spin_building_amount->GetValue();
-	stepParameters.PriorityIn = input_output[radio_input->GetSelection()];
-	stepParameters.PriorityOut = input_output[radio_output->GetSelection()];
+	stepParameters.priority.input = (Priority::Type) radio_input->GetSelection();
+	stepParameters.priority.output = (Priority::Type) radio_output->GetSelection();
 	stepParameters.Comment = txt_comment->GetValue().ToStdString();
 
 	stepParameters.Modifiers = {
@@ -2319,7 +2319,7 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_priority:
 			gridEntry.X = std::to_string(stepParameters->X);
 			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.BuildingOrientation = stepParameters->PriorityIn + "," + stepParameters->PriorityOut;
+			gridEntry.BuildingOrientation = stepParameters->priority.ToString();
 			gridEntry.DirectionToBuild = stepParameters->Direction;
 			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
 			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);

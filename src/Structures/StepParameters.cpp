@@ -86,7 +86,7 @@ string StepParameters::ToString()
 			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		case e_priority:
-			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + PriorityIn + "," + PriorityOut + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return Step + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + priority.ToString() + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		[[likely]] case e_put:
 		[[likely]] case e_take:
