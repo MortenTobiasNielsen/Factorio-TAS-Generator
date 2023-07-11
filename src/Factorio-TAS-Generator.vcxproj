@@ -179,6 +179,7 @@
     <ClCompile Include="TAS save file\OpenTas.cpp" />
     <ClCompile Include="TAS save file\SaveTas.cpp" />
     <ClCompile Include="TypePanel.cpp" />
+    <ClCompile Include="WalkPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />

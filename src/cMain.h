@@ -160,6 +160,21 @@ protected:
 	void OnForceRightClicked(wxMouseEvent& event);
 	void ForceButtonHandle(bool force = false);
 
+	// walk panel
+	void SetupWalkPanelUnicodeCharacters();
+	int AddWalkScanStartRow();
+	pair<double, double> AddWalkScanCurrentPosition();
+	void CreateWalkStep(int x_modifier, int y_modifier);
+	void OnWalkPanelBtnUpLeftClicked(wxCommandEvent& event);
+	void OnWalkPanelBtnUpClicked(wxCommandEvent& event);
+	void OnWalkPanelBtnUpRightClicked(wxCommandEvent& event);
+	void OnWalkPanelBtnLeftClicked(wxCommandEvent& event);
+	void OnWalkPanelBtnRightClicked(wxCommandEvent& event);
+	void OnWalkPanelBtnDownLeftClicked(wxCommandEvent& event);
+	void OnWalkPanelBtnDownClicked(wxCommandEvent& event);
+	void OnWalkPanelBtnDownRightClicked(wxCommandEvent& event);
+	
+
 	// Step
 	void OnAddStepClicked(wxCommandEvent& event);
 	void OnAddStepRightClicked(wxMouseEvent & event);

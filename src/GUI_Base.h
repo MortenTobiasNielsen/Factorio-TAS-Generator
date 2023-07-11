@@ -144,6 +144,17 @@ class GUI_Base : public wxFrame
 		wxCheckBox* modifier_cancel_checkbox;
 		wxCheckBox* modifier_split_checkbox;
 		wxCheckBox* modifier_walk_towards_checkbox;
+		wxPanel* walk_panel;
+		wxSpinCtrlDouble* walk_panel_increment_spin;
+		wxPanel* walk_panel_grid_panel;
+		wxButton* walk_panel_button_upleft;
+		wxButton* walk_panel_button_up;
+		wxButton* walk_panel_button_upright;
+		wxButton* walk_panel_button_left;
+		wxButton* walk_panel_button_right;
+		wxButton* walk_panel_button_downleft;
+		wxButton* walk_panel_button_down;
+		wxButton* walk_panel_button_downright;
 		wxAuiNotebook* main_book;
 		wxPanel* template_panel;
 		wxStaticText* label_choose_template;
@@ -282,6 +293,14 @@ class GUI_Base : public wxFrame
 		virtual void OnSkipClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnForceClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSkipRightClicked( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnUpLeftClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnUpClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnUpRightClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnLeftClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnRightClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnDownLeftClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnDownClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnWalkPanelBtnDownRightClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMainBookPageChanged( wxAuiNotebookEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }

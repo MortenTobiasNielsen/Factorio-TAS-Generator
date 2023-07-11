@@ -862,7 +862,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	type_panel->Layout();
 	type_sizer->Fit( type_panel );
 	auto_put_panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( auto_put_panel, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,140 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
+	m_mgr.AddPane( auto_put_panel, wxAuiPaneInfo() .Name( wxT("AutoPutPanel") ).Top() .Caption( wxT("Auto put") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 80,150 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 90,140 ) ).MinSize( wxSize( 70,120 ) ).MaxSize( wxSize( 80,180 ) ).Layer( 1 ) );
 
 	wxBoxSizer* auto_put_sizer;
 	auto_put_sizer = new wxBoxSizer( wxHORIZONTAL );
@@ -904,7 +904,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	auto_put_panel->Layout();
 	auto_put_sizer->Fit( auto_put_panel );
 	step_modifier_panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_mgr.AddPane( step_modifier_panel, wxAuiPaneInfo() .Name( wxT("ModifiersPanel") ).Top() .Caption( wxT("Modifiers") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 300,159 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 200,140 ) ).MinSize( wxSize( 100,120 ) ).MaxSize( wxSize( 300,180 ) ).Layer( 1 ) );
+	m_mgr.AddPane( step_modifier_panel, wxAuiPaneInfo() .Name( wxT("ModifiersPanel") ).Top() .Caption( wxT("Modifiers") ).CloseButton( false ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 240,159 ) ).BottomDockable( false ).LeftDockable( false ).RightDockable( false ).Row( 1 ).BestSize( wxSize( 240,140 ) ).MinSize( wxSize( 240,120 ) ).MaxSize( wxSize( 240,180 ) ).Layer( 1 ) );
 
 	wxBoxSizer* step_modifier_panel_sizer;
 	step_modifier_panel_sizer = new wxBoxSizer( wxVERTICAL );
@@ -994,6 +994,93 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	step_modifier_panel->SetSizer( step_modifier_panel_sizer );
 	step_modifier_panel->Layout();
 	step_modifier_panel_sizer->Fit( step_modifier_panel );
+	walk_panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_mgr.AddPane( walk_panel, wxAuiPaneInfo() .Top() .Caption( wxT("Walk") ).PinButton( true ).Dock().Resizable().FloatingSize( wxSize( 96,179 ) ).Row( 1 ).BestSize( wxSize( 80,140 ) ).MinSize( wxSize( 80,140 ) ).MaxSize( wxSize( 80,140 ) ).Layer( 1 ) );
+
+	wxBoxSizer* walk_panel_sizer;
+	walk_panel_sizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* walk_panel_control_sizer;
+	walk_panel_control_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+
+	walk_panel_control_sizer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	walk_panel_increment_spin = new wxSpinCtrlDouble( walk_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0.001, 9.999, 1, 0.5 );
+	walk_panel_increment_spin->SetDigits( 3 );
+	walk_panel_increment_spin->SetToolTip( wxT("Increment value for how big each walk step is from your current position.") );
+	walk_panel_increment_spin->SetMaxSize( wxSize( 60,-1 ) );
+
+	walk_panel_control_sizer->Add( walk_panel_increment_spin, 0, wxALIGN_BOTTOM|wxALL, 5 );
+
+
+	walk_panel_sizer->Add( walk_panel_control_sizer, 1, wxEXPAND, 5 );
+
+	walk_panel_grid_panel = new wxPanel( walk_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
+	wxGridSizer* walk_panel_grid_sizer;
+	walk_panel_grid_sizer = new wxGridSizer( 3, 3, 0, 0 );
+
+	walk_panel_button_upleft = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("↖"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_upleft->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_upleft->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_upleft, 0, wxALL, 5 );
+
+	walk_panel_button_up = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("↑"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_up->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_up->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_up, 0, wxALL, 5 );
+
+	walk_panel_button_upright = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("↗"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_upright->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_upright->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_upright, 0, wxALL, 5 );
+
+	walk_panel_button_left = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("←"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_left->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_left->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_left, 0, wxALL, 5 );
+
+
+	walk_panel_grid_sizer->Add( 22, 22, 1, 0, 5 );
+
+	walk_panel_button_right = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("→"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_right->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_right->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_right, 0, wxALL, 5 );
+
+	walk_panel_button_downleft = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("↙"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_downleft->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_downleft->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_downleft, 0, wxALL, 5 );
+
+	walk_panel_button_down = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("↓"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_down->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_down->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_down, 0, wxALL, 5 );
+
+	walk_panel_button_downright = new wxButton( walk_panel_grid_panel, wxID_ANY, wxT("↘"), wxDefaultPosition, wxDefaultSize, 0 );
+	walk_panel_button_downright->SetMinSize( wxSize( 22,22 ) );
+	walk_panel_button_downright->SetMaxSize( wxSize( 22,22 ) );
+
+	walk_panel_grid_sizer->Add( walk_panel_button_downright, 0, wxALL, 5 );
+
+
+	walk_panel_grid_panel->SetSizer( walk_panel_grid_sizer );
+	walk_panel_grid_panel->Layout();
+	walk_panel_grid_sizer->Fit( walk_panel_grid_panel );
+	walk_panel_sizer->Add( walk_panel_grid_panel, 1, wxALIGN_CENTER|wxALL, 5 );
+
+
+	walk_panel->SetSizer( walk_panel_sizer );
+	walk_panel->Layout();
+	walk_panel_sizer->Fit( walk_panel );
 	main_book = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TAB_EXTERNAL_MOVE|wxAUI_NB_TAB_MOVE|wxAUI_NB_TAB_SPLIT|wxAUI_NB_TOP|wxAUI_NB_WINDOWLIST_BUTTON|wxBORDER_RAISED );
 	m_mgr.AddPane( main_book, wxAuiPaneInfo() .Name( wxT("DataBook") ).Center() .Caption( wxT("Book") ).CaptionVisible( false ).CloseButton( false ).MaximizeButton( true ).MinimizeButton( true ).PinButton( true ).Dock().Resizable().FloatingSize( wxDefaultSize ).Row( 2 ).MinSize( wxSize( 500,500 ) ).Layer( 2 ).CentrePane() );
 
@@ -1531,6 +1618,14 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	modifier_skip_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipClicked ), NULL, this );
 	modifier_force_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnForceClicked ), NULL, this );
 	modifier_force_button->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnSkipRightClicked ), NULL, this );
+	walk_panel_button_upleft->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnUpLeftClicked ), NULL, this );
+	walk_panel_button_up->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnUpClicked ), NULL, this );
+	walk_panel_button_upright->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnUpRightClicked ), NULL, this );
+	walk_panel_button_left->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnLeftClicked ), NULL, this );
+	walk_panel_button_right->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnRightClicked ), NULL, this );
+	walk_panel_button_downleft->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnDownLeftClicked ), NULL, this );
+	walk_panel_button_down->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnDownClicked ), NULL, this );
+	walk_panel_button_downright->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnDownRightClicked ), NULL, this );
 	main_book->Connect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
@@ -1611,6 +1706,14 @@ GUI_Base::~GUI_Base()
 	modifier_skip_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnSkipClicked ), NULL, this );
 	modifier_force_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnForceClicked ), NULL, this );
 	modifier_force_button->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnSkipRightClicked ), NULL, this );
+	walk_panel_button_upleft->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnUpLeftClicked ), NULL, this );
+	walk_panel_button_up->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnUpClicked ), NULL, this );
+	walk_panel_button_upright->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnUpRightClicked ), NULL, this );
+	walk_panel_button_left->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnLeftClicked ), NULL, this );
+	walk_panel_button_right->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnRightClicked ), NULL, this );
+	walk_panel_button_downleft->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnDownLeftClicked ), NULL, this );
+	walk_panel_button_down->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnDownClicked ), NULL, this );
+	walk_panel_button_downright->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnWalkPanelBtnDownRightClicked ), NULL, this );
 	main_book->Disconnect( wxEVT_COMMAND_AUINOTEBOOK_PAGE_CHANGED, wxAuiNotebookEventHandler( GUI_Base::OnMainBookPageChanged ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( GUI_Base::OnTemplateChosen ), NULL, this );
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
