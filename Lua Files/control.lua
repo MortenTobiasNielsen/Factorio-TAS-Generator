@@ -1520,7 +1520,7 @@ local function handle_ontick()
 			mining = mining + 1
 			if mining > 5 then
 				if player.character_mining_progress == 0 then
-					Warning(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
+					Debug(string.format("Step: %s, Action: %s, Step: %s - Mine: Cannot reach resource", steps[step][1][1], steps[step][1][2], step))
 				else
 					mining = 0
 				end
