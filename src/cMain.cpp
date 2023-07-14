@@ -135,6 +135,8 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	wxAuiNotebook* a = (wxAuiNotebook*)step_panel->GetParent();
 	a->Split(1, wxRIGHT);
 
+	SetupWalkPanelUnicodeCharacters();
+
 	//set shortcuts from settings file
 	ShortcutChanger::UpdateShortcutsFromFile(main_menubar);
 	SteptypeColourHandler::UpdateSteptypeColoursFromFile();
