@@ -31,6 +31,7 @@
 #include <wx/checkbox.h>
 #include <wx/button.h>
 #include <wx/statline.h>
+#include <wx/choice.h>
 #include <wx/grid.h>
 #include <wx/srchctrl.h>
 #include <wx/clrpicker.h>
@@ -157,10 +158,10 @@ class GUI_Base : public wxFrame
 		wxButton* walk_panel_button_downright;
 		wxAuiNotebook* main_book;
 		wxPanel* template_panel;
-		wxStaticText* label_choose_template;
 		wxComboBox* cmb_choose_template;
 		wxButton* btn_template_new;
 		wxButton* btn_template_delete;
+		wxButton* btn_template_add_step;
 		wxButton* btn_template_change_step;
 		wxButton* btn_template_delete_step;
 		wxButton* btn_template_move_up_step;
@@ -172,10 +173,13 @@ class GUI_Base : public wxFrame
 		wxSpinCtrl* spin_amount_offset;
 		wxStaticText* label_template_amount_multiplier;
 		wxSpinCtrl* spin_amount_multiplier;
+		wxStaticLine* m_staticline2;
 		wxStaticText* label_template_x_offset;
 		wxSpinCtrl* spin_x_offset;
 		wxStaticText* label_template_y_offset;
 		wxSpinCtrl* spin_y_offset;
+		wxSpinCtrl* spin_template_iterator;
+		wxChoice* choice_template_direction;
 		wxGrid* grid_template;
 		wxPanel* step_panel;
 		wxSearchCtrl* step_search_ctrl;
@@ -306,6 +310,8 @@ class GUI_Base : public wxFrame
 		virtual void OnTemplateText( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnNewTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnDeleteTemplateClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnDeleteTemplateRightClicked( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnTemplateAddStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateChangeStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateDeleteStepClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateMoveUpClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -313,6 +319,7 @@ class GUI_Base : public wxFrame
 		virtual void OnTemplateAddToStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateAddFromStepsListClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTemplateGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
+		virtual void OnTemplateGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
 		virtual void StepSeachOnCancelButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void StepSeachOnSearchButton( wxCommandEvent& event ) { event.Skip(); }
 		virtual void StepSeachOnText( wxCommandEvent& event ) { event.Skip(); }

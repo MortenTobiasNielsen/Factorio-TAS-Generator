@@ -1085,154 +1085,190 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_mgr.AddPane( main_book, wxAuiPaneInfo() .Name( wxT("DataBook") ).Center() .Caption( wxT("Book") ).CaptionVisible( false ).CloseButton( false ).MaximizeButton( true ).MinimizeButton( true ).PinButton( true ).Dock().Resizable().FloatingSize( wxDefaultSize ).Row( 2 ).MinSize( wxSize( 500,500 ) ).Layer( 2 ).CentrePane() );
 
 	template_panel = new wxPanel( main_book, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer5612;
-	bSizer5612 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* template_sizer;
+	template_sizer = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer102;
-	bSizer102 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* template_control_sizer;
+	template_control_sizer = new wxBoxSizer( wxHORIZONTAL );
 
-	wxBoxSizer* bSizer103;
-	bSizer103 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* template_control_left_sizer;
+	template_control_left_sizer = new wxBoxSizer( wxVERTICAL );
 
-	bSizer103->SetMinSize( wxSize( 612,-1 ) );
-	wxBoxSizer* bSizer126;
-	bSizer126 = new wxBoxSizer( wxHORIZONTAL );
-
-	label_choose_template = new wxStaticText( template_panel, wxID_ANY, wxT("Template:"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
-	label_choose_template->Wrap( -1 );
-	bSizer126->Add( label_choose_template, 0, wxALIGN_CENTER|wxALL, 5 );
+	template_control_left_sizer->SetMinSize( wxSize( 500,-1 ) );
+	wxBoxSizer* template_template_control_sizer;
+	template_template_control_sizer = new wxBoxSizer( wxHORIZONTAL );
 
 	cmb_choose_template = new wxComboBox( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
-	cmb_choose_template->SetMinSize( wxSize( 195,-1 ) );
+	cmb_choose_template->SetToolTip( wxT("Use to select and load a template,\nOr to specify the name of a new template.") );
+	cmb_choose_template->SetMinSize( wxSize( 245,-1 ) );
 
-	bSizer126->Add( cmb_choose_template, 0, wxALIGN_CENTER|wxALL, 5 );
+	template_template_control_sizer->Add( cmb_choose_template, 0, wxALIGN_CENTER|wxALL, 5 );
 
-	btn_template_new = new wxButton( template_panel, wxID_ANY, wxT("New Template"), wxDefaultPosition, wxSize( 105,-1 ), 0 );
-	bSizer126->Add( btn_template_new, 0, wxALL, 5 );
+	btn_template_new = new wxButton( template_panel, wxID_ANY, wxT("New"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	btn_template_new->SetToolTip( wxT("Create a new template with name from box on the left. ") );
 
-	btn_template_delete = new wxButton( template_panel, wxID_ANY, wxT("Delete Template"), wxDefaultPosition, wxSize( 105,-1 ), 0 );
-	bSizer126->Add( btn_template_delete, 0, wxALL, 5 );
+	template_template_control_sizer->Add( btn_template_new, 0, wxALL, 5 );
+
+	btn_template_delete = new wxButton( template_panel, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	btn_template_delete->SetToolTip( wxT("Delete this template and it's content.") );
+
+	template_template_control_sizer->Add( btn_template_delete, 0, wxALL, 5 );
 
 
-	bSizer103->Add( bSizer126, 1, wxALIGN_LEFT, 5 );
+	template_control_left_sizer->Add( template_template_control_sizer, 1, wxALIGN_LEFT, 5 );
 
-	wxBoxSizer* bSizer1002;
-	bSizer1002 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* template_step_control_sizer;
+	template_step_control_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	btn_template_add_step = new wxButton( template_panel, wxID_ANY, wxT("Add"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_template_add_step->SetToolTip( wxT("Adds a step using the step detail panel to this template.") );
+
+	template_step_control_sizer->Add( btn_template_add_step, 0, wxALL, 5 );
 
 	btn_template_change_step = new wxButton( template_panel, wxID_ANY, wxT("Change"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1002->Add( btn_template_change_step, 0, wxALL, 5 );
+	btn_template_change_step->SetToolTip( wxT("Update the select template step using inputs from the details panel.") );
+
+	template_step_control_sizer->Add( btn_template_change_step, 0, wxALL, 5 );
 
 	btn_template_delete_step = new wxButton( template_panel, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1002->Add( btn_template_delete_step, 0, wxALL, 5 );
+	btn_template_delete_step->SetToolTip( wxT("Delete the selected template steps from this template.") );
 
-	btn_template_move_up_step = new wxButton( template_panel, wxID_ANY, wxT("Move Up"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1002->Add( btn_template_move_up_step, 0, wxALL, 5 );
+	template_step_control_sizer->Add( btn_template_delete_step, 0, wxALL, 5 );
 
-	btn_template_move_down_step = new wxButton( template_panel, wxID_ANY, wxT("Move Down"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1002->Add( btn_template_move_down_step, 0, wxALL, 5 );
+	btn_template_move_up_step = new wxButton( template_panel, wxID_ANY, wxT("Up"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_template_move_up_step->SetToolTip( wxT("Move this template step one row up.") );
+
+	template_step_control_sizer->Add( btn_template_move_up_step, 0, wxALL, 5 );
+
+	btn_template_move_down_step = new wxButton( template_panel, wxID_ANY, wxT("Down"), wxDefaultPosition, wxDefaultSize, 0 );
+	btn_template_move_down_step->SetToolTip( wxT("Move this template step one row down.") );
+
+	template_step_control_sizer->Add( btn_template_move_down_step, 0, wxALL, 5 );
 
 
-	bSizer103->Add( bSizer1002, 1, wxALIGN_LEFT, 5 );
+	template_control_left_sizer->Add( template_step_control_sizer, 1, wxALIGN_LEFT, 5 );
 
 
-	bSizer102->Add( bSizer103, 1, 0, 5 );
+	template_control_sizer->Add( template_control_left_sizer, 1, 0, 5 );
 
 	m_staticline51 = new wxStaticLine( template_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
-	bSizer102->Add( m_staticline51, 0, wxEXPAND | wxALL, 5 );
+	template_control_sizer->Add( m_staticline51, 0, wxALL|wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer1041;
-	bSizer1041 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* template_import_export_sizer;
+	template_import_export_sizer = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer1051;
-	bSizer1051 = new wxBoxSizer( wxHORIZONTAL );
+	btn_template_add_to_steps_list = new wxButton( template_panel, wxID_ANY, wxT("Import"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	btn_template_add_to_steps_list->SetToolTip( wxT("Moves a range of steps from the steps panel into this template.") );
 
-	btn_template_add_to_steps_list = new wxButton( template_panel, wxID_ANY, wxT("Add to steps list"), wxDefaultPosition, wxSize( 125,-1 ), 0 );
-	bSizer1051->Add( btn_template_add_to_steps_list, 0, wxALL, 5 );
+	template_import_export_sizer->Add( btn_template_add_to_steps_list, 0, wxALL, 5 );
 
+	btn_template_add_from_steps_list = new wxButton( template_panel, wxID_ANY, wxT("Export"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	btn_template_add_from_steps_list->SetToolTip( wxT("Moves the selected range of template steps or all template steps from this template into the steps page. Using the transformations on the right.") );
 
-	bSizer1041->Add( bSizer1051, 1, 0, 5 );
-
-	wxBoxSizer* bSizer1061;
-	bSizer1061 = new wxBoxSizer( wxHORIZONTAL );
-
-	btn_template_add_from_steps_list = new wxButton( template_panel, wxID_ANY, wxT("Add from steps list"), wxDefaultPosition, wxSize( 125,-1 ), 0 );
-	bSizer1061->Add( btn_template_add_from_steps_list, 0, wxALL, 5 );
+	template_import_export_sizer->Add( btn_template_add_from_steps_list, 0, wxALL, 5 );
 
 
-	bSizer1041->Add( bSizer1061, 1, 0, 5 );
+	template_control_sizer->Add( template_import_export_sizer, 0, wxEXPAND, 5 );
 
-
-	bSizer102->Add( bSizer1041, 0, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer1042;
-	bSizer1042 = new wxBoxSizer( wxVERTICAL );
+	wxBoxSizer* template_amount_sizer;
+	template_amount_sizer = new wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* bSizer1052;
 	bSizer1052 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_template_amount_offset = new wxStaticText( template_panel, wxID_ANY, wxT("Amount-Offset:"), wxDefaultPosition, wxSize( 85,-1 ), 0 );
+	label_template_amount_offset = new wxStaticText( template_panel, wxID_ANY, wxT("Offset:"), wxDefaultPosition, wxSize( 55,-1 ), 0 );
 	label_template_amount_offset->Wrap( -1 );
 	bSizer1052->Add( label_template_amount_offset, 0, wxALIGN_CENTER, 5 );
 
-	spin_amount_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
+	spin_amount_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -10000, 10000, 0 );
+	spin_amount_offset->SetToolTip( wxT("Used to specify an amount off-set to the whole range of exported steps.\nThis is applied after multiplication.") );
+
 	bSizer1052->Add( spin_amount_offset, 0, wxALL, 5 );
 
 
-	bSizer1042->Add( bSizer1052, 1, 0, 5 );
+	template_amount_sizer->Add( bSizer1052, 1, 0, 5 );
 
 	wxBoxSizer* bSizer1062;
 	bSizer1062 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_template_amount_multiplier = new wxStaticText( template_panel, wxID_ANY, wxT("Amount-Multi:"), wxDefaultPosition, wxSize( 85,-1 ), 0 );
+	label_template_amount_multiplier = new wxStaticText( template_panel, wxID_ANY, wxT("Multiplier:"), wxDefaultPosition, wxSize( 55,-1 ), 0 );
 	label_template_amount_multiplier->Wrap( -1 );
 	bSizer1062->Add( label_template_amount_multiplier, 0, wxALIGN_CENTER, 5 );
 
-	spin_amount_multiplier = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
+	spin_amount_multiplier = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, 0, 100, 1 );
+	spin_amount_multiplier->SetToolTip( wxT("Used to specify an amount multiplication to the whole range of exported steps.\nThis is applied before offset.") );
+
 	bSizer1062->Add( spin_amount_multiplier, 0, wxALL, 5 );
 
 
-	bSizer1042->Add( bSizer1062, 1, 0, 5 );
+	template_amount_sizer->Add( bSizer1062, 1, 0, 5 );
 
 
-	bSizer102->Add( bSizer1042, 0, 0, 5 );
+	template_control_sizer->Add( template_amount_sizer, 0, 0, 5 );
 
-	wxBoxSizer* bSizer104;
-	bSizer104 = new wxBoxSizer( wxVERTICAL );
+	m_staticline2 = new wxStaticLine( template_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+	template_control_sizer->Add( m_staticline2, 0, wxEXPAND | wxALL, 5 );
+
+	wxBoxSizer* template_coordinate_sizer;
+	template_coordinate_sizer = new wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* bSizer105;
 	bSizer105 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_template_x_offset = new wxStaticText( template_panel, wxID_ANY, wxT("X-Offset:"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	label_template_x_offset = new wxStaticText( template_panel, wxID_ANY, wxT("X:"), wxDefaultPosition, wxSize( 15,-1 ), 0 );
 	label_template_x_offset->Wrap( -1 );
 	bSizer105->Add( label_template_x_offset, 0, wxALIGN_CENTER, 5 );
 
-	spin_x_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
+	spin_x_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 65,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1000000, 1000000, 0 );
+	spin_x_offset->SetToolTip( wxT("X coordinate offset") );
+
 	bSizer105->Add( spin_x_offset, 0, wxALL, 5 );
 
 
-	bSizer104->Add( bSizer105, 1, 0, 5 );
+	template_coordinate_sizer->Add( bSizer105, 1, 0, 5 );
 
 	wxBoxSizer* bSizer106;
 	bSizer106 = new wxBoxSizer( wxHORIZONTAL );
 
-	label_template_y_offset = new wxStaticText( template_panel, wxID_ANY, wxT("Y-Offset:"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	label_template_y_offset = new wxStaticText( template_panel, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxSize( 15,-1 ), 0 );
 	label_template_y_offset->Wrap( -1 );
 	bSizer106->Add( label_template_y_offset, 0, wxALIGN_CENTER, 5 );
 
-	spin_y_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), wxSP_ARROW_KEYS, -10000, 10000, 0 );
+	spin_y_offset = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 65,-1 ), wxALIGN_RIGHT|wxSP_ARROW_KEYS, -1000000, 1000000, 0 );
+	spin_y_offset->SetToolTip( wxT("Y coordinate offset") );
+
 	bSizer106->Add( spin_y_offset, 0, wxALL, 5 );
 
 
-	bSizer104->Add( bSizer106, 1, 0, 5 );
+	template_coordinate_sizer->Add( bSizer106, 1, 0, 5 );
 
 
-	bSizer102->Add( bSizer104, 0, 0, 5 );
+	template_control_sizer->Add( template_coordinate_sizer, 0, 0, 5 );
+
+	wxBoxSizer* template_advanced_sizer;
+	template_advanced_sizer = new wxBoxSizer( wxVERTICAL );
+
+	spin_template_iterator = new wxSpinCtrl( template_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 68,-1 ), wxSP_ARROW_KEYS, 0, 99, 0 );
+	spin_template_iterator->SetToolTip( wxT("Coordinate offset multiplier (X,Y) when using Export.\nCalculated: (X,Y) + offset * multiplier\n\nThis will auto increment when using Export.\nSet to 0 to not increment this will be interpreted as a multiplier of 1.") );
+
+	template_advanced_sizer->Add( spin_template_iterator, 0, wxBOTTOM|wxLEFT|wxTOP, 5 );
+
+	wxString choice_template_directionChoices[] = { wxT("Normal"), wxT("Left"), wxT("Reverse"), wxT("Right") };
+	int choice_template_directionNChoices = sizeof( choice_template_directionChoices ) / sizeof( wxString );
+	choice_template_direction = new wxChoice( template_panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, choice_template_directionNChoices, choice_template_directionChoices, 0 );
+	choice_template_direction->SetSelection( 0 );
+	choice_template_direction->SetToolTip( wxT("Rotational transformation for Export.\nEach rotation transform the export template 90 degrees from the normal axis.\n\nCalculated: ( (X,Y) + offset * multiplier ) * v90degree") );
+
+	template_advanced_sizer->Add( choice_template_direction, 0, wxBOTTOM|wxLEFT|wxTOP, 5 );
 
 
-	bSizer5612->Add( bSizer102, 1, wxEXPAND, 5 );
+	template_control_sizer->Add( template_advanced_sizer, 1, 0, 5 );
 
-	wxBoxSizer* bSizer502;
-	bSizer502 = new wxBoxSizer( wxVERTICAL );
+
+	template_sizer->Add( template_control_sizer, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* template_grid_sizer;
+	template_grid_sizer = new wxBoxSizer( wxVERTICAL );
 
 	grid_template = new wxGrid( template_panel, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), 0 );
 
@@ -1281,15 +1317,15 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	grid_template->SetDefaultCellAlignment( wxALIGN_LEFT, wxALIGN_TOP );
 	grid_template->SetMinSize( wxSize( 860,2500 ) );
 
-	bSizer502->Add( grid_template, 0, wxALL|wxEXPAND, 5 );
+	template_grid_sizer->Add( grid_template, 0, wxALL|wxEXPAND, 5 );
 
 
-	bSizer5612->Add( bSizer502, 1, wxEXPAND, 5 );
+	template_sizer->Add( template_grid_sizer, 1, wxEXPAND, 5 );
 
 
-	template_panel->SetSizer( bSizer5612 );
+	template_panel->SetSizer( template_sizer );
 	template_panel->Layout();
-	bSizer5612->Fit( template_panel );
+	template_sizer->Fit( template_panel );
 	main_book->AddPage( template_panel, wxT("Templates"), false, wxNullBitmap );
 	step_panel = new wxPanel( main_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* step_panel_sizer;
@@ -1631,6 +1667,8 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	cmb_choose_template->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
 	btn_template_new->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
 	btn_template_delete->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTemplateClicked ), NULL, this );
+	btn_template_delete->Connect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnDeleteTemplateRightClicked ), NULL, this );
+	btn_template_add_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddStepClicked ), NULL, this );
 	btn_template_change_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateChangeStepClicked ), NULL, this );
 	btn_template_delete_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateDeleteStepClicked ), NULL, this );
 	btn_template_move_up_step->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateMoveUpClicked ), NULL, this );
@@ -1638,6 +1676,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_template_add_to_steps_list->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddToStepsListClicked ), NULL, this );
 	btn_template_add_from_steps_list->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddFromStepsListClicked ), NULL, this );
 	grid_template->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTemplateGridDoubleLeftClick ), NULL, this );
+	grid_template->Connect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnTemplateGridRangeSelect ), NULL, this );
 	step_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::StepSeachOnCancelButton ), NULL, this );
 	step_search_ctrl->Connect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::StepSeachOnSearchButton ), NULL, this );
 	step_search_ctrl->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::StepSeachOnText ), NULL, this );
@@ -1719,6 +1758,8 @@ GUI_Base::~GUI_Base()
 	cmb_choose_template->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnTemplateText ), NULL, this );
 	btn_template_new->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnNewTemplateClicked ), NULL, this );
 	btn_template_delete->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnDeleteTemplateClicked ), NULL, this );
+	btn_template_delete->Disconnect( wxEVT_RIGHT_UP, wxMouseEventHandler( GUI_Base::OnDeleteTemplateRightClicked ), NULL, this );
+	btn_template_add_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddStepClicked ), NULL, this );
 	btn_template_change_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateChangeStepClicked ), NULL, this );
 	btn_template_delete_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateDeleteStepClicked ), NULL, this );
 	btn_template_move_up_step->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateMoveUpClicked ), NULL, this );
@@ -1726,6 +1767,7 @@ GUI_Base::~GUI_Base()
 	btn_template_add_to_steps_list->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddToStepsListClicked ), NULL, this );
 	btn_template_add_from_steps_list->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnTemplateAddFromStepsListClicked ), NULL, this );
 	grid_template->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnTemplateGridDoubleLeftClick ), NULL, this );
+	grid_template->Disconnect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnTemplateGridRangeSelect ), NULL, this );
 	step_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_CANCEL_BTN, wxCommandEventHandler( GUI_Base::StepSeachOnCancelButton ), NULL, this );
 	step_search_ctrl->Disconnect( wxEVT_COMMAND_SEARCHCTRL_SEARCH_BTN, wxCommandEventHandler( GUI_Base::StepSeachOnSearchButton ), NULL, this );
 	step_search_ctrl->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::StepSeachOnText ), NULL, this );

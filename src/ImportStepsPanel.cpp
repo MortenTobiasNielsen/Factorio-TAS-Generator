@@ -334,7 +334,7 @@ void cMain::OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event)
 	auto a = template_map.insert(std::pair<std::string, std::vector<StepParameters>>(name, step_parameters) );
 	for (int i = 0; i < step_parameters.size(); i++) template_map[name].push_back(step_parameters[i]);
 
-	UpdateTemplateGrid(grid_template, template_map[name]);
+	UpdateTemplateGrid(template_map[name]);
 
 	if (import_steps_clear_checkbox->IsChecked()) import_steps_text_import->Clear();
 

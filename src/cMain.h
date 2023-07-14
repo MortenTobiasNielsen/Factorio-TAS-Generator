@@ -200,19 +200,23 @@ protected:
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
 	void OnDeleteTemplateClicked(wxCommandEvent& event);
+	void OnDeleteTemplateRightClicked(wxMouseEvent& event);
+	void OnDeleteTemplate(bool force);
 	void OnTemplateAddFromStepsListClicked(wxCommandEvent& event);
 	void OnTemplateAddToStepsListClicked(wxCommandEvent& event);
+	void OnTemplateAddStepClicked(wxCommandEvent& event);
 	void OnTemplateChangeStepClicked(wxCommandEvent& event);
 	void OnTemplateDeleteStepClicked(wxCommandEvent& event);
 	void OnTemplateMoveUpClicked(wxCommandEvent& event);
 	void OnTemplateMoveDownClicked(wxCommandEvent& event);
 
 	void OnTemplateGridDoubleLeftClick(wxGridEvent& event);
+	void OnTemplateGridRangeSelect(wxGridRangeSelectEvent& event);
 
 	void OnTemplateChosen(wxCommandEvent& event);
 	void OnTemplateText(wxCommandEvent& event);
 
-	void TemplateAlterStep(StepParameters& step);
+	void TemplateAlterStep(StepParameters& step, const int direction, int x_off, int y_off, int amount_off, int amount_multi);
 
 	//Seach
 	void StepSeachOnText(wxCommandEvent& event);
@@ -290,7 +294,9 @@ private:
 	void BackgroundColorUpdate(wxGrid* grid, int row, StepType step);
 
 	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
-	void UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps);
+	void UpdateTemplateGrid(vector<StepParameters>& steps);
+	void ClearTemplateGrid(bool disable = true);
+	void TemplatePageStartup();
 
 	void setup_paramters(const int parameters);
 	void SetupModifiers(StepType type);

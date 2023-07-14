@@ -146,6 +146,7 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 		std::ifstream tas_file(settings.last_tas);
 		Open(&tas_file);
 	}
+	TemplatePageStartup();
 }
 
 void cMain::OnStepsFocusCheckbox(wxCommandEvent& event)
@@ -398,85 +399,6 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 	no_changes = false;
 }
 
-void cMain::TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map)
-{
-	if (!grid->IsSelection() || !grid->GetSelectedRows().begin())
-	{
-		wxMessageBox("Please select row(s) to move", "Select row(s)");
-	}
-
-	for (const auto& block : grid->GetSelectedRowBlocks())
-	{
-		auto rowNum = block.GetTopRow();
-		auto rowCount = block.GetBottomRow() - rowNum + 1;
-
-		auto row = 0;
-		if (up)
-		{
-			if (rowNum == 0)
-			{
-				continue;
-			}
-
-			row = rowNum - 1;
-
-		}
-		else
-		{
-			if ((rowNum + rowCount) == (grid->GetNumberRows()))
-			{
-				continue;
-			}
-
-			row = rowNum + rowCount + 1;
-			rowCount = 0;
-		}
-
-		grid->InsertRows(rowNum + rowCount);
-
-		GridTransfer(grid, row, grid, rowNum + rowCount);
-
-		BackgroundColorUpdate(grid, rowNum + rowCount, ToStepType(grid->GetCellValue(rowNum + rowCount, 0).ToStdString()));
-
-		grid->DeleteRows(row);
-
-		if (!map.empty())
-		{
-			std::string map_name = cmb->GetValue().ToStdString();
-			if (map.find(map_name) != map.end())
-			{
-				if (up)
-				{
-
-					auto it1 = map[map_name].begin();
-					it1 += row;
-
-					auto data = *it1;
-					map[map_name].erase(it1);
-
-					auto it2 = map[map_name].begin();
-					it2 += rowNum + rowCount - 1;
-					map[map_name].insert(it2, data);
-				}
-				else
-				{
-					auto it1 = map[map_name].begin();
-					it1 += row - 1;
-
-					auto it2 = map[map_name].begin();
-					it2 += rowNum;
-
-					auto data = *it1;
-					map[map_name].erase(it1, it1 + 1);
-					map[map_name].insert(it2, data);
-				}
-			}
-		}
-	}
-
-	no_changes = false;
-}
-
 bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
 {
 	if (!grid->IsSelection())
@@ -560,27 +482,6 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType step)
 {
 	grid->SetCellBackgroundColour(row, 0, SteptypeColourHandler::GetStepColourOrDefault(step));
-}
-
-void cMain::UpdateTemplateGrid(wxGrid* grid, vector<StepParameters>& steps)
-{
-	if (grid->GetNumberRows() > 0)
-	{
-		grid->DeleteRows(0, grid->GetNumberRows());
-	}
-
-	grid->InsertRows(0, steps.size());
-
-	for (int i = 0; i < steps.size(); i++)
-	{
-		GridEntry gridEntry = PrepareStepParametersForGrid(&steps[i]);
-
-		PopulateGrid(grid, i, &gridEntry);
-
-		BackgroundColorUpdate(grid, i, steps[i].StepEnum);
-	}
-
-	no_changes = false;
 }
 
 void cMain::OnAddStepClicked(wxCommandEvent& event)
@@ -1201,243 +1102,7 @@ void cMain::GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int
 	to->SetCellValue(toRow, 10, from->GetCellValue(fromRow, 10));
 }
 
-void cMain::OnTemplateChosen(wxCommandEvent& event)
-{
-	UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
-	event.Skip();
-}
 
-void cMain::OnTemplateText(wxCommandEvent& event)
-{
-	UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
-	event.Skip();
-}
-
-void cMain::OnNewTemplateClicked(wxCommandEvent& event)
-{
-	int rowCount = cmb_choose_template->GetCount();
-	string name = cmb_choose_template->GetValue().ToStdString();
-
-	if (name == "")
-	{
-		wxMessageBox("Please write a template name", "Template name cannot be blank");
-		event.Skip();
-		return;
-	}
-
-	for (int i = 0; i < rowCount; i++)
-	{
-		if (name == cmb_choose_template->GetString(i).ToStdString())
-		{
-			wxMessageBox("Template names have to be unique - please write a new name in the Choose Template field", "Template names should be unique");
-			event.Skip();
-			return;
-		}
-	}
-
-	cmb_choose_template->Clear();
-	template_choices.Add(name);
-	template_choices.Sort();
-	cmb_choose_template->Append(template_choices);
-	cmb_choose_template->SetValue(name);
-	cmb_choose_template->AutoComplete(template_choices);
-
-	vector<StepParameters> template_list = {};
-	template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
-	
-	UpdateTemplateGrid(grid_template, template_map[name]);
-
-	no_changes = false;
-	event.Skip();
-}
-
-void cMain::OnDeleteTemplateClicked(wxCommandEvent& event)
-{
-	if (wxMessageBox("Are you sure you want to delete this template?", "Delete template", wxICON_QUESTION | wxYES_NO, this) != wxYES)
-	{
-		event.Skip();
-		return;
-	}
-
-	auto name = cmb_choose_template->GetValue().ToStdString();
-
-	if (template_map.find(name) == template_map.end())
-	{
-		return;
-	}
-
-	template_map.erase(name);
-	template_choices.Remove(name);
-	cmb_choose_template->Clear();
-	cmb_choose_template->Append(template_choices);
-	cmb_choose_template->AutoComplete(template_choices);
-
-	if (template_choices.size())
-	{
-		cmb_choose_template->SetValue(*template_choices.begin());
-		OnTemplateChosen(event);
-		return;
-	}
-
-	if (grid_template->GetNumberRows())
-	{
-		grid_template->DeleteRows(0, grid_template->GetNumberRows());
-	}
-
-	no_changes = false;
-}
-
-void cMain::OnTemplateAddFromStepsListClicked(wxCommandEvent& event)
-{
-	UpdateMapWithNewSteps(grid_template, cmb_choose_template, template_map);
-
-	event.Skip();
-}
-
-void cMain::OnTemplateAddToStepsListClicked(wxCommandEvent& event)
-{
-	if (spin_amount_offset->GetValue() != 0 && spin_amount_multiplier->GetValue() != 0)
-	{
-		wxMessageBox("Please either use units-offset or units-multiplier", "Invalid use of template attributes");
-		return;
-	}
-
-	int moveTo = grid_steps->GetNumberRows();
-
-	if (grid_steps->IsSelection())
-	{
-		if (!grid_steps->GetSelectedRows().begin())
-		{
-			wxMessageBox("Please either select row(s) or nothing", "Step list selection not valid");
-			return;
-		}
-
-		moveTo = *grid_steps->GetSelectedRows().begin();
-	}
-
-	if (grid_template->IsSelection())
-	{
-		for (const auto& block : grid_template->GetSelectedRowBlocks())
-		{
-			int row = block.GetTopRow();
-			int rowCount = block.GetBottomRow() - row + 1;
-
-			int rows = row + rowCount;
-
-			for (int i = row; i < rows; i++)
-			{
-				StepParameters step = template_map[cmb_choose_template->GetValue().ToStdString()][i];
-
-				TemplateAlterStep(step);
-
-				UpdateStepGrid(moveTo, &step);
-
-				moveTo += 1;
-			}
-		}
-
-		return;
-	}
-
-	int rows = grid_template->GetNumberRows();
-
-	for (int i = 0; i < rows; i++)
-	{
-		StepParameters step = template_map[cmb_choose_template->GetValue().ToStdString()][i];
-
-		TemplateAlterStep(step);
-
-		UpdateStepGrid(moveTo, &step);
-
-		moveTo += 1;
-	}
-
-	no_changes = false;
-}
-
-void cMain::TemplateAlterStep(StepParameters& step)
-{
-	if (step.X != invalidX)
-	{
-		step.X += spin_x_offset->GetValue();
-		step.OriginalX += spin_x_offset->GetValue();
-		step.Y += spin_y_offset->GetValue();
-		step.OriginalY += spin_y_offset->GetValue();
-	}
-
-	if (step.Amount == "" || step.Amount == "All")
-	{
-		return;
-	}
-
-	if (spin_amount_offset->GetValue() != 0)
-	{
-		step.Amount = to_string(stoi(step.Amount) + spin_amount_offset->GetValue());
-	}
-
-	if (spin_amount_multiplier->GetValue() != 0)
-	{
-		step.Amount = to_string(stoi(step.Amount) * spin_amount_multiplier->GetValue());
-	}
-}
-
-void cMain::OnTemplateChangeStepClicked(wxCommandEvent& event)
-{
-	auto stepParameters = ExtractStepParameters();
-
-	if (!ChangeRow(grid_template, stepParameters))
-	{
-		return;
-	}
-
-	auto name = cmb_choose_template->GetValue().ToStdString();
-	if (template_map.find(name) == template_map.end())
-	{
-		return;
-	}
-
-	auto rowNum = *grid_template->GetSelectedRows().begin();
-
-	template_map[name][rowNum] = stepParameters;
-
-	no_changes = false;
-	event.Skip();
-}
-
-void cMain::OnTemplateDeleteStepClicked(wxCommandEvent& event)
-{
-	if (wxMessageBox("Are you sure you want to delete this template step?", "Delete template step", wxICON_QUESTION | wxYES_NO, this) != wxYES)
-	{
-		return;
-	}
-
-	DeleteRow(grid_template, cmb_choose_template, template_map);
-
-	event.Skip();
-}
-
-void cMain::OnTemplateMoveUpClicked(wxCommandEvent& event)
-{
-	TemplateMoveRow(grid_template, cmb_choose_template, true, template_map);
-
-	event.Skip();
-}
-
-void cMain::OnTemplateMoveDownClicked(wxCommandEvent& event)
-{
-	TemplateMoveRow(grid_template, cmb_choose_template, false, template_map);
-
-	event.Skip();
-}
-
-void cMain::OnTemplateGridDoubleLeftClick(wxGridEvent& event)
-{
-	auto gridEntry = ExtractGridEntry(grid_template, event.GetRow());
-
-	UpdateParameters(&gridEntry, event);
-
-	event.Skip();
-}
 
 void cMain::OnApplicationClose(wxCloseEvent& event)
 {
@@ -1575,7 +1240,7 @@ void cMain::Open(std::ifstream * file)
 			cmb_choose_template->Append(template_choices);
 			cmb_choose_template->SetValue(*template_choices.begin());
 			cmb_choose_template->AutoComplete(template_choices);
-			UpdateTemplateGrid(grid_template, template_map[cmb_choose_template->GetValue().ToStdString()]);
+			UpdateTemplateGrid(template_map[cmb_choose_template->GetValue().ToStdString()]);
 		}
 	}
 

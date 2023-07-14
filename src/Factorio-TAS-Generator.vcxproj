@@ -180,6 +180,7 @@
     <ClCompile Include="Structures\StepParameters.cpp" />
     <ClCompile Include="TAS save file\OpenTas.cpp" />
     <ClCompile Include="TAS save file\SaveTas.cpp" />
+    <ClCompile Include="TemplatePage.cpp" />
     <ClCompile Include="TypePanel.cpp" />
     <ClCompile Include="WalkPanel.cpp" />
   </ItemGroup>
