@@ -6,6 +6,7 @@
 #include "Building.h"
 #include "StepType.h"
 #include "Orientation.h"
+#include "Priority.h"
 #include "StepModifiers.h"
 
 using std::string;
@@ -35,8 +36,7 @@ struct StepParameters
 	string FromInto;
 	string Orientation;
 	string Direction;
-	string PriorityIn;
-	string PriorityOut;
+	PriorityStruct priority;
 	string Comment;
 	string Colour;
 

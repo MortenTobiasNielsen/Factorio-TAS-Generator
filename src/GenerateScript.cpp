@@ -298,7 +298,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 				SetBuildingAndOrientation(&steps[i]);
 
-				row_priority(currentStep, x_cord, y_cord, steps[i].PriorityIn, steps[i].PriorityOut, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
+				row_priority(currentStep, x_cord, y_cord, steps[i].priority, direction_to_build, amount_of_buildings, building_size, building, build_orientation, comment);
 				break;
 
 			case e_filter:
@@ -1187,10 +1187,10 @@ void GenerateScript::priority(string step, string action, string x_cord, string 
 	total_steps += 1;
 }
 
-void GenerateScript::row_priority(string step, string x_cord, string y_cord, string priority_in, string priority_out, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment)
+void GenerateScript::row_priority(string step, string x_cord, string y_cord, PriorityStruct _priority, string direction, string number_of_buildings, string building_size, string building, string OrientationEnum, string comment)
 {
-	priority_in = convert_string(priority_in);
-	priority_out = convert_string(priority_out);
+	priority_in = convert_string(Priority::Names[_priority.input]);
+	priority_out = convert_string(Priority::Names[_priority.output]);
 
 	priority(step, "1", x_cord, y_cord, priority_in, priority_out, building, OrientationEnum, comment);
 
