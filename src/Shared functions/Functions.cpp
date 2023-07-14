@@ -180,8 +180,8 @@ void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, Ste
 	{
 		if (stepParameters == buildings[i])
 		{
-			if (stepParameters.Modifiers.find("split") != std::string::npos ||
-				stepParameters.Modifiers.find("skip") != std::string::npos ||
+			if (stepParameters.Modifiers.split ||
+				stepParameters.Modifiers.skip ||
 				Capitalize(stepParameters.Comment) == "Split")
 			{
 				return;
