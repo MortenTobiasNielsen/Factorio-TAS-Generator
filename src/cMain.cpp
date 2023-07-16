@@ -1583,6 +1583,7 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	modifier_skip_checkbox->SetValue(modifiers.find("skip") != std::string::npos);
 	modifier_force_checkbox->SetValue(modifiers.find("force") != std::string::npos);
 	modifier_split_checkbox->SetValue(modifiers.find("split") != std::string::npos);
+	modifier_all_checkbox->SetValue(modifiers.find("all") != std::string::npos);
 
 	StepType step = ToStepType(gridEntry->Step.ToStdString());
 	int parameters = listStepTypeToParameterChoices[step];
@@ -1801,6 +1802,7 @@ StepParameters cMain::ExtractStepParameters()
 		.cancel_others = modifier_cancel_checkbox->IsEnabled() && modifier_cancel_checkbox->GetValue(),
 		.split = modifier_split_checkbox->IsEnabled() && modifier_split_checkbox->GetValue(),
 		.walk_towards = modifier_walk_towards_checkbox->IsEnabled() && modifier_walk_towards_checkbox->GetValue(),
+		.all = modifier_all_checkbox->IsEnabled() && modifier_all_checkbox->GetValue(),
 	};
 
 	stepParameters.StepEnum = MapStepNameToStepType.find(stepParameters.Step)->second;

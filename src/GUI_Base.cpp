@@ -987,6 +987,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	step_modifier_flex->Add( modifier_walk_towards_checkbox, 0, wxALL, 5 );
 
+	modifier_all_checkbox = new wxCheckBox( step_modifier_panel, wxID_ANY, wxT("All"), wxDefaultPosition, wxDefaultSize, 0 );
+	modifier_all_checkbox->Enable( false );
+	modifier_all_checkbox->SetToolTip( wxT("This allows you take all items from the specific inventory. Ignoring item type and amount.") );
+
+	step_modifier_flex->Add( modifier_all_checkbox, 0, wxALL, 5 );
+
 
 	step_modifier_panel_sizer->Add( step_modifier_flex, 1, wxALL|wxEXPAND, 5 );
 

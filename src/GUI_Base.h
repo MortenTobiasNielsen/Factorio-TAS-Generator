@@ -145,6 +145,7 @@ class GUI_Base : public wxFrame
 		wxCheckBox* modifier_cancel_checkbox;
 		wxCheckBox* modifier_split_checkbox;
 		wxCheckBox* modifier_walk_towards_checkbox;
+		wxCheckBox* modifier_all_checkbox;
 		wxPanel* walk_panel;
 		wxSpinCtrlDouble* walk_panel_increment_spin;
 		wxPanel* walk_panel_grid_panel;

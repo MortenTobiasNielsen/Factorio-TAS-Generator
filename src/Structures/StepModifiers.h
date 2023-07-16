@@ -14,7 +14,8 @@ struct StepModifiers
 		force = false,
 		cancel_others = false,
 		split = false,
-		walk_towards = false;
+		walk_towards = false,
+		all = false;
 
 private:
 	static const struct
@@ -25,7 +26,8 @@ private:
 			FORCE = "force",
 			CANCEL_OTHERS = "cancel others",
 			SPLIT = "split",
-			WALK_TOWARDS = "walk towards";
+			WALK_TOWARDS = "walk towards",
+			ALL = "all";
 	} inline StepModifiersLookupString;
 
 	static inline const vector<const string*> StepModifiersLookupStrings = {
@@ -36,6 +38,7 @@ private:
 		& StepModifiersLookupString.CANCEL_OTHERS,
 		& StepModifiersLookupString.SPLIT,
 		& StepModifiersLookupString.WALK_TOWARDS,
+		& StepModifiersLookupString.ALL,
 	};
 
 	inline const vector<bool> ToVector()
@@ -48,6 +51,7 @@ private:
 			cancel_others,
 			split,
 			walk_towards,
+			all,
 		};
 	}
 
@@ -61,6 +65,7 @@ private:
 			&cancel_others,
 			&split,
 			&walk_towards,
+			&all,
 		};
 	}
 
@@ -71,7 +76,7 @@ public:
 	{
 		if (str.empty()) 
 		{ // fast => set everything to false
-			no_order = skip = wait_for = force = cancel_others = split = walk_towards = false;
+			no_order = skip = wait_for = force = cancel_others = split = walk_towards = all = false;
 		}
 		
 		auto data = ToPointerVector();
@@ -103,6 +108,7 @@ public:
 		output += no_order ? " no_order = true," : "";
 		output += wait_for ? " wait_for = true," : "";
 		output += walk_towards ? " walk_towards = true," : "";
+		output += all ? " all = true," : "";
 		/* Rest are not included since they are not relevant in lua
 		//output += skip ? " skip = true," : "";
 		//output += force ? " force = true," : "";

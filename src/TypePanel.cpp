@@ -167,6 +167,7 @@ void cMain::SetupModifiers(StepType type)
 	modifier_cancel_checkbox->Enable(modifier_types.cancel.contains(type));
 	modifier_split_checkbox->Enable(modifier_types.split.contains(type));
 	modifier_walk_towards_checkbox->Enable(modifier_types.walk_towards.contains(type));
+	modifier_all_checkbox->Enable(modifier_types.all.contains(type));
 }
 
 // Finds the current radio button that is choosen, 

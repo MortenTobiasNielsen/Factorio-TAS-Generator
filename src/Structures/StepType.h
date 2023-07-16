@@ -141,6 +141,9 @@ static inline const StepType ToStepType(const string step)
 }
 
 static struct ModifierTypeSets{
+	set<StepType> all{
+		e_take,
+	};
 	set<StepType> walk_towards{
 		e_walk,
 	};
