@@ -457,6 +457,7 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 		.cancel_others = stepParameters.Modifiers.cancel_others,
 		.split = stepParameters.Modifiers.split,
 		.walk_towards = stepParameters.Modifiers.walk_towards,
+		.all = stepParameters.Modifiers.all,
 	};
 }
 

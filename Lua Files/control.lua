@@ -362,6 +362,46 @@ end
 
 -- Place an item into the character's inventory from an entity's inventory
 -- Returns false on failure to prevent advancing step until within reach
+local function take_all()
+
+	if not check_selection_reach() then
+		return false
+	end
+
+	if not check_inventory() then
+		return false;
+	end
+
+	local contents = target_inventory.get_contents()
+	for name, count in pairs(contents or target_inventory) do
+		local item_stack = target_inventory.find_item_stack(name)
+		local durability = 1
+		if item_stack.is_tool then
+			durability = item_stack.durability
+		end
+
+		amount = player.insert{
+			name=name,
+			durability=durability,
+			count=target_inventory.remove{name=name, count=count, durability=durability}
+		}
+
+		local text = string.format("+%d %s (%d)", amount, format_name(name), player.get_item_count(name)) --"+2 Iron plate (5)"
+		local pos = {x = target_inventory.entity_owner.position.x + #text/2 * font_size, y = target_inventory.entity_owner.position.y }
+		player.play_sound{path="utility/inventory_move"}
+		player.create_local_flying_text{
+			text=text,
+			position=pos}
+	end
+	
+
+	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Take: [item=%s]", task[1], task[2], step, item ))
+	return true
+end
+
+
+-- Place an item into the character's inventory from an entity's inventory
+-- Returns false on failure to prevent advancing step until within reach
 local function take()
 
 	if not check_selection_reach() then
@@ -1223,7 +1263,11 @@ local function doStep(current_step)
 		amount = current_step[5]
 		slot = current_step[6]
 
-		return take()
+		if current_step.all then
+			return take_all()
+		else
+			return take()
+		end
 
 	elseif current_step[2] == "put" then
         task_category = "Put"
