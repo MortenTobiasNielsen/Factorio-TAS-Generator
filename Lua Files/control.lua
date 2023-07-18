@@ -1378,12 +1378,14 @@ local function handle_pretick()
 			run = false
 			return
 		elseif (steps[step][2] == "speed") then
-			Comment(steps[step].comment)
-			Debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
-			speed(steps[step][3])
+			if LOGLEVEL < 2 then
+				Comment(steps[step].comment)
+				Debug(string.format("Step: %s, Action: %s, Step: %s - Game speed: %d", steps[step][1][1], steps[step][1][2], step, steps[step][3]))
+				speed(steps[step][3])
+			end
 			step = step + 1
 		elseif steps[step][2] == "save" then
-			queued_save = {name = steps[step][1][1], step = steps[step][3]}
+			queued_save = LOGLEVEL < 2 and {name = steps[step][1][1], step = steps[step][3]} or nil
 			step = step + 1
 		elseif steps[step][2] == "pick" then
 			Comment(steps[step].comment)
@@ -1394,9 +1396,11 @@ local function handle_pretick()
 			player.picking_state = true
 			step = step + 1
 		elseif (steps[step][2] == "pause") then
-			pause()
-			Message("Script paused")
-			Debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+			if LOGLEVEL < 2 then
+				pause()
+				Message("Script paused")
+				Debug(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
+			end
 			change_step(1)
 		elseif(steps[step][2] == "walk" and (walking.walking == false or global.walk_towards_state) and idle < 1) then
 			update_destination_position(steps[step][3][1], steps[step][3][2])
