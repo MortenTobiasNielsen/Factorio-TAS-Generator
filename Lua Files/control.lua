@@ -1034,6 +1034,7 @@ local function recipe()
 		player.insert{name = name, count = count_}
 	end
 
+	player.play_sound{ path = "utility/entity_settings_pasted", }
 	end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Recipe: [recipe=%s]", task[1], task[2], step, item ))
 	return true
 end
