@@ -1007,6 +1007,7 @@ void cMain::OnStepsGridRangeSelect(wxGridRangeSelectEvent& event)
 		sizer_force->Layout();
 		btn_change_step->Disable();
 	}	
+	HandleSplitOrMergeToggle(rows);
 }
 
 void cMain::OnStepColourPickerColourChanged(wxColourPickerEvent& event)
@@ -1029,6 +1030,69 @@ void cMain::OnStepColourPickerColourChanged(wxColourPickerEvent& event)
 		}
 	}
 	event.Skip();
+}
+
+void cMain::HandleSplitOrMergeToggle(wxArrayInt& rows)
+{
+	size_t size = rows.size();
+	if (size == 1)
+	{
+		StepParameters data = StepGridData.at(rows[0]);
+		step_split_multibuild_button->Enable(data.Buildings >= 2);
+	}
+	else
+	{
+		step_split_multibuild_button->Disable();
+	}
+}
+void cMain::OnSplitMultibuildClicked(wxCommandEvent& event)
+{
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	SplitMultibuildStep(rows[0]);
+}
+void cMain::OnSplitMultibuildRightClicked(wxMouseEvent& event)
+{
+	wxArrayInt rows = grid_steps->GetSelectedRows();
+	SplitMultibuildStep(rows[0]);
+}
+void cMain::SplitMultibuildStep(int row)
+{
+	StepParameters data = StepGridData[row];
+	vector<StepParameters> new_rows;
+	const int buildings = data.Buildings - 1;
+	data.Buildings = 1;
+	StepGridData[row].Buildings = 1;
+	new_rows.reserve(buildings);
+
+	for (int i = 0; i < buildings; i++)
+	{
+		data.Next();
+		data.OriginalX = data.X;
+		data.OriginalY = data.Y;
+		new_rows.push_back(data);
+	}
+
+	StepGridData.insert(StepGridData.begin() + row + 1, new_rows.begin(), new_rows.end());
+
+	grid_steps->InsertRows(row + 1, buildings);
+	for (int i = row; i < row + buildings + 1; i++)
+	{
+		GridEntry gridEntry = PrepareStepParametersForGrid(&StepGridData[i]);
+
+		PopulateGrid(grid_steps, i, &gridEntry);
+
+		BackgroundColorUpdate(grid_steps, i, StepGridData[i].StepEnum);
+
+		if (StepGridData[i].Colour != "")
+		{
+			wxColour colour = wxColour(StepGridData[i].Colour);
+			grid_steps->SetCellBackgroundColour(i, 1, colour);
+			grid_steps->SetCellBackgroundColour(i, 2, colour);
+			grid_steps->SetCellBackgroundColour(i, 3, colour);
+		}
+
+		grid_steps->SelectRow(i, true);
+	}
 }
 
 void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
