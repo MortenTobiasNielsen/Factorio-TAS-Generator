@@ -153,8 +153,10 @@ void cMain::OnTemplateAddStepClicked(wxCommandEvent& event)
 	PopulateGrid(grid_template, row, &gridEntry);
 	BackgroundColorUpdate(grid_template, row, stepParameters.StepEnum);
 
-	vector<StepParameters> list = template_map.find(cmb_choose_template->GetValue().ToStdString())->second;
+	string key = cmb_choose_template->GetValue().ToStdString();
+	vector<StepParameters> list = template_map[key]; 
 	list.insert(list.begin() + row, stepParameters);
+	template_map[key] = list;
 
 	no_changes = false;
 }
