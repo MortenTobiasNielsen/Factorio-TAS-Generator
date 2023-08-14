@@ -30,7 +30,7 @@ void cMain::UpdateTemplateGrid(vector<StepParameters>& steps)
 	{
 		GridEntry gridEntry = PrepareStepParametersForGrid(&steps[i]);
 		PopulateGrid(grid_template, i, &gridEntry);
-		BackgroundColorUpdate(grid_template, i, steps[i].StepEnum);
+		BackgroundColorUpdate(grid_template, i, steps[i].type);
 	}
 }
 
@@ -151,7 +151,7 @@ void cMain::OnTemplateAddStepClicked(wxCommandEvent& event)
 	grid_template->InsertRows(row);
 	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
 	PopulateGrid(grid_template, row, &gridEntry);
-	BackgroundColorUpdate(grid_template, row, stepParameters.StepEnum);
+	BackgroundColorUpdate(grid_template, row, stepParameters.type);
 
 	string key = cmb_choose_template->GetValue().ToStdString();
 	vector<StepParameters> list = template_map[key]; 

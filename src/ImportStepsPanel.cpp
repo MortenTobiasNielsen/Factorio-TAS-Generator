@@ -67,7 +67,6 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		int size = segments.size();
 		if (size < 1) continue;
 		
-		step.Step = Capitalize(segments[0]);
 		step.OriginalX = step.X = size >= 1 && segments[1] != "" ? stod(segments[1]) : 0;
 		step.OriginalY = step.Y = size >= 2 && segments[2] != "" ? stod(segments[2]) : 0;
 		step.Amount = size >= 3 && segments[3] != "" ? segments[3] == "All" ? "All" : to_string(stoi(segments[3])) : "";
@@ -79,21 +78,17 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		step.Comment = size >= 9 ? segments[9] : "";
 		step.Colour = size >= 10 ? segments[10] : "";
 
-		if (step.Step == "Start")
+		try
 		{
-			continue; // Ignore start steps, given that they are obsolete.
+			step.type = ToStepType(segments[0]);
 		}
-
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
+		catch (...)
 		{
-			wxMessageBox("It was not possible to read line [" + std::to_string(counter) + "] as the command token [" + step.Step + "] doesn't match any commands", "Text import conversion error");
+			wxMessageBox("It was not possible to read line [" + std::to_string(counter) + "] as the command token [" + segments[0] + "] doesn't match any commands", "Text import conversion error");
 			return false;
 		}
 
-		step.StepEnum = mappedtype->second;
-
-		switch (step.StepEnum )
+		switch (step.type )
 		{
 			[[likely]] case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
@@ -242,7 +237,7 @@ void cMain::OnImportStepsIntoStepsBtnClick(wxCommandEvent& event)
 
 		PopulateGrid(grid_steps, start + i, &gridEntry);
 
-		BackgroundColorUpdate(grid_steps, start + i, step_parameters[i].StepEnum);
+		BackgroundColorUpdate(grid_steps, start + i, step_parameters[i].type);
 
 		if (step_parameters[i].Colour != "")
 		{

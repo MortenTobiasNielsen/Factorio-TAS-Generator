@@ -23,7 +23,7 @@ void cMain::SetupWalkPanelUnicodeCharacters()
 int cMain::AddWalkScanStartRow()
 {
 	for (int i = StepGridData.size() - 1; i >= 0; i--)
-		if (!control_types.contains(StepGridData[i].StepEnum))
+		if (!control_types.contains(StepGridData[i].type))
 			return i;
 		
 	return 0;
@@ -31,7 +31,7 @@ int cMain::AddWalkScanStartRow()
 pair<double, double> cMain::AddWalkScanCurrentPosition()
 {
 	for (int i = StepGridData.size() - 1; i >= 0; i--)
-		if (StepGridData[i].StepEnum == e_walk)
+		if (StepGridData[i].type == e_walk)
 			return pair<double, double> {StepGridData[i].X, StepGridData[i].Y};
 	
 	return pair<double, double>{0, 0};
@@ -44,7 +44,7 @@ void cMain::CreateWalkStep(int x_modifier, int y_modifier)
 	auto increment = walk_panel_increment_spin->GetValue();
 
 	auto step = StepParameters(x + increment * x_modifier, y + increment * y_modifier);
-	step.StepEnum = e_walk; step.Step = StepNames[e_walk];
+	step.type = e_walk;
 	stack.Push({
 		.row = row,
 		.type = T_ADD,

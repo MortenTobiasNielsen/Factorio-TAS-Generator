@@ -168,14 +168,14 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			wxYield();
 		}
 
-		if (steps[i].StepEnum == e_stop)
+		if (steps[i].type == e_stop)
 		{
 			break;
 		}
 
 		TransferParameters(steps[i]);
 		if (modifiers.skip) continue;
-		switch (steps[i].StepEnum)
+		switch (steps[i].type)
 		{
 			case e_game_speed:
 				speed(currentStep, amount, comment);
