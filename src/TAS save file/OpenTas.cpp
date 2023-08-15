@@ -214,7 +214,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.inventory = GetInventoryType(step.Orientation);
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -345,7 +345,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.inventory = GetInventoryType(step.Orientation);
 				break;
 			default:
 				break;
@@ -471,7 +471,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.inventory = GetInventoryType(step.Orientation);
 				break;
 			default:
 				break;

@@ -120,7 +120,7 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 			case e_limit: [[fallthrough]];
 			[[likely]] case e_put: [[fallthrough]];
 			[[likely]] case e_take:
-				step.FromInto = step.Orientation;
+				step.inventory = GetInventoryType(step.Orientation);
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;

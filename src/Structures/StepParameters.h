@@ -9,6 +9,8 @@
 #include "Priority.h"
 #include "StepModifiers.h"
 
+#include "../Data/Inventory.h"
+
 using std::string;
 using std::ofstream;
 using std::to_string;
@@ -29,10 +31,10 @@ struct StepParameters
 
 	Orientation OrientationEnum;
 	StepType type;
+	InventoryType inventory = Wreck;
 
 	string Amount;
 	string Item;
-	string FromInto;
 	string Orientation;
 	string Direction;
 	PriorityStruct priority;

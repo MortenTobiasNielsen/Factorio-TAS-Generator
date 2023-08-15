@@ -234,7 +234,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_take:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
+				from_into = GetInventoryTypeForEntity(steps[i].inventory, building);
 
 				if (from_into == "Not Found")
 				{
@@ -248,7 +248,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_put:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
+				from_into = GetInventoryTypeForEntity(steps[i].inventory, building);
 
 				if (from_into == "Not Found")
 				{
@@ -277,7 +277,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_limit:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
+				from_into = GetInventoryTypeForEntity(steps[i].inventory, building);
 
 				if (from_into == "Not Found")
 				{
@@ -428,7 +428,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 {
-	if (step->FromInto == inventory_types.wreck)
+	if (step->inventory == Wreck)
 	{
 		building = inventory_types.wreck;
 		return;

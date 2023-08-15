@@ -15,4 +15,10 @@ struct GridEntry
 	wxString BuildingSize;
 	wxString AmountOfBuildings;
 	wxString Comment;
+	
+	//Alias'es'
+	wxString& Recipe{Item}; // Item alias
+	wxString& Technology{Item}; //Item alias
+	wxString& Inventory{BuildingOrientation}; //Orientation alias
+	wxString& Priority{BuildingOrientation}; //Orientation alias
 };

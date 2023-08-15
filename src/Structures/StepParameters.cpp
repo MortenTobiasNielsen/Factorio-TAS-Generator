@@ -1,5 +1,7 @@
 #include "StepParameters.h"
 
+#include "../Data/BuildingNames.h"
+
 StepParameters::StepParameters(double InitialX, double InitialY)
 {
 	X = InitialX;
@@ -91,7 +93,7 @@ string StepParameters::ToString()
 
 		[[likely]] case e_put:
 		[[likely]] case e_take:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + FromInto + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + GetInventoryTypeForEntity(inventory, FindBuildingName(BuildingIndex)) + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_launch:
 		[[likely]] case e_walk:
