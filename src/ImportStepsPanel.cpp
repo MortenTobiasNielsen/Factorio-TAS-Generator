@@ -76,7 +76,7 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		step.Size = size >= 7 && segments[7] != "" ? stoi(segments[7]) : 1;
 		step.Buildings = size >= 8 && segments[8] != "" ? stoi(segments[8]) : 1;
 		step.Comment = size >= 9 ? segments[9] : "";
-		step.Colour = size >= 10 ? segments[10] : "";
+		step.colour = size >= 10 && segments[10] != "" ? wxColour(segments[10]) : wxNullColour;
 
 		try
 		{
@@ -239,9 +239,9 @@ void cMain::OnImportStepsIntoStepsBtnClick(wxCommandEvent& event)
 
 		BackgroundColorUpdate(grid_steps, start + i, step_parameters[i].type);
 
-		if (step_parameters[i].Colour != "")
+		if (step_parameters[i].colour != wxNullColour)
 		{
-			wxColour colour = wxColour(step_parameters[i].Colour);
+			wxColour colour = step_parameters[i].colour;
 			grid_steps->SetCellBackgroundColour(start + i, 1, colour);
 			grid_steps->SetCellBackgroundColour(start + i, 2, colour);
 			grid_steps->SetCellBackgroundColour(start + i, 3, colour);

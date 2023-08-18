@@ -1,5 +1,7 @@
 #pragma once
 
+#include <wx/colour.h>
+
 #include <string>
 #include <fstream>
 
@@ -40,7 +42,7 @@ struct StepParameters
 	string Direction;
 	PriorityStruct priority;
 	string Comment;
-	string Colour;
+	wxColour colour;
 
 	void Reset();
 	void Next();

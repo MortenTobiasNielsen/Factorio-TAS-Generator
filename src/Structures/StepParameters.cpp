@@ -45,7 +45,7 @@ void StepParameters::Next()
 
 string StepParameters::ToString()
 {
-	const string string_end = ";" + Comment + ";" + Colour + ";" + Modifiers.ToString() + ";";
+	const string string_end = ";" + Comment + ";" + colour.GetAsString().ToStdString() + ";" + Modifiers.ToString() + ";";
 	const string steptype = StepNames[type];
 	switch (type)
 	{

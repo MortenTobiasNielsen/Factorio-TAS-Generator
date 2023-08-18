@@ -336,9 +336,9 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 
 			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
 
-			if (StepGridData[row].Colour != "")
+			if (StepGridData[row].colour != wxNullColour)
 			{
-				wxColour colour = wxColour(StepGridData[row].Colour);
+				wxColour colour = StepGridData[row].colour;
 				grid->SetCellBackgroundColour(moveTo, 1, colour);
 				grid->SetCellBackgroundColour(moveTo, 2, colour);
 				grid->SetCellBackgroundColour(moveTo, 3, colour);
@@ -375,9 +375,9 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 
 			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
 			
-			if (StepGridData[row].Colour != "")
+			if (StepGridData[row].colour != wxNullColour)
 			{
-				wxColour colour = wxColour(StepGridData[row].Colour);
+				wxColour colour = StepGridData[row].colour;
 				grid->SetCellBackgroundColour(moveTo, 1, colour);
 				grid->SetCellBackgroundColour(moveTo, 2, colour);
 				grid->SetCellBackgroundColour(moveTo, 3, colour);
@@ -1021,7 +1021,7 @@ void cMain::OnStepColourPickerColourChanged(wxColourPickerEvent& event)
 	{
 		for (int row = block.GetTopRow(); row <= block.GetBottomRow(); row++)
 		{
-			StepGridData.at(row).Colour = colour.GetAsString();
+			StepGridData.at(row).colour = colour;
 			grid_steps->SetCellBackgroundColour(row, 1, colour);
 			grid_steps->SetCellBackgroundColour(row, 2, colour);
 			grid_steps->SetCellBackgroundColour(row, 3, colour);
@@ -1081,9 +1081,9 @@ void cMain::SplitMultibuildStep(int row)
 
 		BackgroundColorUpdate(grid_steps, i, StepGridData[i].type);
 
-		if (StepGridData[i].Colour != "")
+		if (StepGridData[i].colour != wxNullColour)
 		{
-			wxColour colour = wxColour(StepGridData[i].Colour);
+			wxColour colour = StepGridData[i].colour;
 			grid_steps->SetCellBackgroundColour(i, 1, colour);
 			grid_steps->SetCellBackgroundColour(i, 2, colour);
 			grid_steps->SetCellBackgroundColour(i, 3, colour);
@@ -1412,9 +1412,9 @@ void cMain::PopulateStepGrid()
 
 		BackgroundColorUpdate(grid_steps, i, StepGridData[i].type);
 
-		if (StepGridData[i].Colour != "")
+		if (StepGridData[i].colour != wxNullColour)
 		{
-			wxColour colour = wxColour(StepGridData[i].Colour);
+			wxColour colour = StepGridData[i].colour;
 			grid_steps->SetCellBackgroundColour(i, 1, colour);
 			grid_steps->SetCellBackgroundColour(i, 2, colour);
 			grid_steps->SetCellBackgroundColour(i, 3, colour);
