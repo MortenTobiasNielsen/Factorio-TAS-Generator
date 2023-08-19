@@ -211,8 +211,13 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				}
 
 				SetBuildingAndOrientation(&steps[i]);
+				if (building == "N/A")
+				{
+					UnexpectedError(dialog_progress_bar, i);
+					return;
+				}
 
-				row_rotate(currentStep, x_cord, y_cord, amount, item, build_orientation, direction_to_build, amount_of_buildings, building_size, comment);
+				row_rotate(currentStep, x_cord, y_cord, amount, building, build_orientation, direction_to_build, amount_of_buildings, building_size, comment);
 				break;
 
 			case e_craft:
@@ -953,7 +958,6 @@ void GenerateScript::_throw(string step, string x_cord, string y_cord, string it
 
 void GenerateScript::rotate(string step, string action, string x_cord, string y_cord, string times, string item, string OrientationEnum, string comment)
 {
-
 	check_interact_distance(step, action, x_cord, y_cord, item, OrientationEnum);
 
 	if (std::stoi(times) == 3)
