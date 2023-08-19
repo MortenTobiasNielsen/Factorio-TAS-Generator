@@ -64,30 +64,30 @@ string StepParameters::ToString()
 			return steptype + ";" + ";" + ";" + Amount + ";" + ";" + ";" + ";" + ";" + string_end;
 
 		case e_build:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_craft:
 			return steptype + ";" + ";" + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		case e_recipe:
 		case e_filter:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_limit:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_rotate:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_mine:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		case e_priority:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + priority.ToString() + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + priority.ToString() + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		[[likely]] case e_put:
 		[[likely]] case e_take:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + inventory_types_list[inventory] + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + inventory_types_list[inventory] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_launch:
 		[[likely]] case e_walk:
@@ -97,7 +97,7 @@ string StepParameters::ToString()
 			return steptype + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		case e_drop:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + Orientation + ";" + ";" + ";" + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + ";" + ";" + string_end;
 
 		case e_shoot:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + ";" + ";" + ";" + string_end;
@@ -105,7 +105,7 @@ string StepParameters::ToString()
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		default:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + Orientation + ";" + Direction + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 	}
 }
 

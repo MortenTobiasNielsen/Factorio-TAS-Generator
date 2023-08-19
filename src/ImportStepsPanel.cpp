@@ -71,8 +71,8 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		step.OriginalY = step.Y = size >= 2 && segments[2] != "" ? stod(segments[2]) : 0;
 		step.Amount = size >= 3 && segments[3] != "" ? segments[3] == "All" ? "All" : to_string(stoi(segments[3])) : "";
 		step.Item = size >= 4 && segments[4] != "" ? Capitalize(segments[4], true) : "";
-		step.Orientation = size >= 5 && segments[5] != "" ? Capitalize(segments[5]) : "";
-		step.Direction = size >= 6 && segments[6] != "" ? Capitalize(segments[6]) : "";
+		step.orientation = size >= 5 && segments[5] != "" ? Capitalize(segments[5]) : "";
+		step.Direction = MapStringToOrientation(size >= 6 ? segments[6] : "");
 		step.Size = size >= 7 && segments[7] != "" ? stoi(segments[7]) : 1;
 		step.Buildings = size >= 8 && segments[8] != "" ? stoi(segments[8]) : 1;
 		step.Comment = size >= 9 ? segments[9] : "";
@@ -92,7 +92,7 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 		{
 			[[likely]] case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation(step.orientation);
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -102,8 +102,8 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 				break;
 
 			case e_priority:
-				step.priority.FromString(step.Orientation);
-				step.Orientation = "";
+				step.priority.FromString(step.orientation);
+				step.orientation = "";
 
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
@@ -120,7 +120,7 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 			case e_limit: [[fallthrough]];
 			[[likely]] case e_put: [[fallthrough]];
 			[[likely]] case e_take:
-				step.inventory = GetInventoryType(step.Orientation);
+				step.inventory = GetInventoryType(step.orientation);
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;

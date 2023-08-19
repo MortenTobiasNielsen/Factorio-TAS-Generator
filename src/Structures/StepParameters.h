@@ -38,8 +38,8 @@ struct StepParameters
 
 	string Amount;
 	string Item;
-	string Orientation;
-	string Direction;
+	string orientation;
+	Orientation Direction = North;
 	PriorityStruct priority;
 	string Comment;
 	wxColour colour;
