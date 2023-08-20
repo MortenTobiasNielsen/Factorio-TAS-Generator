@@ -18,28 +18,20 @@ void StepParameters::Reset()
 
 void StepParameters::Next()
 {
-	if (Direction == orientation_list[North])
+	switch (Direction)
 	{
-		Y -= Size;
-		return;
-	}
-
-	if (Direction == orientation_list[South])
-	{
-		Y += Size;
-		return;
-	}
-
-	if (Direction == orientation_list[East])
-	{
-		X += Size;
-		return;
-	}
-
-	if (Direction == orientation_list[West])
-	{
-		X -= Size;
-		return;
+		case North: 
+			Y -= Size; 
+			break;
+		case South: 
+			Y += Size; 
+			break;
+		case East: 
+			X += Size; 
+			break;
+		case West: 
+			X -= Size; 
+			break;
 	}
 }
 
@@ -143,7 +135,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 	if (toCompare.X == X)
 	{
-		if (toCompare.Direction == orientation_list[South])
+		if (toCompare.Direction == South)
 		{
 			if (toCompare.Y > Y)
 			{
@@ -159,7 +151,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 			}
 		}
 
-		if (toCompare.Direction == orientation_list[North])
+		if (toCompare.Direction == North)
 		{
 			if (toCompare.Y < Y)
 			{
@@ -178,7 +170,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 
 	if (toCompare.Y == Y)
 	{
-		if (toCompare.Direction == orientation_list[East])
+		if (toCompare.Direction == East)
 		{
 			if (toCompare.X > X)
 			{
@@ -194,7 +186,7 @@ bool StepParameters::operator==(const StepParameters& toCompare)
 			}
 		}
 
-		if (toCompare.Direction == orientation_list[West])
+		if (toCompare.Direction == West)
 		{
 			if (toCompare.X < X)
 			{
