@@ -3,7 +3,6 @@
 #include <wx/colour.h>
 
 #include <string>
-#include <fstream>
 
 #include "Building.h"
 #include "StepType.h"
@@ -14,7 +13,6 @@
 #include "../Data/Inventory.h"
 
 using std::string;
-using std::ofstream;
 using std::to_string;
 
 struct StepParameters
