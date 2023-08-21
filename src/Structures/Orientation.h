@@ -4,6 +4,8 @@
 #include <map>
 #include <string>
 
+#include "../Shared functions/StringFunctions.h"
+
 /*
 Orientation and Direction is the same type, but different fields.
 	Orientation is used for the direction a building is facing
@@ -49,10 +51,28 @@ enum Orientation
 	West,
 };
 
-static inline std::map<std::string, Orientation> MapStringToOrientation
+static inline std::map<std::string, Orientation> string_to_orientation
 {
 	{orientation_list[North], North},
 	{orientation_list[East], East},
 	{orientation_list[South], South},
-	{orientation_list[West], West}
+	{orientation_list[West], West},
+
+	{to_lower(orientation_list[North]), North},
+	{to_lower(orientation_list[East]), East},
+	{to_lower(orientation_list[South]), South},
+	{to_lower(orientation_list[West]), West},
 };
+
+// Returns the Orientation that matches the string, defaults to North
+Orientation static MapStringToOrientation(const std::string str)
+{
+	auto mapped = string_to_orientation.find(str);
+	return mapped != string_to_orientation.end() ? mapped->second : North;
+}
+
+// Returns the Orientation that matches the string, defaults to North
+Orientation static MapStringToOrientation(const wxString str)
+{
+	return MapStringToOrientation(str.ToStdString());
+}

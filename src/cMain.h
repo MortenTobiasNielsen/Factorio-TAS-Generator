@@ -306,8 +306,9 @@ private:
 	void setup_paramters(const int parameters);
 	void SetupModifiers(StepType type);
 
+	void UpdateParametersChangeType(wxCommandEvent& event, StepType step);
 	void UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool changeType = true);
-
+	
 	bool Save(string filename, bool save_as, bool set_last_location = true);
 	bool AutoSave();
 	bool SaveFile(bool save_as);

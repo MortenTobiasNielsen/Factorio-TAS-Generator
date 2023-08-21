@@ -30,7 +30,7 @@ void cMain::UpdateTemplateGrid(vector<StepParameters>& steps)
 	{
 		GridEntry gridEntry = PrepareStepParametersForGrid(&steps[i]);
 		PopulateGrid(grid_template, i, &gridEntry);
-		BackgroundColorUpdate(grid_template, i, steps[i].StepEnum);
+		BackgroundColorUpdate(grid_template, i, steps[i].type);
 	}
 }
 
@@ -151,7 +151,7 @@ void cMain::OnTemplateAddStepClicked(wxCommandEvent& event)
 	grid_template->InsertRows(row);
 	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
 	PopulateGrid(grid_template, row, &gridEntry);
-	BackgroundColorUpdate(grid_template, row, stepParameters.StepEnum);
+	BackgroundColorUpdate(grid_template, row, stepParameters.type);
 
 	string key = cmb_choose_template->GetValue().ToStdString();
 	vector<StepParameters> list = template_map[key]; 
@@ -379,12 +379,11 @@ void cMain::TemplateAlterStep(StepParameters& step, const int direction, int x_o
 			+ amount_off
 		);
 	}
-	auto orientation = MapStringToOrientation.find(step.Orientation);
-	auto build_direction = MapStringToOrientation.find(step.Direction);
-	if (orientation != MapStringToOrientation.end())
-		step.Orientation = orientation_list[tranform(orientation->second, (template_direction_choice)direction)];
-	if (build_direction != MapStringToOrientation.end())
-		step.Direction = orientation_list[tranform(build_direction->second, (template_direction_choice)direction)];
+	auto orientation = string_to_orientation.find(step.orientation);
+	if (orientation != string_to_orientation.end())
+		step.orientation = orientation_list[tranform(orientation->second, (template_direction_choice)direction)];
+	
+	step.Direction = tranform(step.Direction, (template_direction_choice)direction);
 
 	if (step.X == invalidX) return;
 	

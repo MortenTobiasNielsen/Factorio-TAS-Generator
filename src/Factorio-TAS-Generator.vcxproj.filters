@@ -3,21 +3,9 @@
   <ItemGroup>
     <ClCompile Include="cApp.cpp" />
     <ClCompile Include="cMain.cpp" />
-    <ClCompile Include="Functions.cpp" />
     <ClCompile Include="GenerateScript.cpp" />
     <ClCompile Include="GUI_Base.cpp" />
-    <ClCompile Include="OpenTas.cpp" />
-    <ClCompile Include="SaveTas.cpp" />
     <ClCompile Include="TypePanel.cpp" />
-    <ClCompile Include="BuildingNameToIndex.cpp">
-      <Filter>Maps</Filter>
-    </ClCompile>
-    <ClCompile Include="StepParameters.cpp">
-      <Filter>Structs</Filter>
-    </ClCompile>
-    <ClCompile Include="StepNameToEnum.cpp">
-      <Filter>Maps</Filter>
-    </ClCompile>
     <ClCompile Include="DialogProgressBar.cpp" />
     <ClCompile Include="SearchUtil.cpp">
       <Filter>Structs</Filter>
@@ -26,39 +14,26 @@
     <ClCompile Include="ImportStepsPanel.cpp" />
     <ClCompile Include="CommandStack.cpp" />
     <ClCompile Include="SteptypeColour.cpp" />
+    <ClCompile Include="Shared functions\Functions.cpp" />
+    <ClCompile Include="Structures\StepParameters.cpp" />
+    <ClCompile Include="TAS save file\OpenTas.cpp" />
+    <ClCompile Include="TAS save file\SaveTas.cpp" />
+    <ClCompile Include="TemplatePage.cpp" />
+    <ClCompile Include="WalkPanel.cpp" />
+    <ClCompile Include="Shared functions\StringFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
     <ClInclude Include="cMain.h" />
-    <ClInclude Include="Functions.h" />
     <ClInclude Include="GenerateScript.h" />
     <ClInclude Include="GUI_Base.h" />
-    <ClInclude Include="OpenTas.h" />
-    <ClInclude Include="SaveTas.h" />
     <ClInclude Include="DialogProgressBar.h" />
     <ClInclude Include="TypePanel.h" />
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="StepParameters.h">
-      <Filter>Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="GridEntry.h">
-      <Filter>Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="Building.h">
-      <Filter>Structs</Filter>
-    </ClInclude>
-    <ClInclude Include="BuildingNameToIndex.h">
-      <Filter>Maps</Filter>
-    </ClInclude>
-    <ClInclude Include="StepNameToEnum.h">
-      <Filter>Maps</Filter>
-    </ClInclude>
     <ClInclude Include="SearchUtil.h">
       <Filter>Structs</Filter>
     </ClInclude>
     <ClInclude Include="ShortcutChanger.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="ParameterChoices.h" />
     <ClInclude Include="ImportStepsPanel.h" />
     <ClInclude Include="nlohmann\json.hpp">
       <Filter>misc</Filter>
@@ -66,12 +41,24 @@
     <ClInclude Include="resource.h">
       <Filter>misc</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory.h" />
-    <ClInclude Include="Orientation.h" />
-    <ClInclude Include="Priority.h" />
-    <ClInclude Include="TasFileConstants.h" />
     <ClInclude Include="CommandStack.h" />
     <ClInclude Include="SteptypeColour.h" />
+    <ClInclude Include="Data\BuildingNames.h" />
+    <ClInclude Include="Data\Inventory.h" />
+    <ClInclude Include="Data\utils.h" />
+    <ClInclude Include="Shared functions\Functions.h" />
+    <ClInclude Include="Structures\Building.h" />
+    <ClInclude Include="Structures\GridEntry.h" />
+    <ClInclude Include="Structures\Orientation.h" />
+    <ClInclude Include="Structures\ParameterChoices.h" />
+    <ClInclude Include="Structures\Priority.h" />
+    <ClInclude Include="Structures\StepModifiers.h" />
+    <ClInclude Include="Structures\StepParameters.h" />
+    <ClInclude Include="Structures\StepType.h" />
+    <ClInclude Include="TAS save file\OpenTas.h" />
+    <ClInclude Include="TAS save file\SaveTas.h" />
+    <ClInclude Include="TAS save file\TasFileConstants.h" />
+    <ClInclude Include="Shared functions\StringFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Lua Files\control.lua">
@@ -83,6 +70,7 @@
     <CopyFileToFolders Include="..\Lua Files\settings.lua">
       <Filter>lua</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\goals.lua" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Structs">
@@ -112,8 +100,5 @@
     <ResourceCompile Include="Factorio-TAS-Generator.rc">
       <Filter>misc</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Lua Files\goals.lua" />
   </ItemGroup>
 </Project>

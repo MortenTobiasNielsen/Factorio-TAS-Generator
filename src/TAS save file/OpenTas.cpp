@@ -162,35 +162,31 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			step.OriginalY = step.Y;
 		}
 
-		step.Step = Capitalize(segments[0]);
 		step.Amount = Capitalize(segments[3]);
 		step.Item = Capitalize(segments[4], true);
-		step.Orientation = Capitalize(segments[5]);
-		step.Direction = Capitalize(segments[6]);
+		step.orientation = Capitalize(segments[5]);
+		step.Direction = MapStringToOrientation(segments[6]);
 		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
 		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
 		step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? segments[9] : "";
-		step.Colour = segment_size == step_segment_size ? segments[10] : "";
+		step.colour = segment_size == step_segment_size && segments[10] != "" ? wxColour(segments[10]) : wxNullColour;
 		step.Modifiers.FromString(segment_size == step_segment_size ? segments[11] : "");
-		
-		if (step.Step == "Start")
+
+		try
 		{
-			continue; // Ignore start steps, given that they are obsolete.
+			step.type = ToStepType(segments[0]);
+		}
+		catch (...)
+		{
+			if (segments[0] == "Start" || segments[0] == "start") continue; // Ignore start steps, given that they are obsolete.
+			else return Invalid;
 		}
 
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
-		{
-			return Invalid;
-		}
-
-		step.StepEnum = mappedtype->second;
-
-		switch (step.StepEnum)
+		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation(step.orientation);
 
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -200,8 +196,8 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				break;
 
 			case e_priority:
-				step.priority.FromString(step.Orientation);
-				step.Orientation = "";
+				step.priority.FromString(step.orientation);
+				step.orientation = "";
 
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
@@ -218,7 +214,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.inventory = GetInventoryType(step.orientation);
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -318,42 +314,38 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Step = Capitalize(segments[1]);
 		step.Amount = Capitalize(segments[4]);
 		step.Item = Capitalize(segments[5], true);
-		step.Orientation = Capitalize(segments[6]);
-		step.Direction = Capitalize(segments[7]);
+		step.orientation = Capitalize(segments[6]);
+		step.Direction = MapStringToOrientation(segments[7]);
 		step.Comment = comment;
 
-		if (step.Step == "Start")
+		try
 		{
-			continue; // Ignore start steps, given that they are obsolete.
+			step.type = ToStepType(segments[1]);
+		}
+		catch (...)
+		{
+			if (segments[1] == "Start" || segments[1] == "start") continue; // Ignore start steps, given that they are obsolete.
+			else return Invalid;
 		}
 
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
-		{
-			return false;
-		}
-
-		step.StepEnum = mappedtype->second;
-
-		switch (step.StepEnum)
+		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation(step.orientation);
 				break;
 
 			case e_priority:
-				step.priority.FromString(step.Orientation);
-				step.Orientation = "";
+				step.priority.FromString(step.orientation);
+				step.orientation = "";
 				break;
 
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.inventory = GetInventoryType(step.orientation);
 				break;
 			default:
 				break;
@@ -447,42 +439,39 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Step = Capitalize(segments[1]);
+		
 		step.Amount = Capitalize(segments[4]);
 		step.Item = Capitalize(segments[5], true);
-		step.Orientation = Capitalize(segments[6]);
-		step.Direction = Capitalize(segments[7]);
+		step.orientation = Capitalize(segments[6]);
+		step.Direction = MapStringToOrientation(segments[7]);
 		step.Comment = comment;
 
-		if (step.Step == "Start")
+		try
 		{
-			continue; // Ignore start steps, given that they are obsolete.
+			step.type = ToStepType(segments[1]);
+		}
+		catch (...)
+		{
+			if (segments[1] == "Start" || segments[1] == "start") continue; // Ignore start steps, given that they are obsolete.
+			else return Invalid;
 		}
 
-		auto mappedtype = MapStepNameToStepType.find(step.Step);
-		if (mappedtype == MapStepNameToStepType.end())
-		{
-			return false;
-		}
-
-		step.StepEnum = mappedtype->second;
-
-		switch (step.StepEnum)
+		switch (step.type)
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation[step.Orientation];
+				step.OrientationEnum = MapStringToOrientation(step.orientation);
 				break;
 
 			case e_priority:
-				step.priority.FromString(step.Orientation);
-				step.Orientation = "";
+				step.priority.FromString(step.orientation);
+				step.orientation = "";
 				break;
 
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.FromInto = step.Orientation;
+				step.inventory = GetInventoryType(step.orientation);
 				break;
 			default:
 				break;

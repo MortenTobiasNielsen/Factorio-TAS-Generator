@@ -1,7 +1,8 @@
 #pragma once
 
+#include <wx/colour.h>
+
 #include <string>
-#include <fstream>
 
 #include "Building.h"
 #include "StepType.h"
@@ -9,8 +10,9 @@
 #include "Priority.h"
 #include "StepModifiers.h"
 
+#include "../Data/Inventory.h"
+
 using std::string;
-using std::ofstream;
 using std::to_string;
 
 struct StepParameters
@@ -21,24 +23,24 @@ struct StepParameters
 	double Y;
 	double OriginalX;
 	double OriginalY;
-	int Size;
-	int Buildings;
-	int BuildingIndex;
+
+	int Size = 1;
+	int Buildings = 1;
+	int BuildingIndex = 0;
 
 	StepModifiers Modifiers;
 
-	Orientation OrientationEnum;
-	StepType StepEnum;
+	Orientation OrientationEnum = North;
+	StepType type = e_stop;
+	InventoryType inventory = Wreck;
 
-	string Step;
 	string Amount;
 	string Item;
-	string FromInto;
-	string Orientation;
-	string Direction;
+	string orientation;
+	Orientation Direction = North;
 	PriorityStruct priority;
 	string Comment;
-	string Colour;
+	wxColour colour;
 
 	void Reset();
 	void Next();

@@ -172,14 +172,14 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			wxYield();
 		}
 
-		if (steps[i].StepEnum == e_stop)
+		if (steps[i].type == e_stop)
 		{
 			break;
 		}
 
 		TransferParameters(steps[i]);
 		if (modifiers.skip) continue;
-		switch (steps[i].StepEnum)
+		switch (steps[i].type)
 		{
 			case e_game_speed:
 				speed(currentStep, amount, comment);
@@ -243,7 +243,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_take:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
+				from_into = GetInventoryTypeForEntity(steps[i].inventory, building);
 
 				if (from_into == "Not Found")
 				{
@@ -257,7 +257,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_put:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
+				from_into = GetInventoryTypeForEntity(steps[i].inventory, building);
 
 				if (from_into == "Not Found")
 				{
@@ -286,7 +286,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 			case e_limit:
 				SetBuildingAndOrientation(&steps[i]);
 
-				from_into = GetInventoryTypeForEntity(GetInventoryType(steps[i].FromInto), building);
+				from_into = GetInventoryTypeForEntity(steps[i].inventory, building);
 
 				if (from_into == "Not Found")
 				{
@@ -437,7 +437,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 
 void GenerateScript::SetBuildingAndOrientation(StepParameters* step)
 {
-	if (step->FromInto == inventory_types.wreck)
+	if (step->inventory == Wreck)
 	{
 		building = inventory_types.wreck;
 		return;
@@ -453,7 +453,7 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	y_cord = to_string(stepParameters.Y);
 	amount = stepParameters.Amount;
 	item = stepParameters.Item;
-	build_orientation = stepParameters.Orientation;
+	build_orientation = stepParameters.orientation;
 	direction_to_build = stepParameters.Direction;
 	building_size = to_string(stepParameters.Size);
 	amount_of_buildings = to_string(stepParameters.Buildings);
@@ -1027,7 +1027,7 @@ void GenerateScript::build(string step, string action, string x_cord, string y_c
 
 	item = check_item_name(item);
 
-	OrientationEnum = orientation_defines_list[MapStringToOrientation[OrientationEnum]];
+	OrientationEnum = orientation_defines_list[MapStringToOrientation(OrientationEnum)];
 
 	step_list += Step(step, action, "\"build\", {" + x_cord + ", " + y_cord + "}, \"" + item + "\", " + OrientationEnum, comment);
 	total_steps += 1;
