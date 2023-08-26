@@ -29,7 +29,7 @@ class GenerateScript
 {
 public:
 	GenerateScript(wxGrid* grid_steps);
-	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal, log_config logconfig);
+	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal, log_config logconfig, generate_config generateconfig);
 	const std::string currentDateTime(); // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
 
 private:
@@ -70,7 +70,7 @@ private:
 	string EndSteps();
 	void UnexpectedError(DialogProgressBar* dialog_progress_bar, int error_step);
 
-	void AddVariableFile(string& folder_location, string& goal, log_config logconfig);
+	void AddVariableFile(string& folder_location, string& goal, log_config logconfig, generate_config generateconfig);
 	void AddInfoFile(string& folder_location);
 
 	void PaintWarningStateChanged(string step, int counter);

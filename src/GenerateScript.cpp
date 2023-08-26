@@ -64,7 +64,7 @@ inline const char* const bool_to_string(bool b)
 	return b ? "true" : "false";
 }
 
-void GenerateScript::AddVariableFile(string& folder_location, string& goal, log_config logconfig)
+void GenerateScript::AddVariableFile(string& folder_location, string& goal, log_config logconfig, generate_config generateconfig)
 {
 	using std::endl;
 	std::ofstream saver;
@@ -78,6 +78,7 @@ void GenerateScript::AddVariableFile(string& folder_location, string& goal, log_
 	saver << "PRINT_SAVEGAME" << " = " << bool_to_string(logconfig.savegame) << endl;
 	saver << "PRINT_TECH" << " = " << bool_to_string(logconfig.tech) << endl;
 	saver << "PRINT_COMMENT" << " = " << bool_to_string(logconfig.comment) << endl << endl;
+	saver << "LEGACY_MINING" << " = " << bool_to_string(generateconfig.legacy_mining) << endl << endl;
 
 	saver << "local tas_generator = {" << endl;
 	saver << "\t" << "name = \"" << generator_thumbprint.name << "\"," << endl;
@@ -130,7 +131,7 @@ void GenerateScript::PaintWalkStep(string step, bool straight, bool diagonal)
 	grid_steps->SetCellBackgroundColour(row, 10, straight ? "#AFBFBF" : diagonal ? "#BF9FBF" : "#FFFFFF");
 }
 
-void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal, log_config logconfig)
+void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal, log_config logconfig, generate_config generateconfig)
 {
 	this->name = folder_location.substr(folder_location.find_last_of('\\') + 1);
 	reset();
@@ -412,7 +413,7 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	fs::copy_file(pre_fix + "settings.lua", folder_location + "\\settings.lua", fs::copy_options::update_existing);
 	fs::copy_file(pre_fix + "goals.lua", folder_location + "\\goals.lua", fs::copy_options::update_existing);
 
-	AddVariableFile(folder_location, goal, logconfig);
+	AddVariableFile(folder_location, goal, logconfig, generateconfig);
 	AddInfoFile(folder_location);
 
 	std::ofstream saver;

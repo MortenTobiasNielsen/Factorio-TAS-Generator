@@ -48,6 +48,7 @@ struct open_file_return_data
 	bool auto_put_recipe = false;
 
 	log_config logconfig;
+	generate_config generateConfig;
 	WarningsStatesCounters warnings_states_counters;
 };
 
@@ -84,6 +85,7 @@ private:
 	bool extract_script_location(std::ifstream& file);
 	bool extract_auto_close(std::ifstream& file);
 	bool extract_auto_put(std::ifstream& file);
+	bool extract_generate_config(std::ifstream& file);
 	bool extract_log_config(std::ifstream & file);
 
 	bool update_segment(std::ifstream& file);

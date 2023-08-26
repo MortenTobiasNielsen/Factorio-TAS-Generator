@@ -15,12 +15,14 @@
     <ClCompile Include="CommandStack.cpp" />
     <ClCompile Include="SteptypeColour.cpp" />
     <ClCompile Include="Shared functions\Functions.cpp" />
-    <ClCompile Include="Structures\StepParameters.cpp" />
     <ClCompile Include="TAS save file\OpenTas.cpp" />
     <ClCompile Include="TAS save file\SaveTas.cpp" />
     <ClCompile Include="TemplatePage.cpp" />
     <ClCompile Include="WalkPanel.cpp" />
     <ClCompile Include="Shared functions\StringFunctions.cpp" />
+    <ClCompile Include="Structures\StepParameters.cpp">
+      <Filter>Structs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cApp.h" />
@@ -43,22 +45,40 @@
     </ClInclude>
     <ClInclude Include="CommandStack.h" />
     <ClInclude Include="SteptypeColour.h" />
-    <ClInclude Include="Data\BuildingNames.h" />
-    <ClInclude Include="Data\Inventory.h" />
     <ClInclude Include="Data\utils.h" />
     <ClInclude Include="Shared functions\Functions.h" />
-    <ClInclude Include="Structures\Building.h" />
-    <ClInclude Include="Structures\GridEntry.h" />
-    <ClInclude Include="Structures\Orientation.h" />
-    <ClInclude Include="Structures\ParameterChoices.h" />
-    <ClInclude Include="Structures\Priority.h" />
     <ClInclude Include="Structures\StepModifiers.h" />
-    <ClInclude Include="Structures\StepParameters.h" />
-    <ClInclude Include="Structures\StepType.h" />
     <ClInclude Include="TAS save file\OpenTas.h" />
     <ClInclude Include="TAS save file\SaveTas.h" />
     <ClInclude Include="TAS save file\TasFileConstants.h" />
     <ClInclude Include="Shared functions\StringFunctions.h" />
+    <ClInclude Include="Structures\Building.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\BuildingNames.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Structures\Priority.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Structures\ParameterChoices.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Structures\Orientation.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Inventory.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Structures\GridEntry.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Structures\StepParameters.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="Structures\StepType.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Lua Files\control.lua">
@@ -70,7 +90,9 @@
     <CopyFileToFolders Include="..\Lua Files\settings.lua">
       <Filter>lua</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Lua Files\goals.lua" />
+    <CopyFileToFolders Include="..\Lua Files\goals.lua">
+      <Filter>lua</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Structs">

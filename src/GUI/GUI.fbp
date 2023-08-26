@@ -1004,6 +1004,24 @@
                         <event name="OnMenuSelection">OnMenuAutoCloseSaveAsClicked</event>
                     </object>
                 </object>
+                <object class="wxMenu" expanded="1">
+                    <property name="label">Legacy</property>
+                    <property name="name">menu_legacy</property>
+                    <property name="permission">protected</property>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_CHECK</property>
+                        <property name="label">Legacy mining</property>
+                        <property name="name">legacy_mining</property>
+                        <property name="permission">protected</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
+                </object>
             </object>
             <object class="wxPanel" expanded="1">
                 <property name="BottomDockable">0</property>

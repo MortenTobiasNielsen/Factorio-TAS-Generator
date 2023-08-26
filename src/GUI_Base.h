@@ -67,6 +67,8 @@ class GUI_Base : public wxFrame
 		wxMenuItem* logging_tech;
 		wxMenuItem* logging_comment;
 		wxMenu* menu_auto_close;
+		wxMenu* menu_legacy;
+		wxMenuItem* legacy_mining;
 		wxPanel* detail_panel;
 		wxStaticText* label_x_cord;
 		wxSpinCtrlDouble* spin_x;

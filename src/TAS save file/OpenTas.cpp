@@ -72,6 +72,9 @@ open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std
 	if (!extract_log_config(file))
 		return_data.success = false;
 
+	if (!extract_generate_config(file))
+		return_data.success = false;
+
 	return &return_data;
 }
 
@@ -591,6 +594,26 @@ bool OpenTas::extract_auto_put(std::ifstream& file)
 
 	return_data.auto_put_recipe = segments[1] == "true";
 
+	return true;
+}
+
+bool OpenTas::extract_generate_config(std::ifstream& file)
+{
+	if (!update_segment(file)) // logconfig doesn't exist so default
+	{
+		return_data.generateConfig = {
+			.legacy_mining = false,
+		};
+		return true;
+	}
+	else if (segments[0] != generate_indicator)
+	{
+		return false;
+	}
+	size_t s = segments.size();
+	return_data.generateConfig = {
+		.legacy_mining = s < 2 || segments[1] == "1" ? true : false,
+	};
 	return true;
 }
 
