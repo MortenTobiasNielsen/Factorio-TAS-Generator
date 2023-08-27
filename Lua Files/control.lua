@@ -1386,6 +1386,7 @@ local function load_StepBlock()
 	end
 	global.step_block_info = {
 		total_steps = #global.step_block,
+		steps_left = #global.step_block,
 		start_tick = game.tick
 	}
 end
@@ -1399,11 +1400,16 @@ local function execute_StepBlock()
 		if _success then
 			Debug(string.format("Executed %d - Type: %s, Step: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index), true)
 			table.remove(global.step_block, i)
+			if i == 1 then
+				local fast_change_step = _step_index - step
+				change_step(fast_change_step)
+				global.step_block_info.steps_left = global.step_block_info.steps_left - fast_change_step
+			end
 			break
 		end
 	end
 	if #global.step_block < 1 then
-		change_step(global.step_block_info.total_steps)
+		change_step(global.step_block_info.steps_left)
 		global.step_block = nil
 		global.step_block_info = nil
 		Warning = original_warning
