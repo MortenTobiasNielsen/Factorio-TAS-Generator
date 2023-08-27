@@ -298,6 +298,12 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	main_menubar->Append( menu_auto_close, wxT("Auto-close") );
 
+	menu_legacy = new wxMenu();
+	legacy_mining = new wxMenuItem( menu_legacy, wxID_ANY, wxString( wxT("Legacy mining") ) , wxEmptyString, wxITEM_CHECK );
+	menu_legacy->Append( legacy_mining );
+
+	main_menubar->Append( menu_legacy, wxT("Legacy") );
+
 	this->SetMenuBar( main_menubar );
 
 	detail_panel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );

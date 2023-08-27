@@ -1525,7 +1525,7 @@ local function handle_ontick()
 			ticks_mining = ticks_mining + 1
 
 			if ticks_mining >= duration then
-				player.mining_state = {mining = false, position = steps[step][3]}
+				if LEGACY_MINING then player.mining_state = {mining = false, position = steps[step][3]} end
 				change_step(1)
 				step_executed = true
 				mining = 0
@@ -1560,7 +1560,7 @@ local function handle_ontick()
 			ticks_mining = ticks_mining + 1
 
 			if ticks_mining >= duration then
-				player.mining_state = {mining = false, position = steps[step][3]}
+				if LEGACY_MINING then player.mining_state = {mining = false, position = steps[step][3]} end
 				change_step(1)
 				mining = 0
 				ticks_mining = 0
@@ -1864,7 +1864,7 @@ script.on_event(defines.events.on_player_mined_entity, function(event)
 	end
 
 	--change step when tas is running and the current step is mining step
-	if run and steps[step] and steps[step][2] and steps[step][2] == "mine" then
+	if run and steps[step] and steps[step][2] and steps[step][2] == "mine" and (LEGACY_MINING or ticks_mining > 1) then
 		change_step(1)
 	end
 

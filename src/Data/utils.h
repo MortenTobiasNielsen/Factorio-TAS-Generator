@@ -1121,6 +1121,16 @@ struct log_config
 	}
 };
 
+// Additional script generation configurations
+struct generate_config
+{
+	bool legacy_mining = false;
+	std::string to_string()
+	{
+		return std::to_string(legacy_mining) + ";";
+	}
+};
+
 struct WarningsStatesCounters
 {
 	int never_idle = 0;
