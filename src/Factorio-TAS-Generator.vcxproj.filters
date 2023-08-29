@@ -93,6 +93,21 @@
     <CopyFileToFolders Include="..\Lua Files\goals.lua">
       <Filter>lua</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\scenarios\supply\blueprint.zip">
+      <Filter>lua\scenarios\supply</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\scenarios\supply\control.lua">
+      <Filter>lua\scenarios\supply</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\scenarios\supply\description.json">
+      <Filter>lua\scenarios\supply</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\scenarios\supply\image.png">
+      <Filter>lua\scenarios\supply</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Lua Files\scenarios\supply\locale\en\supply.cfg">
+      <Filter>lua\scenarios\supply</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Structs">
@@ -106,6 +121,12 @@
     </Filter>
     <Filter Include="lua">
       <UniqueIdentifier>{59cc3c2e-7e65-4034-ba1d-c69903c5d1ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lua\scenarios">
+      <UniqueIdentifier>{337478cf-7dfc-4bf0-bccb-9fa95aafa49f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lua\scenarios\supply">
+      <UniqueIdentifier>{2c5131ec-9cdd-46cc-b704-4a8bd6e0ecbd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

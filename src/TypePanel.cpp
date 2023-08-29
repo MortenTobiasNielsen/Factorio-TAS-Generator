@@ -33,6 +33,7 @@ void TypePanel::SetType(wxRadioButton * choosen_btn)
 		parent->rbtn_pick_up,
 		parent->rbtn_drop,
 		parent->rbtn_launch,
+		parent->rbtn_next,
 		parent->rbtn_save,
 		parent->rbtn_stop,
 		parent->rbtn_cancel_crafting,
@@ -92,6 +93,8 @@ void TypePanel::SwitchStep(StepType type)
 		case e_drop: SetType(parent->rbtn_drop);
 			break;
 		case e_launch: SetType(parent->rbtn_launch);
+			break;
+		case e_next: SetType(parent->rbtn_next);
 			break;
 		case e_save: SetType(parent->rbtn_save);
 			break;
@@ -233,6 +236,9 @@ string cMain::ExtractStep()
 
 	if (rbtn_launch->GetValue())
 		return StepNames[e_launch];
+
+	if (rbtn_next->GetValue())
+		return StepNames[e_next];
 
 	if (rbtn_save->GetValue())
 		return StepNames[e_save];
@@ -401,6 +407,14 @@ void cMain::OnLaunchChosen(wxCommandEvent& event)
 	type_panel->SetType(rbtn_launch);
 	setup_paramters(parameter_choices.launch);
 	SetupModifiers(e_launch);
+	event.Skip();
+}
+
+void cMain::OnNextChosen(wxCommandEvent& event)
+{
+	type_panel->SetType(rbtn_next);
+	setup_paramters(parameter_choices.next);
+	SetupModifiers(e_next);
 	event.Skip();
 }
 

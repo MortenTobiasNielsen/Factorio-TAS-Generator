@@ -47,6 +47,7 @@ string StepParameters::ToString()
 		case e_keep_walking:
 		case e_pause:
 		case e_save:
+		case e_next:
 			return steptype + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + string_end;
 
 		case e_stop:
