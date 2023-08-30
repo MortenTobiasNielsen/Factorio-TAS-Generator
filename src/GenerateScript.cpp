@@ -472,7 +472,7 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	amount = stepParameters.Amount;
 	item = stepParameters.Item;
 	build_orientation = stepParameters.orientation;
-	direction_to_build = stepParameters.Direction;
+	direction_to_build = orientation_list[stepParameters.Direction];
 	building_size = to_string(stepParameters.Size);
 	amount_of_buildings = to_string(stepParameters.Buildings);
 	comment = stepParameters.Comment;
