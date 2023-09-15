@@ -69,6 +69,12 @@ protected:
 	generate_config GetGenerateConfig();
 	void OnGenerateScript(wxCommandEvent& event);
 
+	// Goals menu
+	void OnMenuSteelAxeClicked(wxCommandEvent& event);
+	void OnMenuGOTLAPClicked(wxCommandEvent& event);
+	void OnMenuAnyPercentClicked(wxCommandEvent& event);
+	void OnMenuSupplyChallengeClicked(wxCommandEvent& event);
+
 	// Step types menu
 	void OnChangeSteptypeColoursMenuSelected(wxCommandEvent& event);
 
@@ -136,6 +142,7 @@ protected:
 	void OnRecipeChosen(wxCommandEvent& event);
 	void OnTechChosen(wxCommandEvent& event);
 	void OnLaunchChosen(wxCommandEvent& event);
+	void OnNextChosen(wxCommandEvent& event);
 	void OnSaveChosen(wxCommandEvent& event);
 	void OnCancelCraftingChosen(wxCommandEvent& event);
 	void OnPriorityChosen(wxCommandEvent& event);

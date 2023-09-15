@@ -64,7 +64,8 @@ const struct parameter_choices_struct
 	priority = building - building_orientation | priority_io,
 	recipe = building | amount | item,
 	filter = building | amount | item,
-	launch = point | comment;
+	launch = point | comment,
+	next = comment;
 
 	//misc
 	const int drop = point | item | comment;
@@ -86,7 +87,8 @@ const vector<int> listStepTypeToParameterChoices = {
 	parameter_choices.put, 
 	parameter_choices.take, 
 	parameter_choices.mining,
-	parameter_choices.launch, 
+	parameter_choices.launch,
+	parameter_choices.next,
 	parameter_choices.walk, 
 	parameter_choices.tech, 
 	parameter_choices.drop, 

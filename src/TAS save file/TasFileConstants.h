@@ -40,4 +40,5 @@ static const string auto_put_recipe_text = "Recipe";
 static const string goal_steelaxe_text = "Steel Axe";
 static const string goal_GOTLAP_text = "Getting On Track Like A Pro";
 static const string goal_any_percent_text = "Any%", goal_any_percent_text_old = "Any %";
+static const string scenario_supply_challenge_text = "Supply challenge";
 static const string goal_debug_text = "Debug";

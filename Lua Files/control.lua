@@ -1163,6 +1163,23 @@ local function launch()
 	return player_selection.launch_rocket()
 end
 
+---Fires the next event of supply challenge
+local function Next()
+	local interface = remote.interfaces["DunRaider-TAS-supply"]
+	if interface and interface.TAS_Next then
+		local result = remote.call("DunRaider-TAS-supply", "TAS_Next")
+		if not result then
+			Warning(string.format("Step: %s, Action: %s, Step: %d - Next is not available", task[1], task[2], step ))
+			return false
+		end
+		end_warning_mode(string.format("Step: %s, Action: %s, Step: %d - Next", task[1], task[2], step ))
+		return result
+	else
+		Error("Called next without the function existing")
+		error("Called next without the function existing")
+	end
+end
+
 local function shoot()
 	global.tas_shooting_amount = global.tas_shooting_amount or amount
 	---@cast player LuaPlayer
@@ -1350,6 +1367,11 @@ local function doStep(current_step)
         task = current_step[1]
 		target_position = current_step[3]
 		return launch()
+
+	elseif current_step[2] == "next" then
+		task_category = "next"
+        task = current_step[1]
+		return Next()
 
 	elseif current_step[2] == "shoot" then
 		task_category = "shoot"
@@ -1897,7 +1919,9 @@ script.on_event(defines.events.on_game_created_from_scenario, function(event)
 	if event.tick ~= 0 then
 		skipintro = true
 	else
-		remote.call("freeplay", "set_skip_intro", true)
+		if remote.interfaces["freeplay"] then
+			remote.call("freeplay", "set_skip_intro", true)
+		end
 	end
 end)
 

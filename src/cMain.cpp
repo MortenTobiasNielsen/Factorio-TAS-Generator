@@ -1250,6 +1250,11 @@ void cMain::Open(std::ifstream * file)
 	{
 		menu_goals->GetMenuItems()[0]->Check();
 	}
+	else if (result->goal == scenario_supply_challenge_text)
+	{
+		menu_goals->GetMenuItems()[3]->Check();
+		rbtn_next->Enable();
+	}
 	else
 	{
 		malformed_saved_file_message();
@@ -1466,7 +1471,7 @@ void cMain::OnChooseLocation(wxCommandEvent& event)
 std::string cMain::GetGoalConfig()
 {
 	auto& goals_items = menu_goals->GetMenuItems();
-	return goals_items[0]->IsChecked() ? goal_steelaxe_text : goals_items[1]->IsChecked() ? goal_GOTLAP_text : goal_any_percent_text;
+	return goals_items[0]->IsChecked() ? goal_steelaxe_text : goals_items[1]->IsChecked() ? goal_GOTLAP_text : goals_items[2]->IsChecked() ? goal_any_percent_text : scenario_supply_challenge_text;
 }
 
 log_config cMain::GetLogConfig()
@@ -1508,6 +1513,23 @@ void cMain::OnGenerateScript(wxCommandEvent& event)
 	AutoSave();
 
 	event.Skip();
+}
+
+void cMain::OnMenuSteelAxeClicked(wxCommandEvent& event)
+{
+	rbtn_next->Disable();
+}
+void cMain::OnMenuGOTLAPClicked(wxCommandEvent& event)
+{
+	rbtn_next->Disable();
+}
+void cMain::OnMenuAnyPercentClicked(wxCommandEvent& event)
+{
+	rbtn_next->Disable();
+}
+void cMain::OnMenuSupplyChallengeClicked(wxCommandEvent& event)
+{
+	rbtn_next->Enable();
 }
 
 void cMain::OnChangeShortcutMenuSelected(wxCommandEvent& event)
@@ -1705,6 +1727,10 @@ void cMain::UpdateParametersChangeType(wxCommandEvent& event, StepType step)
 			break;
 		case e_launch:
 			OnLaunchMenuSelected(event);
+			break;
+		case e_next:
+			type_panel->SwitchStep(e_next);
+			OnNextChosen(event);
 			break;
 		case e_walk:
 			OnWalkMenuSelected(event);
@@ -1957,7 +1983,8 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 	{
 		case e_stop:
 			gridEntry.Comment = "";
-
+			[[fallthrough]];
+		case e_next:
 		case e_pause:
 		case e_save:
 		case e_never_idle:
@@ -2175,6 +2202,7 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 		case e_keep_walking:
 		case e_shoot:
 		case e_throw:
+		case e_next:
 			return true;
 
 		case e_build:

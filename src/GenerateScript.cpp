@@ -5,6 +5,8 @@
 #include <chrono>
 #include <ctime>
 
+#include "TAS save file/TasFileConstants.h"
+
 GenerateScript::GenerateScript(wxGrid* grid_steps) : grid_steps(grid_steps)
 {
 	reset();
@@ -355,6 +357,10 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 				launch(currentStep, x_cord, y_cord, comment);
 				break;
 
+			case e_next:
+				next(currentStep, comment);
+				break;
+
 			case e_save:
 				save(currentStep, comment);
 				break;
@@ -413,6 +419,17 @@ void GenerateScript::generate(wxWindow* parent, DialogProgressBar* dialog_progre
 	fs::copy_file(pre_fix + "settings.lua", folder_location + "\\settings.lua", fs::copy_options::update_existing);
 	fs::copy_file(pre_fix + "goals.lua", folder_location + "\\goals.lua", fs::copy_options::update_existing);
 
+	if (goal == scenario_supply_challenge_text)
+	{
+		fs::create_directories(folder_location + "\\scenarios\\supply");
+		fs::create_directories(folder_location + "\\scenarios\\supply\\locale\\en");
+		fs::copy_file(pre_fix + "scenarios\\supply\\blueprint.zip", folder_location + "\\scenarios\\supply\\blueprint.zip", fs::copy_options::update_existing);
+		fs::copy_file(pre_fix + "scenarios\\supply\\control.lua", folder_location + "\\scenarios\\supply\\control.lua", fs::copy_options::update_existing);
+		fs::copy_file(pre_fix + "scenarios\\supply\\description.json", folder_location + "\\scenarios\\supply\\description.json", fs::copy_options::update_existing);
+		fs::copy_file(pre_fix + "scenarios\\supply\\image.png", folder_location + "\\scenarios\\supply\\image.png", fs::copy_options::update_existing);
+		fs::copy_file(pre_fix + "scenarios\\supply\\locale\\en\\supply.cfg", folder_location + "\\scenarios\\supply\\locale\\en\\supply.cfg", fs::copy_options::update_existing);
+	}
+
 	AddVariableFile(folder_location, goal, logconfig, generateconfig);
 	AddInfoFile(folder_location);
 
@@ -455,7 +472,7 @@ void GenerateScript::TransferParameters(StepParameters& stepParameters)
 	amount = stepParameters.Amount;
 	item = stepParameters.Item;
 	build_orientation = stepParameters.orientation;
-	direction_to_build = stepParameters.Direction;
+	direction_to_build = orientation_list[stepParameters.Direction];
 	building_size = to_string(stepParameters.Size);
 	amount_of_buildings = to_string(stepParameters.Buildings);
 	comment = stepParameters.Comment;
@@ -928,6 +945,12 @@ void GenerateScript::keep_crafting(string step, string comment)
 void GenerateScript::launch(string step, string x_cord, string y_cord, string comment)
 {
 	step_list += Step(step, "1", "\"launch\", {" + x_cord + ", " + y_cord + "}", comment);
+	total_steps += 1;
+}
+
+void GenerateScript::next(string step, string comment)
+{
+	step_list += Step(step, "1", "\"next\"", comment);
 	total_steps += 1;
 }
 

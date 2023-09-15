@@ -32,7 +32,7 @@ struct StepParameters
 
 	Orientation OrientationEnum = North;
 	StepType type = e_stop;
-	InventoryType inventory = Wreck;
+	InventoryType inventory = Input;
 
 	string Amount;
 	string Item;
