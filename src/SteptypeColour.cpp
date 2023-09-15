@@ -104,6 +104,7 @@ void SteptypeColourHandler::Build()
 		steptypeToGridtype[e_take] = Building;
 		steptypeToGridtype[e_mine] = Character;
 		steptypeToGridtype[e_launch] = Building;
+		steptypeToGridtype[e_next] = Building;
 		steptypeToGridtype[e_walk] = Character;
 		steptypeToGridtype[e_tech] = Character;
 		steptypeToGridtype[e_drop] = Character;

@@ -161,6 +161,7 @@ private:
 	void keep_on_path(string step, string comment);
 	void keep_crafting(string step, string comment);
 	void launch(string step, string x_cord, string y_cord, string comment);
+	void next(string step, string comment);
 	void save(string step, string nameOfSaveGame);
 	void idle(string step, string amount, string comment);
 	void pick(string step, string amount, string comment);

@@ -4,6 +4,7 @@ require("variables") --gets GOAL
 local anyp = "Any%"
 local gotlap = "Getting On Track Like A Pro"
 local steelaxe = "Steel Axe"
+local supply = "Supply challenge"
 
 --Constants 
 local steelaxe_research = "steel-axe"
@@ -82,6 +83,30 @@ local human_wr_times = {
             ["steel-axe"] = {0,8,41.1},
         },
     },
+    [supply] = {
+        final = {0,46,38.7},
+        research = {
+            ["automation"] = {0,11,09.6},
+            ["logistics"] = {0,18,44.4},
+            ["electronics"] = {0,22,43.1},
+            ["fast-inserter"] = {0,25,33.9},
+            ["logistic-science-pack"] = {0,29,24.1},
+            ["steel-processing"] = {0,29,59.8},
+            ["military"] = {0,30,16.3},
+            ["stone-wall"] = {0,30,24.2},
+            ["military-2"] = {0,30,46.6},
+            ["automation-2"] = {0,31,15.6},
+            ["engine"] = {0,32,27.4},
+            ["fluid-handling"] = {0,33,02.1},
+            ["oil-processing"] = {0,34,29.5},
+            ["plastics"] = {0,36,56.2},
+            ["advanced-electronics"] = {0,38,39.6},
+            ["sulfur-processing"] = {0,40,36.2},
+            ["military-science-pack"] = {0,40,46.8},
+            ["chemical-science-pack"] = {0,41,10.1},
+            ["logistics-2"] = {0,43,22.6},
+        },
+    }
 }
 
 ---Prints game end info and raise victory event
@@ -257,6 +282,8 @@ local function register_event()
         script.on_event(defines.events.script_raised_built, handle_entity_built_event, gotlap_filter)
         script.on_event(defines.events.on_built_entity, handle_entity_built_event, gotlap_filter)
         --script.on_event(defines.events.on_robot_built_entity, gotlap, gotlap_filter) --not needed as robots are not implemented
+    elseif GOAL == supply then
+
     else
         error("Unknown Goal configuration")
     end

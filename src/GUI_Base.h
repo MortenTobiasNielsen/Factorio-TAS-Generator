@@ -117,6 +117,7 @@ class GUI_Base : public wxFrame
 		wxRadioButton* rbtn_priority;
 		wxRadioButton* rbtn_launch;
 		wxRadioButton* rbtn_rotate;
+		wxRadioButton* rbtn_next;
 		wxRadioButton* rbtn_building_panel_hidden;
 		wxPanel* game_panel;
 		wxRadioButton* rbtn_game_speed;
@@ -259,6 +260,7 @@ class GUI_Base : public wxFrame
 		virtual void OnMenuSteelAxeClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuGOTLAPClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMenuAnyPercentClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnMenuSupplyChallengeClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLoggingSavegameSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLoggingTechSelected( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLoggingCommentSelected( wxCommandEvent& event ) { event.Skip(); }
@@ -288,6 +290,7 @@ class GUI_Base : public wxFrame
 		virtual void OnPriorityChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnLaunchChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRotateChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnNextChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnGameSpeedChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnPauseChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnStopChosen( wxCommandEvent& event ) { event.Skip(); }
