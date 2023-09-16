@@ -22,13 +22,13 @@ void cMain::ClearTemplateGrid(bool disable)
 	choice_template_direction->SetSelection(0);
 }
 
-void cMain::UpdateTemplateGrid(vector<StepParameters>& steps)
+void cMain::UpdateTemplateGrid(vector<Step>& steps)
 {
 	ClearTemplateGrid(false);
 	grid_template->InsertRows(0, steps.size());
 	for (int i = 0; i < steps.size(); i++)
 	{
-		GridEntry gridEntry = PrepareStepParametersForGrid(&steps[i]);
+		GridEntry gridEntry = PrepareStepForGrid(&steps[i]);
 		PopulateGrid(grid_template, i, &gridEntry);
 		BackgroundColorUpdate(grid_template, i, steps[i].type);
 	}
@@ -89,9 +89,9 @@ void cMain::OnNewTemplateClicked(wxCommandEvent& event)
 	cmb_choose_template->SetValue(name);
 	cmb_choose_template->AutoComplete(template_choices);
 
-	vector<StepParameters> template_list = {};
+	vector<Step> template_list = {};
 	UpdateTemplateGrid(template_list);
-	template_map.insert(pair<string, vector<StepParameters>>(name, template_list));
+	template_map.insert(pair<string, vector<Step>>(name, template_list));
 
 	btn_template_add_from_steps_list->Enable();
 	btn_template_add_step->Enable();
@@ -145,17 +145,17 @@ void cMain::OnDeleteTemplateClicked(wxCommandEvent& event)
 #pragma region StepControl
 void cMain::OnTemplateAddStepClicked(wxCommandEvent& event)
 {
-	auto stepParameters = ExtractStepParameters();
+	auto step = ExtractStep();
 	const int row = grid_template->IsSelection() ? *grid_template->GetSelectedRows().begin() : grid_template->GetNumberRows();
 	
 	grid_template->InsertRows(row);
-	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
+	GridEntry gridEntry = PrepareStepForGrid(&step);
 	PopulateGrid(grid_template, row, &gridEntry);
-	BackgroundColorUpdate(grid_template, row, stepParameters.type);
+	BackgroundColorUpdate(grid_template, row, step.type);
 
 	string key = cmb_choose_template->GetValue().ToStdString();
-	vector<StepParameters> list = template_map[key]; 
-	list.insert(list.begin() + row, stepParameters);
+	vector<Step> list = template_map[key]; 
+	list.insert(list.begin() + row, step);
 	template_map[key] = list;
 
 	no_changes = false;
@@ -163,21 +163,21 @@ void cMain::OnTemplateAddStepClicked(wxCommandEvent& event)
 
 void cMain::OnTemplateChangeStepClicked(wxCommandEvent& event)
 {
-	auto stepParameters = ExtractStepParameters();
+	auto step = ExtractStep();
 	auto name = cmb_choose_template->GetValue().ToStdString();
 	if (template_map.find(name) == template_map.end())
 	{
 		return;
 	}
 
-	if (!ChangeRow(grid_template, stepParameters))
+	if (!ChangeRow(grid_template, step))
 	{
 		return;
 	}
 
 	auto rowNum = *grid_template->GetSelectedRows().begin();
 
-	template_map[name][rowNum] = stepParameters;
+	template_map[name][rowNum] = step;
 }
 
 void cMain::OnTemplateDeleteStepClicked(wxCommandEvent& event)
@@ -190,7 +190,7 @@ void cMain::OnTemplateDeleteStepClicked(wxCommandEvent& event)
 	DeleteRow(grid_template, cmb_choose_template, template_map);
 }
 
-void cMain::TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map)
+void cMain::TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<Step>>& map)
 {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin())
 	{
@@ -327,7 +327,7 @@ void cMain::OnTemplateAddToStepsListClicked(wxCommandEvent& event)
 
 	for (const auto row : rows_)
 	{
-		StepParameters step = list[row];
+		Step step = list[row];
 
 		TemplateAlterStep(step, dir, x_off, y_off, amount_off, amount_multiplier);
 
@@ -369,7 +369,7 @@ Orientation tranform(Orientation o, template_direction_choice dir)
 	}
 }
 
-void cMain::TemplateAlterStep(StepParameters& step, const int direction, int x_off, int y_off, int amount_off, int amount_multi)
+void cMain::TemplateAlterStep(Step& step, const int direction, int x_off, int y_off, int amount_off, int amount_multi)
 {
 	if (step.Amount != "" && step.Amount != "All")
 	{

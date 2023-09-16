@@ -3,7 +3,7 @@
 #include <string>
 #include <tuple>
 
-#include "Structures\StepParameters.h"
+#include "Structures\Step.h"
 
 using std::vector;
 using std::string;
@@ -21,7 +21,7 @@ struct Command
 	// The type so it can be reversed
 	CommandType type;
 	// List of modified rows: Tuple of row index and row data
-	vector<tuple<int, StepParameters>> rows;	 
+	vector<tuple<int, Step>> rows;	 
 };
 
 class CommandStack

@@ -43,7 +43,7 @@ void cMain::CreateWalkStep(int x_modifier, int y_modifier)
 	auto [x, y] = AddWalkScanCurrentPosition();
 	auto increment = walk_panel_increment_spin->GetValue();
 
-	auto step = StepParameters(x + increment * x_modifier, y + increment * y_modifier);
+	auto step = Step(x + increment * x_modifier, y + increment * y_modifier);
 	step.type = e_walk;
 	stack.Push({
 		.row = row,

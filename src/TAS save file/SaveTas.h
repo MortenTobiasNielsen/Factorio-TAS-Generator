@@ -8,7 +8,7 @@
 #include <vector>
 #include <map>
 
-#include "..\Structures\StepParameters.h"
+#include "..\Structures\Step.h"
 #include "..\DialogProgressBar.h"
 
 #include "..\Data\utils.h"
@@ -27,8 +27,8 @@ public:
 		DialogProgressBar* dialog_progress_bar,
 		bool save_as,
 		vector<bool> auto_list,
-		vector<StepParameters> steps,
-		map<string, vector<StepParameters>> templates,
+		vector<Step> steps,
+		map<string, vector<Step>> templates,
 		string folder_location,
 		string folder_location_generate,
 		string goal,

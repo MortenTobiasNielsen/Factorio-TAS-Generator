@@ -12,7 +12,7 @@
 
 #include "..\Shared functions\Functions.h"
 
-#include "..\Structures\StepParameters.h"
+#include "..\Structures\Step.h"
 
 #include "..\Data\BuildingNames.h"
 #include "..\Data\utils.h"
@@ -30,8 +30,8 @@ struct open_file_return_data
 {
 	bool success = false;
 	string goal;
-	vector<StepParameters> steps;
-	map<string, vector<StepParameters>> template_map;
+	vector<Step> steps;
+	map<string, vector<Step>> template_map;
 	string save_file_location;
 	string generate_code_folder_location;
 

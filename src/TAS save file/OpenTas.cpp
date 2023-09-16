@@ -155,7 +155,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			}
 		}
 
-		StepParameters step(invalidX, 0);
+		Step step(invalidX, 0);
 
 		if (segments[1] != "")
 		{
@@ -255,7 +255,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 
 bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
-	vector<StepParameters> steps = {};
+	vector<Step> steps = {};
 	string name = "";
 	int position = 0;
 
@@ -268,7 +268,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			{
 				if (name != "")
 				{
-					return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
+					return_data.template_map.insert(pair<string, vector<Step>>(name, steps));
 				}
 
 				return true;
@@ -285,7 +285,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		}
 		else if (name != segments[0])
 		{
-			return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
+			return_data.template_map.insert(pair<string, vector<Step>>(name, steps));
 
 			name = segments[0];
 			steps = {};
@@ -297,7 +297,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			comment = segments[10];
 		}
 
-		StepParameters step(invalidX, 0);
+		Step step(invalidX, 0);
 
 		if (segments[2] != "")
 		{
@@ -370,7 +370,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 
 bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
-	vector<StepParameters> steps = {};
+	vector<Step> steps = {};
 	string name = "";
 	int position = 0;
 
@@ -389,7 +389,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 						name += "_Template";
 					}
 
-					return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
+					return_data.template_map.insert(pair<string, vector<Step>>(name, steps));
 				}
 
 				return true;
@@ -410,7 +410,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 				name += "_Template";
 			}
 
-			return_data.template_map.insert(pair<string, vector<StepParameters>>(name, steps));
+			return_data.template_map.insert(pair<string, vector<Step>>(name, steps));
 
 			name = segments[0];
 			steps = {};
@@ -422,7 +422,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			comment = segments[10];
 		}
 
-		StepParameters step(invalidX, 0);
+		Step step(invalidX, 0);
 
 		if (segments[2] != "")
 		{

@@ -10,7 +10,7 @@
 
 #include "..\Structures\Building.h"
 #include "..\Structures\GridEntry.h"
-#include "..\Structures\StepParameters.h"
+#include "..\Structures\Step.h"
 #include "..\Structures\Orientation.h"
 
 using std::vector;
@@ -32,11 +32,11 @@ void find_coordinates(string& x_cord, string& y_cord, string& direction, string&
 
 bool is_number(const string& s);
 
-vector<string> get_keys(map<string, vector<StepParameters>> map);
+vector<string> get_keys(map<string, vector<Step>> map);
 
-int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
-void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
-bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters);
+int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, Step& step);
+void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, Step& step);
+bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, Step& step);
 void PopulateGrid(wxGrid* grid, int row, GridEntry* gridEntry);
 
 bool StringContainsAny(const wxString& str, const string& chars);

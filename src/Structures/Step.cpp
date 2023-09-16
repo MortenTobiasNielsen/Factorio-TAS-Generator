@@ -1,8 +1,8 @@
-#include "StepParameters.h"
+#include "Step.h"
 
 #include "../Data/BuildingNames.h"
 
-StepParameters::StepParameters(double InitialX, double InitialY)
+Step::Step(double InitialX, double InitialY)
 {
 	X = InitialX;
 	Y = InitialY;
@@ -10,13 +10,13 @@ StepParameters::StepParameters(double InitialX, double InitialY)
 	OriginalY = InitialY;
 }
 
-void StepParameters::Reset()
+void Step::Reset()
 {
 	X = OriginalX;
 	Y = OriginalY;
 }
 
-void StepParameters::Next()
+void Step::Next()
 {
 	switch (Direction)
 	{
@@ -35,7 +35,7 @@ void StepParameters::Next()
 	}
 }
 
-string StepParameters::ToString()
+string Step::ToString()
 {
 	const string string_end = ";" + Comment + ";" + colour.GetAsString().ToStdString() + ";" + Modifiers.ToString() + ";";
 	const string steptype = StepNames[type];
@@ -102,7 +102,7 @@ string StepParameters::ToString()
 	}
 }
 
-bool StepParameters::operator==(const Building& toCompare)
+bool Step::operator==(const Building& toCompare)
 {
 	if (toCompare.X == X && toCompare.Y == Y)
 	{
@@ -114,7 +114,7 @@ bool StepParameters::operator==(const Building& toCompare)
 	return false;
 }
 
-bool StepParameters::operator==(const StepParameters& toCompare)
+bool Step::operator==(const Step& toCompare)
 {
 	if (toCompare.X != X && toCompare.Y != Y)
 	{

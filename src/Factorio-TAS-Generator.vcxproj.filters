@@ -20,7 +20,7 @@
     <ClCompile Include="TemplatePage.cpp" />
     <ClCompile Include="WalkPanel.cpp" />
     <ClCompile Include="Shared functions\StringFunctions.cpp" />
-    <ClCompile Include="Structures\StepParameters.cpp">
+    <ClCompile Include="Structures\Step.cpp">
       <Filter>Structs</Filter>
     </ClCompile>
   </ItemGroup>
@@ -73,7 +73,7 @@
     <ClInclude Include="Structures\GridEntry.h">
       <Filter>Structs</Filter>
     </ClInclude>
-    <ClInclude Include="Structures\StepParameters.h">
+    <ClInclude Include="Structures\Step.h">
       <Filter>Structs</Filter>
     </ClInclude>
     <ClInclude Include="Structures\StepType.h">

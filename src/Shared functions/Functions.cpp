@@ -135,10 +135,10 @@ bool is_number(const std::string& str)
 	return true;
 }
 
-vector<string> get_keys(map<string, vector<StepParameters>> map)
+vector<string> get_keys(map<string, vector<Step>> map)
 {
 	vector<string> keys;
-	for (std::map<string, vector<StepParameters>>::iterator it = map.begin(); it != map.end(); ++it)
+	for (std::map<string, vector<Step>>::iterator it = map.begin(); it != map.end(); ++it)
 	{
 		keys.push_back(it->first);
 	}
@@ -146,43 +146,43 @@ vector<string> get_keys(map<string, vector<StepParameters>> map)
 	return keys;
 }
 
-int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters)
+int ProcessBuildStep(vector<Building>& buildings, int buildingsInSnapShot, Step& step)
 {
-	buildings[buildingsInSnapShot].X = stepParameters.X;
-	buildings[buildingsInSnapShot].Y = stepParameters.Y;
-	buildings[buildingsInSnapShot].type = stepParameters.BuildingIndex;
-	buildings[buildingsInSnapShot].OrientationEnum = stepParameters.OrientationEnum;
+	buildings[buildingsInSnapShot].X = step.X;
+	buildings[buildingsInSnapShot].Y = step.Y;
+	buildings[buildingsInSnapShot].type = step.BuildingIndex;
+	buildings[buildingsInSnapShot].OrientationEnum = step.OrientationEnum;
 	buildingsInSnapShot++;
 
-	if (stepParameters.Buildings == 1)
+	if (step.Buildings == 1)
 	{
 		return buildingsInSnapShot;
 	}
 
-	for (int i = 1; i < stepParameters.Buildings; i++)
+	for (int i = 1; i < step.Buildings; i++)
 	{
-		stepParameters.Next();
+		step.Next();
 		
-		buildings[buildingsInSnapShot].X = stepParameters.X;
-		buildings[buildingsInSnapShot].Y = stepParameters.Y;
-		buildings[buildingsInSnapShot].type = stepParameters.BuildingIndex;
-		buildings[buildingsInSnapShot].OrientationEnum = stepParameters.OrientationEnum;
+		buildings[buildingsInSnapShot].X = step.X;
+		buildings[buildingsInSnapShot].Y = step.Y;
+		buildings[buildingsInSnapShot].type = step.BuildingIndex;
+		buildings[buildingsInSnapShot].OrientationEnum = step.OrientationEnum;
 		buildingsInSnapShot++;
 	}
 
-	stepParameters.Reset();
+	step.Reset();
 	return buildingsInSnapShot;
 }
 
-void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters)
+void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, Step& step)
 {
 	for (int i = 0; i < buildingsInSnapShot; i++)
 	{
-		if (stepParameters == buildings[i])
+		if (step == buildings[i])
 		{
-			if (stepParameters.Modifiers.split ||
-				stepParameters.Modifiers.skip ||
-				Capitalize(stepParameters.Comment) == "Split")
+			if (step.Modifiers.split ||
+				step.Modifiers.skip ||
+				Capitalize(step.Comment) == "Split")
 			{
 				return;
 			}
@@ -193,16 +193,16 @@ void ProcessMiningStep(vector<Building>& buildings, int buildingsInSnapShot, Ste
 	}
 }
 
-bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepParameters& stepParameters)
+bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, Step& step)
 {
 	int buildingsFound = 0;
 	Orientation firstOrientation = North;
 
-	for (int i = 0; i < stepParameters.Buildings; i++)
+	for (int i = 0; i < step.Buildings; i++)
 	{
 		for (int j = buildingsInSnapShot - 1; j > -1; j--)
 		{
-			if (stepParameters == buildings[j])
+			if (step == buildings[j])
 			{
 				if (buildingsFound == 0)
 				{
@@ -214,17 +214,17 @@ bool BuildingExists(vector<Building>& buildings, int buildingsInSnapShot, StepPa
 			}
 		}
 
-		if (buildingsFound == stepParameters.Buildings)
+		if (buildingsFound == step.Buildings)
 		{
-			stepParameters.Reset();
-			stepParameters.OrientationEnum = firstOrientation;
+			step.Reset();
+			step.OrientationEnum = firstOrientation;
 			return true;
 		}
 
-		stepParameters.Next();
+		step.Next();
 	}
 
-	stepParameters.Reset();
+	step.Reset();
 	return false;
 }
 
