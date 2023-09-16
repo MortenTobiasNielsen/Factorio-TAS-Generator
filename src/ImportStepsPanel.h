@@ -14,7 +14,7 @@
 #include <vector>
 
 #include "Structures\Building.h"
-#include "Structures\StepParameters.h"
+#include "Structures\Step.h"
 
 class ImportStepsPanel : public wxPanel
 {
@@ -45,6 +45,6 @@ protected:
 	
 public:
 	bool update_segment();
-	bool extract_steps(wxString steps, vector<StepParameters>& step_parameters, vector<Building> BuildingsSnapShot, int buildings_in_snap_shot);
+	bool extract_steps(wxString steps, vector<Step>& step_parameters, vector<Building> BuildingsSnapShot, int buildings_in_snap_shot);
 
 };

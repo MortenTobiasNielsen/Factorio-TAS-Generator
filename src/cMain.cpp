@@ -401,7 +401,7 @@ void cMain::MoveRow(wxGrid* grid, bool up)
 	no_changes = false;
 }
 
-bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
+bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& map)
 {
 	if (!grid->IsSelection())
 	{
@@ -456,7 +456,7 @@ bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepPara
 	return true;
 }
 
-bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
+bool cMain::ChangeRow(wxGrid* grid, Step step)
 {
 	if (!grid->IsSelection() || !grid->GetSelectedRows().begin())
 	{
@@ -471,7 +471,7 @@ bool cMain::ChangeRow(wxGrid* grid, StepParameters step)
 		return false;
 	}
 
-	GridEntry gridEntry = PrepareStepParametersForGrid(&step);
+	GridEntry gridEntry = PrepareStepForGrid(&step);
 
 	PopulateGrid(grid, rowNum, &gridEntry);
 
@@ -488,7 +488,7 @@ void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType step)
 
 void cMain::OnAddStepClicked(wxCommandEvent& event)
 {
-	vector<tuple<int, StepParameters>> change;
+	vector<tuple<int, Step>> change;
 	if (grid_steps->IsSelection())
 	{
 		if (!grid_steps->GetSelectedRows().begin())
@@ -496,7 +496,7 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 			return;
 		}
 
-		change = AddStep(*grid_steps->GetSelectedRows().begin(), ExtractStepParameters());
+		change = AddStep(*grid_steps->GetSelectedRows().begin(), ExtractStep());
 		if (change.size() > 0)
 		{
 			stack.Push({
@@ -509,7 +509,7 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 	else
 	{
 		int row = grid_steps->GetNumberRows();
-		change = AddStep(row, ExtractStepParameters());
+		change = AddStep(row, ExtractStep());
 		if (change.size() > 0)
 		{
 			stack.Push({
@@ -526,7 +526,7 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 
 void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 {
-	vector<tuple<int, StepParameters>> change;
+	vector<tuple<int, Step>> change;
 	if (grid_steps->IsSelection())
 	{
 		if (!grid_steps->GetSelectedRows().Last())
@@ -534,7 +534,7 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 			return;
 		}
 
-		change = AddStep(grid_steps->GetSelectedRows().Last() + 1, ExtractStepParameters());
+		change = AddStep(grid_steps->GetSelectedRows().Last() + 1, ExtractStep());
 		if (change.size() > 0)
 		{
 			stack.Push({
@@ -547,7 +547,7 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 	else
 	{
 		int row = grid_steps->GetNumberRows();
-		change = AddStep(row, ExtractStepParameters());
+		change = AddStep(row, ExtractStep());
 		if (change.size() > 0)
 		{
 			stack.Push({
@@ -562,21 +562,21 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 	event.Skip();
 }
 
-vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepParameters, bool auto_put)
+vector<tuple<int, Step>> cMain::AddStep(int row, Step step, bool auto_put)
 {
-	vector<tuple<int, StepParameters>> returnValue;
+	vector<tuple<int, Step>> returnValue;
 
-	if (!ValidateStep(row, stepParameters))
+	if (!ValidateStep(row, step))
 	{
 		return returnValue;
 	};
 
 	string to_check;
-	switch (stepParameters.type)
+	switch (step.type)
 	{
 		case e_save:
-			UpdateStepGrid(row, &stepParameters);
-			returnValue.push_back({row, stepParameters});
+			UpdateStepGrid(row, &step);
+			returnValue.push_back({row, step});
 
 			if (!steps_focus_checkbox->IsChecked() || modifier_skip_checkbox->IsChecked()) return returnValue;
 
@@ -589,44 +589,44 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 			return returnValue;
 
 		case e_build:
-			stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
+			step.BuildingIndex = BuildingNameToType[step.Item];
 
-			UpdateStepGrid(row , &stepParameters);
-			returnValue.push_back({row, stepParameters});
+			UpdateStepGrid(row , &step);
+			returnValue.push_back({row, step});
 
-			to_check = stepParameters.Item;
+			to_check = step.Item;
 
-			stepParameters.type = e_put;
-			stepParameters.Amount = "1";
+			step.type = e_put;
+			step.Amount = "1";
 			if (auto_put)
 			{
 				if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
 				{
-					stepParameters.Item = struct_fuel_list.coal;
-					stepParameters.inventory = Fuel;
+					step.Item = struct_fuel_list.coal;
+					step.inventory = Fuel;
 
-					UpdateStepGrid(row + 1, &stepParameters);
-					returnValue.push_back({row + 1, stepParameters});
+					UpdateStepGrid(row + 1, &step);
+					returnValue.push_back({row + 1, step});
 					return returnValue;
 				}
 
 				if (check_burner->IsChecked() && (to_check == struct_auto_put_burner_list.burner_mining_drill || to_check == struct_auto_put_burner_list.burner_inserter || to_check == struct_auto_put_burner_list.boiler))
 				{
-					stepParameters.Item = struct_fuel_list.coal;
-					stepParameters.inventory = Fuel;
+					step.Item = struct_fuel_list.coal;
+					step.inventory = Fuel;
 
-					UpdateStepGrid(row + 1, &stepParameters);
-					returnValue.push_back({row + 1, stepParameters});
+					UpdateStepGrid(row + 1, &step);
+					returnValue.push_back({row + 1, step});
 					return returnValue;
 				}
 
 				if (check_lab->IsChecked() && to_check == struct_science_list.lab)
 				{
-					stepParameters.Item = "Automation science pack";
-					stepParameters.inventory = Input;
+					step.Item = "Automation science pack";
+					step.inventory = Input;
 
-					UpdateStepGrid(row + 1, &stepParameters);
-					returnValue.push_back({row + 1, stepParameters});
+					UpdateStepGrid(row + 1, &step);
+					returnValue.push_back({row + 1, step});
 					return returnValue;
 				}
 			}
@@ -635,12 +635,12 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 
 		case e_recipe:
 		{
-			UpdateStepGrid(row, &stepParameters);
-			returnValue.push_back({row, stepParameters});
+			UpdateStepGrid(row, &step);
+			returnValue.push_back({row, step});
 
-			to_check = stepParameters.Item;
+			to_check = step.Item;
 			
-			int multiplier = stoi(stepParameters.Amount);
+			int multiplier = stoi(step.Amount);
 
 			if (auto_put && 0 < multiplier && check_recipe->IsChecked())
 			{
@@ -648,13 +648,13 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
-					stepParameters.type = e_put;
-					stepParameters.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
-					stepParameters.Item = recipe[i];
-					stepParameters.inventory = Input;
+					step.type = e_put;
+					step.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
+					step.Item = recipe[i];
+					step.inventory = Input;
 
-					UpdateStepGrid(row + 1, &stepParameters);
-					returnValue.push_back({row + 1, stepParameters});
+					UpdateStepGrid(row + 1, &step);
+					returnValue.push_back({row + 1, step});
 				}
 			}
 			
@@ -662,9 +662,9 @@ vector<tuple<int, StepParameters>> cMain::AddStep(int row, StepParameters stepPa
 		}
 
 		default:			
-			type_panel->IncrementStateCounter(stepParameters.type);
-			UpdateStepGrid(row, &stepParameters); 
-			returnValue.push_back({row, stepParameters});
+			type_panel->IncrementStateCounter(step.type);
+			UpdateStepGrid(row, &step); 
+			returnValue.push_back({row, step});
 			return returnValue;
 	}
 }
@@ -706,9 +706,9 @@ void cMain::OnChangeStepRightClicked(wxMouseEvent& event)
 
 void cMain::OnChangeStepInternal(wxArrayInt& rows, int row)
 {
-	auto stepParameters = ExtractStepParameters();
+	auto step = ExtractStep();
 
-	if (!ValidateStep(row, stepParameters))
+	if (!ValidateStep(row, step))
 	{
 		return;
 	};
@@ -716,7 +716,7 @@ void cMain::OnChangeStepInternal(wxArrayInt& rows, int row)
 	stack.Push({
 		.row = row,
 		.type = T_MODIFY,
-		.rows = ChangeStep(row, stepParameters)
+		.rows = ChangeStep(row, step)
 	});
 
 	grid_steps->SelectRow(row);
@@ -724,28 +724,28 @@ void cMain::OnChangeStepInternal(wxArrayInt& rows, int row)
 	no_changes = false;
 }
 
-vector< tuple<int, StepParameters>> cMain::ChangeStep(int row, StepParameters stepParameters)
+vector< tuple<int, Step>> cMain::ChangeStep(int row, Step step)
 {
-	vector< tuple<int, StepParameters>> change{};
+	vector< tuple<int, Step>> change{};
 	
-	if (stepParameters.type == e_build)
+	if (step.type == e_build)
 	{
-		stepParameters.BuildingIndex = BuildingNameToType[stepParameters.Item];
+		step.BuildingIndex = BuildingNameToType[step.Item];
 	}
-	else if (stepParameters.type != StepGridData[row].type)
+	else if (step.type != StepGridData[row].type)
 	{
-		type_panel->IncrementStateCounter(stepParameters.type);
+		type_panel->IncrementStateCounter(step.type);
 	}
 
-	GridEntry gridEntry = PrepareStepParametersForGrid(&stepParameters);
+	GridEntry gridEntry = PrepareStepForGrid(&step);
 
 	change.push_back({row, StepGridData[row]});
-	change.push_back({row, stepParameters});
+	change.push_back({row, step});
 
-	StepGridData[row] = stepParameters;
+	StepGridData[row] = step;
 	PopulateGrid(grid_steps, row, &gridEntry);
 
-	BackgroundColorUpdate(grid_steps, row, stepParameters.type);
+	BackgroundColorUpdate(grid_steps, row, step.type);
 	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	return change;
 }
@@ -809,9 +809,9 @@ void cMain::OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm)
 	no_changes = false;
 }
 
-vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool auto_confirmed)
+vector< tuple<int, Step>> cMain::DeleteSteps(wxArrayInt steps, bool auto_confirmed)
 {
-	vector< tuple<int, StepParameters>> return_list{};
+	vector< tuple<int, Step>> return_list{};
 	bool confirmed = auto_confirmed;
 
 	for (const auto step : steps)
@@ -872,14 +872,14 @@ vector< tuple<int, StepParameters>> cMain::DeleteSteps(wxArrayInt steps, bool au
 	return return_list;
 }
 
-tuple<int, StepParameters> cMain::GetRowTuple(int index)
+tuple<int, Step> cMain::GetRowTuple(int index)
 {
 	return {index, StepGridData.at(index)};
 }
 
-vector<tuple<int, StepParameters>> cMain::GetSelectedRowTuples()
+vector<tuple<int, Step>> cMain::GetSelectedRowTuples()
 {
-	vector<tuple<int, StepParameters>> rows{};
+	vector<tuple<int, Step>> rows{};
 	auto selected = grid_steps->GetSelectedRows();
 	if (selected.IsEmpty()) return rows;
 	else rows.reserve(selected.size());
@@ -1037,7 +1037,7 @@ void cMain::HandleSplitOrMergeToggle(wxArrayInt& rows)
 	size_t size = rows.size();
 	if (size == 1)
 	{
-		StepParameters data = StepGridData.at(rows[0]);
+		Step data = StepGridData.at(rows[0]);
 		step_split_multibuild_button->Enable(data.Buildings >= 2);
 	}
 	else
@@ -1057,8 +1057,8 @@ void cMain::OnSplitMultibuildRightClicked(wxMouseEvent& event)
 }
 void cMain::SplitMultibuildStep(int row)
 {
-	StepParameters data = StepGridData[row];
-	vector<StepParameters> new_rows;
+	Step data = StepGridData[row];
+	vector<Step> new_rows;
 	const int buildings = data.Buildings - 1;
 	data.Buildings = 1;
 	StepGridData[row].Buildings = 1;
@@ -1077,7 +1077,7 @@ void cMain::SplitMultibuildStep(int row)
 	grid_steps->InsertRows(row + 1, buildings);
 	for (int i = row; i < row + buildings + 1; i++)
 	{
-		GridEntry gridEntry = PrepareStepParametersForGrid(&StepGridData[i]);
+		GridEntry gridEntry = PrepareStepForGrid(&StepGridData[i]);
 
 		PopulateGrid(grid_steps, i, &gridEntry);
 
@@ -1095,7 +1095,7 @@ void cMain::SplitMultibuildStep(int row)
 	}
 }
 
-void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map)
+void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& map)
 {
 	if (!grid_steps->IsSelection())
 	{
@@ -1122,7 +1122,7 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 		moveTo = *grid->GetSelectedRows().begin();
 	}
 
-	vector<StepParameters> steps = it->second;
+	vector<Step> steps = it->second;
 	for (const auto& block : grid_steps->GetSelectedRowBlocks())
 	{
 		auto startRow = block.GetTopRow();
@@ -1416,7 +1416,7 @@ void cMain::PopulateStepGrid()
 
 	for (int i = 0; i < steps; i++)
 	{
-		GridEntry gridEntry = PrepareStepParametersForGrid(&StepGridData[i]);
+		GridEntry gridEntry = PrepareStepForGrid(&StepGridData[i]);
 
 		PopulateGrid(grid_steps, i, &gridEntry);
 
@@ -1885,26 +1885,26 @@ bool cMain::SaveFile(bool save_as)
 	return save;
 }
 
-StepParameters cMain::ExtractStepParameters()
+Step cMain::ExtractStep()
 {
 	if (spin_y->IsEnabled()) spin_y->SetFocus();
 	if (spin_x->IsEnabled()) spin_x->SetFocus();
 
-	auto stepParameters = StepParameters(spin_x->GetValue(), spin_y->GetValue());
+	auto step = Step(spin_x->GetValue(), spin_y->GetValue());
 
-	stepParameters.type = ToStepType(ExtractStep());
-	stepParameters.Amount = ExtractAmount();
-	stepParameters.Item = Capitalize(cmb_item->GetValue(), true);
-	stepParameters.inventory = GetInventoryType(Capitalize(cmb_from_into->GetValue()));
-	stepParameters.orientation = Capitalize(cmb_building_orientation->GetValue());
-	stepParameters.Direction = MapStringToOrientation(cmb_direction_to_build->GetValue());
-	stepParameters.Size = spin_building_size->GetValue();
-	stepParameters.Buildings = spin_building_amount->GetValue();
-	stepParameters.priority.input = (Priority::Type) radio_input->GetSelection();
-	stepParameters.priority.output = (Priority::Type) radio_output->GetSelection();
-	stepParameters.Comment = txt_comment->GetValue().ToStdString();
+	step.type = ToStepType(ExtractSteptypeName());
+	step.Amount = ExtractAmount();
+	step.Item = Capitalize(cmb_item->GetValue(), true);
+	step.inventory = GetInventoryType(Capitalize(cmb_from_into->GetValue()));
+	step.orientation = Capitalize(cmb_building_orientation->GetValue());
+	step.Direction = MapStringToOrientation(cmb_direction_to_build->GetValue());
+	step.Size = spin_building_size->GetValue();
+	step.Buildings = spin_building_amount->GetValue();
+	step.priority.input = (Priority::Type) radio_input->GetSelection();
+	step.priority.output = (Priority::Type) radio_output->GetSelection();
+	step.Comment = txt_comment->GetValue().ToStdString();
 
-	stepParameters.Modifiers = {
+	step.Modifiers = {
 		.no_order = modifier_no_order_checkbox->IsEnabled() && modifier_no_order_checkbox->GetValue(),
 		.skip = modifier_skip_checkbox->IsEnabled() && modifier_skip_checkbox->GetValue(),
 		.wait_for = modifier_wait_for_checkbox->IsEnabled() && modifier_wait_for_checkbox->GetValue(),
@@ -1917,7 +1917,7 @@ StepParameters cMain::ExtractStepParameters()
 
 	
 
-	return stepParameters;
+	return step;
 }
 
 std::string cMain::ExtractAmount()
@@ -1971,15 +1971,15 @@ std::string cMain::ExtractAmount()
 	return std::to_string(amount);
 }
 
-GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
+GridEntry cMain::PrepareStepForGrid(Step* step)
 {
 	GridEntry gridEntry{
-		.Step = StepNames[stepParameters->type],
-		.Modifiers = stepParameters->Modifiers.ToString(),
-		.Comment = stepParameters->Comment,
+		.Step = StepNames[step->type],
+		.Modifiers = step->Modifiers.ToString(),
+		.Comment = step->Comment,
 	};
 
-	switch (stepParameters->type)
+	switch (step->type)
 	{
 		case e_stop:
 			gridEntry.Comment = "";
@@ -1996,136 +1996,136 @@ GridEntry cMain::PrepareStepParametersForGrid(StepParameters* stepParameters)
 		case e_game_speed:
 		case e_idle:
 		case e_pick_up:
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.Amount = step->Amount;
 			break;
 
 		case e_craft:
 		case e_cancel_crafting:
-			gridEntry.Amount = stepParameters->Amount;
-			gridEntry.Recipe = stepParameters->Item;
+			gridEntry.Amount = step->Amount;
+			gridEntry.Recipe = step->Item;
 			break;
 
 		case e_throw:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Item = stepParameters->Item;
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Item = step->Item;
 			break;
 
 		case e_shoot:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Amount = step->Amount;
 			break;
 
 		case e_walk:
 		case e_launch:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
 			break;
 
 		case e_mine:
-			if (stepParameters->BuildingIndex != 0)
+			if (step->BuildingIndex != 0)
 			{
-				gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
-				stepParameters->Item = gridEntry.Item;
+				gridEntry.Item = FindBuildingName(step->BuildingIndex);
+				step->Item = gridEntry.Item;
 			}
 
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Amount = step->Amount;
 			break;
 
 		case e_rotate:
 
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
-			gridEntry.Item = FindBuildingName(stepParameters->BuildingIndex);
-			gridEntry.DirectionToBuild = orientation_list[stepParameters->Direction];
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
-			stepParameters->Item = gridEntry.Item;
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Amount = step->Amount;
+			gridEntry.Item = FindBuildingName(step->BuildingIndex);
+			gridEntry.DirectionToBuild = orientation_list[step->Direction];
+			gridEntry.BuildingSize = std::to_string(step->Size);
+			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
+			step->Item = gridEntry.Item;
 			break;
 
 		case e_build:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Item = stepParameters->Item;
-			gridEntry.BuildingOrientation = stepParameters->orientation;
-			gridEntry.DirectionToBuild = orientation_list[stepParameters->Direction];
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Item = step->Item;
+			gridEntry.BuildingOrientation = step->orientation;
+			gridEntry.DirectionToBuild = orientation_list[step->Direction];
+			gridEntry.BuildingSize = std::to_string(step->Size);
+			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
 			break;
 
 		case e_take:
 		case e_put:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
-			gridEntry.Item = stepParameters->Item;
-			gridEntry.Inventory = inventory_types_list[stepParameters->inventory];
-			gridEntry.DirectionToBuild = orientation_list[stepParameters->Direction];
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Amount = step->Amount;
+			gridEntry.Item = step->Item;
+			gridEntry.Inventory = inventory_types_list[step->inventory];
+			gridEntry.DirectionToBuild = orientation_list[step->Direction];
+			gridEntry.BuildingSize = std::to_string(step->Size);
+			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
 			break;
 
 		case e_tech:
-			gridEntry.Item = stepParameters->Item;
+			gridEntry.Item = step->Item;
 			break;
 
 		case e_recipe:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
-			gridEntry.Recipe = stepParameters->Item;
-			gridEntry.DirectionToBuild = orientation_list[stepParameters->Direction];
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Amount = step->Amount;
+			gridEntry.Recipe = step->Item;
+			gridEntry.DirectionToBuild = orientation_list[step->Direction];
+			gridEntry.BuildingSize = std::to_string(step->Size);
+			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
 			break;
 
 		case e_limit:
-			stepParameters->orientation = "Chest";
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
+			step->orientation = "Chest";
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Amount = step->Amount;
 			gridEntry.BuildingOrientation = "Chest";
-			gridEntry.DirectionToBuild = orientation_list[stepParameters->Direction];
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.DirectionToBuild = orientation_list[step->Direction];
+			gridEntry.BuildingSize = std::to_string(step->Size);
+			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
 			break;
 
 		case e_priority:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Priority = stepParameters->priority.ToString();
-			gridEntry.DirectionToBuild = orientation_list[stepParameters->Direction];
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Priority = step->priority.ToString();
+			gridEntry.DirectionToBuild = orientation_list[step->Direction];
+			gridEntry.BuildingSize = std::to_string(step->Size);
+			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
 			break;
 
 		case e_drop:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Item = stepParameters->Item;
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Item = step->Item;
 			break;
 
 		case e_filter:
-			gridEntry.X = std::to_string(stepParameters->X);
-			gridEntry.Y = std::to_string(stepParameters->Y);
-			gridEntry.Amount = stepParameters->Amount;
-			gridEntry.Item = stepParameters->Item;
-			gridEntry.DirectionToBuild = orientation_list[stepParameters->Direction];
-			gridEntry.BuildingSize = std::to_string(stepParameters->Size);
-			gridEntry.AmountOfBuildings = std::to_string(stepParameters->Buildings);
+			gridEntry.X = std::to_string(step->X);
+			gridEntry.Y = std::to_string(step->Y);
+			gridEntry.Amount = step->Amount;
+			gridEntry.Item = step->Item;
+			gridEntry.DirectionToBuild = orientation_list[step->Direction];
+			gridEntry.BuildingSize = std::to_string(step->Size);
+			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
 			break;
 	}
 
 	return gridEntry;
 }
 
-void cMain::UpdateStepGrid(int row, StepParameters* stepParameters)
+void cMain::UpdateStepGrid(int row, Step* step)
 {
-	GridEntry gridEntry = PrepareStepParametersForGrid(stepParameters);
+	GridEntry gridEntry = PrepareStepForGrid(step);
 
 	grid_steps->InsertRows(row, 1);
 
@@ -2133,9 +2133,9 @@ void cMain::UpdateStepGrid(int row, StepParameters* stepParameters)
 
 	auto it1 = StepGridData.begin();
 	it1 += row;
-	StepGridData.insert(it1, *stepParameters);
+	StepGridData.insert(it1, *step);
 
-	BackgroundColorUpdate(grid_steps, row, stepParameters->type);
+	BackgroundColorUpdate(grid_steps, row, step->type);
 }
 
 int cMain::GenerateBuildingSnapShot(int end_row)
@@ -2182,10 +2182,10 @@ GridEntry cMain::ExtractGridEntry(wxGrid* grid, const int& row)
 	return gridEntry;
 }
 
-bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool validateBuildSteps)
+bool cMain::ValidateStep(const int& row, Step& step, bool validateBuildSteps)
 {
 	// Cases where an association with a building isn't needed
-	switch (stepParameters.type)
+	switch (step.type)
 	{
 		case e_walk:
 		case e_game_speed:
@@ -2206,13 +2206,13 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 			return true;
 
 		case e_build:
-			return IsValidBuildStep(stepParameters);
+			return IsValidBuildStep(step);
 
 		case e_craft:
-			return IsValidCraftStep(stepParameters);
+			return IsValidCraftStep(step);
 
 		case e_tech:
-			return IsValidTechnologyStep(stepParameters);
+			return IsValidTechnologyStep(step);
 
 		default:
 			break;
@@ -2224,31 +2224,31 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 	}
 
 	int amountOfBuildings = GenerateBuildingSnapShot(row);
-	switch (stepParameters.type)
+	switch (step.type)
 	{
 		case e_recipe:
-			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, step))
 			{
 				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
 			};
 
-			return IsValidRecipeStep(stepParameters);
+			return IsValidRecipeStep(step);
 
 		case e_mine:
 			// A building doesn't need to exist, but if it does it should be noted.
-			BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters);
+			BuildingExists(BuildingsSnapShot, amountOfBuildings, step);
 			return true;
 
 		case e_put:
 		case e_take:
-			if (stepParameters.inventory != Wreck && !BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			if (step.inventory != Wreck && !BuildingExists(BuildingsSnapShot, amountOfBuildings, step))
 			{
 				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
 			};
 
-			if (!IsValidPutTakeStep(stepParameters))
+			if (!IsValidPutTakeStep(step))
 			{
 				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
@@ -2258,25 +2258,25 @@ bool cMain::ValidateStep(const int& row, StepParameters& stepParameters, bool va
 
 		default:
 
-			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, stepParameters))
+			if (!BuildingExists(BuildingsSnapShot, amountOfBuildings, step))
 			{
 				wxMessageBox("Building location doesn't exist.\n1. Please use exactly the same coordinates as you used to build \n2. Check that you have not removed the building(s)\n3. Check that you are not putting this step before the Build step", "Please use the same coordinates");
 				return false;
 			};
 
-			return ExtraBuildingChecks(stepParameters);
+			return ExtraBuildingChecks(step);
 	}
 }
 
-bool cMain::IsValidBuildStep(StepParameters& stepParameters)
+bool cMain::IsValidBuildStep(Step& step)
 {
-	if (!check_input(stepParameters.Item, all_buildings))
+	if (!check_input(step.Item, all_buildings))
 	{
 		wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 		return false;
 	}
 
-	if (!check_input(stepParameters.orientation, orientation_list))
+	if (!check_input(step.orientation, orientation_list))
 	{
 		wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
 		return false;
@@ -2285,12 +2285,12 @@ bool cMain::IsValidBuildStep(StepParameters& stepParameters)
 	return true;
 }
 
-bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
+bool cMain::IsValidRecipeStep(Step& step)
 {
-	switch (stepParameters.BuildingIndex)
+	switch (step.BuildingIndex)
 	{
 		case AssemblingMachine1:
-			if (check_input(stepParameters.Item, part_assembly_recipes))
+			if (check_input(step.Item, part_assembly_recipes))
 			{
 				return true;
 			}
@@ -2300,7 +2300,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 
 		case AssemblingMachine2:
 		case AssemblingMachine3:
-			if (check_input(stepParameters.Item, full_assembly_recipes))
+			if (check_input(step.Item, full_assembly_recipes))
 			{
 				return true;
 			}
@@ -2309,7 +2309,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 			return false;
 
 		case OilRefinery:
-			if (check_input(stepParameters.Item, oil_refinery_list))
+			if (check_input(step.Item, oil_refinery_list))
 			{
 				return true;
 			}
@@ -2318,7 +2318,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 			return false;
 
 		case ChemicalPlant:
-			if (check_input(stepParameters.Item, full_chemical_plant_recipes))
+			if (check_input(step.Item, full_chemical_plant_recipes))
 			{
 				return true;
 			}
@@ -2327,7 +2327,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 			return false;
 
 		case Centrifuge:
-			if (check_input(stepParameters.Item, centrifuge_list))
+			if (check_input(step.Item, centrifuge_list))
 			{
 				return true;
 			}
@@ -2338,7 +2338,7 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 		case StoneFurnace:
 		case SteelFurnace:
 		case ElectricFurnace:
-			if (check_input(stepParameters.Item, furnace_list))
+			if (check_input(step.Item, furnace_list))
 			{
 				return true;
 			}
@@ -2351,9 +2351,9 @@ bool cMain::IsValidRecipeStep(StepParameters& stepParameters)
 	}
 }
 
-bool cMain::IsValidCraftStep(StepParameters& stepParameters)
+bool cMain::IsValidCraftStep(Step& step)
 {
-	if (!check_input(stepParameters.Item, handcrafted_list))
+	if (!check_input(step.Item, handcrafted_list))
 	{
 		wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
 		return false;
@@ -2362,9 +2362,9 @@ bool cMain::IsValidCraftStep(StepParameters& stepParameters)
 	return true;
 }
 
-bool cMain::IsValidPutTakeStep(StepParameters& stepParameters)
+bool cMain::IsValidPutTakeStep(Step& step)
 {
-	if (!CheckTakePut(stepParameters))
+	if (!CheckTakePut(step))
 	{
 		return false;
 	}
@@ -2372,9 +2372,9 @@ bool cMain::IsValidPutTakeStep(StepParameters& stepParameters)
 	return true;
 }
 
-bool cMain::IsValidTechnologyStep(StepParameters& stepParameters)
+bool cMain::IsValidTechnologyStep(Step& step)
 {
-	if (!check_input(stepParameters.Item, tech_list))
+	if (!check_input(step.Item, tech_list))
 	{
 		wxMessageBox("The tech is not valid - please try again", "Please use the tech dropdown menu");
 		return false;
@@ -2383,25 +2383,25 @@ bool cMain::IsValidTechnologyStep(StepParameters& stepParameters)
 	return true;
 }
 
-bool cMain::CheckTakePut(StepParameters& stepParameters)
+bool cMain::CheckTakePut(Step& step)
 {
-	InventoryType to_check = stepParameters.inventory;
+	InventoryType to_check = step.inventory;
 
 	if (to_check == Wreck)
 	{
 		return true;
 	}
 
-	string building = FindBuildingName(stepParameters.BuildingIndex);
+	string building = FindBuildingName(step.BuildingIndex);
 	if (check_input(building, chest_list))
 	{
-		stepParameters.inventory = Chest;
+		step.inventory = Chest;
 		return true;
 	}
 
 	if (to_check == Fuel)
 	{
-		if (check_input(stepParameters.Item, fuel_list))
+		if (check_input(step.Item, fuel_list))
 		{
 			return true;
 		}
@@ -2414,7 +2414,7 @@ bool cMain::CheckTakePut(StepParameters& stepParameters)
 	{
 		if (to_check == Input)
 		{
-			if (check_input(stepParameters.Item, science_packs))
+			if (check_input(step.Item, science_packs))
 			{
 				return true;
 			}
@@ -2425,7 +2425,7 @@ bool cMain::CheckTakePut(StepParameters& stepParameters)
 		}
 		else if (to_check == Modules)
 		{
-			if (check_input(stepParameters.Item, module_list))
+			if (check_input(step.Item, module_list))
 			{
 				return true;
 			}
@@ -2442,7 +2442,7 @@ bool cMain::CheckTakePut(StepParameters& stepParameters)
 	{
 		if (to_check == Modules)
 		{
-			if (check_input(stepParameters.Item, module_list))
+			if (check_input(step.Item, module_list))
 			{
 				return true;
 			}
@@ -2463,7 +2463,7 @@ bool cMain::CheckTakePut(StepParameters& stepParameters)
 
 	if (to_check == Modules)
 	{
-		if (check_input(stepParameters.Item, module_list))
+		if (check_input(step.Item, module_list))
 		{
 			return true;
 		}
@@ -2482,11 +2482,11 @@ bool cMain::CheckTakePut(StepParameters& stepParameters)
 	return false;
 }
 
-bool cMain::ExtraBuildingChecks(StepParameters& stepParameters)
+bool cMain::ExtraBuildingChecks(Step& step)
 {
-	auto buildingName = FindBuildingName(stepParameters.BuildingIndex);
+	auto buildingName = FindBuildingName(step.BuildingIndex);
 
-	switch (stepParameters.type)
+	switch (step.type)
 	{
 		case e_limit:
 			if (check_input(buildingName, chest_list))
@@ -2526,7 +2526,7 @@ bool cMain::ValidateAllSteps()
 
 	for (int i = 0; i < StepGridData.size(); i++)
 	{
-		StepParameters& step = StepGridData[i];
+		Step& step = StepGridData[i];
 
 		switch (step.type)
 		{
@@ -2676,7 +2676,7 @@ void cMain::OnSkipClicked(wxCommandEvent& event)
 	}
 }
 
-void cMain::SelectRowsInGrid(vector<tuple<int, StepParameters>> rows)
+void cMain::SelectRowsInGrid(vector<tuple<int, Step>> rows)
 {
 	grid_steps->ClearSelection();
 	for (auto& [index, data] : rows)

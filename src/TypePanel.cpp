@@ -175,7 +175,7 @@ void cMain::SetupModifiers(StepType type)
 
 // Finds the current radio button that is choosen, 
 // determines which step type that is and returns the step name
-string cMain::ExtractStep()
+string cMain::ExtractSteptypeName()
 {
 	//row 1
 	if (rbtn_take->GetValue())

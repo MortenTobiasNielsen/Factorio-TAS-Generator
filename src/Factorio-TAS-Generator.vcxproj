@@ -178,7 +178,7 @@
     <ClCompile Include="ShortcutChanger.cpp" />
     <ClCompile Include="SearchUtil.cpp" />
     <ClCompile Include="SteptypeColour.cpp" />
-    <ClCompile Include="Structures\StepParameters.cpp" />
+    <ClCompile Include="Structures\Step.cpp" />
     <ClCompile Include="TAS save file\OpenTas.cpp" />
     <ClCompile Include="TAS save file\SaveTas.cpp" />
     <ClCompile Include="TemplatePage.cpp" />
@@ -210,7 +210,7 @@
     <ClInclude Include="Structures\ParameterChoices.h" />
     <ClInclude Include="Structures\Priority.h" />
     <ClInclude Include="Structures\StepModifiers.h" />
-    <ClInclude Include="Structures\StepParameters.h" />
+    <ClInclude Include="Structures\Step.h" />
     <ClInclude Include="Structures\StepType.h" />
     <ClInclude Include="TAS save file\OpenTas.h" />
     <ClInclude Include="TAS save file\SaveTas.h" />

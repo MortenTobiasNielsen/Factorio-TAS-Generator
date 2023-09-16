@@ -29,7 +29,7 @@
 #include "Structures\Priority.h"
 #include "Structures\StepType.h"
 #include "Structures\GridEntry.h"
-#include "Structures\StepParameters.h"
+#include "Structures\Step.h"
 
 #include "TAS save file\OpenTas.h"
 #include "TAS save file\SaveTas.h"
@@ -229,7 +229,7 @@ protected:
 	void OnTemplateChosen(wxCommandEvent& event);
 	void OnTemplateText(wxCommandEvent& event);
 
-	void TemplateAlterStep(StepParameters& step, const int direction, int x_off, int y_off, int amount_off, int amount_multi);
+	void TemplateAlterStep(Step& step, const int direction, int x_off, int y_off, int amount_off, int amount_multi);
 
 	//Seach
 	void StepSeachOnText(wxCommandEvent& event);
@@ -285,29 +285,29 @@ private:
 	wxArrayString filter_take_put_drop_choices;
 	wxArrayString building_choices;
 
-	map<string, vector<StepParameters>> template_map;
+	map<string, vector<Step>> template_map;
 
 	// Undo and redo
 	void OnUndoMenuSelected(wxCommandEvent& event);
 	void OnRedoMenuSelected(wxCommandEvent& event);
 	CommandStack stack;
-	vector<tuple<int, StepParameters>> GetSelectedRowTuples();
-	tuple<int, StepParameters> GetRowTuple(int index);
-	void SelectRowsInGrid(vector<tuple<int, StepParameters>> rows);
+	vector<tuple<int, Step>> GetSelectedRowTuples();
+	tuple<int, Step> GetRowTuple(int index);
+	void SelectRowsInGrid(vector<tuple<int, Step>> rows);
 
 	void ResetToNewWindow();
 	bool ChecksBeforeResetWindow();
 	bool CheckBeforeClose();
 
 	void MoveRow(wxGrid* grid, bool up = false);
-	void TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<StepParameters>>& map);
-	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
-	bool ChangeRow(wxGrid* grid, StepParameters step);
+	void TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool up, map<string, vector<Step>>& map);
+	bool DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& map);
+	bool ChangeRow(wxGrid* grid, Step step);
 
 	void BackgroundColorUpdate(wxGrid* grid, int row, StepType step);
 
-	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<StepParameters>>& map);
-	void UpdateTemplateGrid(vector<StepParameters>& steps);
+	void UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& map);
+	void UpdateTemplateGrid(vector<Step>& steps);
 	void ClearTemplateGrid(bool disable = true);
 	void TemplatePageStartup();
 
@@ -321,33 +321,33 @@ private:
 	bool AutoSave();
 	bool SaveFile(bool save_as);
 
-	string ExtractStep();
+	string ExtractSteptypeName();
 	string ExtractAmount();
 
 	void malformed_saved_file_message();
 
-	void UpdateStepGrid(int row, StepParameters* stepParameters);
-	GridEntry PrepareStepParametersForGrid(StepParameters* stepParameters);
-	StepParameters ExtractStepParameters();
+	void UpdateStepGrid(int row, Step* step);
+	GridEntry PrepareStepForGrid(Step* step);
+	Step ExtractStep();
 
 	int GenerateBuildingSnapShot(int end_row);
 	void PopulateStepGrid();
 
-	vector<tuple<int, StepParameters>> AddStep(int row, StepParameters step, bool auto_put = true);
-	vector< tuple<int, StepParameters>> ChangeStep(int row, StepParameters stepParameters);
-	vector< tuple<int, StepParameters>> DeleteSteps(wxArrayInt steps, bool auto_confirm = false);
+	vector<tuple<int, Step>> AddStep(int row, Step step, bool auto_put = true);
+	vector< tuple<int, Step>> ChangeStep(int row, Step step);
+	vector< tuple<int, Step>> DeleteSteps(wxArrayInt steps, bool auto_confirm = false);
 	void GridTransfer(wxGrid* from, const int& fromRow, wxGrid* to, const int& toRow);
 	GridEntry ExtractGridEntry(wxGrid* grid, const int& row);
 
-	bool ValidateStep(const int& row, StepParameters& stepParameters, bool validateBuildSteps = true);
-	bool IsValidBuildStep(StepParameters& stepParameters);
-	bool IsValidRecipeStep(StepParameters& stepParameters);
-	bool IsValidCraftStep(StepParameters& stepParameters);
-	bool IsValidPutTakeStep(StepParameters& stepParameters);
-	bool IsValidTechnologyStep(StepParameters& stepParameters);
+	bool ValidateStep(const int& row, Step& step, bool validateBuildSteps = true);
+	bool IsValidBuildStep(Step& step);
+	bool IsValidRecipeStep(Step& step);
+	bool IsValidCraftStep(Step& step);
+	bool IsValidPutTakeStep(Step& step);
+	bool IsValidTechnologyStep(Step& step);
 
-	bool CheckTakePut(StepParameters& stepParameters);
-	bool ExtraBuildingChecks(StepParameters& stepParameters);
+	bool CheckTakePut(Step& step);
+	bool ExtraBuildingChecks(Step& step);
 
 	bool ValidateAllSteps();
 
@@ -357,7 +357,7 @@ private:
 	vector<string> full_assembly_recipes;
 	vector<string> full_chemical_plant_recipes;
 	vector<string> all_recipes;
-	vector<StepParameters> StepGridData;
+	vector<Step> StepGridData;
 	vector<Building> BuildingsSnapShot;
 
 	// holds the current state of some gui elements

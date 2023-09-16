@@ -12,7 +12,7 @@
 
 #include "Shared functions\Functions.h"
 
-#include "Structures\StepParameters.h"
+#include "Structures\Step.h"
 #include "Structures\StepType.h"
 
 #include "Data\BuildingNames.h"
@@ -29,7 +29,7 @@ class GenerateScript
 {
 public:
 	GenerateScript(wxGrid* grid_steps);
-	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<StepParameters> steps, string& folder_location, bool auto_close, string goal, log_config logconfig, generate_config generateconfig);
+	void generate(wxWindow* parent, DialogProgressBar* dialog_progress_bar, vector<Step> steps, string& folder_location, bool auto_close, string goal, log_config logconfig, generate_config generateconfig);
 	const std::string currentDateTime(); // Get current date/time, format is YYYY-MM-DD.HH:mm:ss
 
 private:
@@ -82,8 +82,8 @@ private:
 	/// <param name="step">The index of the step using a start of 1</param>
 	void PaintWalkStep(string step, bool straight, bool diagonal);
 
-	void SetBuildingAndOrientation(StepParameters* stepParameters);
-	void TransferParameters(StepParameters& stepParameters);
+	void SetBuildingAndOrientation(Step* step);
+	void TransferParameters(Step& step);
 
 	const map<string, string> map_translation{
 		{"Passive provider chest", "logistic-chest-passive-provider"},
@@ -146,7 +146,7 @@ private:
 
 	string signature(string step, string action);
 	string Comment(string comment);
-	string Step(string step, string action, string details, string comment);
+	string StepSignature(string step, string action, string details, string comment);
 	WarningsStatesCounters warning_state_counters;
 
 	void walk(string step, string action, string x_cord, string y_cord, string comment);

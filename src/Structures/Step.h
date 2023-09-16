@@ -15,9 +15,9 @@
 using std::string;
 using std::to_string;
 
-struct StepParameters
+struct Step
 {
-	StepParameters(double InitialX, double InitialY);
+	Step(double InitialX, double InitialY);
 
 	double X;
 	double Y;
@@ -48,5 +48,5 @@ struct StepParameters
 	string ToString();
 
 	bool operator==(const Building& toCompare);
-	bool operator==(const StepParameters& toCompare);
+	bool operator==(const Step& toCompare);
 };

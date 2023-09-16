@@ -45,7 +45,7 @@ bool ImportStepsPanel::update_segment()
 	return false;
 }
 
-bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& step_parameters, vector<Building> buildingSnapshot, int buildings_in_snap_shot)
+bool ImportStepsPanel::extract_steps(wxString steps, vector<Step>& step_parameters, vector<Building> buildingSnapshot, int buildings_in_snap_shot)
 {
 	buildingsInSnapShot = buildings_in_snap_shot;
 	int counter = 0;
@@ -62,7 +62,7 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<StepParameters>& ste
 			return false;
 		}
 
-		StepParameters step(invalidX, 0);
+		Step step(invalidX, 0);
 
 		int size = segments.size();
 		if (size < 1) continue;
@@ -218,7 +218,7 @@ void cMain::OnImportStepsIntoStepsBtnClick(wxCommandEvent& event)
 {
 	// validate steps
 	wxString steps = import_steps_text_import->GetValue();
-	vector<StepParameters> step_parameters = {};
+	vector<Step> step_parameters = {};
 
 	// import steps
 	int row = import_steps_into_steps_ctrl->GetValue();
@@ -233,7 +233,7 @@ void cMain::OnImportStepsIntoStepsBtnClick(wxCommandEvent& event)
 
 	for (int i = 0; i < steps_size; i++)
 	{
-		GridEntry gridEntry = PrepareStepParametersForGrid(&step_parameters[i]);
+		GridEntry gridEntry = PrepareStepForGrid(&step_parameters[i]);
 
 		PopulateGrid(grid_steps, start + i, &gridEntry);
 
@@ -306,7 +306,7 @@ void cMain::OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event)
 
 	// validate steps
 	wxString steps = import_steps_text_import->GetValue();
-	vector<StepParameters> step_parameters = {};
+	vector<Step> step_parameters = {};
 	if (!import_steps_panel->extract_steps(steps, step_parameters, BuildingsSnapShot, 0)) return;
 
 	// create template
@@ -318,7 +318,7 @@ void cMain::OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event)
 	cmb_choose_template->SetValue(name);
 	cmb_choose_template->AutoComplete(template_choices);
 
-	auto a = template_map.insert(std::pair<std::string, std::vector<StepParameters>>(name, step_parameters) );
+	auto a = template_map.insert(std::pair<std::string, std::vector<Step>>(name, step_parameters) );
 	for (int i = 0; i < step_parameters.size(); i++) template_map[name].push_back(step_parameters[i]);
 
 	UpdateTemplateGrid(template_map[name]);
