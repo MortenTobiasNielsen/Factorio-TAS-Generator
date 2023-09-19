@@ -119,13 +119,13 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	// set steps grid formatting
 	grid_steps->SetColFormatFloat(1, 4, 2);
 	grid_steps->SetColFormatFloat(2, 4, 2);
-	grid_steps->SetColFormatFloat(3, 4, 2);
+	grid_steps->SetColFormatNumber(3);
 	grid_steps->SetSelectionMode(grid_steps->wxGridSelectRows);
 
 	// set template grid formatting
 	grid_template->SetColFormatFloat(1, 4, 2);
 	grid_template->SetColFormatFloat(2, 4, 2);
-	grid_template->SetColFormatFloat(3, 4, 2);
+	grid_template->SetColFormatNumber(3);
 	grid_template->SetSelectionMode(grid_template->wxGridSelectRows);
 
 	// Checking steel axe as a goal
@@ -597,7 +597,7 @@ vector<tuple<int, Step>> cMain::AddStep(int row, Step step, bool auto_put)
 			to_check = step.Item;
 
 			step.type = e_put;
-			step.Amount = "1";
+			step.amount = 1;
 			if (auto_put)
 			{
 				if (check_furnace->IsChecked() && (to_check == struct_auto_put_furnace_list.stone || to_check == struct_auto_put_furnace_list.steel))
@@ -640,7 +640,7 @@ vector<tuple<int, Step>> cMain::AddStep(int row, Step step, bool auto_put)
 
 			to_check = step.Item;
 			
-			int multiplier = stoi(step.Amount);
+			int multiplier = step.amount;
 
 			if (auto_put && 0 < multiplier && check_recipe->IsChecked())
 			{
@@ -649,7 +649,7 @@ vector<tuple<int, Step>> cMain::AddStep(int row, Step step, bool auto_put)
 				for (int i = 0; i < recipe.size(); i += 2)
 				{
 					step.type = e_put;
-					step.Amount = to_string(stoi(recipe[i + 1]) * multiplier);
+					step.amount = stoi(recipe[i + 1]) * multiplier;
 					step.Item = recipe[i];
 					step.inventory = Input;
 
@@ -1773,23 +1773,22 @@ void cMain::UpdateParameters(GridEntry* gridEntry, wxCommandEvent& event, bool c
 	modifier_split_checkbox->SetValue(modifiers.find("split") != std::string::npos);
 	modifier_all_checkbox->SetValue(modifiers.find("all") != std::string::npos);
 
-	StepType step = ToStepType(gridEntry->Step.ToStdString());
-	int parameters = listStepTypeToParameterChoices[step];
+	StepType type = ToStepType(gridEntry->Step.ToStdString());
+	int parameters = listStepTypeToParameterChoices[type];
 
 	string orientation_string = gridEntry->BuildingOrientation.ToStdString();
 	size_t pos = orientation_string.find(",");
 
 	if (changeType) 
-		UpdateParametersChangeType(event, step);
+		UpdateParametersChangeType(event, type);
 
 	using enum choice_bit_vector;
 	if (parameters & x_coordinate) spin_x->SetValue(gridEntry->X);
 	if (parameters & y_coordinate) spin_y->SetValue(gridEntry->Y);
 	if (parameters & amount) 
 		spin_amount->SetValue(
-			step != e_game_speed ? 
-			gridEntry->Amount : 
-			to_string(round(stof(gridEntry->Amount.ToStdString()) * 100.0))
+			type == e_game_speed ? to_string(stoi(gridEntry->Amount.ToStdString())) :
+			gridEntry->Amount == "All" ? "0" : gridEntry->Amount.ToStdString()
 		);
 	if (parameters & item) cmb_item->SetValue(gridEntry->Item);
 	if (parameters & from_to) cmb_from_into->SetValue(gridEntry->BuildingOrientation);
@@ -1893,7 +1892,7 @@ Step cMain::ExtractStep()
 	auto step = Step(spin_x->GetValue(), spin_y->GetValue());
 
 	step.type = ToStepType(ExtractSteptypeName());
-	step.Amount = ExtractAmount();
+	step.amount = ExtractAmount();
 	step.Item = Capitalize(cmb_item->GetValue(), true);
 	step.inventory = GetInventoryType(Capitalize(cmb_from_into->GetValue()));
 	step.orientation = Capitalize(cmb_building_orientation->GetValue());
@@ -1920,55 +1919,19 @@ Step cMain::ExtractStep()
 	return step;
 }
 
-std::string cMain::ExtractAmount()
+int cMain::ExtractAmount()
 {
 	int amount = spin_amount->GetValue();
 
-	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_pick_up->GetValue()))
-	{
-		return "1";
-	}
-
-	if (amount < 1 && rbtn_recipe->GetValue())
-	{
-		return "0";
-	}
-
-	if (amount < 0 && rbtn_limit->GetValue())
-	{
-		return "0";
-	}
-
 	if (rbtn_filter->GetValue())
 	{
-		if (amount < 1)
-		{
-			return "1";
-		}
-
-		if (amount > 5)
-		{
-			return "5";
-		}
+		return amount < 1 ? 1 : amount > 5 ? 5 : amount;
 	}
-
-	if (rbtn_game_speed->GetValue() || rbtn_stop->GetValue())
+	if (amount < 1 && (rbtn_rotate->GetValue() || rbtn_idle->GetValue() || rbtn_pick_up->GetValue() || rbtn_game_speed->GetValue()))
 	{
-		float speed = static_cast<float>(amount) / 100.0;
-		if (speed < 0.01)
-		{
-			return "0.01";
-		}
-
-		return std::to_string(speed);
+		return 1;
 	}
-
-	if (amount < 1)
-	{
-		return "All";
-	}
-
-	return std::to_string(amount);
+	return amount < 1 ? 0 : amount;
 }
 
 GridEntry cMain::PrepareStepForGrid(Step* step)
@@ -1994,14 +1957,17 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 			break;
 
 		case e_game_speed:
+			gridEntry.Amount = step->AmountGrid();
+			break;
+
 		case e_idle:
 		case e_pick_up:
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			break;
 
 		case e_craft:
 		case e_cancel_crafting:
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			gridEntry.Recipe = step->Item;
 			break;
 
@@ -2014,7 +1980,7 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 		case e_shoot:
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			break;
 
 		case e_walk:
@@ -2032,14 +1998,14 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			break;
 
 		case e_rotate:
 
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			gridEntry.Item = FindBuildingName(step->BuildingIndex);
 			gridEntry.DirectionToBuild = orientation_list[step->Direction];
 			gridEntry.BuildingSize = std::to_string(step->Size);
@@ -2061,7 +2027,7 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 		case e_put:
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			gridEntry.Item = step->Item;
 			gridEntry.Inventory = inventory_types_list[step->inventory];
 			gridEntry.DirectionToBuild = orientation_list[step->Direction];
@@ -2076,7 +2042,7 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 		case e_recipe:
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			gridEntry.Recipe = step->Item;
 			gridEntry.DirectionToBuild = orientation_list[step->Direction];
 			gridEntry.BuildingSize = std::to_string(step->Size);
@@ -2087,7 +2053,7 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 			step->orientation = "Chest";
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			gridEntry.BuildingOrientation = "Chest";
 			gridEntry.DirectionToBuild = orientation_list[step->Direction];
 			gridEntry.BuildingSize = std::to_string(step->Size);
@@ -2112,7 +2078,7 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 		case e_filter:
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
-			gridEntry.Amount = step->Amount;
+			gridEntry.Amount = step->AmountGrid();
 			gridEntry.Item = step->Item;
 			gridEntry.DirectionToBuild = orientation_list[step->Direction];
 			gridEntry.BuildingSize = std::to_string(step->Size);

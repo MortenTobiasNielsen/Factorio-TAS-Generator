@@ -69,7 +69,7 @@ bool ImportStepsPanel::extract_steps(wxString steps, vector<Step>& step_paramete
 		
 		step.OriginalX = step.X = size >= 1 && segments[1] != "" ? stod(segments[1]) : 0;
 		step.OriginalY = step.Y = size >= 2 && segments[2] != "" ? stod(segments[2]) : 0;
-		step.Amount = size >= 3 && segments[3] != "" ? segments[3] == "All" ? "All" : to_string(stoi(segments[3])) : "";
+		step.amount = size >= 3 && segments[3] != "" ? segments[3] == "All" ? 0 : stoi(segments[3]) : 0;
 		step.Item = size >= 4 && segments[4] != "" ? Capitalize(segments[4], true) : "";
 		step.orientation = size >= 5 && segments[5] != "" ? Capitalize(segments[5]) : "";
 		step.Direction = MapStringToOrientation(size >= 6 ? segments[6] : "");

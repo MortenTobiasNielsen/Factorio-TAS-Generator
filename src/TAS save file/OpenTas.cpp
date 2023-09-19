@@ -165,7 +165,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			step.OriginalY = step.Y;
 		}
 
-		step.Amount = Capitalize(segments[3]);
+		step.amount = segments[3] == "" || segments[3] == "All" ? 0 : stoi(segments[3]);
 		step.Item = Capitalize(segments[4], true);
 		step.orientation = Capitalize(segments[5]);
 		step.Direction = MapStringToOrientation(segments[6]);
@@ -233,6 +233,9 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				break;
 			case e_keep_walking:
 				return_data.warnings_states_counters.keep_walking++;
+				break;
+			case e_game_speed:
+				step.amount *= 100;
 				break;
 
 			default:
@@ -317,7 +320,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			step.Buildings = stoi(segments[9]);
 		}
 
-		step.Amount = Capitalize(segments[4]);
+		step.amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.orientation = Capitalize(segments[6]);
 		step.Direction = MapStringToOrientation(segments[7]);
@@ -349,6 +352,9 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			case e_put:
 			case e_take:
 				step.inventory = GetInventoryType(step.orientation);
+				break;
+			case e_game_speed:
+				step.amount *= 100;
 				break;
 			default:
 				break;
@@ -443,7 +449,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 
 		
-		step.Amount = Capitalize(segments[4]);
+		step.amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
 		step.orientation = Capitalize(segments[6]);
 		step.Direction = MapStringToOrientation(segments[7]);
@@ -475,6 +481,9 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			case e_put:
 			case e_take:
 				step.inventory = GetInventoryType(step.orientation);
+				break;
+			case e_game_speed:
+				step.amount *= 100;
 				break;
 			default:
 				break;

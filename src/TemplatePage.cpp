@@ -371,13 +371,9 @@ Orientation tranform(Orientation o, template_direction_choice dir)
 
 void cMain::TemplateAlterStep(Step& step, const int direction, int x_off, int y_off, int amount_off, int amount_multi)
 {
-	if (step.Amount != "" && step.Amount != "All")
+	if (step.amount != 0)
 	{
-		step.Amount = to_string(
-			stoi(step.Amount)
-			* amount_multi
-			+ amount_off
-		);
+		step.amount = step.amount * amount_multi + amount_off;
 	}
 	auto orientation = string_to_orientation.find(step.orientation);
 	if (orientation != string_to_orientation.end())

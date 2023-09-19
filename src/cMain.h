@@ -322,7 +322,7 @@ private:
 	bool SaveFile(bool save_as);
 
 	string ExtractSteptypeName();
-	string ExtractAmount();
+	int ExtractAmount();
 
 	void malformed_saved_file_message();
 
