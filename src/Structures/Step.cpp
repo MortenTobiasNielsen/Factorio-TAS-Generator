@@ -91,7 +91,7 @@ string Step::ToString()
 			return steptype + ";" + ";" + ";" + to_string(amount) + ";" + ";" + ";" + ";" + ";" + string_end;
 
 		case e_build:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation_list[orientation] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_craft:
 			return steptype + ";" + ";" + ";" + to_string(amount) + ";" + Item + ";" + ";" + ";" + ";" + string_end;
@@ -101,7 +101,7 @@ string Step::ToString()
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_limit:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + ";" + "Chest" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_rotate:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
@@ -124,7 +124,7 @@ string Step::ToString()
 			return steptype + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		case e_drop:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + ";" + ";" + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation_list[orientation] + ";" + ";" + ";" + string_end;
 
 		case e_shoot:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + ";" + ";" + ";" + ";" + string_end;
@@ -132,7 +132,7 @@ string Step::ToString()
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		default:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + orientation_list[orientation] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 	}
 }
 
@@ -141,7 +141,7 @@ bool Step::operator==(const Building& toCompare)
 	if (toCompare.X == X && toCompare.Y == Y)
 	{
 		BuildingIndex = toCompare.type;
-		OrientationEnum = toCompare.OrientationEnum;
+		orientation = toCompare.OrientationEnum;
 		return true;
 	}
 

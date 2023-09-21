@@ -1895,7 +1895,7 @@ Step cMain::ExtractStep()
 	step.amount = ExtractAmount();
 	step.Item = Capitalize(cmb_item->GetValue(), true);
 	step.inventory = GetInventoryType(Capitalize(cmb_from_into->GetValue()));
-	step.orientation = Capitalize(cmb_building_orientation->GetValue());
+	step.orientation = MapStringToOrientation(cmb_building_orientation->GetValue());
 	step.Direction = MapStringToOrientation(cmb_direction_to_build->GetValue());
 	step.Size = spin_building_size->GetValue();
 	step.Buildings = spin_building_amount->GetValue();
@@ -1914,7 +1914,7 @@ Step cMain::ExtractStep()
 		.all = modifier_all_checkbox->IsEnabled() && modifier_all_checkbox->GetValue(),
 	};
 
-	
+	step.colour = step_colour_picker->GetColour();
 
 	return step;
 }
@@ -2017,7 +2017,7 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
 			gridEntry.Item = step->Item;
-			gridEntry.BuildingOrientation = step->orientation;
+			gridEntry.BuildingOrientation = orientation_list[step->orientation];
 			gridEntry.DirectionToBuild = orientation_list[step->Direction];
 			gridEntry.BuildingSize = std::to_string(step->Size);
 			gridEntry.AmountOfBuildings = std::to_string(step->Buildings);
@@ -2050,7 +2050,6 @@ GridEntry cMain::PrepareStepForGrid(Step* step)
 			break;
 
 		case e_limit:
-			step->orientation = "Chest";
 			gridEntry.X = std::to_string(step->X);
 			gridEntry.Y = std::to_string(step->Y);
 			gridEntry.Amount = step->AmountGrid();
@@ -2239,12 +2238,6 @@ bool cMain::IsValidBuildStep(Step& step)
 	if (!check_input(step.Item, all_buildings))
 	{
 		wxMessageBox("The item chosen is not valid - please try again", "Please use the item dropdown menu");
-		return false;
-	}
-
-	if (!check_input(step.orientation, orientation_list))
-	{
-		wxMessageBox("The build direction is not valid - please try again", "Please use the build direction dropdown menu");
 		return false;
 	}
 
@@ -2498,8 +2491,6 @@ bool cMain::ValidateAllSteps()
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType.find(step.Item)->second;
-				step.OrientationEnum = MapStringToOrientation(step.orientation);
-
 				buildingsInSnapShot = ProcessBuildStep(BuildingsSnapShot, buildingsInSnapShot, step);
 				break;
 

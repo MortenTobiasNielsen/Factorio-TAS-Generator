@@ -30,7 +30,6 @@ struct Step
 
 	StepModifiers Modifiers;
 
-	Orientation OrientationEnum = North;
 	StepType type = e_stop;
 	InventoryType inventory = Input;
 
@@ -42,7 +41,7 @@ struct Step
 	/// Game speed have amount in percentage
 	int amount = 0;
 	string Item;
-	string orientation;
+	Orientation orientation = North;
 	Orientation Direction = North;
 	PriorityStruct priority;
 	string Comment;

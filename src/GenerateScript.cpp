@@ -462,7 +462,7 @@ void GenerateScript::SetBuildingAndOrientation(Step* step)
 	}
 
 	building = FindBuildingName(step->BuildingIndex);
-	build_orientation = orientation_list[step->OrientationEnum];
+	build_orientation = orientation_list[step->orientation];
 }
 
 void GenerateScript::TransferParameters(Step& step)
@@ -471,7 +471,7 @@ void GenerateScript::TransferParameters(Step& step)
 	y_cord = to_string(step.Y);
 	amount = step.AmountLua();
 	item = step.Item;
-	build_orientation = step.orientation;
+	build_orientation = orientation_list[step.orientation];
 	direction_to_build = orientation_list[step.Direction];
 	building_size = to_string(step.Size);
 	amount_of_buildings = to_string(step.Buildings);
