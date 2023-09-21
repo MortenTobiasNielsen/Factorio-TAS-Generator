@@ -469,7 +469,7 @@ void GenerateScript::TransferParameters(Step& step)
 {
 	x_cord = to_string(step.X);
 	y_cord = to_string(step.Y);
-	amount = step.Amount;
+	amount = step.AmountLua();
 	item = step.Item;
 	build_orientation = step.orientation;
 	direction_to_build = orientation_list[step.Direction];

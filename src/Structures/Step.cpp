@@ -2,12 +2,44 @@
 
 #include "../Data/BuildingNames.h"
 
+#include <format>
+
 Step::Step(double InitialX, double InitialY)
 {
 	X = InitialX;
 	Y = InitialY;
 	OriginalX = InitialX;
 	OriginalY = InitialY;
+}
+
+string Step::AmountLua()
+{
+	if (type == e_game_speed)
+		return to_string(static_cast<float>(amount < 1 ? 1 : amount) / 100.0);
+	else if (amount <= 0)
+	{
+		if (type == e_rotate || type == e_idle || type == e_pick_up)
+			return "1";
+		else if (type == e_mine)
+			return "1000";
+		else
+			return "-1";
+	}
+	else return to_string(amount);
+}
+
+string Step::AmountGrid()
+{
+	if (type == e_game_speed)
+	{
+		return std::format("{}%", amount);
+	}
+	if (amount < 1)
+	{
+		return "All";
+	}
+
+	return to_string(amount);
 }
 
 void Step::Reset()
@@ -50,37 +82,39 @@ string Step::ToString()
 		case e_next:
 			return steptype + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + string_end;
 
-		case e_stop:
 		case e_game_speed:
+			return steptype + ";" + ";" + ";" + to_string(amount / 100) + ";" + ";" + ";" + ";" + ";" + string_end;
+
+		case e_stop:
 		case e_idle:
 		case e_pick_up:
-			return steptype + ";" + ";" + ";" + Amount + ";" + ";" + ";" + ";" + ";" + string_end;
+			return steptype + ";" + ";" + ";" + to_string(amount) + ";" + ";" + ";" + ";" + ";" + string_end;
 
 		case e_build:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_craft:
-			return steptype + ";" + ";" + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + string_end;
+			return steptype + ";" + ";" + ";" + to_string(amount) + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		case e_recipe:
 		case e_filter:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_limit:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_rotate:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_mine:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + ";" + ";" + ";" + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		case e_priority:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + priority.ToString() + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		[[likely]] case e_put:
 		[[likely]] case e_take:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + inventory_types_list[inventory] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + inventory_types_list[inventory] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_launch:
 		[[likely]] case e_walk:
@@ -93,12 +127,12 @@ string Step::ToString()
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation + ";" + ";" + ";" + string_end;
 
 		case e_shoot:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + ";" + ";" + ";" + ";" + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + ";" + ";" + ";" + ";" + string_end;
 		case e_throw:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + ";" + ";" + ";" + string_end;
 
 		default:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + Amount + ";" + Item + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + orientation + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 	}
 }
 
