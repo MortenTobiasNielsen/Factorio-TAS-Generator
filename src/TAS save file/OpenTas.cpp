@@ -167,7 +167,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 
 		step.amount = segments[3] == "" || segments[3] == "All" ? 0 : stoi(segments[3]);
 		step.Item = Capitalize(segments[4], true);
-		step.orientation = Capitalize(segments[5]);
+		step.orientation = MapStringToOrientation(segments[5]);
 		step.Direction = MapStringToOrientation(segments[6]);
 		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
 		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
@@ -189,8 +189,6 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation(step.orientation);
-
 				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
 				break;
 
@@ -199,8 +197,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 				break;
 
 			case e_priority:
-				step.priority.FromString(step.orientation);
-				step.orientation = "";
+				step.priority.FromString(segments[5]);
 
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
@@ -217,7 +214,7 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.inventory = GetInventoryType(step.orientation);
+				step.inventory = GetInventoryType(segments[5]);
 				// Only here to populate extra parameters in step. Actual validation will be done on script generation
 				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
 				break;
@@ -322,7 +319,7 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 
 		step.amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
-		step.orientation = Capitalize(segments[6]);
+		step.orientation = MapStringToOrientation(segments[6]);
 		step.Direction = MapStringToOrientation(segments[7]);
 		step.Comment = comment;
 
@@ -340,18 +337,16 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation(step.orientation);
 				break;
 
 			case e_priority:
-				step.priority.FromString(step.orientation);
-				step.orientation = "";
+				step.priority.FromString(segments[6]);
 				break;
 
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.inventory = GetInventoryType(step.orientation);
+				step.inventory = GetInventoryType(segments[6]);
 				break;
 			case e_game_speed:
 				step.amount *= 100;
@@ -451,7 +446,7 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		
 		step.amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
 		step.Item = Capitalize(segments[5], true);
-		step.orientation = Capitalize(segments[6]);
+		step.orientation = MapStringToOrientation(segments[6]);
 		step.Direction = MapStringToOrientation(segments[7]);
 		step.Comment = comment;
 
@@ -469,18 +464,16 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 		{
 			case e_build:
 				step.BuildingIndex = BuildingNameToType[step.Item];
-				step.OrientationEnum = MapStringToOrientation(step.orientation);
 				break;
 
 			case e_priority:
-				step.priority.FromString(step.orientation);
-				step.orientation = "";
+				step.priority.FromString(segments[6]);
 				break;
 
 			case e_limit:
 			case e_put:
 			case e_take:
-				step.inventory = GetInventoryType(step.orientation);
+				step.inventory = GetInventoryType(segments[6]);
 				break;
 			case e_game_speed:
 				step.amount *= 100;

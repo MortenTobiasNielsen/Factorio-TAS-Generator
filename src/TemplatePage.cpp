@@ -375,9 +375,10 @@ void cMain::TemplateAlterStep(Step& step, const int direction, int x_off, int y_
 	{
 		step.amount = step.amount * amount_multi + amount_off;
 	}
-	auto orientation = string_to_orientation.find(step.orientation);
-	if (orientation != string_to_orientation.end())
-		step.orientation = orientation_list[tranform(orientation->second, (template_direction_choice)direction)];
+
+	auto param = listStepTypeToParameterChoices[step.type];
+	if (param & building_orientation)
+		step.orientation = tranform(step.orientation, (template_direction_choice)direction);
 	
 	step.Direction = tranform(step.Direction, (template_direction_choice)direction);
 
