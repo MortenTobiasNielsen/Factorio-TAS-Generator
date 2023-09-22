@@ -1,6 +1,7 @@
 #include "Step.h"
 
 #include "../Data/BuildingNames.h"
+#include "ParameterChoices.h"
 
 #include <format>
 
@@ -71,34 +72,11 @@ string Step::ToString()
 {
 	const string string_end = ";" + Comment + ";" + colour.GetAsString().ToStdString() + ";" + Modifiers.ToString() + ";";
 	const string steptype = StepNames[type];
+	const int params = listStepTypeToParameterChoices[type];
 	switch (type)
 	{
-		case e_never_idle:
-		case e_keep_crafting:
-		case e_keep_on_path:
-		case e_keep_walking:
-		case e_pause:
-		case e_save:
-		case e_next:
-			return steptype + ";" + ";" + ";" + ";" + ";" + ";" + ";" + ";" + string_end;
-
 		case e_game_speed:
 			return steptype + ";" + ";" + ";" + to_string(amount / 100) + ";" + ";" + ";" + ";" + ";" + string_end;
-
-		case e_stop:
-		case e_idle:
-		case e_pick_up:
-			return steptype + ";" + ";" + ";" + to_string(amount) + ";" + ";" + ";" + ";" + ";" + string_end;
-
-		case e_build:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation_list[orientation] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
-
-		case e_craft:
-			return steptype + ";" + ";" + ";" + to_string(amount) + ";" + Item + ";" + ";" + ";" + ";" + string_end;
-
-		case e_recipe:
-		case e_filter:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
 		case e_limit:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + ";" + "Chest" + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
@@ -112,27 +90,22 @@ string Step::ToString()
 		case e_priority:
 			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + priority.ToString() + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
 
-		[[likely]] case e_put:
-		[[likely]] case e_take:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + inventory_types_list[inventory] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
-
-		case e_launch:
-		[[likely]] case e_walk:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + ";" + ";" + ";" + ";" + string_end;
-
-		case e_tech:
-			return steptype + ";" + ";" + ";" + ";" + Item + ";" + ";" + ";" + ";" + string_end;
-
-		case e_drop:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + orientation_list[orientation] + ";" + ";" + ";" + string_end;
-
-		case e_shoot:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + ";" + ";" + ";" + ";" + string_end;
-		case e_throw:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + ";" + Item + ";" + ";" + ";" + ";" + string_end;
-
 		default:
-			return steptype + ";" + to_string(X) + ";" + to_string(Y) + ";" + to_string(amount) + ";" + Item + ";" + orientation_list[orientation] + ";" + orientation_list[Direction] + ";" + to_string(Size) + ";" + to_string(Buildings) + string_end;
+			return std::format("{};{};{};{};{};{};{};{};{}{}",
+				steptype,
+				params & choice_bit_vector::x_coordinate ? to_string(X) : "",
+				params & choice_bit_vector::y_coordinate ? to_string(Y) : "",
+				params & choice_bit_vector::amount ? to_string(amount) : "",
+				params & choice_bit_vector::item ? Item : "",
+
+				params & choice_bit_vector::from_to ? inventory_types_list[inventory] : 
+					params & choice_bit_vector::building_orientation ? orientation_list[orientation] : "",
+
+				params & choice_bit_vector::direction_to_build ? orientation_list[Direction] : "",
+				params & choice_bit_vector::building_size ? to_string(Size) : "",
+				params & choice_bit_vector::amount_of_buildings ? to_string(Buildings) : "",
+		
+				string_end);
 	}
 }
 
