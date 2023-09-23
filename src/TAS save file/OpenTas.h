@@ -37,27 +37,37 @@ struct open_file_return_data
 
 	wxGridBlockCoordsVector selected_rows;
 
-	bool auto_close_generate_script = false;
-	bool auto_close_open = false;
-	bool auto_close_save = false;
-	bool auto_close_save_as = false;
+	struct
+	{
+		bool generate_script = false,
+			open = false,
+			save = false,
+			save_as = false;
+	} auto_close;
 
-	bool auto_put_furnace = false;
-	bool auto_put_burner = false;
-	bool auto_put_lab = false;
-	bool auto_put_recipe = false;
+	struct
+	{
+		bool furnace = false,
+			burner = false,
+			lab = false,
+			recipe = false;
+	} auto_put;
 
 	log_config logconfig;
 	generate_config generateConfig;
+
 	WarningsStatesCounters warnings_states_counters;
 };
 
-enum Category
+struct OpenTAS
 {
-	Invalid,
-	Group,
-	Template
-};
+	enum Category
+	{
+		Invalid,
+		Group,
+		Template
+	};
+} ;
 
 class OpenTas
 {
@@ -78,7 +88,7 @@ private:
 
 	bool extract_total_steps(std::ifstream& file);
 	bool extract_goal(std::ifstream& file);
-	Category extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
+	OpenTAS::Category extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
 	bool extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
 	bool extract_templates(std::ifstream& file, DialogProgressBar* dialog_progress_bar);
 	bool extract_save_location(std::ifstream& file);
@@ -88,6 +98,6 @@ private:
 	bool extract_generate_config(std::ifstream& file);
 	bool extract_log_config(std::ifstream & file);
 
+	Step ReadStep(const size_t, int&, std::vector<string>::iterator);
 	bool update_segment(std::ifstream& file);
 };
-
