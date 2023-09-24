@@ -23,7 +23,7 @@ namespace parameter_choice_internal
 	/* Common bit vector combinations */
 	const int point = x_coordinate + y_coordinate,
 	priority_io = input + output,
-	multi_build = building_orientation + direction_to_build + building_size + amount_of_buildings,
+	multi_build = direction_to_build + building_size + amount_of_buildings,
 	container = amount + item + from_to,
 	building = point + multi_build + comment;
 }
@@ -56,12 +56,12 @@ const struct parameter_choices_struct
 	_throw = point | item | comment;
 
 	//building interactions
-	const int build = building | item,
-	take = building - building_orientation | container,
-	put = building - building_orientation | container,
+	const int build = building | item | building_orientation,
+	take = building | container,
+	put = building | container,
 	rotate = building | amount,
 	limit = building | amount,
-	priority = building - building_orientation | priority_io,
+	priority = building | priority_io,
 	recipe = building | amount | item,
 	filter = building | amount | item,
 	launch = point | comment,

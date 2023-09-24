@@ -33,12 +33,12 @@ struct Step
 	StepType type = e_stop;
 	InventoryType inventory = Input;
 
-	/// Amount: unsigned int
-	/// 0 is used for All
-	/// Filter: 1 <= amount <= 5
-	/// Idle, rotate, pickup: amount <= 1
-	/// Rotate: amount == 3, implies reverse rotation
-	/// Game speed have amount in percentage
+	/* Amount: unsigned int
+	* 0 is used for All
+	* Filter: 1 <= amount <= 5
+	* Idle, rotate, pickup: amount <= 1
+	* Rotate: amount == 3, implies reverse rotation
+	* Game speed have amount in percentage */
 	int amount = 0;
 	string Item;
 	Orientation orientation = North;
