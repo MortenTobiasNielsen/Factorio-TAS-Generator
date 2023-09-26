@@ -1271,22 +1271,22 @@ void cMain::Open(std::ifstream * file)
 	generate_config generateConfig = result->generateConfig;
 	legacy_mining->Check(generateConfig.legacy_mining);
 
-	menu_auto_close->GetMenuItems()[0]->Check(result->auto_close_generate_script);
-	auto_close_generate_script = result->auto_close_generate_script;
+	menu_auto_close->GetMenuItems()[0]->Check(result->auto_close.generate_script);
+	auto_close_generate_script = result->auto_close.generate_script;
 
-	menu_auto_close->GetMenuItems()[1]->Check(result->auto_close_open);
-	auto_close_open = result->auto_close_open;
+	menu_auto_close->GetMenuItems()[1]->Check(result->auto_close.open);
+	auto_close_open = result->auto_close.open;
 
-	menu_auto_close->GetMenuItems()[2]->Check(result->auto_close_save);
-	auto_close_save = result->auto_close_save;
+	menu_auto_close->GetMenuItems()[2]->Check(result->auto_close.save);
+	auto_close_save = result->auto_close.save;
 
-	menu_auto_close->GetMenuItems()[3]->Check(result->auto_close_save_as);
-	auto_close_save_as = result->auto_close_save_as;
+	menu_auto_close->GetMenuItems()[3]->Check(result->auto_close.save_as);
+	auto_close_save_as = result->auto_close.save_as;
 
-	check_furnace->SetValue(result->auto_put_furnace);
-	check_burner->SetValue(result->auto_put_burner);
-	check_lab->SetValue(result->auto_put_lab);
-	check_recipe->SetValue(result->auto_put_recipe);
+	check_furnace->SetValue(result->auto_put.furnace);
+	check_burner->SetValue(result->auto_put.burner);
+	check_lab->SetValue(result->auto_put.lab);
+	check_recipe->SetValue(result->auto_put.recipe);
 
 	PopulateStepGrid();
 

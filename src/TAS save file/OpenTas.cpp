@@ -25,20 +25,21 @@ open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std
 		return &return_data;
 	}
 
-	Category category = extract_steps(file, dialog_progress_bar);
+	OpenTAS::Category category = extract_steps(file, dialog_progress_bar);
 	switch (category)
 	{
-		case Invalid:
+		case OpenTAS::Invalid:
 			return &return_data;
 
-		case Group:
+		case OpenTAS::Group:
 			if (!extract_groups(file, dialog_progress_bar))
 			{
 				return &return_data;
 			}
 
 			// fallthrough so tamplate is also done, if groups are in the save file
-		case Template:
+			[[fallthrough]]; 
+		case OpenTAS::Template:
 			if (!extract_templates(file, dialog_progress_bar))
 			{
 				return &return_data;
@@ -113,11 +114,11 @@ bool OpenTas::extract_goal(std::ifstream& file)
 	return true;
 }
 
-Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
+OpenTAS::Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
 {
 	if (!update_segment(file) || (segments[0] != steps_indicator && segments[0] != "Tasks:"))
 	{
-		return Invalid;
+		return OpenTAS::Invalid;
 	}
 
 	return_data.steps.reserve(total_lines);
@@ -143,103 +144,28 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		{
 			if (segment_size >= 0 && segments[0] == save_templates_indicator)
 			{
-				return Template;
+				return OpenTAS::Template;
 			}
 			else if (segment_size >= 0 && segments[0] == save_groups_indicator)
 			{
-				return Group;
+				return OpenTAS::Group;
 			}
 			else
 			{
-				return Invalid;
+				return OpenTAS::Invalid;
 			}
 		}
-
-		Step step(invalidX, 0);
-
-		if (segments[1] != "")
-		{
-			step.X = stod(segments[1]);
-			step.OriginalX = step.X;
-			step.Y = stod(segments[2]);
-			step.OriginalY = step.Y;
-		}
-
-		step.amount = segments[3] == "" || segments[3] == "All" ? 0 : stoi(segments[3]);
-		step.Item = Capitalize(segments[4], true);
-		step.orientation = MapStringToOrientation(segments[5]);
-		step.Direction = MapStringToOrientation(segments[6]);
-		step.Size = segments[7] != "" ? stoi(segments[7]) : 1;
-		step.Buildings = segments[8] != "" ? stoi(segments[8]) : 1;
-		step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? segments[9] : "";
-		step.colour = segment_size == step_segment_size && segments[10] != "" ? wxColour(segments[10]) : wxNullColour;
-		step.Modifiers.FromString(segment_size == step_segment_size ? segments[11] : "");
-
+		
 		try
 		{
-			step.type = ToStepType(segments[0]);
+			Step step = ReadStep(segment_size, buildingsInSnapShot, segments.begin());
+			return_data.steps.push_back(step);
 		}
 		catch (...)
 		{
 			if (segments[0] == "Start" || segments[0] == "start") continue; // Ignore start steps, given that they are obsolete.
-			else return Invalid;
+			else return OpenTAS::Invalid;
 		}
-
-		switch (step.type)
-		{
-			case e_build:
-				step.BuildingIndex = BuildingNameToType[step.Item];
-				buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
-				break;
-
-			case e_mine:
-				ProcessMiningStep(buildingSnapshot, buildingsInSnapShot, step);
-				break;
-
-			case e_priority:
-				step.priority.FromString(segments[5]);
-
-				// Only here to populate extra parameters in step. Actual validation will be done on script generation
-				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
-				break;
-
-			case e_recipe:
-			case e_filter:
-			case e_rotate:
-			case e_launch:
-				// Only here to populate extra parameters in step. Actual validation will be done on script generation
-				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
-				break;
-
-			case e_limit:
-			case e_put:
-			case e_take:
-				step.inventory = GetInventoryType(segments[5]);
-				// Only here to populate extra parameters in step. Actual validation will be done on script generation
-				BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
-				break;
-
-			case e_never_idle:
-				return_data.warnings_states_counters.never_idle++;
-				break;
-			case e_keep_on_path:
-				return_data.warnings_states_counters.keep_on_path++;
-				break;
-			case e_keep_crafting:
-				return_data.warnings_states_counters.keep_crafting++;
-				break;
-			case e_keep_walking:
-				return_data.warnings_states_counters.keep_walking++;
-				break;
-			case e_game_speed:
-				step.amount *= 100;
-				break;
-
-			default:
-				break;
-		}
-
-		return_data.steps.push_back(step);
 
 		lines_processed++;
 
@@ -250,7 +176,87 @@ Category OpenTas::extract_steps(std::ifstream& file, DialogProgressBar* dialog_p
 		}
 	}
 
-	return Invalid;
+	return OpenTAS::Invalid;
+}
+
+Step OpenTas::ReadStep(const size_t segment_size, int& buildingsInSnapShot, std::vector<string>::iterator step_segments)
+{
+	Step step(invalidX, 0);
+
+	if (step_segments[1] != "")
+	{
+		step.X = stod(step_segments[1]);
+		step.OriginalX = step.X;
+		step.Y = stod(step_segments[2]);
+		step.OriginalY = step.Y;
+	}
+
+	step.amount = step_segments[3] == "" || step_segments[3] == "All" ? 0 : stoi(step_segments[3]);
+	step.Item = Capitalize(step_segments[4], true);
+	step.orientation = MapStringToOrientation(step_segments[5]);
+	step.Direction = MapStringToOrientation(step_segments[6]);
+	step.Size = step_segments[7] != "" ? stoi(step_segments[7]) : 1;
+	step.Buildings = step_segments[8] != "" ? stoi(step_segments[8]) : 1;
+	step.Comment = segment_size == step_segment_size || segment_size == step_segment_size_without_colour ? step_segments[9] : "";
+	step.colour = segment_size == step_segment_size && step_segments[10] != "" ? wxColour(step_segments[10]) : wxNullColour;
+	step.Modifiers.FromString(segment_size == step_segment_size ? step_segments[11] : "");
+		
+	step.type = ToStepType(step_segments[0]);
+	switch (step.type)
+	{
+		case e_build:
+			step.BuildingIndex = BuildingNameToType[step.Item];
+			if (buildingsInSnapShot > -1) buildingsInSnapShot = ProcessBuildStep(buildingSnapshot, buildingsInSnapShot, step);
+			break;
+
+		case e_mine:
+			if (buildingsInSnapShot > -1) ProcessMiningStep(buildingSnapshot, buildingsInSnapShot, step);
+			break;
+
+		case e_priority:
+			step.priority.FromString(step_segments[5]);
+
+			// Only here to populate extra parameters in step. Actual validation will be done on script generation
+			if (buildingsInSnapShot > -1) BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
+			break;
+
+		case e_limit:
+		case e_put:
+		case e_take:
+			step.inventory = GetInventoryType(step_segments[5]);
+			// Only here to populate extra parameters in step. Actual validation will be done on script generation
+			if (buildingsInSnapShot > -1) BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
+			break;
+
+		case e_recipe:
+		case e_filter:
+		case e_rotate:
+		case e_launch:
+			// Only here to populate extra parameters in step. Actual validation will be done on script generation
+			if (buildingsInSnapShot > -1) BuildingExists(buildingSnapshot, buildingsInSnapShot, step);
+			break;
+
+		case e_never_idle:
+			if (buildingsInSnapShot > -1) return_data.warnings_states_counters.never_idle++;
+			break;
+		case e_keep_on_path:
+			if (buildingsInSnapShot > -1) return_data.warnings_states_counters.keep_on_path++;
+			break;
+		case e_keep_crafting:
+			if (buildingsInSnapShot > -1) return_data.warnings_states_counters.keep_crafting++;
+			break;
+		case e_keep_walking:
+			if (buildingsInSnapShot > -1) return_data.warnings_states_counters.keep_walking++;
+			break;
+		case e_game_speed:
+			step.amount *= 100;
+			break;
+
+		default:
+			break;
+	}
+
+	return step;
 }
 
 bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_progress_bar)
@@ -291,71 +297,17 @@ bool OpenTas::extract_groups(std::ifstream& file, DialogProgressBar* dialog_prog
 			steps = {};
 		}
 
-		string comment = "";
-		if (segments.size() == group_segment_size)
-		{
-			comment = segments[10];
-		}
-
-		Step step(invalidX, 0);
-
-		if (segments[2] != "")
-		{
-			step.X = stod(segments[2]);
-			step.OriginalX = stod(segments[2]);
-			step.Y = stod(segments[3]);
-			step.OriginalY = stod(segments[3]);
-		}
-
-		if (segments[8] != "")
-		{
-			step.Size = stoi(segments[8]);
-		}
-
-		if (segments[9] != "")
-		{
-			step.Buildings = stoi(segments[9]);
-		}
-
-		step.amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
-		step.Item = Capitalize(segments[5], true);
-		step.orientation = MapStringToOrientation(segments[6]);
-		step.Direction = MapStringToOrientation(segments[7]);
-		step.Comment = comment;
-
 		try
 		{
-			step.type = ToStepType(segments[1]);
+			int i = -1; // used to ignore control steps
+			Step step = ReadStep(segments.size(), i, segments.begin() + 1);
+			steps.push_back(step);
 		}
 		catch (...)
 		{
 			if (segments[1] == "Start" || segments[1] == "start") continue; // Ignore start steps, given that they are obsolete.
-			else return Invalid;
+			else return OpenTAS::Invalid;
 		}
-
-		switch (step.type)
-		{
-			case e_build:
-				step.BuildingIndex = BuildingNameToType[step.Item];
-				break;
-
-			case e_priority:
-				step.priority.FromString(segments[6]);
-				break;
-
-			case e_limit:
-			case e_put:
-			case e_take:
-				step.inventory = GetInventoryType(segments[6]);
-				break;
-			case e_game_speed:
-				step.amount *= 100;
-				break;
-			default:
-				break;
-		}
-
-		steps.push_back(step);
 
 		lines_processed++;
 
@@ -417,72 +369,17 @@ bool OpenTas::extract_templates(std::ifstream& file, DialogProgressBar* dialog_p
 			steps = {};
 		}
 
-		string comment = "";
-		if (segments.size() == template_segment_size)
-		{
-			comment = segments[10];
-		}
-
-		Step step(invalidX, 0);
-
-		if (segments[2] != "")
-		{
-			step.X = stod(segments[2]);
-			step.OriginalX = stod(segments[2]);
-			step.Y = stod(segments[3]);
-			step.OriginalY = stod(segments[3]);
-		}
-
-		if (segments[8] != "")
-		{
-			step.Size = stoi(segments[8]);
-		}
-
-		if (segments[9] != "")
-		{
-			step.Buildings = stoi(segments[9]);
-		}
-
-		
-		step.amount = segments[4] == "" || segments[4] == "All" ? 0 : stoi(segments[4]);
-		step.Item = Capitalize(segments[5], true);
-		step.orientation = MapStringToOrientation(segments[6]);
-		step.Direction = MapStringToOrientation(segments[7]);
-		step.Comment = comment;
-
 		try
 		{
-			step.type = ToStepType(segments[1]);
+			int i = -1; // used to ignore control steps
+			Step step = ReadStep(segments.size(), i, segments.begin() + 1);
+			steps.push_back(step);
 		}
 		catch (...)
 		{
 			if (segments[1] == "Start" || segments[1] == "start") continue; // Ignore start steps, given that they are obsolete.
-			else return Invalid;
+			else return OpenTAS::Invalid;
 		}
-
-		switch (step.type)
-		{
-			case e_build:
-				step.BuildingIndex = BuildingNameToType[step.Item];
-				break;
-
-			case e_priority:
-				step.priority.FromString(segments[6]);
-				break;
-
-			case e_limit:
-			case e_put:
-			case e_take:
-				step.inventory = GetInventoryType(segments[6]);
-				break;
-			case e_game_speed:
-				step.amount *= 100;
-				break;
-			default:
-				break;
-		}
-
-		steps.push_back(step);
 
 		lines_processed++;
 
@@ -535,28 +432,28 @@ bool OpenTas::extract_auto_close(std::ifstream& file)
 		return false;
 	}
 
-	return_data.auto_close_generate_script = segments[1] == "true";
+	return_data.auto_close.generate_script = segments[1] == "true";
 
 	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_close_open_text)
 	{
 		return false;
 	}
 
-	return_data.auto_close_open = segments[1] == "true";
+	return_data.auto_close.open = segments[1] == "true";
 
 	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_close_save_text)
 	{
 		return false;
 	}
 
-	return_data.auto_close_save = segments[1] == "true";
+	return_data.auto_close.save = segments[1] == "true";
 
 	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_close_save_as_text)
 	{
 		return false;
 	}
 
-	return_data.auto_close_save_as = segments[1] == "true";
+	return_data.auto_close.save_as = segments[1] == "true";
 
 	return true;
 }
@@ -573,28 +470,28 @@ bool OpenTas::extract_auto_put(std::ifstream& file)
 		return false;
 	}
 
-	return_data.auto_put_furnace = segments[1] == "true";
+	return_data.auto_put.furnace = segments[1] == "true";
 
 	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_put_burner_text)
 	{
 		return false;
 	}
 
-	return_data.auto_put_burner = segments[1] == "true";
+	return_data.auto_put.burner = segments[1] == "true";
 
 	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_put_lab_text)
 	{
 		return false;
 	}
 
-	return_data.auto_put_lab = segments[1] == "true";
+	return_data.auto_put.lab = segments[1] == "true";
 
 	if (!update_segment(file) || segments.size() != 2 || segments[0] != auto_put_recipe_text)
 	{
 		return false;
 	}
 
-	return_data.auto_put_recipe = segments[1] == "true";
+	return_data.auto_put.recipe = segments[1] == "true";
 
 	return true;
 }
