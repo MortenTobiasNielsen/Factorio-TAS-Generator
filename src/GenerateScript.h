@@ -34,6 +34,7 @@ public:
 
 private:
 	string name;
+	generate_config generateconfig;
 
 	wxGrid* grid_steps;
 	string step_list;

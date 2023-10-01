@@ -1125,9 +1125,11 @@ struct log_config
 struct generate_config
 {
 	bool legacy_mining = false;
+	bool intermediate_walk_towards = false;
+	bool no_intermediate_walk = false;
 	std::string to_string()
 	{
-		return std::to_string(legacy_mining) + ";";
+		return std::to_string(legacy_mining) + ";" + std::to_string(intermediate_walk_towards) + ";" + std::to_string(no_intermediate_walk) + ";";
 	}
 };
 

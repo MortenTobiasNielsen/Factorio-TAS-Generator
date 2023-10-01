@@ -1393,6 +1393,8 @@ void cMain::Open(std::ifstream * file)
 
 	generate_config generateConfig = result->generateConfig;
 	legacy_mining->Check(generateConfig.legacy_mining);
+	intermediate_walk_towards->Check(generateConfig.intermediate_walk_towards);
+	no_intermediate_walk->Check(generateConfig.no_intermediate_walk);
 
 	menu_auto_close->GetMenuItems()[0]->Check(result->auto_close.generate_script);
 	auto_close_generate_script = result->auto_close.generate_script;
@@ -1613,6 +1615,8 @@ generate_config cMain::GetGenerateConfig()
 {
 	return generate_config{
 		.legacy_mining = legacy_mining->IsChecked(),
+		.intermediate_walk_towards = intermediate_walk_towards->IsChecked(),
+		.no_intermediate_walk = no_intermediate_walk->IsChecked(),
 	};
 }
 
