@@ -76,3 +76,17 @@ Orientation static MapStringToOrientation(const wxString str)
 {
 	return MapStringToOrientation(str.ToStdString());
 }
+
+bool static MapStringToOrientation(const std::string str, Orientation& orientation)
+{
+	auto mapped = string_to_orientation.find(str);
+	if (mapped == string_to_orientation.end())
+		return false;
+	orientation = mapped->second;
+	return true;
+}
+
+bool static MapStringToOrientation(const wxString str, Orientation& orientation)
+{
+	return MapStringToOrientation(str.ToStdString(), orientation);
+}

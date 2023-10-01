@@ -119,13 +119,16 @@ cMain::cMain() : GUI_Base(nullptr, wxID_ANY, window_title, wxPoint(30, 30), wxSi
 	// set steps grid formatting
 	grid_steps->SetColFormatFloat(1, 4, 2);
 	grid_steps->SetColFormatFloat(2, 4, 2);
-	grid_steps->SetColFormatNumber(3);
+	grid_steps->SetColFormatNumber(8);
+	grid_steps->SetColFormatNumber(9);
 	grid_steps->SetSelectionMode(grid_steps->wxGridSelectRows);
 
 	// set template grid formatting
 	grid_template->SetColFormatFloat(1, 4, 2);
 	grid_template->SetColFormatFloat(2, 4, 2);
 	grid_template->SetColFormatNumber(3);
+	grid_steps->SetColFormatNumber(8);
+	grid_steps->SetColFormatNumber(9);
 	grid_template->SetSelectionMode(grid_template->wxGridSelectRows);
 
 	// Checking steel axe as a goal
@@ -222,6 +225,126 @@ void cMain::HandleFocusMode(bool checked, bool changed)
 		}
 		grid_steps->EndBatch();
 	}
+}
+
+void cMain::OnStepsGridCellChange(wxGridEvent& event)
+{
+	auto row = event.GetRow();
+	auto col = event.GetCol();
+	auto old_string = event.GetString();
+	auto new_string = grid_steps->GetCellValue(row, col);
+	bool success = false;
+
+	vector< tuple<int, Step>> change{};
+	change.push_back({ row, StepGridData[row] });
+
+	Step& step = StepGridData[row];
+	switch (col) {
+	case 1:
+		success = new_string.ToDouble(&step.OriginalX);
+		step.X = success ? step.OriginalX : step.X;
+		break;
+
+	case 2:
+		success = new_string.ToDouble(&step.OriginalY);
+		step.Y = success ? step.OriginalY : step.Y;
+		break;
+
+	case 3:
+		success = new_string.ToInt(&step.amount) && step.amount >= 0;
+		if (success && step.amount == 0) grid_steps->SetCellValue(row, col, "All");
+		break;
+		
+	case 4:
+	{
+		auto new_item = new_string.ToStdString();
+		auto items = &all_items;
+		switch (step.type) {
+		case e_build: 
+			items = &all_buildings;  break;
+		case e_craft:
+		case e_cancel_crafting:
+			items = &handcrafted_list; 
+			break;
+		}
+		for (auto& item : *items)
+		{
+			if (new_item == item) {
+				step.Item = new_item;
+				success = true;
+				break;
+			}
+		}
+		break;
+	}
+
+	case 5:
+		switch (step.type)
+		{
+		case e_build:
+			success = MapStringToOrientation(new_string, step.orientation);
+			break;
+		case e_put:
+		case e_take:
+			try {
+				step.inventory = GetInventoryType(new_string.ToStdString());
+				success = true;
+			} catch (...) {}
+			break;
+		}
+		break;
+
+	case 6: // modifiers
+		step.Modifiers.FromString(new_string.ToStdString());
+		grid_steps->SetCellValue(row, col, step.Modifiers.ToString());
+		success = true;
+		break;
+		
+	case 7:
+		success = MapStringToOrientation(new_string, step.Direction);
+		break;
+
+	case 8:
+		success = new_string.ToInt(&step.Size);
+		break;
+
+	case 9:
+		success = new_string.ToInt(&step.Buildings);
+		break;
+
+	case 10:
+		step.Comment = new_string.ToStdString();
+		success = true;
+		break;
+	}
+
+	if (!success) grid_steps->SetCellValue(row, col, old_string);
+	else {
+		no_changes = false;
+		change.push_back({ row, step });
+		stack.Push({
+			.row = row,
+			.type = T_MODIFY,
+			.rows = change
+			}
+		);
+	}
+}
+
+void cMain::OnStepsGridEditorShown(wxGridEvent& event)
+{
+	auto row = event.GetRow();
+	auto col = event.GetCol();
+	
+	if (col == 0) 
+	{
+		grid_steps->SetReadOnly(row, col);
+		event.Veto();
+	}
+}
+
+void cMain::OnStepsGridEditorHidden(wxGridEvent& event)
+{
 }
 
 void cMain::StepSeachOnText(wxCommandEvent& event)

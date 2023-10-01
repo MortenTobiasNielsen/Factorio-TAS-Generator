@@ -1428,7 +1428,7 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Grid
 	grid_steps->CreateGrid( 0, 11 );
-	grid_steps->EnableEditing( false );
+	grid_steps->EnableEditing( true );
 	grid_steps->EnableGridLines( true );
 	grid_steps->EnableDragGridSize( false );
 	grid_steps->SetMargins( 0, 0 );
@@ -1721,8 +1721,11 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	btn_move_up->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
 	btn_move_down->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
+	grid_steps->Connect( wxEVT_GRID_CELL_CHANGED, wxGridEventHandler( GUI_Base::OnStepsGridCellChange ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_CELL_RIGHT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleRightClick ), NULL, this );
+	grid_steps->Connect( wxEVT_GRID_EDITOR_HIDDEN, wxGridEventHandler( GUI_Base::OnStepsGridEditorHidden ), NULL, this );
+	grid_steps->Connect( wxEVT_GRID_EDITOR_SHOWN, wxGridEventHandler( GUI_Base::OnStepsGridEditorShown ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_LABEL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_LABEL_RIGHT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleRightClick ), NULL, this );
 	grid_steps->Connect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
@@ -1815,8 +1818,11 @@ GUI_Base::~GUI_Base()
 	btn_move_up->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveUpFiveClicked ), NULL, this );
 	btn_move_down->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnMoveDownClicked ), NULL, this );
 	btn_move_down->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( GUI_Base::OnMoveDownFiveClicked ), NULL, this );
+	grid_steps->Disconnect( wxEVT_GRID_CELL_CHANGED, wxGridEventHandler( GUI_Base::OnStepsGridCellChange ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_CELL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_CELL_RIGHT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleRightClick ), NULL, this );
+	grid_steps->Disconnect( wxEVT_GRID_EDITOR_HIDDEN, wxGridEventHandler( GUI_Base::OnStepsGridEditorHidden ), NULL, this );
+	grid_steps->Disconnect( wxEVT_GRID_EDITOR_SHOWN, wxGridEventHandler( GUI_Base::OnStepsGridEditorShown ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_LABEL_LEFT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleLeftClick ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_LABEL_RIGHT_DCLICK, wxGridEventHandler( GUI_Base::OnStepsGridDoubleRightClick ), NULL, this );
 	grid_steps->Disconnect( wxEVT_GRID_RANGE_SELECT, wxGridRangeSelectEventHandler( GUI_Base::OnStepsGridRangeSelect ), NULL, this );
