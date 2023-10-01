@@ -10101,7 +10101,7 @@
                                             <property name="drag_col_size">1</property>
                                             <property name="drag_grid_size">0</property>
                                             <property name="drag_row_size">0</property>
-                                            <property name="editing">0</property>
+                                            <property name="editing">1</property>
                                             <property name="enabled">1</property>
                                             <property name="fg"></property>
                                             <property name="floatable">1</property>
@@ -10145,8 +10145,11 @@
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
+                                            <event name="OnGridCellChange">OnStepsGridCellChange</event>
                                             <event name="OnGridCellLeftDClick">OnStepsGridDoubleLeftClick</event>
                                             <event name="OnGridCellRightDClick">OnStepsGridDoubleRightClick</event>
+                                            <event name="OnGridEditorHidden">OnStepsGridEditorHidden</event>
+                                            <event name="OnGridEditorShown">OnStepsGridEditorShown</event>
                                             <event name="OnGridLabelLeftDClick">OnStepsGridDoubleLeftClick</event>
                                             <event name="OnGridLabelRightDClick">OnStepsGridDoubleRightClick</event>
                                             <event name="OnGridRangeSelect">OnStepsGridRangeSelect</event>

@@ -210,6 +210,10 @@ protected:
 	void OnStepsFocusCheckbox(wxCommandEvent & event);
 	void HandleFocusMode(bool checked, bool changed = false);
 
+	void OnStepsGridCellChange(wxGridEvent& event);
+	void OnStepsGridEditorShown(wxGridEvent& event);
+	void OnStepsGridEditorHidden(wxGridEvent& event);
+
 	// Template
 	void OnNewTemplateClicked(wxCommandEvent& event);
 	void OnDeleteTemplateClicked(wxCommandEvent& event);

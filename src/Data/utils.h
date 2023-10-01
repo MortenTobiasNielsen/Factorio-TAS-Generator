@@ -458,7 +458,7 @@ static const map<string, vector<float>> old_building_size_list = {
 	{"Wreck", {1, 1}}
 };
 
-static const std::vector<std::string> handcrafted_list = {
+static std::vector<std::string> handcrafted_list = {
 	"Accumulator",
 	"Wooden chest",
 	"Iron chest",

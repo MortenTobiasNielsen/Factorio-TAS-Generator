@@ -345,8 +345,11 @@ class GUI_Base : public wxFrame
 		virtual void OnMoveUpFiveClicked( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnMoveDownFiveClicked( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnStepsGridCellChange( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleLeftClick( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridDoubleRightClick( wxGridEvent& event ) { event.Skip(); }
+		virtual void OnStepsGridEditorHidden( wxGridEvent& event ) { event.Skip(); }
+		virtual void OnStepsGridEditorShown( wxGridEvent& event ) { event.Skip(); }
 		virtual void OnStepsGridRangeSelect( wxGridRangeSelectEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoStepsIndexBtnClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoStepsIndexBtnRight( wxMouseEvent& event ) { event.Skip(); }
