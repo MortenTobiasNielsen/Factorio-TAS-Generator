@@ -502,6 +502,8 @@ bool OpenTas::extract_generate_config(std::ifstream& file)
 	{
 		return_data.generateConfig = {
 			.legacy_mining = false,
+			.intermediate_walk_towards = false,
+			.no_intermediate_walk = false,
 		};
 		return true;
 	}
@@ -512,6 +514,8 @@ bool OpenTas::extract_generate_config(std::ifstream& file)
 	size_t s = segments.size();
 	return_data.generateConfig = {
 		.legacy_mining = s < 2 || segments[1] == "1" ? true : false,
+		.intermediate_walk_towards = s < 3 || segments[2] == "1" ? true : false,
+		.no_intermediate_walk = s < 4 || segments[3] == "1" ? true : false,
 	};
 	return true;
 }
