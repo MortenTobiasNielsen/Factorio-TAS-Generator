@@ -15,7 +15,7 @@ static const double invalidX = 0.3543534;
 static const struct
 {
 	string name = "Factorio TAS Generator";
-	string version = "0.3.0";
+	string version = "0.4.0";
 } generator_thumbprint;
 
 static const vector<string> fuel_list = {
