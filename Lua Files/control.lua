@@ -1439,6 +1439,11 @@ local function execute_StepBlock()
 	elseif (game.tick - global.step_block_info.start_tick) > (25 * global.step_block_info.total_steps) then
 		Warning = original_warning
 		Error("Catastrofic execution of No order step block. Exceeeded ".. (25 * global.step_block_info.total_steps) .. " ticks.")
+		for i = 1, #global.step_block do
+			_step_index = global.step_block[i]
+			_step = steps[_step_index]
+			Warning(string.format("Executed %d - Type: %s, Step: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index), true)
+		end
 		run = false
 	end
 end
