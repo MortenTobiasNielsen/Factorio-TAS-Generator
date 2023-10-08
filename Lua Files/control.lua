@@ -1059,9 +1059,17 @@ local function tech()
 	return true
 end
 
+local function raise_state_change()
+	script.raise_event(tas_state_change, {
+		is_running = run,
+		tick = game.tick,
+	})
+end
+
 local function pause()
 	game.tick_paused = true
 	run = false
+	raise_state_change()
 	return true
 end
 
@@ -1436,15 +1444,17 @@ local function execute_StepBlock()
 		global.step_block_info = nil
 		Warning = original_warning
 		Debug("Ending step block")
-	elseif (game.tick - global.step_block_info.start_tick) > (25 * global.step_block_info.total_steps) then
+	elseif (game.tick - global.step_block_info.start_tick) > (15 * global.step_block_info.total_steps) then
 		Warning = original_warning
-		Error("Catastrofic execution of No order step block. Exceeeded ".. (25 * global.step_block_info.total_steps) .. " ticks.")
+		Error("Catastrofic execution of No order step block. Exceeeded ".. (15 * global.step_block_info.total_steps) .. " ticks.")
+		Warning(string.format("Failed to execute %d steps", #global.step_block))
 		for i = 1, #global.step_block do
 			_step_index = global.step_block[i]
 			_step = steps[_step_index]
-			Warning(string.format("Executed %d - Type: %s, Step: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index), true)
+			Warning(string.format("Step %d failed - Type: %s, substep: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index))
 		end
 		run = false
+		raise_state_change()
 	end
 end
 
@@ -1454,6 +1464,7 @@ local function handle_pretick()
 	while run do
 		if steps[step] == nil then
 			run = false
+			raise_state_change()
 			return
 		elseif (steps[step][2] == "speed") then
 			if LOGLEVEL < 2 then
@@ -1671,6 +1682,7 @@ local function handle_posttick()
 	elseif steps[step] == nil or steps[step][1] == "break" then
 		Message(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 		run = false
+		raise_state_change()
 		return
 	end
 end
@@ -2075,13 +2087,6 @@ script.on_load(function ()
 	migrate_global()
 	if player then player.clear_console() end
 end)
-
-local function raise_state_change()
-	script.raise_event(tas_state_change, {
-		is_running = run,
-		tick = game.tick,
-	})
-end
 
 local function release()
 	run = false
