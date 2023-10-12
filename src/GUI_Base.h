@@ -207,6 +207,11 @@ class GUI_Base : public wxFrame
 		wxButton* import_steps_into_template_btn;
 		wxCheckBox* import_steps_clear_checkbox;
 		wxTextCtrl* import_steps_text_import;
+		wxPanel* reorder_panel;
+		wxButton* reorder_reorder_button;
+		wxCheckBox* reorder_text_input_clear_checkbox;
+		wxButton* reorder_locator_button;
+		wxTextCtrl* reorder_text_input;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void OnApplicationClose( wxCloseEvent& event ) { event.Skip(); }
@@ -362,6 +367,9 @@ class GUI_Base : public wxFrame
 		virtual void OnImportStepsIntoTemplateCtrlEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsIntoTemplateBtnClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnImportStepsTextUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnReorderReorderButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnReorderLocatorButtonClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnReorderTextUpdate( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

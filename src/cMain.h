@@ -253,6 +253,23 @@ protected:
 	void OnImportStepsIntoTemplateBtnClick(wxCommandEvent& event);
 	void OnImportStepsTextUpdate(wxCommandEvent& event);
 
+	//Reorder panel
+	struct ReorderStruct
+	{
+		int index,
+			step_number,
+			substep_number;
+	};
+	struct ReorderStep
+	{
+		Step step;
+		int step_number, substep_number;
+	};
+	void OnReorderReorderButtonClicked(wxCommandEvent& event);
+	void OnReorderLocatorButtonClicked(wxCommandEvent& event);
+	void OnReorderTextUpdate(wxCommandEvent& event);
+	bool OnReorderTextValidate(vector<ReorderStruct>& out);
+
 	//Main book
 	void OnMainBookPageChanged(wxAuiNotebookEvent& event);
 

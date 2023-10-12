@@ -371,6 +371,134 @@ void cMain::StepSeachOnCancelButton(wxCommandEvent& event)
 	event.Skip();// do nothing, it will clear the search box
 }
 
+void cMain::OnReorderReorderButtonClicked(wxCommandEvent& event)
+{
+	vector<ReorderStruct> list{};
+	if (!OnReorderTextValidate(list)) return;
+	
+	// find scope in the current step list
+	int min = grid_steps->GetNumberRows(), max = 0;
+	for (auto& item : list) 
+	{
+		min = min < item.step_number ? min : item.step_number;
+		max = max > item.step_number ? max : item.step_number;
+	}
+	
+	// moved scoped steps into a new list
+	vector<ReorderStep> reorder_steplist{}; reorder_steplist.reserve(list.size());
+	for (int i = min; i <= max; i++) 
+	{
+		Step& step = StepGridData[i];
+		for (int j = 0; j < step.Buildings; j++) // unroll multibuild
+		{
+			if (step.type == e_rotate && step.amount != 3)
+				for (int k = 0; k < step.amount; k++) reorder_steplist.push_back({step, i, j});
+			else
+				reorder_steplist.push_back({step, i, j});
+			step.Next();
+		}
+	}
+
+	// set number of buildings to 1 since multibuild has been unrolled
+	for (ReorderStep& step : reorder_steplist)
+	{
+		step.step.OriginalX = step.step.X;
+		step.step.OriginalY = step.step.Y;
+		step.step.Buildings = 1;
+		step.step.amount = step.step.type == e_rotate && step.step.amount != 3 ? 1 : step.step.amount ;
+		step.step.Modifiers.force = false;
+	}
+	
+	// reorder the existing steps using the new order
+	vector<Step> steplist{}; steplist.reserve(list.size());
+	for (ReorderStruct& new_position : list) 
+	{
+		bool found = false;
+		for (ReorderStep& step : reorder_steplist)
+		{
+			if (step.step_number == new_position.step_number && step.substep_number == new_position.substep_number)
+			{
+				steplist.push_back(step.step);
+				found = true;
+				break;
+			}
+		}
+		if (found) continue;
+		else throw "item "+ std::to_string(new_position.index) + " not found";
+	}
+
+	grid_steps->DeleteRows(min, max - min + 1);
+	grid_steps->InsertRows(min, steplist.size());
+
+	StepGridData.erase(StepGridData.begin() + min, StepGridData.begin() + max + 1);
+	StepGridData.insert(StepGridData.begin() + min, steplist.begin(), steplist.end());
+	
+	for (int i = min; i < min + steplist.size(); i++)
+	{
+		Step& step = StepGridData[i];
+		GridEntry gridEntry = PrepareStepForGrid(&step);
+		PopulateGrid(grid_steps, i, &gridEntry);
+		BackgroundColorUpdate(grid_steps, i, step.type);
+	}
+
+	if (reorder_text_input_clear_checkbox->GetValue())
+		reorder_text_input->SetValue("");
+}
+void cMain::OnReorderLocatorButtonClicked(wxCommandEvent& event)
+{
+	vector<ReorderStruct> list{};
+	if (!OnReorderTextValidate(list)) return;
+	int min = grid_steps->GetNumberRows();
+	grid_steps->ClearSelection();
+	for (auto& item : list)
+	{
+		min = min < item.step_number ? min : item.step_number;
+		grid_steps->SelectRow(item.step_number, true);
+	}
+	grid_steps->GoToCell(min, 0);
+}
+void cMain::OnReorderTextUpdate(wxCommandEvent& event)
+{
+	vector<ReorderStruct> list{};
+	bool result = OnReorderTextValidate(list);
+	reorder_reorder_button->Enable(result);
+	reorder_locator_button->Enable(result);
+}
+bool cMain::OnReorderTextValidate(vector<ReorderStruct>& out)
+{
+	out.clear();
+
+	stringstream input{
+		reorder_text_input->GetValue().ToStdString()
+	};
+	for (string line; std::getline(input, line);)
+	{
+		if (line.size() < 6) continue; // There needs to be at least 6 chars to be valid
+		ReorderStruct out_segment{};
+		stringstream line_input{line};
+		string segment;
+		for (int i = 0; i < 3; i++)
+		{
+			if (!std::getline(line_input, segment, ';')) 
+				return false;
+			try {
+				switch (i)
+				{
+					case 0: out_segment.index = stoi(segment); break;
+					case 1: out_segment.step_number = stoi(segment) - 1; break;
+					case 2: out_segment.substep_number = stoi(segment) - 1; break;
+				}
+			}
+			catch (...)
+			{
+				return false;
+			}
+		}
+		out.push_back(out_segment);
+	}
+	return out.size() > 1;
+}
+
 void cMain::ResetToNewWindow()
 {
 	if (grid_steps->GetNumberRows() > 0 || grid_template->GetNumberRows() > 0)

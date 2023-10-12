@@ -1584,6 +1584,67 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	import_steps_panel->Layout();
 	import_steps_sizer->Fit( import_steps_panel );
 	main_book->AddPage( import_steps_panel, wxT("Import"), false, wxNullBitmap );
+	reorder_panel = new wxPanel( main_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* reorder_sizer;
+	reorder_sizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* reorder_control_sizer;
+	reorder_control_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	reorder_reorder_button = new wxButton( reorder_panel, wxID_ANY, wxT("Reorder"), wxDefaultPosition, wxDefaultSize, 0 );
+	reorder_reorder_button->Enable( false );
+	reorder_reorder_button->SetToolTip( wxT("This will re-order a no-order block to align with current execution.\n\nIt works by first creating a block of steps with no-order enabled. \nThen execute them through a TAS run. \nThen run the console command \"/reorder\" and copy the text to the input below. \n\nWhen using this functionality, each multibuild step will be unrolled and each rotation will be unrolled. After that the steps will be matched with the resulting order, which then replaces them.") );
+
+	reorder_control_sizer->Add( reorder_reorder_button, 0, wxALL, 5 );
+
+	wxBoxSizer* reorder_control_checkbox_sizer;
+	reorder_control_checkbox_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	reorder_text_input_clear_checkbox = new wxCheckBox( reorder_panel, wxID_ANY, wxT("Clear reorder"), wxDefaultPosition, wxDefaultSize, 0 );
+	reorder_text_input_clear_checkbox->SetValue(true);
+	reorder_text_input_clear_checkbox->SetToolTip( wxT("Clears the text below after clicking on the Reorder button.") );
+
+	reorder_control_checkbox_sizer->Add( reorder_text_input_clear_checkbox, 0, wxALL, 5 );
+
+
+	reorder_control_sizer->Add( reorder_control_checkbox_sizer, 1, wxALL|wxEXPAND, 5 );
+
+	wxBoxSizer* reorder_locator_sizer;
+	reorder_locator_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+
+	reorder_locator_sizer->Add( 375, 0, 1, wxEXPAND, 5 );
+
+	reorder_locator_button = new wxButton( reorder_panel, wxID_ANY, wxT("Locate"), wxDefaultPosition, wxDefaultSize, 0 );
+	reorder_locator_button->Enable( false );
+	reorder_locator_button->SetToolTip( wxT("Finds the no-order block in the step list, helping you visualize that you are changing the correct block.") );
+
+	reorder_locator_sizer->Add( reorder_locator_button, 0, wxALL, 5 );
+
+
+	reorder_control_sizer->Add( reorder_locator_sizer, 1, wxEXPAND, 5 );
+
+
+	reorder_sizer->Add( reorder_control_sizer, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* reorder_input_sizer;
+	reorder_input_sizer = new wxBoxSizer( wxHORIZONTAL );
+
+	reorder_input_sizer->SetMinSize( wxSize( -1,1200 ) );
+	reorder_text_input = new wxTextCtrl( reorder_panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_LEFT|wxTE_MULTILINE );
+	reorder_text_input->SetToolTip( wxT("This will re-order a no-order block to align with current execution.\n\nIt works by first creating a block of steps with no-order enabled. \nThen execute them through a TAS run. \nThen run the console command \"/reorder\" and copy the text to the input below. \n\nWhen using this functionality, each multibuild step will be unrolled and each rotation will be unrolled. After that the steps will be matched with the resulting order, which then replaces them.") );
+	reorder_text_input->SetMinSize( wxSize( 450,600 ) );
+
+	reorder_input_sizer->Add( reorder_text_input, 1, wxALL|wxEXPAND, 5 );
+
+
+	reorder_sizer->Add( reorder_input_sizer, 1, wxEXPAND, 5 );
+
+
+	reorder_panel->SetSizer( reorder_sizer );
+	reorder_panel->Layout();
+	reorder_sizer->Fit( reorder_panel );
+	main_book->AddPage( reorder_panel, wxT("Reorder"), false, wxNullBitmap );
 
 
 	m_mgr.Update();
@@ -1745,6 +1806,9 @@ GUI_Base::GUI_Base( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	import_steps_into_template_ctrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
 	import_steps_into_template_btn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateBtnClick ), NULL, this );
 	import_steps_text_import->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsTextUpdate ), NULL, this );
+	reorder_reorder_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnReorderReorderButtonClicked ), NULL, this );
+	reorder_locator_button->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnReorderLocatorButtonClicked ), NULL, this );
+	reorder_text_input->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnReorderTextUpdate ), NULL, this );
 }
 
 GUI_Base::~GUI_Base()
@@ -1842,6 +1906,9 @@ GUI_Base::~GUI_Base()
 	import_steps_into_template_ctrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateCtrlEnter ), NULL, this );
 	import_steps_into_template_btn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnImportStepsIntoTemplateBtnClick ), NULL, this );
 	import_steps_text_import->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnImportStepsTextUpdate ), NULL, this );
+	reorder_reorder_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnReorderReorderButtonClicked ), NULL, this );
+	reorder_locator_button->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GUI_Base::OnReorderLocatorButtonClicked ), NULL, this );
+	reorder_text_input->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GUI_Base::OnReorderTextUpdate ), NULL, this );
 
 	m_mgr.UnInit();
 
