@@ -1610,6 +1610,8 @@ void cMain::Open(std::ifstream * file)
 		}
 	}
 
+	import_steps_into_steps_ctrl->SetValue(result->import_into_row);
+
 	{
 		type_panel->warnings_states_counters = result->warnings_states_counters;
 		rbtn_never_idle->SetForegroundColour(type_panel->warnings_states_counters.never_idle % 2 == 1 ? "Green" : "Black");
@@ -2092,6 +2094,7 @@ bool cMain::Save(string filename, bool save_as, bool set_last_location)
 		GetLogConfig(),
 		GetGenerateConfig(),
 		grid_steps->GetSelectedRowBlocks(),
+		import_steps_into_steps_ctrl->GetValue(),
 		set_last_location);
 }
 

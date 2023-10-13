@@ -71,11 +71,11 @@ open_file_return_data* OpenTas::Open(DialogProgressBar* dialog_progress_bar, std
 	}
 
 	{
-		auto streamposition = file.tellg(); // generate return position
+		auto steamposition = file.tellg(); // generate return position
 		if (update_segment(file) && segments.size() == 2 && segments[0] == import_into_row_indicator)
 			return_data.import_into_row = stoi(segments[1]);
 		else
-			file.seekg(streamposition); // return if import row is not yet set
+			file.seekg(steamposition); // return if import row is not yet set
 	}
 
 	if (!extract_log_config(file))
