@@ -1059,9 +1059,17 @@ local function tech()
 	return true
 end
 
+local function raise_state_change()
+	script.raise_event(tas_state_change, {
+		is_running = run,
+		tick = game.tick,
+	})
+end
+
 local function pause()
 	game.tick_paused = true
 	run = false
+	raise_state_change()
 	return true
 end
 
@@ -1394,6 +1402,7 @@ local original_warning = Warning
 local function load_StepBlock()
 	if global.step_block or not steps[step].no_order then return end
 	global.step_block = {}
+	global.executed_step_block = {finalized = false}
 	Debug("entering step block")
 	Warning = function ()
 		--override Warning with a function that does nothing
@@ -1422,8 +1431,9 @@ local function execute_StepBlock()
 		if _success then
 			Debug(string.format("Executed %d - Type: %s, Step: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index), true)
 			table.remove(global.step_block, i)
-			if i == 1 then
-				local fast_change_step = _step_index - step
+			table.insert(global.executed_step_block, _step)
+			if i == 1 and #global.step_block > 1 then
+				local fast_change_step = global.step_block[1] - step
 				change_step(fast_change_step)
 				global.step_block_info.steps_left = global.step_block_info.steps_left - fast_change_step
 			end
@@ -1434,17 +1444,20 @@ local function execute_StepBlock()
 		change_step(global.step_block_info.steps_left)
 		global.step_block = nil
 		global.step_block_info = nil
+		global.executed_step_block.finalized = true
 		Warning = original_warning
 		Debug("Ending step block")
-	elseif (game.tick - global.step_block_info.start_tick) > (25 * global.step_block_info.total_steps) then
+	elseif (game.tick - global.step_block_info.start_tick) > (15 * global.step_block_info.total_steps) then
 		Warning = original_warning
-		Error("Catastrofic execution of No order step block. Exceeeded ".. (25 * global.step_block_info.total_steps) .. " ticks.")
+		Error("Catastrofic execution of No order step block. Exceeeded ".. (15 * global.step_block_info.total_steps) .. " ticks.")
+		Warning(string.format("Failed to execute %d steps", #global.step_block))
 		for i = 1, #global.step_block do
 			_step_index = global.step_block[i]
 			_step = steps[_step_index]
-			Warning(string.format("Executed %d - Type: %s, Step: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index), true)
+			Warning(string.format("Step %d failed - Type: %s, substep: %d", _step[1][1], _step[2]:gsub("^%l", string.upper), _step_index))
 		end
 		run = false
+		raise_state_change()
 	end
 end
 
@@ -1454,6 +1467,7 @@ local function handle_pretick()
 	while run do
 		if steps[step] == nil then
 			run = false
+			raise_state_change()
 			return
 		elseif (steps[step][2] == "speed") then
 			if LOGLEVEL < 2 then
@@ -1671,6 +1685,7 @@ local function handle_posttick()
 	elseif steps[step] == nil or steps[step][1] == "break" then
 		Message(string.format("(%.2f, %.2f) Complete after %f seconds (%d ticks)", player_position.x, player_position.y, player.online_time / 60, player.online_time))
 		run = false
+		raise_state_change()
 		return
 	end
 end
@@ -2076,13 +2091,6 @@ script.on_load(function ()
 	if player then player.clear_console() end
 end)
 
-local function raise_state_change()
-	script.raise_event(tas_state_change, {
-		is_running = run,
-		tick = game.tick,
-	})
-end
-
 local function release()
 	run = false
 	raise_state_change()
@@ -2101,6 +2109,62 @@ local function skip(data)
 	end
 end
 
+local function re_order_step_block()
+	if not global.executed_step_block or not global.executed_step_block.finalized then
+		game.print("No order block is not valid for export")
+		return
+	end
+
+	local function add_title_bar(frame, title)
+        local title_bar = frame.add{ type = "flow", direction = "horizontal", name = "title_bar", }
+        title_bar.drag_target = frame
+        title_bar.add{ type = "sprite", sprite = "tas_helper_icon"}
+        title_bar.add{ type = "label", style = "frame_title", caption = title, ignored_by_interaction = true, }
+        title_bar.add{ type = "empty-widget", style = "tas_helper_title_bar_draggable_space", ignored_by_interaction = true, }
+        local frame_close_button = title_bar.add{ type = "sprite-button", style = "frame_action_button", sprite = "utility/close_white", hovered_sprite = "utility/close_black", clicked_sprite = "utility/close_black", }
+        return frame_close_button
+    end
+
+	local screen = player.gui.screen
+	local export_frame = screen.add{ type = "frame", direction = "vertical", visible = false, }
+    export_frame.force_auto_center()
+
+	local export_frame_close_button = add_title_bar(export_frame, "Export re-order to FTG")
+	
+    local export_task_list_label = export_frame.add{ type = "label", style = "caption_label", caption = "", tooltip = "Copy these into the FTGs re-order panel", }
+    export_task_list_label.style.top_margin = 6
+
+    local export_textbox = export_frame.add{ type = "text-box", style = "tas_helper_export_textbox", } -- local style
+    export_textbox.read_only = true
+
+	local lines = {}
+    for i, _step in ipairs(global.executed_step_block) do
+		local s = _step and string.format("%d;%d;%d;",i,_step[1][1], _step[1][2]) or nil
+		if s then
+            table.insert(lines, s)
+        end
+	end
+	export_textbox.text = table.concat(lines, "\n")
+	export_textbox.focus()
+	export_textbox.select_all()
+
+	export_frame.visible = true
+    export_frame.bring_to_front()
+    player.opened = export_frame
+
+	script.on_event(defines.events.on_gui_click, function(event)
+		local element = event.element
+		local _player = game.get_player(event.player_index)
+		if element == export_frame_close_button then
+			export_frame.visible = false
+			if _player.opened == export_frame then
+				_player.opened = nil
+			end
+		end
+	end)
+end
+
+commands.add_command("reorder", nil, re_order_step_block)
 commands.add_command("release", nil, release)
 commands.add_command("resume", nil, resume)
 commands.add_command("skip", nil, skip)
