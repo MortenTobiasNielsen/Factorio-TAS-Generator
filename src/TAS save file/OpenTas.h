@@ -36,6 +36,7 @@ struct open_file_return_data
 	string generate_code_folder_location;
 
 	wxGridBlockCoordsVector selected_rows;
+	int import_into_row = -1;
 
 	struct
 	{

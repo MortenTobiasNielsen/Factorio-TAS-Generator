@@ -17,6 +17,7 @@ bool SaveTas::Save(
 	log_config logconfig,
 	generate_config generateconfig,
 	wxGridBlockCoordsVector selected_rows,
+	int import_into_row,
 	bool set_last_location)
 {
 	int total_lines = steps.size();
@@ -103,6 +104,7 @@ bool SaveTas::Save(
 	for (auto p : selected_rows) 
 		s_selected_rows += to_string(p.GetTopRow()) + ";" + to_string(p.GetBottomRow()) + ";";
 	myfile << "selected rows;" << s_selected_rows << std::endl;
+	myfile << import_into_row_indicator << ";" << import_into_row << std::endl;
 	myfile << logging_indicator << ";" << logconfig.to_string() << std::endl;
 	myfile << generate_indicator << ";" << generateconfig.to_string();
 

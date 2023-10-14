@@ -24,6 +24,7 @@ static const string save_file_indicator = "Save file location:";
 static const string code_file_indicator = "Step folder location:";
 static const string auto_close_indicator = "Auto close settings:";
 static const string auto_put_indicator = "Auto put settings:";
+static const string import_into_row_indicator = "Import into:";
 static const string logging_indicator = "logging";
 static const string generate_indicator = "generate settings";
 
