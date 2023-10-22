@@ -1,35 +1,43 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <tuple>
 
 #include "Structures\Step.h"
 
 using std::vector;
 using std::string;
-using std::tuple;
 
-enum CommandType
+struct StepLine
 {
-	T_NULL, T_ADD, T_DELETE, T_MODIFY, 
-	T_MOVE_UP, T_MOVE_FIVE_UP, T_MOVE_DOWN, T_MOVE_FIVE_DOWN
+	int row;
+	Step step;
+
+	bool operator < (const StepLine& other) const
+	{
+		return row < other.row;
+	}
+	bool operator > (const StepLine& other) const
+	{
+		return row > other.row;
+	}
 };
+
 struct Command
 {
-	// The row the action happened at
-	int row;
-	// The type so it can be reversed
-	CommandType type;
-	// List of modified rows: Tuple of row index and row data
-	vector<tuple<int, Step>> rows;	 
+	vector<StepLine> before = {};
+	vector<StepLine> after = {};
+	string template_name = ""; // The name of the template or empty for steps grid
+
+	bool empty()
+	{
+		return before.empty() && after.empty();
+	}
 };
 
 class CommandStack
 {
-	// missing template actions
-
 private:
-	static inline const int size = 32;
+	static inline const int size = 128;
 	Command buffer[size] = {};
 	int head = 0, tail = 0, hair = 0;
 
@@ -41,4 +49,3 @@ public:
 	Command Pop();
 	Command PopBack();
 };
-

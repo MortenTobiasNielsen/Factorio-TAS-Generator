@@ -235,8 +235,7 @@ void cMain::OnStepsGridCellChange(wxGridEvent& event)
 	auto new_string = grid_steps->GetCellValue(row, col);
 	bool success = false;
 
-	vector< tuple<int, Step>> change{};
-	change.push_back({ row, StepGridData[row] });
+	vector<StepLine> before{{ row, StepGridData[row] }};
 
 	Step& step = StepGridData[row];
 	switch (col) {
@@ -321,11 +320,9 @@ void cMain::OnStepsGridCellChange(wxGridEvent& event)
 	if (!success) grid_steps->SetCellValue(row, col, old_string);
 	else {
 		no_changes = false;
-		change.push_back({ row, step });
 		stack.Push({
-			.row = row,
-			.type = T_MODIFY,
-			.rows = change
+				.before = before,
+				.after = {{row, step}},
 			}
 		);
 	}
@@ -438,7 +435,7 @@ void cMain::OnReorderReorderButtonClicked(wxCommandEvent& event)
 		Step& step = StepGridData[i];
 		GridEntry gridEntry = PrepareStepForGrid(&step);
 		PopulateGrid(grid_steps, i, &gridEntry);
-		BackgroundColorUpdate(grid_steps, i, step.type);
+		BackgroundColorUpdate(grid_steps, i, step);
 	}
 
 	if (reorder_text_input_clear_checkbox->GetValue())
@@ -566,90 +563,40 @@ bool cMain::CheckBeforeClose()
 	return true;
 }
 
-void cMain::MoveRow(wxGrid* grid, bool up)
+Command cMain::MoveRows(wxGrid* grid, int move_by)
 {
-	for (const auto& block : grid->GetSelectedRowBlocks())
+	Command change;
+	auto blocks = grid->GetSelectedRowBlocks();
+
+	{	// truncate 'by' to fit within the grid
+		auto move_up = move_by < 0;
+		auto exceeed_top_row = blocks.front().GetTopRow() + move_by < 0;
+		auto exceeed_bottom_row = blocks.back().GetBottomRow() + move_by >= grid->GetNumberRows();
+
+		move_by = move_up ?
+			(exceeed_top_row ?
+				-blocks.front().GetTopRow() : move_by) :
+			(exceeed_bottom_row ?
+				grid->GetNumberRows() - blocks.back().GetBottomRow() - 1 : move_by);
+
+		if (move_by == 0) return change;
+	}
+
+	for (const auto& block : blocks)
 	{
-		auto rowNum = block.GetTopRow();
-		auto rowCount = block.GetBottomRow() - rowNum + 1;
-
-		if (up)
+		for (int i = block.GetTopRow(); i <= block.GetBottomRow(); i++)
 		{
-			if (rowNum == 0)
-			{
-				continue;
-			}
-
-			auto row = rowNum - 1;
-			auto moveTo = rowNum + rowCount;
-
-			grid->InsertRows(moveTo);
-
-			GridTransfer(grid, row, grid, moveTo);
-
-			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
-
-			if (StepGridData[row].colour != wxNullColour)
-			{
-				wxColour colour = StepGridData[row].colour;
-				grid->SetCellBackgroundColour(moveTo, 1, colour);
-				grid->SetCellBackgroundColour(moveTo, 2, colour);
-				grid->SetCellBackgroundColour(moveTo, 3, colour);
-			}
-
-			grid->DeleteRows(row);
-
-			auto it1 = StepGridData.begin();
-			it1 += row;
-
-			auto data = *it1;
-			StepGridData.erase(it1);
-
-			auto it2 = StepGridData.begin();
-			it2 += moveTo - 1;
-
-			StepGridData.insert(it2, data);
-		}
-		else
-		{
-			if ((rowNum + rowCount) == (grid->GetNumberRows()))
-			{
-				continue;
-			}
-
-			auto row = rowNum + rowCount;
-			auto moveTo = rowNum;
-
-			grid->InsertRows(moveTo);
-
-			GridTransfer(grid, row + 1, grid, moveTo);
-
-			grid->DeleteRows(row + 1);
-
-			BackgroundColorUpdate(grid, moveTo, ToStepType(grid->GetCellValue(moveTo, 0).ToStdString()));
-			
-			if (StepGridData[row].colour != wxNullColour)
-			{
-				wxColour colour = StepGridData[row].colour;
-				grid->SetCellBackgroundColour(moveTo, 1, colour);
-				grid->SetCellBackgroundColour(moveTo, 2, colour);
-				grid->SetCellBackgroundColour(moveTo, 3, colour);
-			}
-
-			auto it1 = StepGridData.begin();
-			it1 += row;
-
-			auto it2 = StepGridData.begin();
-			it2 += moveTo;
-
-			auto data = *it1;
-			StepGridData.erase(it1);
-			StepGridData.insert(it2, data);
+			change.before.push_back({i, StepGridData[i]});
+			change.after.push_back({i + move_by, StepGridData[i]});
 		}
 	}
 
+	UndoRedo(grid, StepGridData, VectorToBlocks(change.after), VectorToBlocks(change.before));
+
 	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	no_changes = false;
+
+	return change;
 }
 
 bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& map)
@@ -664,6 +611,13 @@ bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& 
 
 	auto rowNum = 0;
 	auto rowCount = 0;
+	std::string map_name = cmb->GetValue().ToStdString();
+	Command change{.template_name = map_name};
+	auto rows = grid->GetSelectedRows();
+	for (auto row : rows)
+	{
+		change.before.push_back({row, map[map_name][row]});
+	}
 
 	for (const auto& block : grid->GetSelectedRowBlocks())
 	{
@@ -686,15 +640,10 @@ bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& 
 
 		if (!map.empty())
 		{
-			std::string map_name = cmb->GetValue().ToStdString();
-
 			if (map.find(map_name) != map.end())
 			{
-				auto it1 = map[map_name].begin();
-				auto it2 = map[map_name].begin();
-
-				it1 += rowNum;
-				it2 += rowNum + rowCount;
+				auto it1 = map[map_name].begin() + rowNum;
+				auto it2 = map[map_name].begin() + rowNum + rowCount;
 
 				map[map_name].erase(it1, it2);
 			}
@@ -703,6 +652,7 @@ bool cMain::DeleteRow(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& 
 		rowsDeleted += rowCount;
 	}
 
+	stack.Push(change);
 	no_changes = false;
 	return true;
 }
@@ -726,20 +676,26 @@ bool cMain::ChangeRow(wxGrid* grid, Step step)
 
 	PopulateGrid(grid, rowNum, &gridEntry);
 
-	BackgroundColorUpdate(grid, rowNum, step.type);
+	BackgroundColorUpdate(grid, rowNum, step);
 
 	no_changes = false;
 	return true;
 }
 
-void cMain::BackgroundColorUpdate(wxGrid* grid, int row, StepType step)
+void cMain::BackgroundColorUpdate(wxGrid* grid, int row, Step& step)
 {
-	grid->SetCellBackgroundColour(row, 0, SteptypeColourHandler::GetStepColourOrDefault(step));
+	grid->SetCellBackgroundColour(row, 0, SteptypeColourHandler::GetStepColourOrDefault(step.type));
+	if (grid == grid_steps) 
+	{
+		grid->SetCellBackgroundColour(row, 1, step.colour);
+		grid->SetCellBackgroundColour(row, 2, step.colour);
+		grid->SetCellBackgroundColour(row, 3, step.colour);
+	}
 }
 
 void cMain::OnAddStepClicked(wxCommandEvent& event)
 {
-	vector<tuple<int, Step>> change;
+	vector<StepLine> change;
 	if (grid_steps->IsSelection())
 	{
 		if (!grid_steps->GetSelectedRows().begin())
@@ -748,27 +704,18 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 		}
 
 		change = AddStep(*grid_steps->GetSelectedRows().begin(), ExtractStep());
-		if (change.size() > 0)
-		{
-			stack.Push({
-				.row = *grid_steps->GetSelectedRows().begin() - 1,
-				.type = T_ADD,
-				.rows = change,
-			});
-		}
 	}
 	else
 	{
 		int row = grid_steps->GetNumberRows();
 		change = AddStep(row, ExtractStep());
-		if (change.size() > 0)
-		{
-			stack.Push({
-				.row = row,
-				.type = T_ADD,
-				.rows = change,
-			});
-		}
+	}
+
+	if (change.size() > 0)
+	{
+		stack.Push({
+			.after = change,
+		});
 	}
 	
 	no_changes = false;
@@ -777,7 +724,7 @@ void cMain::OnAddStepClicked(wxCommandEvent& event)
 
 void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 {
-	vector<tuple<int, Step>> change;
+	vector<StepLine> change;
 	if (grid_steps->IsSelection())
 	{
 		if (!grid_steps->GetSelectedRows().Last())
@@ -786,36 +733,28 @@ void cMain::OnAddStepRightClicked(wxMouseEvent& event)
 		}
 
 		change = AddStep(grid_steps->GetSelectedRows().Last() + 1, ExtractStep());
-		if (change.size() > 0)
-		{
-			stack.Push({
-				.row = grid_steps->GetSelectedRows().Last() + 1,
-				.type = T_ADD,
-				.rows = change,
-			});
-		}
+		
 	}
 	else
 	{
 		int row = grid_steps->GetNumberRows();
 		change = AddStep(row, ExtractStep());
-		if (change.size() > 0)
-		{
-			stack.Push({
-				.row = row,
-				.type = T_ADD,
-				.rows = change,
-			});
-		}
+	}
+
+	if (change.size() > 0)
+	{
+		stack.Push({
+			.after = change,
+		});
 	}
 
 	no_changes = false;
 	event.Skip();
 }
 
-vector<tuple<int, Step>> cMain::AddStep(int row, Step step, bool auto_put)
+vector<StepLine> cMain::AddStep(int row, Step step, bool auto_put)
 {
-	vector<tuple<int, Step>> returnValue;
+	vector<StepLine> returnValue;
 
 	if (!ValidateStep(row, step))
 	{
@@ -964,20 +903,16 @@ void cMain::OnChangeStepInternal(wxArrayInt& rows, int row)
 		return;
 	};
 
-	stack.Push({
-		.row = row,
-		.type = T_MODIFY,
-		.rows = ChangeStep(row, step)
-	});
+	stack.Push(ChangeStep(row, step));
 
 	grid_steps->SelectRow(row);
 	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	no_changes = false;
 }
 
-vector< tuple<int, Step>> cMain::ChangeStep(int row, Step step)
+Command cMain::ChangeStep(int row, Step step)
 {
-	vector< tuple<int, Step>> change{};
+	Command change{};
 	
 	if (step.type == e_build)
 	{
@@ -990,13 +925,13 @@ vector< tuple<int, Step>> cMain::ChangeStep(int row, Step step)
 
 	GridEntry gridEntry = PrepareStepForGrid(&step);
 
-	change.push_back({row, StepGridData[row]});
-	change.push_back({row, step});
+	change.before.push_back({row, StepGridData[row]});
+	change.after.push_back({row, step});
 
 	StepGridData[row] = step;
 	PopulateGrid(grid_steps, row, &gridEntry);
 
-	BackgroundColorUpdate(grid_steps, row, step.type);
+	BackgroundColorUpdate(grid_steps, row, step);
 	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	return change;
 }
@@ -1040,12 +975,16 @@ void cMain::OnDeleteStepRightClicked(wxMouseEvent& event)
 void cMain::OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm)
 {
 	int startRow = rows.at(0);
-	auto steps = DeleteSteps(rows, auto_confirm);
-	stack.Push({
-		.row = rows[0],
-		.type = T_DELETE,
-		.rows = steps
-	});
+	Command change = DeleteSteps(rows, auto_confirm);
+	if (change.before.empty())
+	{
+		return;
+	}
+	else 
+	{
+		stack.Push(change);
+		no_changes = false;
+	}
 
 	// The row after the deleted row(s) are selected
 	if (startRow < grid_steps->GetNumberRows())
@@ -1056,53 +995,51 @@ void cMain::OnDeleteStepInternal(wxArrayInt& rows, bool auto_confirm)
 	{
 		grid_steps->SelectRow(startRow - 1);
 	}
-
-	no_changes = false;
 }
 
-vector< tuple<int, Step>> cMain::DeleteSteps(wxArrayInt steps, bool auto_confirmed)
+Command cMain::DeleteSteps(wxArrayInt rows, bool auto_confirmed)
 {
-	vector< tuple<int, Step>> return_list{};
+	Command change;
 	bool confirmed = auto_confirmed;
 
-	for (const auto step : steps)
+	for (const auto row : rows)
 	{
 		if (confirmed) break;
-		if (StepGridData[step].type == e_build)
+		if (StepGridData[row].type == e_build)
 		{
 			if (wxMessageBox("At least one of the rows selected is a build step - are you sure you want to delete the rows selected?\nEnsure that you delete associated steps.", 
 				"The build step(s) you are deleting could be associated with future step", 
 				wxICON_WARNING | wxYES_NO, this) != wxYES)
 			{
-				return return_list;
+				return change;
 			}
 			break;
 		}
 	}
 
-	for (const auto step : steps)
+	for (const auto row : rows)
 	{
-		type_panel->IncrementStateCounter(StepGridData[step].type); break;
+		type_panel->IncrementStateCounter(StepGridData[row].type); break;
 	}
 
-	return_list.reserve(steps.size());
-	return_list.push_back({steps[0], StepGridData.at(steps[0])});
+	change.before.reserve(rows.size());
+	change.before.push_back({rows[0], StepGridData.at(rows[0])});
 	
-	pair<int, int> current_block = {steps[0], 1};
+	pair<int, int> current_block = {rows[0], 1};
 	vector<pair<int, int>> blocks{};
-	blocks.reserve(steps.size());
-	for (int i = 1; i < steps.size(); i++)
+	blocks.reserve(rows.size());
+	for (int i = 1; i < rows.size(); i++)
 	{
-		return_list.push_back({steps[i], StepGridData.at(steps[i])});
+		change.before.push_back({rows[i], StepGridData.at(rows[i])});
 		int block_size = current_block.first + current_block.second;
-		if (steps[i] == block_size)
+		if (rows[i] == block_size)
 		{
 			current_block.second = current_block.second + 1;
 		}
 		else
 		{
 			blocks.push_back(current_block);
-			current_block = {steps[i], 1};
+			current_block = {rows[i], 1};
 		}
 	}
 	blocks.push_back(current_block);
@@ -1120,7 +1057,7 @@ vector< tuple<int, Step>> cMain::DeleteSteps(wxArrayInt steps, bool auto_confirm
 
 	HandleFocusMode(steps_focus_checkbox->IsChecked());
 
-	return return_list;
+	return change;
 }
 
 tuple<int, Step> cMain::GetRowTuple(int index)
@@ -1147,12 +1084,7 @@ void cMain::OnMoveUpClicked(wxCommandEvent& event)
 		return;
 	}
 	
-	MoveRow(grid_steps, true);
-	stack.Push({
-		.row = *grid_steps->GetSelectedRows().begin(),
-		.type = T_MOVE_UP,
-		.rows = GetSelectedRowTuples(),
-	});
+	stack.Push(MoveRows(grid_steps, -1));
 	event.Skip();
 }
 
@@ -1164,12 +1096,7 @@ void cMain::OnMoveDownClicked(wxCommandEvent& event)
 		return;
 	}
 
-	MoveRow(grid_steps, false);	
-	stack.Push({
-		.row = *grid_steps->GetSelectedRows().begin(),
-		.type = T_MOVE_DOWN,
-		.rows = GetSelectedRowTuples(),
-	});
+	stack.Push(MoveRows(grid_steps, 1));
 	event.Skip();
 }
 
@@ -1180,10 +1107,7 @@ void cMain::OnMoveUpFiveClicked(wxMouseEvent& event)
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
-	for (int i = 0; i < 5; i++)
-	{
-		MoveRow(grid_steps, true);
-	}
+	stack.Push(MoveRows(grid_steps, -5));
 
 	event.Skip();
 }
@@ -1195,11 +1119,8 @@ void cMain::OnMoveDownFiveClicked(wxMouseEvent& event)
 		wxMessageBox("Please select row(s) to move", "Select row(s)");
 	}
 
-	for (int i = 0; i < 5; i++)
-	{
-		MoveRow(grid_steps, false);
-	}
-
+	stack.Push(MoveRows(grid_steps, 5));
+	
 	event.Skip();
 }
 
@@ -1332,15 +1253,7 @@ void cMain::SplitMultibuildStep(int row)
 
 		PopulateGrid(grid_steps, i, &gridEntry);
 
-		BackgroundColorUpdate(grid_steps, i, StepGridData[i].type);
-
-		if (StepGridData[i].colour != wxNullColour)
-		{
-			wxColour colour = StepGridData[i].colour;
-			grid_steps->SetCellBackgroundColour(i, 1, colour);
-			grid_steps->SetCellBackgroundColour(i, 2, colour);
-			grid_steps->SetCellBackgroundColour(i, 3, colour);
-		}
+		BackgroundColorUpdate(grid_steps, i, StepGridData[i]);
 
 		grid_steps->SelectRow(i, true);
 	}
@@ -1373,6 +1286,8 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 		moveTo = *grid->GetSelectedRows().begin();
 	}
 
+	Command change{.template_name = cmb->GetValue().ToStdString()};
+
 	vector<Step> steps = it->second;
 	for (const auto& block : grid_steps->GetSelectedRowBlocks())
 	{
@@ -1387,18 +1302,20 @@ void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vec
 		{
 			GridTransfer(grid_steps, i, grid, moveTo);
 
-			BackgroundColorUpdate(grid, moveTo, StepGridData[i].type);
+			BackgroundColorUpdate(grid, moveTo, StepGridData[i]);
 
 			auto it1 = steps.begin();
 			it1 += moveTo;
 
 			steps.insert(it1, StepGridData[i]);
+			change.after.push_back({moveTo, StepGridData[i]});
 
 			moveTo += 1;
 		}
 	}
 
 	it->second = steps;
+	stack.Push(change);
 	no_changes = false;
 }
 
@@ -1675,15 +1592,7 @@ void cMain::PopulateStepGrid()
 
 		PopulateGrid(grid_steps, i, &gridEntry);
 
-		BackgroundColorUpdate(grid_steps, i, StepGridData[i].type);
-
-		if (StepGridData[i].colour != wxNullColour)
-		{
-			wxColour colour = StepGridData[i].colour;
-			grid_steps->SetCellBackgroundColour(i, 1, colour);
-			grid_steps->SetCellBackgroundColour(i, 2, colour);
-			grid_steps->SetCellBackgroundColour(i, 3, colour);
-		}
+		BackgroundColorUpdate(grid_steps, i, StepGridData[i]);
 	}
 	grid_steps->EndBatch();
 }
@@ -2358,7 +2267,7 @@ void cMain::UpdateStepGrid(int row, Step* step)
 	it1 += row;
 	StepGridData.insert(it1, *step);
 
-	BackgroundColorUpdate(grid_steps, row, step->type);
+	BackgroundColorUpdate(grid_steps, row, *step);
 }
 
 int cMain::GenerateBuildingSnapShot(int end_row)
@@ -2823,17 +2732,23 @@ void cMain::NoOrderButtonHandle(bool force)
 			}
 		}
 	}
+	Command change;
 	bool modifier_value = StepGridData.at(rows.front()).Modifiers.no_order;
 	for (int row : rows)
 	{
 		auto& step = StepGridData.at(row);
+		change.before.push_back({row, step});
 		if (step.Modifiers.no_order == modifier_value && 
 			modifier_types.no_order.contains(step.type))
 		{
 			step.Modifiers.no_order = !modifier_value;
 			grid_steps->SetCellValue(row, 6, step.Modifiers.ToString());
 		}
+		change.after.push_back({row, step});
 	}
+
+	stack.Push(change);
+	no_changes = false;
 }
 
 void cMain::OnForceRightClicked(wxMouseEvent& event)
@@ -2861,17 +2776,23 @@ void cMain::ForceButtonHandle(bool force)
 			}
 		}
 	}
+	Command change;
 	bool modifier_value = StepGridData.at(rows.front()).Modifiers.force;
 	for (int row : rows)
 	{
 		auto& step = StepGridData.at(row);
+		change.before.push_back({row, step});
 		if (step.Modifiers.force == modifier_value &&
 			modifier_types.force.contains(step.type))
 		{
 			step.Modifiers.force = !modifier_value;
 			grid_steps->SetCellValue(row, 6, step.Modifiers.ToString());
 		}
+		change.after.push_back({row, step});
 	}
+
+	stack.Push(change);
+	no_changes = false;
 }
 
 void cMain::OnSkipClicked(wxCommandEvent& event)
@@ -2879,16 +2800,22 @@ void cMain::OnSkipClicked(wxCommandEvent& event)
 	wxArrayInt rows = grid_steps->GetSelectedRows();
 	if (rows.size() < 2) return;
 
+	Command change;
 	bool modifier_value = StepGridData.at(rows.front()).Modifiers.skip;
 	for (int row : rows)
 	{
 		auto& step = StepGridData.at(row);
+		change.before.push_back({row, step});
 		if (step.Modifiers.skip == modifier_value)
 		{
 			step.Modifiers.skip = !modifier_value;
 			grid_steps->SetCellValue(row, 6, step.Modifiers.ToString());
 		}
+		change.after.push_back({row, step});
 	}
+
+	stack.Push(change);
+	no_changes = false;
 }
 
 void cMain::SelectRowsInGrid(vector<tuple<int, Step>> rows)
@@ -2900,103 +2827,87 @@ void cMain::SelectRowsInGrid(vector<tuple<int, Step>> rows)
 	}
 }
 
-void cMain::OnUndoMenuSelected(wxCommandEvent& event)
+vector<std::pair<int, vector<Step>>> cMain::VectorToBlocks(vector<StepLine> &lines)
 {
-	auto current_selected = grid_steps->GetSelectedRows();
-	
-	Command command = stack.Pop();
+	vector<std::pair<int, vector<Step>>> blocks{};
+	int prev = -2;
 
-	switch (command.type)
+	std::sort(lines.begin(), lines.end());
+	for (auto& stepline : lines)
 	{
-		case T_NULL:
-			break;
-		case T_ADD:
-		{
-			wxArrayInt rows{};
-			for (auto& [row, _] : command.rows)
-			{
-				rows.Add(row);
-			}
-			DeleteSteps(rows, true);
-		}
-			break;
-		case T_DELETE:
-			for (auto& [row, step] : command.rows)
-			{
-				AddStep(row, step, false);
-			}
-			break;
-		case T_MODIFY:
-			{
-				auto& [row, param] = command.rows[0];
-				ChangeStep(command.row, param);
-			}
-			break;
-		case T_MOVE_UP:
-		{
-			SelectRowsInGrid(command.rows);
-			MoveRow(grid_steps, false);
-		}
-			break;
-		case T_MOVE_DOWN:
-		{
-			SelectRowsInGrid(command.rows);
-			MoveRow(grid_steps, true);
-		}
-			break;
+		if (prev + 1 == stepline.row)
+			blocks[blocks.size()-1].second.push_back(stepline.step);
+		else
+			blocks.push_back({stepline.row, {stepline.step}});
+		prev = stepline.row;
+	}
 
-		default:
-			break;
+	return blocks;
+}
+void cMain::UndoRedo(wxGrid* grid, vector<Step>& date_list, vector<std::pair<int, vector<Step>>> before, vector<std::pair<int, vector<Step>>> after)
+{
+	for (auto it = after.rbegin(); it != after.rend(); ++it)
+	{
+		auto& [row, steps] = *it;
+		date_list.erase(date_list.begin() + row, date_list.begin() + row + steps.size());
+		grid->DeleteRows(row, steps.size());
+	}
+
+	for (auto it = before.rbegin(); it != before.rend(); ++it)
+	{
+		auto& [row, steps] = *it;
+		date_list.insert(date_list.begin() + row, steps.begin(), steps.end());
+		grid->InsertRows(row, steps.size());
+	}
+
+	bool first = true;
+	for (auto& [row, steps] : before)
+	{
+		if (first)
+		{
+			grid->ClearSelection();
+			grid->GoToCell(row, 0);
+			first = false;
+		}
+		for (int i = 0; i < steps.size(); i++)
+		{
+			int currentrow = row + i;
+			auto gridEntry = PrepareStepForGrid(&date_list[currentrow]);
+			PopulateGrid(grid, currentrow, &gridEntry);
+			BackgroundColorUpdate(grid, currentrow, date_list[currentrow]);
+			grid->SelectRow(currentrow, true);
+		}
 	}
 }
 
+void cMain::UndoRedoHandleTemplate(Command command, vector<std::pair<int, vector<Step>>> before, vector<std::pair<int, vector<Step>>> after)
+{
+	if (command.template_name != "")
+	{
+		if (!template_map.contains(command.template_name))
+		{
+			template_choices.Add(command.template_name);
+			template_choices.Sort();
+			cmb_choose_template->Clear();
+			cmb_choose_template->Append(template_choices);
+			cmb_choose_template->SetValue(command.template_name);
+			cmb_choose_template->AutoComplete(template_choices);
+			template_map.insert(pair<string, vector<Step>>(command.template_name, {}));
+		}
+		UpdateTemplateGrid(template_map[command.template_name]);
+		cmb_choose_template->SetValue(command.template_name);
+	}
+	auto grid = command.template_name == "" ? grid_steps : grid_template;
+	auto& list = command.template_name == "" ? StepGridData : template_map[command.template_name];
+	UndoRedo(grid, list, before, after);
+}
+void cMain::OnUndoMenuSelected(wxCommandEvent& event)
+{
+	Command command = stack.Pop();
+	UndoRedoHandleTemplate(command, VectorToBlocks(command.before), VectorToBlocks(command.after));
+}
 void cMain::OnRedoMenuSelected(wxCommandEvent& event)
 {
 	Command command = stack.PopBack();
-
-	switch (command.type)
-	{
-		case T_NULL:
-			break;
-		case T_ADD:
-			{
-				for (auto& [row, step] : command.rows)
-				{
-					AddStep(row, step, false);
-				}
-			}
-			break;
-		case T_DELETE:
-			{
-				wxArrayInt rows{};
-				for (auto& [row, _] : command.rows)
-				{
-					rows.Add(row);
-				}
-				DeleteSteps(rows, true);
-			}
-			break;
-		case T_MODIFY:
-			{
-				auto& [row, param] = command.rows[1];
-				ChangeStep(command.row, param);
-			}
-			break;
-		case T_MOVE_UP:
-			{
-				SelectRowsInGrid(command.rows);
-				MoveRow(grid_steps, true);
-			}
-			break;
-		case T_MOVE_DOWN:
-			{
-				SelectRowsInGrid(command.rows);
-				MoveRow(grid_steps, false);
-			}
-			break;
-
-		default:
-			break;
-	}
+	UndoRedoHandleTemplate(command, VectorToBlocks(command.after), VectorToBlocks(command.before));
 }
-
