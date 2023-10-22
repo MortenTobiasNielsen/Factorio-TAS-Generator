@@ -305,7 +305,6 @@ void cMain::OnImportStepsIntoTemplateCtrlEnter(wxCommandEvent& event)
 	auto a = template_map.insert(std::pair<std::string, std::vector<Step>>(name, steps) );
 	for (int i = 0; i < steps.size(); i++) 
 	{
-		template_map[name].push_back(steps[i]);
 		change.after.push_back({i, steps[i]});
 	}
 
