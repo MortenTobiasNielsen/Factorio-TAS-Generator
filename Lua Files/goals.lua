@@ -76,11 +76,11 @@ local human_wr_times = {
         },
     },
     [steelaxe] = {
-        final = {0,8,41.1},
+        final = {0,8,31.6},
         research = {
-            ["automation"] = {0,4,24.5},
-            ["steel-processing"] = {0,6,37.1},
-            ["steel-axe"] = {0,8,41.1},
+            ["automation"] = {0,4,09.6},
+            ["steel-processing"] = {0,6,23.5},
+            ["steel-axe"] = {0,8,31.6},
         },
     },
     [supply] = {
