@@ -2,25 +2,10 @@
 #include <vector>
 #include <string>
 
-#include "Structures\Step.h"
+#include "StepLine.h"
 
 using std::vector;
 using std::string;
-
-struct StepLine
-{
-	int row;
-	Step step;
-
-	bool operator < (const StepLine& other) const
-	{
-		return row < other.row;
-	}
-	bool operator > (const StepLine& other) const
-	{
-		return row > other.row;
-	}
-};
 
 struct Command
 {

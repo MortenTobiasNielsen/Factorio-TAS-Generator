@@ -591,7 +591,7 @@ Command cMain::MoveRows(wxGrid* grid, int move_by)
 		}
 	}
 
-	UndoRedo(grid, StepGridData, VectorToBlocks(change.after), VectorToBlocks(change.before));
+	UndoRedo(grid, StepGridData, StepLineToStepBlock(change.after), StepLineToStepBlock(change.before));
 
 	HandleFocusMode(steps_focus_checkbox->IsChecked());
 	no_changes = false;
@@ -1186,22 +1186,26 @@ void cMain::OnStepColourPickerColourChanged(wxColourPickerEvent& event)
 {
 	if (!grid_steps->IsSelection())
 	{
-		wxMessageBox("No step is chosen - please select row(s) in the step list", "Cannot change colour of steps");
+		wxMessageBox("No step is chosen - please select one or more rows in the step list", "Cannot change colour of no steps");
 		return;
 	}
+	Command change;
 	const wxColour colour = step_colour_picker->GetColour();
 	wxGridBlockCoordsVector rowsBlocks = grid_steps->GetSelectedRowBlocks();
 	for (wxGridBlockCoords block : rowsBlocks)
 	{
 		for (int row = block.GetTopRow(); row <= block.GetBottomRow(); row++)
 		{
+			change.before.push_back({row, StepGridData[row]});
 			StepGridData.at(row).colour = colour;
 			grid_steps->SetCellBackgroundColour(row, 1, colour);
 			grid_steps->SetCellBackgroundColour(row, 2, colour);
 			grid_steps->SetCellBackgroundColour(row, 3, colour);
+			change.after.push_back({row, StepGridData[row]});
 		}
 	}
-	event.Skip();
+	stack.Push(change);
+	no_changes = false;
 }
 
 void cMain::HandleSplitOrMergeToggle(wxArrayInt& rows)
@@ -1230,10 +1234,13 @@ void cMain::OnSplitMultibuildRightClicked(wxMouseEvent& event)
 void cMain::SplitMultibuildStep(int row)
 {
 	Step data = StepGridData[row];
+	Command change;
+	change.before.push_back({row, data});
 	vector<Step> new_rows;
 	const int buildings = data.Buildings - 1;
 	data.Buildings = 1;
 	StepGridData[row].Buildings = 1;
+	change.after.push_back({row, StepGridData[row]});
 	new_rows.reserve(buildings);
 
 	for (int i = 0; i < buildings; i++)
@@ -1242,6 +1249,7 @@ void cMain::SplitMultibuildStep(int row)
 		data.OriginalX = data.X;
 		data.OriginalY = data.Y;
 		new_rows.push_back(data);
+		change.after.push_back({row+i+1, data});
 	}
 
 	StepGridData.insert(StepGridData.begin() + row + 1, new_rows.begin(), new_rows.end());
@@ -1257,6 +1265,9 @@ void cMain::SplitMultibuildStep(int row)
 
 		grid_steps->SelectRow(i, true);
 	}
+
+	stack.Push(change);
+	no_changes;
 }
 
 void cMain::UpdateMapWithNewSteps(wxGrid* grid, wxComboBox* cmb, map<string, vector<Step>>& map)
@@ -2827,39 +2838,25 @@ void cMain::SelectRowsInGrid(vector<tuple<int, Step>> rows)
 	}
 }
 
-vector<std::pair<int, vector<Step>>> cMain::VectorToBlocks(vector<StepLine> &lines)
+void cMain::UndoRedo(wxGrid* grid, vector<Step>& data_list, vector<StepBlock> before, vector<StepBlock> after)
 {
-	vector<std::pair<int, vector<Step>>> blocks{};
-	int prev = -2;
-
-	std::sort(lines.begin(), lines.end());
-	for (auto& stepline : lines)
-	{
-		if (prev + 1 == stepline.row)
-			blocks[blocks.size()-1].second.push_back(stepline.step);
-		else
-			blocks.push_back({stepline.row, {stepline.step}});
-		prev = stepline.row;
-	}
-
-	return blocks;
-}
-void cMain::UndoRedo(wxGrid* grid, vector<Step>& date_list, vector<std::pair<int, vector<Step>>> before, vector<std::pair<int, vector<Step>>> after)
-{
+	// delete after
 	for (auto it = after.rbegin(); it != after.rend(); ++it)
 	{
 		auto& [row, steps] = *it;
-		date_list.erase(date_list.begin() + row, date_list.begin() + row + steps.size());
+		data_list.erase(data_list.begin() + row, data_list.begin() + row + steps.size());
 		grid->DeleteRows(row, steps.size());
 	}
 
+	// make room for before
 	for (auto it = before.rbegin(); it != before.rend(); ++it)
 	{
 		auto& [row, steps] = *it;
-		date_list.insert(date_list.begin() + row, steps.begin(), steps.end());
+		data_list.insert(data_list.begin() + row, steps.begin(), steps.end());
 		grid->InsertRows(row, steps.size());
 	}
 
+	// insert before
 	bool first = true;
 	for (auto& [row, steps] : before)
 	{
@@ -2872,15 +2869,24 @@ void cMain::UndoRedo(wxGrid* grid, vector<Step>& date_list, vector<std::pair<int
 		for (int i = 0; i < steps.size(); i++)
 		{
 			int currentrow = row + i;
-			auto gridEntry = PrepareStepForGrid(&date_list[currentrow]);
+			auto gridEntry = PrepareStepForGrid(&data_list[currentrow]);
 			PopulateGrid(grid, currentrow, &gridEntry);
-			BackgroundColorUpdate(grid, currentrow, date_list[currentrow]);
+			BackgroundColorUpdate(grid, currentrow, data_list[currentrow]);
 			grid->SelectRow(currentrow, true);
 		}
 	}
+
+	// upkeeep 
+	if (grid == grid_steps)
+	{
+		for (auto& [row, steps] : after) for (auto& step : steps) type_panel->IncrementStateCounter(step.type);
+		for (auto& [row, steps] : before) for (auto& step : steps) type_panel->IncrementStateCounter(step.type);
+		HandleFocusMode(steps_focus_checkbox->IsChecked());
+	}
+	no_changes = false;
 }
 
-void cMain::UndoRedoHandleTemplate(Command command, vector<std::pair<int, vector<Step>>> before, vector<std::pair<int, vector<Step>>> after)
+void cMain::UndoRedoHandleTemplate(Command command, vector<StepBlock> before, vector<StepBlock> after)
 {
 	if (command.template_name != "")
 	{
@@ -2899,15 +2905,19 @@ void cMain::UndoRedoHandleTemplate(Command command, vector<std::pair<int, vector
 	}
 	auto grid = command.template_name == "" ? grid_steps : grid_template;
 	auto& list = command.template_name == "" ? StepGridData : template_map[command.template_name];
-	UndoRedo(grid, list, before, after);
+	grid->BeginBatch();
+	{
+		UndoRedo(grid, list, before, after);
+	}
+	grid->EndBatch();
 }
 void cMain::OnUndoMenuSelected(wxCommandEvent& event)
 {
 	Command command = stack.Pop();
-	UndoRedoHandleTemplate(command, VectorToBlocks(command.before), VectorToBlocks(command.after));
+	UndoRedoHandleTemplate(command, StepLineToStepBlock(command.before), StepLineToStepBlock(command.after));
 }
 void cMain::OnRedoMenuSelected(wxCommandEvent& event)
 {
 	Command command = stack.PopBack();
-	UndoRedoHandleTemplate(command, VectorToBlocks(command.after), VectorToBlocks(command.before));
+	UndoRedoHandleTemplate(command, StepLineToStepBlock(command.after), StepLineToStepBlock(command.before));
 }

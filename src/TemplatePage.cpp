@@ -243,7 +243,7 @@ void cMain::TemplateMoveRow(wxGrid* grid, wxComboBox* cmb, bool move_up, map<str
 		}
 	}
 
-	UndoRedo(grid, data_list, VectorToBlocks(change.after), VectorToBlocks(change.before));
+	UndoRedo(grid, data_list, StepLineToStepBlock(change.after), StepLineToStepBlock(change.before));
 	stack.Push(change);
 	no_changes = false;
 }

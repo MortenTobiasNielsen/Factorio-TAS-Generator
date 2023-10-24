@@ -205,6 +205,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="DialogProgressBar.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="StepLine.h" />
     <ClInclude Include="SteptypeColour.h" />
     <ClInclude Include="Structures\Building.h" />
     <ClInclude Include="Structures\GridEntry.h" />

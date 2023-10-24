@@ -309,9 +309,8 @@ private:
 	map<string, vector<Step>> template_map;
 
 	// Undo and redo
-	vector<std::pair<int, vector<Step>>> VectorToBlocks(vector<StepLine>& lines);
-	void UndoRedo(wxGrid* grid, vector<Step>& date_list, vector<std::pair<int, vector<Step>>> before, vector<std::pair<int, vector<Step>>> after);
-	void UndoRedoHandleTemplate(Command command, vector<std::pair<int, vector<Step>>> before, vector<std::pair<int, vector<Step>>> after);
+	void UndoRedo(wxGrid* grid, vector<Step>& date_list, vector<StepBlock> before, vector<StepBlock> after);
+	void UndoRedoHandleTemplate(Command command, vector<StepBlock> before, vector<StepBlock> after);
 	void OnUndoMenuSelected(wxCommandEvent& event);
 	void OnRedoMenuSelected(wxCommandEvent& event);
 	CommandStack stack;

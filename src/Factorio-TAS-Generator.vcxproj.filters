@@ -79,6 +79,9 @@
     <ClInclude Include="Structures\StepType.h">
       <Filter>Structs</Filter>
     </ClInclude>
+    <ClInclude Include="StepLine.h">
+      <Filter>Structs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Lua Files\control.lua">
