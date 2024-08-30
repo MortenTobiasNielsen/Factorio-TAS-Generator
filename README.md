@@ -1,6 +1,9 @@
 # Factorio TAS Generator
 This is a tool for generating **T**ool **A**ssisted **S**peedruns in Factorio. 
 
+> [!WARNING]
+> This project is no longer actively maintained. See https://github.com/theis999/Factorio-TAS-Generator for a more updated version. 
+
 Showcases: 
 * Steelaxe%:
   1) [8:04 by EZRaiderz](https://www.youtube.com/watch?v=wbD-xbTWzFk&ab_channel=EZRaiderz)
