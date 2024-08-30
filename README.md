@@ -10,7 +10,8 @@ Showcases:
   2) [7:46 by Theis](https://www.youtube.com/watch?v=4zAw3siu-n8&t=365s&ab_channel=Zaspar)
   3) [7:35 by Theis](https://youtu.be/CHAKin8ipbk?si=JLagreI1bqgo0RvJ)
   4) [7:25 by Ameateye](https://www.youtube.com/watch?v=0F0fLkFbhn4)
-  5) [7:23 by EZRaiderz](https://www.youtube.com/watch?v=sqAe57LfNJA&t=3s)
+  5) [7:23 by EZRaiderz](https://www.youtube.com/watch?v=sqAe57LfNJA&t)
+  6) [7:09 by EZRaiderz](https://www.youtube.com/watch?v=-JSfbuJ6shM)
 * GOTLAP: [17:00 by EZRaiderz](https://www.youtube.com/watch?v=geEoRQ2JEbM&ab_channel=EZRaiderz)
 * Any%: [Zaspar_](https://www.youtube.com/watch?v=1r-i5b153uw&t=1482s&ab_channel=Zaspar).  You can follow his progress on [twitch](https://www.twitch.tv/zaspar_). 
 * Default settings: [Omn1](https://www.youtube.com/watch?v=BQzqgQn2lH8). You can follow his progress on [twitch](https://www.twitch.tv/0mn1_io). 
